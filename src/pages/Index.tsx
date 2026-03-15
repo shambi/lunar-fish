@@ -1,19 +1,24 @@
 import { useMemo } from 'react';
 import { getMoonData } from '@/lib/moon';
-import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Star } from 'lucide-react';
+import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish } from 'lucide-react';
 
 const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
-  const today = new Date().toLocaleDateString('en-US', {
+  const today = new Date().toLocaleDateString('bg-BG', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
 
+  const fishIcons = Array.from({ length: moon.fishingScore }, (_, i) => (
+    <span key={i} className="text-2xl drop-shadow-[0_0_6px_hsl(180_80%_55%/0.6)]">
+      {i % 2 === 0 ? '🐟' : '🐠'}
+    </span>
+  ));
+
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Background gradient overlays */}
       <div className="fixed inset-0 bg-gradient-to-b from-ocean/40 via-background to-background pointer-events-none" />
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,hsl(190_70%_20%/0.3)_0%,transparent_60%)] pointer-events-none" />
 
@@ -21,12 +26,12 @@ const Index = () => {
         {/* Header */}
         <header className="pt-6 pb-2 text-center">
           <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
-            🌙 The Lunar Fisherman
+            🌙 Лунният Рибар
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">{today}</p>
+          <p className="text-sm text-muted-foreground mt-1 capitalize">{today}</p>
           <div className="flex items-center justify-center gap-1 mt-1 text-xs text-muted-foreground">
             <MapPin className="w-3 h-3" />
-            <span>Your Location</span>
+            <span>Вашето местоположение</span>
           </div>
         </header>
 
@@ -43,31 +48,21 @@ const Index = () => {
             {moon.emoji}
           </div>
           <h2 className="font-display text-xl font-semibold text-foreground mt-4">
-            {moon.phaseName}
+            {moon.phaseNameBg}
           </h2>
           <p className="text-sm text-primary font-medium mt-1">
-            {moon.illumination}% Illuminated
+            {moon.illumination}% Осветеност
           </p>
         </section>
 
         {/* Fishing Forecast */}
         <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-          <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            Fishing Forecast
+          <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+            <Fish className="w-4 h-4" />
+            Прогноза за риболов
           </h3>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="flex">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <Star
-                  key={i}
-                  className={`w-6 h-6 ${
-                    i <= moon.fishingScore
-                      ? 'text-primary fill-primary drop-shadow-[0_0_6px_hsl(180_80%_55%/0.6)]'
-                      : 'text-muted'
-                  }`}
-                />
-              ))}
-            </div>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="flex gap-1">{fishIcons}</div>
             <span className="text-lg font-bold font-display text-foreground">
               {moon.fishingLabel}
             </span>
@@ -77,54 +72,107 @@ const Index = () => {
           </p>
         </section>
 
+        {/* Fishing Style Tip */}
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-4 mb-4">
+          <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
+            <Anchor className="w-4 h-4" />
+            Съвет за стил на риболов
+          </h3>
+          <p className="text-sm text-foreground leading-relaxed">{moon.fishingStyleTip}</p>
+        </section>
+
         {/* Weather Widget */}
         <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-          <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            Weather Conditions
+          <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+            <Cloud className="w-4 h-4" />
+            Метеорологични условия
           </h3>
           <div className="grid grid-cols-3 gap-4 text-center">
             <div className="flex flex-col items-center gap-1">
               <ThermometerSun className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display text-foreground">72°F</span>
-              <span className="text-xs text-muted-foreground">Temp</span>
+              <span className="text-lg font-bold font-display text-foreground">22°C</span>
+              <span className="text-xs text-muted-foreground">Темп.</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <Wind className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display text-foreground">8 mph</span>
-              <span className="text-xs text-muted-foreground">Wind</span>
+              <span className="text-lg font-bold font-display text-foreground">13 км/ч</span>
+              <span className="text-xs text-muted-foreground">Вятър</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <Droplets className="w-6 h-6 text-primary" />
               <span className="text-lg font-bold font-display text-foreground">65%</span>
-              <span className="text-xs text-muted-foreground">Humidity</span>
+              <span className="text-xs text-muted-foreground">Влажност</span>
             </div>
           </div>
           <div className="flex items-center justify-center gap-2 mt-4 pt-3 border-t border-border">
             <Cloud className="w-5 h-5 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">Partly Cloudy — Placeholder Data</span>
+            <span className="text-sm text-muted-foreground">Частично облачно — примерни данни</span>
           </div>
         </section>
 
-        {/* Top Baits */}
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5">
-          <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            Top Baits for Today
+        {/* Daily Pro Tips */}
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
+          <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
+            🎣 Дневни професионални съвети
           </h3>
-          <div className="grid grid-cols-2 gap-3">
-            {moon.baits.map((bait) => (
-              <div
-                key={bait.name}
-                className="flex items-center gap-3 rounded-lg border border-border bg-secondary/50 px-3 py-3 transition-colors hover:bg-secondary"
-              >
-                <span className="text-2xl">{bait.icon}</span>
-                <span className="text-sm font-medium text-foreground">{bait.name}</span>
-              </div>
-            ))}
+
+          {/* Baits */}
+          <div className="mb-4">
+            <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2 flex items-center gap-1">
+              🪝 Стръв
+            </h4>
+            <div className="grid grid-cols-2 gap-2">
+              {moon.baits.map((bait) => (
+                <div
+                  key={bait.name}
+                  className="flex items-center gap-2 rounded-lg border border-border bg-secondary/50 px-3 py-2 transition-colors hover:bg-secondary"
+                >
+                  <span className="text-lg">{bait.icon}</span>
+                  <span className="text-sm font-medium text-foreground">{bait.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Tackle */}
+          <div className="mb-4">
+            <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2 flex items-center gap-1">
+              ⚓ Такъми
+            </h4>
+            <div className="grid grid-cols-2 gap-2">
+              {moon.tackle.map((item) => (
+                <div
+                  key={item.name}
+                  className="flex items-center gap-2 rounded-lg border border-border bg-secondary/50 px-3 py-2 transition-colors hover:bg-secondary"
+                >
+                  <span className="text-lg">{item.icon}</span>
+                  <span className="text-sm font-medium text-foreground">{item.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Target Fish */}
+          <div>
+            <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2 flex items-center gap-1">
+              🐟 Целеви видове риба
+            </h4>
+            <div className="grid grid-cols-2 gap-2">
+              {moon.targetFish.map((fish) => (
+                <div
+                  key={fish.name}
+                  className="flex items-center gap-2 rounded-lg border border-border bg-secondary/50 px-3 py-2 transition-colors hover:bg-secondary"
+                >
+                  <span className="text-lg">{fish.icon}</span>
+                  <span className="text-sm font-medium text-foreground">{fish.name}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
         <footer className="text-center mt-8 text-xs text-muted-foreground">
-          Tight lines & clear skies 🎣
+          Стегнати линии и чисто небе 🎣
         </footer>
       </div>
     </div>
