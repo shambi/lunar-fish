@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="logo.png" width="200" />
+</p>
 # 🎣 Lazar's Lunar Guide
 
 A professional, AI-powered Web Application designed for fishermen to track optimal fishing conditions based on lunar phases and real-time local weather.
