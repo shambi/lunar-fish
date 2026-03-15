@@ -1,15 +1,24 @@
 import { useMemo } from 'react';
 import { getMoonData } from '@/lib/moon';
-import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish } from 'lucide-react';
+import { getSmartFishingTips } from '@/lib/fishing-expert';
+import { useWeather } from '@/hooks/use-weather';
+import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader2, MapPinOff } from 'lucide-react';
 
 const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
+  const { weather, loading, error, locationDenied } = useWeather();
+
   const today = new Date().toLocaleDateString('bg-BG', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric',
   });
+
+  const tips = useMemo(() => {
+    if (!weather) return null;
+    return getSmartFishingTips(moon, weather.temperature, weather.windSpeed, weather.weatherCode);
+  }, [moon, weather]);
 
   const fishIcons = Array.from({ length: moon.fishingScore }, (_, i) => (
     <span key={i} className="text-2xl drop-shadow-[0_0_6px_hsl(180_80%_55%/0.6)]">
@@ -30,8 +39,27 @@ const Index = () => {
           </h1>
           <p className="text-sm text-muted-foreground mt-1 capitalize">{today}</p>
           <div className="flex items-center justify-center gap-1 mt-1 text-xs text-muted-foreground">
-            <MapPin className="w-3 h-3" />
-            <span>Вашето местоположение</span>
+            {loading ? (
+              <>
+                <Loader2 className="w-3 h-3 animate-spin" />
+                <span>Търсене на локация...</span>
+              </>
+            ) : locationDenied ? (
+              <>
+                <MapPinOff className="w-3 h-3" />
+                <span>Локацията е отказана</span>
+              </>
+            ) : weather ? (
+              <>
+                <MapPin className="w-3 h-3" />
+                <span>{weather.locationName}</span>
+              </>
+            ) : (
+              <>
+                <MapPinOff className="w-3 h-3" />
+                <span>Няма данни за локация</span>
+              </>
+            )}
           </div>
         </header>
 
@@ -72,13 +100,27 @@ const Index = () => {
           </p>
         </section>
 
+        {/* Smart Weather Tips (only when weather is loaded) */}
+        {tips && (
+          <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-4 mb-4 space-y-2">
+            <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
+              🧠 Умни съвети
+            </h3>
+            <p className="text-sm text-foreground leading-relaxed">{tips.weatherTip}</p>
+            <p className="text-sm text-foreground leading-relaxed">{tips.windTip}</p>
+            <p className="text-sm text-primary font-medium">{tips.timingTip}</p>
+          </section>
+        )}
+
         {/* Fishing Style Tip */}
         <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-4 mb-4">
           <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
             <Anchor className="w-4 h-4" />
             Съвет за стил на риболов
           </h3>
-          <p className="text-sm text-foreground leading-relaxed">{moon.fishingStyleTip}</p>
+          <p className="text-sm text-foreground leading-relaxed">
+            {tips ? tips.fishingStyleTip : moon.fishingStyleTip}
+          </p>
         </section>
 
         {/* Weather Widget */}
@@ -87,27 +129,46 @@ const Index = () => {
             <Cloud className="w-4 h-4" />
             Метеорологични условия
           </h3>
+          {loading ? (
+            <div className="flex items-center justify-center gap-2 py-4 text-muted-foreground">
+              <Loader2 className="w-5 h-5 animate-spin" />
+              <span className="text-sm">Зареждане на времето...</span>
+            </div>
+          ) : error && !weather ? (
+            <div className="text-center py-4">
+              <p className="text-sm text-muted-foreground">{error}</p>
+              <p className="text-xs text-muted-foreground mt-1">Показват се примерни данни</p>
+            </div>
+          ) : null}
           <div className="grid grid-cols-3 gap-4 text-center">
             <div className="flex flex-col items-center gap-1">
               <ThermometerSun className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display text-foreground">22°C</span>
+              <span className="text-lg font-bold font-display text-foreground">
+                {weather ? `${weather.temperature}°C` : '—'}
+              </span>
               <span className="text-xs text-muted-foreground">Темп.</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <Wind className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display text-foreground">13 км/ч</span>
+              <span className="text-lg font-bold font-display text-foreground">
+                {weather ? `${weather.windSpeed} км/ч` : '—'}
+              </span>
               <span className="text-xs text-muted-foreground">Вятър</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <Droplets className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display text-foreground">65%</span>
+              <span className="text-lg font-bold font-display text-foreground">
+                {weather ? `${weather.humidity}%` : '—'}
+              </span>
               <span className="text-xs text-muted-foreground">Влажност</span>
             </div>
           </div>
-          <div className="flex items-center justify-center gap-2 mt-4 pt-3 border-t border-border">
-            <Cloud className="w-5 h-5 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">Частично облачно — примерни данни</span>
-          </div>
+          {weather && (
+            <div className="flex items-center justify-center gap-2 mt-4 pt-3 border-t border-border">
+              <span className="text-xl">{weather.weatherIcon}</span>
+              <span className="text-sm text-muted-foreground">{weather.weatherLabel}</span>
+            </div>
+          )}
         </section>
 
         {/* Daily Pro Tips */}
@@ -122,7 +183,7 @@ const Index = () => {
               🪝 Стръв
             </h4>
             <div className="grid grid-cols-2 gap-2">
-              {moon.baits.map((bait) => (
+              {(tips?.baits ?? moon.baits).map((bait) => (
                 <div
                   key={bait.name}
                   className="flex items-center gap-2 rounded-lg border border-border bg-secondary/50 px-3 py-2 transition-colors hover:bg-secondary"
@@ -140,7 +201,7 @@ const Index = () => {
               ⚓ Такъми
             </h4>
             <div className="grid grid-cols-2 gap-2">
-              {moon.tackle.map((item) => (
+              {(tips?.tackle ?? moon.tackle).map((item) => (
                 <div
                   key={item.name}
                   className="flex items-center gap-2 rounded-lg border border-border bg-secondary/50 px-3 py-2 transition-colors hover:bg-secondary"
@@ -158,7 +219,7 @@ const Index = () => {
               🐟 Целеви видове риба
             </h4>
             <div className="grid grid-cols-2 gap-2">
-              {moon.targetFish.map((fish) => (
+              {(tips?.targetFish ?? moon.targetFish).map((fish) => (
                 <div
                   key={fish.name}
                   className="flex items-center gap-2 rounded-lg border border-border bg-secondary/50 px-3 py-2 transition-colors hover:bg-secondary"
@@ -171,8 +232,13 @@ const Index = () => {
           </div>
         </section>
 
-        <footer className="text-center mt-8 text-xs text-muted-foreground">
-          Стегнати линии и чисто небе 🎣
+        <footer className="text-center mt-8 space-y-1">
+          <p className="text-xs text-muted-foreground">Стегнати линии и чисто небе 🎣</p>
+          {weather && (
+            <p className="text-[10px] text-muted-foreground/60">
+              📍 Данните са базирани на текущата ви локация • Open-Meteo API
+            </p>
+          )}
         </footer>
       </div>
     </div>
