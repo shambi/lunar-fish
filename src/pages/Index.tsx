@@ -1,12 +1,15 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { getMoonData } from '@/lib/moon';
 import { getSmartFishingTips } from '@/lib/fishing-expert';
+import { FISH_DATABASE, getSmartTackle, type FishEntry } from '@/lib/fish-database';
+import { FishModal } from '@/components/FishModal';
 import { useWeather } from '@/hooks/use-weather';
 import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader2, MapPinOff } from 'lucide-react';
 
 const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
   const { weather, loading, error, locationDenied } = useWeather();
+  const [selectedFish, setSelectedFish] = useState<FishEntry | null>(null);
 
   const today = new Date().toLocaleDateString('bg-BG', {
     weekday: 'long',
@@ -20,11 +23,26 @@ const Index = () => {
     return getSmartFishingTips(moon, weather.temperature, weather.windSpeed, weather.weatherCode);
   }, [moon, weather]);
 
+  const selectedTackle = useMemo(() => {
+    if (!selectedFish) return null;
+    return getSmartTackle(selectedFish, moon, weather?.temperature ?? null, weather?.weatherCode ?? null);
+  }, [selectedFish, moon, weather]);
+
   const fishIcons = Array.from({ length: moon.fishingScore }, (_, i) => (
     <span key={i} className="text-2xl drop-shadow-[0_0_6px_hsl(180_80%_55%/0.6)]">
       {i % 2 === 0 ? '🐟' : '🐠'}
     </span>
   ));
+
+  const handleFishClick = useCallback((fish: FishEntry) => {
+    setSelectedFish(fish);
+  }, []);
+
+  // Get today's target fish entries from database
+  const todayTargetIds = useMemo(() => {
+    const targetNames = (tips?.targetFish ?? moon.targetFish).map(f => f.name);
+    return FISH_DATABASE.filter(f => targetNames.includes(f.nameBg));
+  }, [tips, moon]);
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -98,9 +116,33 @@ const Index = () => {
           <p className="text-sm text-secondary-foreground leading-relaxed">
             {moon.fishingTip}
           </p>
+
+          {/* Today's Top Fish - clickable */}
+          {todayTargetIds.length > 0 && (
+            <div className="mt-4 pt-3 border-t border-border">
+              <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">
+                🎯 Топ риба за днес
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {todayTargetIds.map((fish) => (
+                  <button
+                    key={fish.id}
+                    onClick={() => handleFishClick(fish)}
+                    className="flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 py-1.5 text-sm font-medium text-foreground transition-all hover:bg-primary/20 hover:border-primary/50 hover:scale-105 active:scale-95"
+                  >
+                    <span className="text-lg">{fish.icon}</span>
+                    {fish.nameBg}
+                  </button>
+                ))}
+              </div>
+              <p className="text-[10px] text-muted-foreground/50 mt-2 italic">
+                Натиснете за детайлни такъми • Изчислено на база реални условия
+              </p>
+            </div>
+          )}
         </section>
 
-        {/* Smart Weather Tips (only when weather is loaded) */}
+        {/* Smart Weather Tips */}
         {tips && (
           <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-4 mb-4 space-y-2">
             <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
@@ -137,7 +179,6 @@ const Index = () => {
           ) : error && !weather ? (
             <div className="text-center py-4">
               <p className="text-sm text-muted-foreground">{error}</p>
-              <p className="text-xs text-muted-foreground mt-1">Показват се примерни данни</p>
             </div>
           ) : null}
           <div className="grid grid-cols-3 gap-4 text-center">
@@ -177,7 +218,6 @@ const Index = () => {
             🎣 Дневни професионални съвети
           </h3>
 
-          {/* Baits */}
           <div className="mb-4">
             <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2 flex items-center gap-1">
               🪝 Стръв
@@ -195,7 +235,6 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Tackle */}
           <div className="mb-4">
             <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2 flex items-center gap-1">
               ⚓ Такъми
@@ -213,7 +252,6 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Target Fish */}
           <div>
             <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2 flex items-center gap-1">
               🐟 Целеви видове риба
@@ -232,6 +270,31 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Browse All Fish Encyclopedia */}
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
+          <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
+            📖 Енциклопедия на рибите
+          </h3>
+          <div className="grid grid-cols-3 gap-2">
+            {FISH_DATABASE.map((fish) => (
+              <button
+                key={fish.id}
+                onClick={() => handleFishClick(fish)}
+                className="flex flex-col items-center gap-1 rounded-lg border border-border bg-secondary/30 p-3 transition-all hover:bg-secondary/60 hover:border-primary/40 hover:scale-105 active:scale-95"
+              >
+                <span className="text-2xl">{fish.icon}</span>
+                <span className="text-xs font-medium text-foreground text-center leading-tight">{fish.nameBg}</span>
+                {fish.isPredator && (
+                  <span className="text-[9px] text-primary/80 font-medium">хищник</span>
+                )}
+              </button>
+            ))}
+          </div>
+          <p className="text-[10px] text-muted-foreground/50 mt-3 text-center italic">
+            Натиснете за детайлни такъми • Изчислено на база реални условия
+          </p>
+        </section>
+
         <footer className="text-center mt-8 space-y-1">
           <p className="text-xs text-muted-foreground">Стегнати линии и чисто небе 🎣</p>
           {weather && (
@@ -241,6 +304,14 @@ const Index = () => {
           )}
         </footer>
       </div>
+
+      {/* Fish Modal */}
+      <FishModal
+        fish={selectedFish}
+        tackle={selectedTackle}
+        open={!!selectedFish}
+        onOpenChange={(open) => !open && setSelectedFish(null)}
+      />
     </div>
   );
 };
