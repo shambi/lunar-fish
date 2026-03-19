@@ -109,8 +109,11 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
           {selectedFish && modalData && (
             <>
               <DialogHeader>
-                <DialogTitle className="font-display flex items-center gap-2 text-foreground">
-                  <span className="text-3xl">{selectedFish.emoji}</span>
+                  <DialogTitle className="font-display flex items-center gap-2 text-foreground">
+                    {FISH_ICON_MAP[selectedFish.name]
+                      ? FISH_ICON_MAP[selectedFish.name]({ size: 40 })
+                      : <span className="text-3xl">{selectedFish.emoji}</span>
+                    }
                   {selectedFish.name}
                   {selectedFish.isRecommended && (
                     <Badge className="bg-primary text-primary-foreground text-[10px]">
