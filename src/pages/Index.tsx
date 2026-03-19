@@ -3,6 +3,7 @@ import { getMoonData } from '@/lib/moon';
 import { getSmartFishingTips } from '@/lib/fishing-expert';
 import { useWeather } from '@/hooks/use-weather';
 import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader2, MapPinOff } from 'lucide-react';
+import { FishGuide } from '@/components/FishGuide';
 
 const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
