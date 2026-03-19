@@ -83,7 +83,10 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
                 ⭐
               </Badge>
             )}
-            <span className="text-2xl">{fish.emoji}</span>
+            {FISH_ICON_MAP[fish.name]
+              ? FISH_ICON_MAP[fish.name]({ size: 40 })
+              : <span className="text-2xl">{fish.emoji}</span>
+            }
             <span className="text-xs font-medium text-foreground text-center leading-tight">
               {fish.name}
             </span>
