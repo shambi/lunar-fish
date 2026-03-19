@@ -3,6 +3,7 @@ import { getMoonData } from '@/lib/moon';
 import { getSmartFishingTips } from '@/lib/fishing-expert';
 import { useWeather } from '@/hooks/use-weather';
 import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader2, MapPinOff } from 'lucide-react';
+import { FishGuide } from '@/components/FishGuide';
 
 const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
@@ -213,24 +214,10 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Target Fish */}
-          <div>
-            <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-2 flex items-center gap-1">
-              🐟 Целеви видове риба
-            </h4>
-            <div className="grid grid-cols-2 gap-2">
-              {(tips?.targetFish ?? moon.targetFish).map((fish) => (
-                <div
-                  key={fish.name}
-                  className="flex items-center gap-2 rounded-lg border border-border bg-secondary/50 px-3 py-2 transition-colors hover:bg-secondary"
-                >
-                  <span className="text-lg">{fish.icon}</span>
-                  <span className="text-sm font-medium text-foreground">{fish.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
         </section>
+
+        {/* Fish Guide */}
+        <FishGuide moon={moon} weather={weather} />
 
         <footer className="text-center mt-8 space-y-1">
           <p className="text-xs text-muted-foreground">Стегнати линии и чисто небе 🎣</p>
