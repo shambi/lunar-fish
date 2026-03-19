@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { FISH_ICON_MAP } from '@/components/FishIcons';
 
 interface FishGuideProps {
   moon: MoonData;
@@ -82,7 +83,10 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
                 ⭐
               </Badge>
             )}
-            <span className="text-2xl">{fish.emoji}</span>
+            {FISH_ICON_MAP[fish.name]
+              ? FISH_ICON_MAP[fish.name]({ size: 40 })
+              : <span className="text-2xl">{fish.emoji}</span>
+            }
             <span className="text-xs font-medium text-foreground text-center leading-tight">
               {fish.name}
             </span>
@@ -105,8 +109,11 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
           {selectedFish && modalData && (
             <>
               <DialogHeader>
-                <DialogTitle className="font-display flex items-center gap-2 text-foreground">
-                  <span className="text-3xl">{selectedFish.emoji}</span>
+                  <DialogTitle className="font-display flex items-center gap-2 text-foreground">
+                    {FISH_ICON_MAP[selectedFish.name]
+                      ? FISH_ICON_MAP[selectedFish.name]({ size: 40 })
+                      : <span className="text-3xl">{selectedFish.emoji}</span>
+                    }
                   {selectedFish.name}
                   {selectedFish.isRecommended && (
                     <Badge className="bg-primary text-primary-foreground text-[10px]">
