@@ -35,8 +35,9 @@ const Index = () => {
       <div className="relative z-10 max-w-md mx-auto px-4 pb-8">
         {/* Header */}
         <header className="pt-6 pb-2 text-center">
+          <img src="/logo-new.png" alt="Лунният Рибар лого" className="w-16 h-16 mx-auto mb-2 rounded-full drop-shadow-[0_0_12px_hsl(var(--primary)/0.5)]" />
           <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
-            🌙 Лунният Рибар
+            Лунният Рибар
           </h1>
           <p className="text-sm text-muted-foreground mt-1 capitalize">{today}</p>
           <div className="flex items-center justify-center gap-1 mt-1 text-xs text-muted-foreground">
