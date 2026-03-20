@@ -14,13 +14,26 @@ export function getSmartFishingTips(
   moon: MoonData,
   temperature: number,
   windSpeed: number,
-  weatherCode: number
+  weatherCode: number,
+  options?: {
+    pressureTrend?: 'rising' | 'stable' | 'falling';
+    pressureDiff?: number;
+    waterTemp?: number;
+    sunrise?: string;
+    sunset?: string;
+  }
 ): SmartTips {
   const isHot = temperature > 25;
   const isCold = temperature < 5;
   const isWindy = windSpeed > 20;
   const isRainy = [51, 53, 55, 61, 63, 65, 80, 81, 82].includes(weatherCode);
   const isStormy = [95, 96, 99].includes(weatherCode);
+
+  const pressureTrend = options?.pressureTrend ?? 'stable';
+  const pressureDiff = options?.pressureDiff ?? 0;
+  const waterTemp = options?.waterTemp;
+  const sunrise = options?.sunrise;
+  const sunset = options?.sunset;
 
   // Weather-based tip
   let weatherTip: string;
@@ -36,6 +49,13 @@ export function getSmartFishingTips(
     weatherTip = '✅ Приятно време — добри условия за риболов през целия ден.';
   }
 
+  // Barometer logic — append to weatherTip
+  if (pressureTrend === 'rising') {
+    weatherTip += '\n📈 Налягането се покачва — рибата е активна и хапе добре.';
+  } else if (pressureTrend === 'falling') {
+    weatherTip += '\n📉 Падащо налягане — рибата е пасивна. Очаквайте бавна хапка.';
+  }
+
   // Wind-based tip
   let windTip: string;
   if (isWindy) {
@@ -46,12 +66,31 @@ export function getSmartFishingTips(
     windTip = '🪶 Тихо — спокойна вода. Използвайте по-деликатни монтажи и по-тънко влакно.';
   }
 
-  // Timing tip based on temperature + moon
+  // Water temperature tip (appended to weatherTip)
+  if (waterTemp != null) {
+    if (waterTemp < 6) {
+      weatherTip += '\n🌊 Студена вода — рибата е вяла. Ловете бавно и дълбоко.';
+    } else if (waterTemp > 22) {
+      weatherTip += '\n🌊 Топла вода — ловете рано сутринта или след залез.';
+    }
+  }
+
+  // Timing tip — use real sunrise/sunset when available
   let timingTip: string;
   if (isHot) {
     timingTip = '🕐 Най-добро време: 05:00–08:00 и 19:00–22:00';
   } else if (isCold) {
     timingTip = '🕐 Най-добро време: 11:00–15:00 (по-топлата част на деня)';
+  } else if (sunrise && sunset && sunrise !== '--:--' && sunset !== '--:--') {
+    const addHour = (t: string) => {
+      const [h, m] = t.split(':').map(Number);
+      return `${String(Math.min(h + 1, 23)).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    };
+    const subHour = (t: string) => {
+      const [h, m] = t.split(':').map(Number);
+      return `${String(Math.max(h - 1, 0)).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    };
+    timingTip = `🕐 Най-добро време: ${sunrise} — ${addHour(sunrise)} и ${subHour(sunset)} — ${sunset}`;
   } else {
     timingTip = '🕐 Най-добро време: изгрев и залез';
   }
@@ -72,6 +111,11 @@ export function getSmartFishingTips(
     fishingStyleTip = '🎣 Финес риболов с микро джиг или дроп-шот — бавни и деликатни движения.';
   } else {
     fishingStyleTip = moon.fishingStyleTip;
+  }
+
+  // Cold water: suggest smaller lures, slow animation
+  if (waterTemp != null && waterTemp < 6 && !isCold) {
+    fishingStyleTip += ' Използвайте по-малки примамки и бавна анимация.';
   }
 
   // Smart baits based on conditions and target fish
