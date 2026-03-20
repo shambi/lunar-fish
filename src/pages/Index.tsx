@@ -18,7 +18,12 @@ const Index = () => {
 
   const tips = useMemo(() => {
     if (!weather) return null;
-    return getSmartFishingTips(moon, weather.temperature, weather.windSpeed, weather.weatherCode);
+    return getSmartFishingTips(moon, weather.temperature, weather.windSpeed, weather.weatherCode, {
+      pressureTrend: weather.pressureTrend,
+      waterTemp: weather.waterTemp,
+      sunrise: weather.sunrise,
+      sunset: weather.sunset,
+    });
   }, [moon, weather]);
 
   const fishIcons = Array.from({ length: moon.fishingScore }, (_, i) => (
