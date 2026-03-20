@@ -41,7 +41,7 @@ const WMO_CODES: Record<number, { label: string; icon: string }> = {
   99: { label: 'Силна буря с градушка', icon: '⛈️' },
 };
 
-function getWeatherInfo(code: number) {
+export function getWeatherInfo(code: number) {
   return WMO_CODES[code] || { label: 'Неизвестно', icon: '🌡️' };
 }
 
