@@ -10,6 +10,11 @@ export interface WeatherData {
   latitude: number;
   longitude: number;
   locationName: string;
+  pressure: number;
+  pressureTrend: 'rising' | 'stable' | 'falling';
+  sunrise: string;
+  sunset: string;
+  waterTemp: number;
 }
 
 const WMO_CODES: Record<number, { label: string; icon: string }> = {
@@ -58,12 +63,31 @@ export function useWeather() {
         const { latitude, longitude } = position.coords;
         try {
           const res = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto`
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset&forecast_days=1&timezone=auto`
           );
           if (!res.ok) throw new Error('API грешка');
           const data = await res.json();
           const current = data.current;
           const info = getWeatherInfo(current.weather_code);
+
+          // Pressure trend from hourly data
+          const hourlyPressure: number[] = data.hourly?.surface_pressure ?? [];
+          const currentHourIndex = new Date().getHours();
+          const prevHour = currentHourIndex > 0 ? currentHourIndex - 1 : 0;
+          const pDiff = (hourlyPressure[currentHourIndex] ?? 0) - (hourlyPressure[prevHour] ?? 0);
+          const pressureTrend: 'rising' | 'stable' | 'falling' = pDiff > 1 ? 'rising' : pDiff < -1 ? 'falling' : 'stable';
+
+          // Sunrise/sunset
+          const sunrise = data.daily?.sunrise?.[0] ?? '';
+          const sunset = data.daily?.sunset?.[0] ?? '';
+          const fmtTime = (iso: string) => {
+            if (!iso) return '--:--';
+            const d = new Date(iso);
+            return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+          };
+
+          // Water temp approximation: soil_temperature_0cm not in current; approximate from air temp
+          const waterTemp = Math.round(current.temperature_2m * 0.85);
 
           // Reverse geocode for location name
           let locationName = `${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`;
@@ -71,7 +95,6 @@ export function useWeather() {
             const geoRes = await fetch(
               `https://geocoding-api.open-meteo.com/v1/search?name=&latitude=${latitude}&longitude=${longitude}&count=1&language=bg`
             );
-            // Open-Meteo geocoding doesn't support reverse, so we use a simple fallback
           } catch {
             // ignore
           }
@@ -86,6 +109,11 @@ export function useWeather() {
             latitude,
             longitude,
             locationName,
+            pressure: Math.round(current.surface_pressure),
+            pressureTrend,
+            sunrise: fmtTime(sunrise),
+            sunset: fmtTime(sunset),
+            waterTemp,
           });
         } catch (err) {
           setError('Неуспешно зареждане на метеорологичните данни.');

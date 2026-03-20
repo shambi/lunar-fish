@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { getMoonData } from '@/lib/moon';
 import { getSmartFishingTips } from '@/lib/fishing-expert';
 import { useWeather } from '@/hooks/use-weather';
-import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader2, MapPinOff } from 'lucide-react';
+import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader2, MapPinOff, Gauge, Sunrise, Sunset, Thermometer } from 'lucide-react';
 import { FishGuide } from '@/components/FishGuide';
 
 const Index = () => {
@@ -163,6 +163,42 @@ const Index = () => {
                 {weather ? `${weather.humidity}%` : '—'}
               </span>
               <span className="text-xs text-muted-foreground">Влажност</span>
+            </div>
+          </div>
+          {/* Divider + Second Row */}
+          <div className="border-t border-border my-4" />
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div className="flex flex-col items-center gap-1">
+              <Gauge className="w-6 h-6 text-primary" />
+              <span className="text-lg font-bold font-display text-foreground">
+                {weather ? `${weather.pressure} хПа` : '—'}
+              </span>
+              {weather ? (
+                <span className={`text-xs font-medium ${weather.pressureTrend === 'rising' ? 'text-green-400' : weather.pressureTrend === 'falling' ? 'text-amber-400' : 'text-muted-foreground'}`}>
+                  {weather.pressureTrend === 'rising' ? '📈 Нарастващо' : weather.pressureTrend === 'falling' ? '📉 Падащо' : '➡️ Стабилно'}
+                </span>
+              ) : (
+                <span className="text-xs text-muted-foreground">Барометър</span>
+              )}
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <div className="flex items-center gap-1">
+                <Sunrise className="w-5 h-5 text-primary" />
+                <Sunset className="w-5 h-5 text-primary" />
+              </div>
+              <span className="text-lg font-bold font-display text-foreground">
+                {weather ? weather.sunrise : '—'}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {weather ? `Залез ${weather.sunset}` : 'Изгрев / Залез'}
+              </span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Thermometer className="w-6 h-6 text-primary" />
+              <span className="text-lg font-bold font-display text-foreground">
+                {weather ? `${weather.waterTemp}°C` : '—'}
+              </span>
+              <span className="text-xs text-muted-foreground">Вода</span>
             </div>
           </div>
           {weather && (
