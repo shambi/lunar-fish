@@ -259,6 +259,9 @@ const Index = () => {
 
         </section>
 
+        {/* Multi-day Forecast */}
+        <ForecastCards weather={weather} />
+
         {/* Fish Guide */}
         <FishGuide moon={moon} weather={weather} />
 
