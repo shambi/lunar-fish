@@ -10,6 +10,11 @@ export interface WeatherData {
   latitude: number;
   longitude: number;
   locationName: string;
+  pressure: number;
+  pressureTrend: 'rising' | 'stable' | 'falling';
+  sunrise: string;
+  sunset: string;
+  waterTemp: number;
 }
 
 const WMO_CODES: Record<number, { label: string; icon: string }> = {
