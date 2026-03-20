@@ -4,6 +4,7 @@ import { getSmartFishingTips } from '@/lib/fishing-expert';
 import { useWeather } from '@/hooks/use-weather';
 import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader2, MapPinOff, Gauge, Sunrise, Sunset, Thermometer } from 'lucide-react';
 import { FishGuide } from '@/components/FishGuide';
+import { ForecastCards } from '@/components/ForecastCards';
 
 const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
@@ -257,6 +258,9 @@ const Index = () => {
           </div>
 
         </section>
+
+        {/* Multi-day Forecast */}
+        <ForecastCards weather={weather} />
 
         {/* Fish Guide */}
         <FishGuide moon={moon} weather={weather} />
