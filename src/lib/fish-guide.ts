@@ -180,6 +180,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐠',
     habitat: 'lake',
     isPredator: false,
+    hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Сладка захранка с ванилия',
       bait: 'Червеи, царевица, хляб, ларви',
