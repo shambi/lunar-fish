@@ -16,6 +16,17 @@ export interface FishSpecies {
   isPredator: boolean;
   baseData: FishBaseData;
   spawnMonths: number[];
+  spawnWarning?: string;
+  /** Terrain where the fish should be hidden (not shown) */
+  hideOnTerrain?: 'river' | 'lake';
+}
+
+export interface ScoringOptions {
+  weatherCode?: number;
+  waterTemp?: number;
+  pressureTrend?: 'rising' | 'stable' | 'falling';
+  moonPhaseName?: string;
+  sunrise?: string;
 }
 
 export const FISH_DATABASE: FishSpecies[] = [
@@ -177,10 +188,153 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     spawnMonths: [5, 6, 7],
   },
+  // ——— 9 NEW SPECIES ———
+  {
+    name: 'Костур',
+    emoji: '🐟',
+    habitat: 'both',
+    isPredator: true,
+    baseData: {
+      groundbait: 'Малки живи рибки, червеи',
+      bait: 'Малки воблери, туистери, живец',
+      line_mm: 0.18,
+      hook_size: '8',
+      lures: 'Малки туистери 3-5см, джигове 5-10г, цветове: бяло/жълто при мътна вода, натурални при бистра',
+      rigs: 'Лек джиг монтаж, каролина монтаж',
+    },
+    spawnMonths: [4, 5],
+    spawnWarning: '⚠️ Костурът се размножава. Хвани и пусни!',
+  },
+  {
+    name: 'Платика',
+    emoji: '🐟',
+    habitat: 'both',
+    isPredator: false,
+    baseData: {
+      groundbait: 'Фидер микс с трохи и червеи',
+      bait: 'Червеи, опариш, царевица, тесто',
+      line_mm: 0.16,
+      hook_size: '10',
+      rigs: 'Фидер монтаж, легер с повод 40-60см',
+    },
+    spawnMonths: [4, 5],
+    spawnWarning: '⚠️ Платиката се размножава. Ловете само на разрешени места.',
+  },
+  {
+    name: 'Бабушка',
+    emoji: '🐟',
+    habitat: 'both',
+    isPredator: false,
+    baseData: {
+      groundbait: 'Ситна захранка с конопено семе',
+      bait: 'Опариш, червей, малка царевица, тесто',
+      line_mm: 0.12,
+      hook_size: '14',
+      rigs: 'Ваглер, фидер с тънък повод 0.08мм',
+    },
+    spawnMonths: [4, 5],
+  },
+  {
+    name: 'Червеноперка',
+    emoji: '🐟',
+    habitat: 'lake',
+    isPredator: false,
+    baseData: {
+      groundbait: 'Ситна повърхностна захранка',
+      bait: 'Опариш, малки мухи, хляб, тесто',
+      line_mm: 0.12,
+      hook_size: '14',
+      lures: 'Малки повърхностни примамки',
+      rigs: 'Ваглер, повърхностен монтаж',
+    },
+    spawnMonths: [5, 6],
+  },
+  {
+    name: 'Мряна',
+    emoji: '🐟',
+    habitat: 'river',
+    isPredator: false,
+    baseData: {
+      groundbait: 'Тежка дънна захранка, пелети',
+      bait: 'Бойли, пелети, червеи, скариди',
+      line_mm: 0.25,
+      hook_size: '6',
+      rigs: 'Тежък фидер 60-100г, кратък повод 10-15см',
+    },
+    spawnMonths: [5, 6],
+    spawnWarning: '⚠️ Мряната се размножава. Задължително пускане!',
+    hideOnTerrain: 'lake',
+  },
+  {
+    name: 'Дъгова пъстърва',
+    emoji: '🐟',
+    habitat: 'river',
+    isPredator: true,
+    baseData: {
+      groundbait: '',
+      bait: 'Червеи, скариди, хайвер имитации',
+      line_mm: 0.16,
+      hook_size: '10',
+      lures: 'Малки блесни 5-10г, воблери 4-7см, мухи — нимфи и мокри мухи',
+      rigs: 'Нахлист, спининг с тънко влакно',
+    },
+    spawnMonths: [11, 12, 1, 2],
+    spawnWarning: '⚠️ Пъстървата се размножава. Бъдете етични!',
+    hideOnTerrain: 'lake',
+  },
+  {
+    name: 'Бибан',
+    emoji: '🐟',
+    habitat: 'both',
+    isPredator: true,
+    baseData: {
+      groundbait: 'Не се захранва',
+      bait: 'Малки червеи, личинки',
+      line_mm: 0.14,
+      hook_size: '12',
+      lures: 'Микро джигове 1-3г, малки туистери',
+      rigs: 'Ултралайт спининг, дроп-шот монтаж',
+    },
+    spawnMonths: [4],
+  },
+  {
+    name: 'Сулка',
+    emoji: '🐟',
+    habitat: 'both',
+    isPredator: true,
+    baseData: {
+      groundbait: '',
+      bait: 'Живец, малки рибки',
+      line_mm: 0.22,
+      hook_size: '6',
+      lures: 'Воблери 7-12см, туистери, джигове 10-20г, цветове: бяло/сребристо нощем, натурални през деня',
+      rigs: 'Джиг монтаж, живца монтаж',
+    },
+    spawnMonths: [3, 4],
+    spawnWarning: '⚠️ Сулката се размножава. Хвани и пусни!',
+  },
+  {
+    name: 'Аспър',
+    emoji: '🐟',
+    habitat: 'river',
+    isPredator: true,
+    baseData: {
+      groundbait: '',
+      bait: 'Малки рибки, живец',
+      line_mm: 0.20,
+      hook_size: '8',
+      lures: 'Блесни 10-20г, повърхностни воблери, цветове: сребристо/бяло',
+      rigs: 'Спининг, повърхностно водене',
+    },
+    spawnMonths: [4, 5],
+    spawnWarning: '⚠️ Аспърът се размножава. Задължително пускане!',
+    hideOnTerrain: 'lake',
+  },
 ];
 
 export interface ScoredFish extends FishSpecies {
   score: number;
+  stars: number;
   isRecommended: boolean;
 }
 
@@ -190,7 +344,8 @@ export function scoreFish(
   temperature: number,
   windSpeed: number,
   currentMonth: number,
-  terrain: 'river' | 'lake'
+  terrain: 'river' | 'lake',
+  options?: ScoringOptions
 ): number {
   let score = 0;
 
@@ -204,12 +359,10 @@ export function scoreFish(
 
   // Temperature preference (0-20)
   if (fish.isPredator) {
-    // Predators more active in moderate/cool temps
     if (temperature >= 10 && temperature <= 22) score += 20;
     else if (temperature >= 5 && temperature <= 28) score += 12;
     else score += 5;
   } else {
-    // Peaceful fish prefer warmer water
     if (temperature >= 15 && temperature <= 28) score += 20;
     else if (temperature >= 8 && temperature <= 32) score += 12;
     else score += 5;
@@ -223,15 +376,62 @@ export function scoreFish(
   // Seasonal activity (0-20)
   const isSpawning = fish.spawnMonths.includes(currentMonth);
   if (isSpawning) {
-    score -= 10; // Less desirable during spawn
+    score -= 10;
   } else {
-    // Peak months vary: summer fish score higher in summer, etc.
     const summerFish = ['Шаран', 'Амур', 'Толстолоб', 'Каракуда', 'Лин'];
     const isSummer = currentMonth >= 6 && currentMonth <= 9;
     const isWinter = currentMonth === 12 || currentMonth <= 2;
     if (summerFish.includes(fish.name) && isSummer) score += 20;
     else if (!summerFish.includes(fish.name) && !isSummer) score += 15;
     else score += 10;
+  }
+
+  // ——— Species-specific scoring boosts ———
+  if (options) {
+    const wc = options.weatherCode ?? 0;
+    const wt = options.waterTemp;
+    const pt = options.pressureTrend ?? 'stable';
+    const isNewMoon = options.moonPhaseName?.toLowerCase().includes('new') ?? false;
+    const isFullMoon = options.moonPhaseName?.toLowerCase().includes('full') ?? false;
+    const isOvercast = wc > 2;
+    const isSunny = wc < 2;
+
+    switch (fish.name) {
+      case 'Костур':
+        if (wt != null && wt < 12) score += 10; // boost +2 equivalent
+        if (isNewMoon) score += 5;
+        break;
+      case 'Платика':
+        if (isOvercast) score += 5;
+        if (pt === 'stable') score += 5;
+        break;
+      case 'Бабушка':
+        if (options.sunrise && options.sunrise !== '--:--') score += 5; // active near sunrise
+        if ((options.weatherCode ?? 0) >= 0 && windSpeed < 10) score += 5;
+        break;
+      case 'Червеноперка':
+        if (temperature > 18) score += 10;
+        if (isSunny) score += 5;
+        break;
+      case 'Мряна':
+        if (pt === 'rising') score += 5;
+        break;
+      case 'Дъгова пъстърва':
+        if (temperature < 14) score += 10;
+        break;
+      case 'Бибан':
+        if (isFullMoon) score += 5;
+        score += 3; // active year-round bonus
+        break;
+      case 'Сулка':
+        if (isNewMoon) score += 10;
+        if (isOvercast) score += 5;
+        break;
+      case 'Аспър':
+        if (temperature > 15) score += 10;
+        if (isSunny) score += 5;
+        break;
+    }
   }
 
   return Math.max(0, Math.min(100, score));
@@ -241,19 +441,20 @@ export function getScoredFish(
   moonScore: number,
   temperature: number,
   windSpeed: number,
-  terrain: 'river' | 'lake'
+  terrain: 'river' | 'lake',
+  options?: ScoringOptions
 ): ScoredFish[] {
   const currentMonth = new Date().getMonth() + 1;
-  const scored = FISH_DATABASE.map((fish) => {
-    const score = scoreFish(fish, moonScore, temperature, windSpeed, currentMonth, terrain);
-    return { ...fish, score, isRecommended: false };
-  }).sort((a, b) => b.score - a.score);
 
-  // Top 2-3 get recommended
-  const topCount = scored[0].score - scored[2].score < 10 ? 3 : 2;
-  for (let i = 0; i < topCount; i++) {
-    scored[i].isRecommended = true;
-  }
+  const scored = FISH_DATABASE
+    // Hide fish that shouldn't appear on current terrain
+    .filter((fish) => fish.hideOnTerrain !== terrain)
+    .map((fish) => {
+      const score = scoreFish(fish, moonScore, temperature, windSpeed, currentMonth, terrain, options);
+      const stars = Math.min(5, Math.max(1, Math.round(score / 20)));
+      return { ...fish, score, stars, isRecommended: stars >= 4 };
+    })
+    .sort((a, b) => b.score - a.score);
 
   return scored;
 }
@@ -318,9 +519,11 @@ export function getFishModalData(
   }
   const rigTip = fish.baseData.rigs;
 
-  // Eco warning
+  // Eco warning — use species-specific spawnWarning if available
   let ecoWarning: string;
-  if (currentMonth === 4 || currentMonth === 5) {
+  if (fish.spawnWarning && fish.spawnMonths.includes(currentMonth)) {
+    ecoWarning = fish.spawnWarning;
+  } else if (currentMonth === 4 || currentMonth === 5) {
     ecoWarning = '⚠️ Пролетна забрана! Ловете само на разрешени места.';
   } else if (fish.name === 'Щука' && currentMonth === 2) {
     ecoWarning = '⚠️ Щуката е в размножителен период!';

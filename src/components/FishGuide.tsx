@@ -27,8 +27,14 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
   const weatherCode = weather?.weatherCode ?? 0;
 
   const scoredFish = useMemo(
-    () => getScoredFish(moon.fishingScore, temp, wind, terrain),
-    [moon.fishingScore, temp, wind, terrain]
+    () => getScoredFish(moon.fishingScore, temp, wind, terrain, {
+      weatherCode,
+      waterTemp: weather?.waterTemp,
+      pressureTrend: weather?.pressureTrend,
+      moonPhaseName: moon.phaseName,
+      sunrise: weather?.sunrise,
+    }),
+    [moon.fishingScore, moon.phaseName, temp, wind, terrain, weatherCode, weather?.waterTemp, weather?.pressureTrend, weather?.sunrise]
   );
 
   const modalData = useMemo(() => {
@@ -52,7 +58,7 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
               : 'border-border bg-secondary/30 text-muted-foreground hover:bg-secondary/50'
           }`}
         >
-          🏞️ Езеро
+          🏞️ Водоем
         </button>
         <button
           onClick={() => setTerrain('river')}
@@ -68,35 +74,42 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
 
       {/* Fish grid */}
       <div className="grid grid-cols-3 gap-2">
-        {scoredFish.map((fish) => (
-          <button
-            key={fish.name}
-            onClick={() => setSelectedFish(fish)}
-            className={`relative flex flex-col items-center gap-1 rounded-lg border p-3 transition-all hover:scale-[1.03] active:scale-[0.98] ${
-              fish.isRecommended
-                ? 'border-primary bg-primary/10 shadow-[0_0_12px_hsl(var(--glow)/0.3)]'
-                : 'border-border bg-secondary/30 opacity-70 hover:opacity-100'
-            }`}
-          >
-            {fish.isRecommended && (
-              <Badge className="absolute -top-2 -right-1 text-[9px] px-1.5 py-0 bg-primary text-primary-foreground">
-                ⭐
-              </Badge>
-            )}
-            {FISH_ICON_MAP[fish.name]
-              ? FISH_ICON_MAP[fish.name]({ size: 40 })
-              : <span className="text-2xl">{fish.emoji}</span>
-            }
-            <span className="text-xs font-medium text-foreground text-center leading-tight">
-              {fish.name}
-            </span>
-            {fish.habitat !== 'both' && fish.habitat !== terrain && (
-              <span className="text-[9px] text-muted-foreground">
-                ({fish.habitat === 'river' ? 'река' : 'езеро'})
+        {scoredFish.map((fish) => {
+          const isGlow = fish.stars >= 4;
+          const isDimmed = fish.stars <= 2;
+
+          return (
+            <button
+              key={fish.name}
+              onClick={() => setSelectedFish(fish)}
+              className={`relative flex flex-col items-center gap-1 rounded-lg border p-3 transition-all hover:scale-[1.03] active:scale-[0.98] ${
+                isGlow
+                  ? 'border-primary bg-primary/10 shadow-[0_0_12px_hsl(var(--glow)/0.3)]'
+                  : isDimmed
+                  ? 'border-border bg-secondary/30 opacity-45'
+                  : 'border-border bg-secondary/30 hover:opacity-100'
+              }`}
+            >
+              {isGlow && (
+                <Badge className="absolute -top-2 -right-1 text-[9px] px-1.5 py-0 bg-primary text-primary-foreground">
+                  ⭐
+                </Badge>
+              )}
+              {FISH_ICON_MAP[fish.name]
+                ? FISH_ICON_MAP[fish.name]({ size: 40 })
+                : <span className="text-2xl">{fish.emoji}</span>
+              }
+              <span className="text-xs font-medium text-foreground text-center leading-tight">
+                {fish.name}
               </span>
-            )}
-          </button>
-        ))}
+              {fish.habitat !== 'both' && fish.habitat !== terrain && (
+                <span className="text-[9px] text-muted-foreground">
+                  ({fish.habitat === 'river' ? 'река' : 'водоем'})
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       <p className="text-[10px] text-muted-foreground/60 text-center mt-3">
@@ -122,7 +135,7 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
                   )}
                 </DialogTitle>
                 <DialogDescription className="text-muted-foreground text-xs">
-                  Резултат: {selectedFish.score}/100 • {selectedFish.habitat === 'river' ? 'Река' : selectedFish.habitat === 'lake' ? 'Езеро' : 'Река & Езеро'}
+                  Резултат: {selectedFish.score}/100 • {selectedFish.habitat === 'river' ? 'Река' : selectedFish.habitat === 'lake' ? 'Водоем' : 'Река & Водоем'}
                 </DialogDescription>
               </DialogHeader>
 
