@@ -63,6 +63,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐡',
     habitat: 'lake',
     isPredator: false,
+    hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Технопланктон, фитопланктон смес',
       bait: 'Технопланктон, тесто с планктон',
@@ -179,6 +180,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐠',
     habitat: 'lake',
     isPredator: false,
+    hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Сладка захранка с ванилия',
       bait: 'Червеи, царевица, хляб, ларви',
@@ -239,6 +241,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐟',
     habitat: 'lake',
     isPredator: false,
+    hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Ситна повърхностна захранка',
       bait: 'Опариш, малки мухи, хляб, тесто',
