@@ -241,6 +241,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐟',
     habitat: 'lake',
     isPredator: false,
+    hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Ситна повърхностна захранка',
       bait: 'Опариш, малки мухи, хляб, тесто',

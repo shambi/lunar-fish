@@ -102,11 +102,6 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
               <span className="text-xs font-medium text-foreground text-center leading-tight">
                 {fish.name}
               </span>
-              {fish.habitat !== 'both' && fish.habitat !== terrain && (
-                <span className="text-[9px] text-muted-foreground">
-                  ({fish.habitat === 'river' ? 'река' : 'водоем'})
-                </span>
-              )}
             </button>
           );
         })}
