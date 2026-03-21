@@ -63,6 +63,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐡',
     habitat: 'lake',
     isPredator: false,
+    hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Технопланктон, фитопланктон смес',
       bait: 'Технопланктон, тесто с планктон',
