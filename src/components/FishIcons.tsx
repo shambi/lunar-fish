@@ -410,5 +410,5 @@ export const FISH_ICON_MAP: Record<string, (props: FishIconProps) => JSX.Element
   'Дъгова пъстърва': RainbowTroutIcon,
   'Бибан': RuffIcon,
   'Сулка': ZanderIcon,
-  'Аспър': AspIcon,
+  'Распер': AspIcon,
 };
