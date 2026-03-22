@@ -129,6 +129,9 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
                     </Badge>
                   )}
                 </DialogTitle>
+                {selectedFish.subtitle && (
+                  <p className="text-muted-foreground text-xs italic">{selectedFish.subtitle}</p>
+                )}
                 <DialogDescription className="text-muted-foreground text-xs">
                   Резултат: {selectedFish.score}/100 • {selectedFish.habitat === 'river' ? 'Река' : selectedFish.habitat === 'lake' ? 'Водоем' : 'Река & Водоем'}
                 </DialogDescription>
