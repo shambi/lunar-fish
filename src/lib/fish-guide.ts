@@ -19,6 +19,11 @@ export interface FishSpecies {
   spawnWarning?: string;
   /** Terrain where the fish should be hidden (not shown) */
   hideOnTerrain?: 'river' | 'lake';
+  /** Eco-warning texts for modal */
+  ecoRed?: string;
+  ecoGreen?: string;
+  /** Subtitle shown in modal */
+  subtitle?: string;
 }
 
 export interface ScoringOptions {
@@ -42,13 +47,16 @@ export const FISH_DATABASE: FishSpecies[] = [
       hook_size: '4-8',
       rigs: 'Косъм монтаж (Hair rig), фидер',
     },
-    spawnMonths: [4, 5, 6],
+    spawnMonths: [4, 5],
+    ecoRed: '⛔ Забранен период: 15 април — 31 май.\nРиболовът е забранен!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер за задържане: 30 см.\nПо-малките — пусни обратно!',
   },
   {
     name: 'Амур',
     emoji: '🐠',
     habitat: 'both',
     isPredator: false,
+    hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Растителна захранка с трева',
       bait: 'Тръстика, царевица, краставица, хляб',
@@ -56,7 +64,9 @@ export const FISH_DATABASE: FishSpecies[] = [
       hook_size: '2-6',
       rigs: 'Поплавъчен монтаж, свободна линия',
     },
-    spawnMonths: [5, 6, 7],
+    spawnMonths: [4, 5],
+    ecoRed: '⛔ Забранен период: 15 април — 31 май.\nРиболовът е забранен!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 40 см.',
   },
   {
     name: 'Толстолоб',
@@ -71,7 +81,9 @@ export const FISH_DATABASE: FishSpecies[] = [
       hook_size: '2-6',
       rigs: 'Тремпел монтаж, плаващ монтаж',
     },
-    spawnMonths: [5, 6, 7],
+    spawnMonths: [4, 5],
+    ecoRed: '⛔ Забранен период: 15 април — 31 май.\nРиболовът е забранен!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 40 см.',
   },
   {
     name: 'Сом',
@@ -86,7 +98,9 @@ export const FISH_DATABASE: FishSpecies[] = [
       lures: 'Големи силиконови примамки, воблери 12-20см',
       rigs: 'Дънен монтаж с тежка тежест, буй монтаж',
     },
-    spawnMonths: [5, 6],
+    spawnMonths: [4, 5],
+    ecoRed: '⛔ Забранен период: 15 април — 31 май.\nРиболовът е забранен!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 65 см —\nпо-малките задължително се пускат!',
   },
   {
     name: 'Щука',
@@ -102,12 +116,15 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Стоманен повод, спининг монтаж',
     },
     spawnMonths: [2, 3, 4],
+    ecoRed: '⛔ Забранен период: 15 февруари — 30 април.\nВнимание — забраната започва по-рано\nот повечето видове!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 35 см.',
   },
   {
     name: 'Каракуда',
     emoji: '🐠',
     habitat: 'both',
     isPredator: false,
+    hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Лека сладка захранка, трохи',
       bait: 'Червеи, ларви, хляб, тесто',
@@ -115,7 +132,9 @@ export const FISH_DATABASE: FishSpecies[] = [
       hook_size: '14-18',
       rigs: 'Лек поплавъчен монтаж',
     },
-    spawnMonths: [4, 5, 6],
+    spawnMonths: [4, 5],
+    ecoRed: '⛔ Забранен период: 15 април — 31 май.\nРиболовът е забранен!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 15 см.',
   },
   {
     name: 'Бяла риба (Уклей)',
@@ -129,7 +148,8 @@ export const FISH_DATABASE: FishSpecies[] = [
       hook_size: '18-22',
       rigs: 'Ултралек поплавъчен монтаж',
     },
-    spawnMonths: [4, 5, 6],
+    spawnMonths: [],
+    ecoGreen: '✅ Няма сезонна забрана.\nМинимален размер: 15 см.',
   },
   {
     name: 'Пъстърва',
@@ -145,6 +165,8 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Спининг, муха, бомбарда монтаж',
     },
     spawnMonths: [10, 11, 12, 1],
+    ecoRed: '⛔ Забранен период: 1 октомври — 31 януари.\nВнимание — забраната е есенно-зимна,\nразлична от другите видове!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 23 см.',
   },
   {
     name: 'Кефал',
@@ -158,7 +180,9 @@ export const FISH_DATABASE: FishSpecies[] = [
       hook_size: '10-16',
       rigs: 'Поплавъчен монтаж, леко дъно',
     },
-    spawnMonths: [4, 5, 6],
+    spawnMonths: [4, 5],
+    ecoRed: '⛔ Забранен период: 15 април — 31 май.\nРиболовът е забранен!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 22 см.',
   },
   {
     name: 'Скобар',
@@ -173,7 +197,9 @@ export const FISH_DATABASE: FishSpecies[] = [
       lures: 'Микро спинери, малки силиконови',
       rigs: 'Болонезе, проводка, лек фидер',
     },
-    spawnMonths: [3, 4, 5],
+    spawnMonths: [4, 5],
+    ecoRed: '⛔ Забранен период: 15 април — 31 май.\nРиболовът е забранен!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 20 см.',
   },
   {
     name: 'Лин',
@@ -188,7 +214,9 @@ export const FISH_DATABASE: FishSpecies[] = [
       hook_size: '8-14',
       rigs: 'Поплавъчен монтаж, лек фидер',
     },
-    spawnMonths: [5, 6, 7],
+    spawnMonths: [4, 5],
+    ecoRed: '⛔ Забранен период: 15 април — 31 май.\nРиболовът е забранен!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 20 см.',
   },
   // ——— 9 NEW SPECIES ———
   {
@@ -205,7 +233,8 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Лек джиг монтаж, каролина монтаж',
     },
     spawnMonths: [4, 5],
-    spawnWarning: '⚠️ Костурът се размножава. Хвани и пусни!',
+    ecoRed: '⛔ Забранен период: 15 април — 31 май.\nРиболовът е забранен!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 12 см.',
   },
   {
     name: 'Платика',
@@ -220,7 +249,8 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Фидер монтаж, легер с повод 40-60см',
     },
     spawnMonths: [4, 5],
-    spawnWarning: '⚠️ Платиката се размножава. Ловете само на разрешени места.',
+    ecoRed: '⛔ Забранен период: 15 април — 31 май.\nРиболовът е забранен!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 20 см.',
   },
   {
     name: 'Бабушка',
@@ -235,6 +265,8 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Ваглер, фидер с тънък повод 0.08мм',
     },
     spawnMonths: [4, 5],
+    ecoRed: '⛔ Забранен период: 15 април — 31 май.\nРиболовът е забранен!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 15 см.',
   },
   {
     name: 'Червеноперка',
@@ -250,13 +282,16 @@ export const FISH_DATABASE: FishSpecies[] = [
       lures: 'Малки повърхностни примамки',
       rigs: 'Ваглер, повърхностен монтаж',
     },
-    spawnMonths: [5, 6],
+    spawnMonths: [4, 5],
+    ecoRed: '⛔ Забранен период: 15 април — 31 май.\nРиболовът е забранен!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 15 см.',
   },
   {
     name: 'Мряна',
     emoji: '🐟',
     habitat: 'river',
     isPredator: false,
+    hideOnTerrain: 'lake',
     baseData: {
       groundbait: 'Тежка дънна захранка, пелети',
       bait: 'Бойли, пелети, червеи, скариди',
@@ -264,15 +299,16 @@ export const FISH_DATABASE: FishSpecies[] = [
       hook_size: '6',
       rigs: 'Тежък фидер 60-100г, кратък повод 10-15см',
     },
-    spawnMonths: [5, 6],
-    spawnWarning: '⚠️ Мряната се размножава. Задължително пускане!',
-    hideOnTerrain: 'lake',
+    spawnMonths: [4, 5],
+    ecoRed: '⛔ Забранен период: 15 април — 31 май.\nРиболовът е забранен!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 25 см.',
   },
   {
     name: 'Дъгова пъстърва',
     emoji: '🐟',
     habitat: 'river',
     isPredator: true,
+    hideOnTerrain: 'lake',
     baseData: {
       groundbait: '',
       bait: 'Червеи, скариди, хайвер имитации',
@@ -281,9 +317,9 @@ export const FISH_DATABASE: FishSpecies[] = [
       lures: 'Малки блесни 5-10г, воблери 4-7см, мухи — нимфи и мокри мухи',
       rigs: 'Нахлист, спининг с тънко влакно',
     },
-    spawnMonths: [11, 12, 1, 2],
-    spawnWarning: '⚠️ Пъстървата се размножава. Бъдете етични!',
-    hideOnTerrain: 'lake',
+    spawnMonths: [10, 11, 12, 1],
+    ecoRed: '⛔ Забранен период: 1 октомври — 31 януари.\nВнимание — забраната е есенно-зимна!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 22 см.',
   },
   {
     name: 'Бибан',
@@ -298,7 +334,9 @@ export const FISH_DATABASE: FishSpecies[] = [
       lures: 'Микро джигове 1-3г, малки туистери',
       rigs: 'Ултралайт спининг, дроп-шот монтаж',
     },
-    spawnMonths: [4],
+    spawnMonths: [4, 5],
+    ecoRed: '⛔ Забранен период: 15 април — 31 май.\nРиболовът е забранен!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 12 см.',
   },
   {
     name: 'Сулка',
@@ -313,14 +351,17 @@ export const FISH_DATABASE: FishSpecies[] = [
       lures: 'Воблери 7-12см, туистери, джигове 10-20г, цветове: бяло/сребристо нощем, натурални през деня',
       rigs: 'Джиг монтаж, живца монтаж',
     },
-    spawnMonths: [3, 4],
-    spawnWarning: '⚠️ Сулката се размножава. Хвани и пусни!',
+    spawnMonths: [3, 4, 5],
+    ecoRed: '⛔ Забранен период: 15 март — 15 май.\nВнимание — забраната започва\nпо-рано от повечето видове!\nМинимален размер: 45 см.',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 45 см —\nпо-малките задължително се пускат!',
   },
   {
-    name: 'Аспър',
+    name: 'Распер',
     emoji: '🐟',
     habitat: 'river',
     isPredator: true,
+    hideOnTerrain: 'lake',
+    subtitle: 'Среща се в р. Дунав и долните течения на Марица, Тунджа и Арда.',
     baseData: {
       groundbait: '',
       bait: 'Малки рибки, живец',
@@ -329,9 +370,9 @@ export const FISH_DATABASE: FishSpecies[] = [
       lures: 'Блесни 10-20г, повърхностни воблери, цветове: сребристо/бяло',
       rigs: 'Спининг, повърхностно водене',
     },
-    spawnMonths: [4, 5],
-    spawnWarning: '⚠️ Аспърът се размножава. Задължително пускане!',
-    hideOnTerrain: 'lake',
+    spawnMonths: [3, 4],
+    ecoRed: '⛔ Забранен период: 1 март — 30 април.\nВнимание — най-ранната забрана\nсред всички видове!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 25 см.\nСреща се в р. Дунав и долните\nтечения на Марица, Тунджа и Арда.',
   },
 ];
 
@@ -430,7 +471,7 @@ export function scoreFish(
         if (isNewMoon) score += 10;
         if (isOvercast) score += 5;
         break;
-      case 'Аспър':
+      case 'Распер':
         if (temperature > 15) score += 10;
         if (isSunny) score += 5;
         break;
@@ -522,21 +563,18 @@ export function getFishModalData(
   }
   const rigTip = fish.baseData.rigs;
 
-  // Eco warning — use species-specific spawnWarning if available
+  // Eco warning — use per-fish ecoRed/ecoGreen data
+  const IARA_FOOTER = '\n\n📋 Проверете списъка на ИАРА за\nразрешени водоеми във вашия район.\niara.government.bg';
   let ecoWarning: string;
-  if (fish.spawnWarning && fish.spawnMonths.includes(currentMonth)) {
-    ecoWarning = fish.spawnWarning;
-  } else if (currentMonth === 4 || currentMonth === 5) {
-    ecoWarning = '⚠️ Пролетна забрана! Ловете само на разрешени места.';
-  } else if (fish.name === 'Щука' && currentMonth === 2) {
-    ecoWarning = '⚠️ Щуката е в размножителен период!';
-  } else if (fish.name === 'Пъстърва' && [10, 11, 12, 1].includes(currentMonth)) {
-    ecoWarning = '⚠️ Пъстървата се размножава. Бъдете етични!';
-  } else if (fish.spawnMonths.includes(currentMonth)) {
-    ecoWarning = `⚠️ ${fish.name} е в размножителен период. Практикувайте "хвани и пусни"!`;
+  const isBanned = fish.spawnMonths.includes(currentMonth);
+  if (isBanned && fish.ecoRed) {
+    ecoWarning = fish.ecoRed;
+  } else if (fish.ecoGreen) {
+    ecoWarning = fish.ecoGreen;
   } else {
-    ecoWarning = '✅ Разрешен период. Хвани и пусни!';
+    ecoWarning = '✅ Разрешен период.';
   }
+  ecoWarning += IARA_FOOTER;
 
   return { groundbaitTip, baitTip, lineDiameter, lureTip, hookTip, rigTip, ecoWarning };
 }

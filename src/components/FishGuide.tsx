@@ -129,6 +129,9 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
                     </Badge>
                   )}
                 </DialogTitle>
+                {selectedFish.subtitle && (
+                  <p className="text-muted-foreground text-xs italic">{selectedFish.subtitle}</p>
+                )}
                 <DialogDescription className="text-muted-foreground text-xs">
                   Резултат: {selectedFish.score}/100 • {selectedFish.habitat === 'river' ? 'Река' : selectedFish.habitat === 'lake' ? 'Водоем' : 'Река & Водоем'}
                 </DialogDescription>
@@ -177,7 +180,7 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
                     <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
                       🌿 Еко-съвет
                     </h4>
-                    <p className="text-foreground">{modalData.ecoWarning}</p>
+                    <p className="text-foreground whitespace-pre-line">{modalData.ecoWarning}</p>
                   </div>
 
                   <p className="text-[10px] text-muted-foreground/60 text-center pt-2">
