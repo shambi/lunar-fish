@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { getScoredFish, getFishModalData, type ScoredFish } from '@/lib/fish-guide';
+import { getDailyAdvice } from '@/lib/fish-advice';
 import type { MoonData } from '@/lib/moon';
 import type { WeatherData } from '@/hooks/use-weather';
 import {
@@ -41,6 +42,11 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
     if (!selectedFish) return null;
     return getFishModalData(selectedFish, temp, weatherCode, terrain);
   }, [selectedFish, temp, weatherCode, terrain]);
+
+  const advice = useMemo(() => {
+    if (!selectedFish) return null;
+    return getDailyAdvice(selectedFish, moon, weather, terrain);
+  }, [selectedFish, moon, weather, terrain]);
 
   return (
     <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
@@ -139,6 +145,31 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
 
               <ScrollArea className="max-h-[55vh] pr-2">
                 <div className="space-y-4 text-sm">
+                  {/* Daily Advice */}
+                  {advice && (
+                    <>
+                      <div>
+                        <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
+                          🎯 Съвет за днес
+                        </h4>
+                        <p className="text-foreground leading-relaxed whitespace-pre-line">{advice.tip}</p>
+                      </div>
+                      <div className="border-t border-border" />
+
+                      {advice.mistake && (
+                        <>
+                          <div>
+                            <h4 className="text-xs font-semibold uppercase tracking-wider mb-1 flex items-center gap-1" style={{ color: '#FFA726' }}>
+                              ⚠️ Честа грешка днес
+                            </h4>
+                            <p className="text-foreground leading-relaxed">{advice.mistake}</p>
+                          </div>
+                          <div className="border-t border-border" />
+                        </>
+                      )}
+                    </>
+                  )}
+
                   {/* Groundbait & Bait */}
                   <div>
                     <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">

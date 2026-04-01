@@ -3,15 +3,18 @@ import { useState, useEffect } from 'react';
 export interface WeatherData {
   temperature: number;
   windSpeed: number;
+  windDirection: number;
   humidity: number;
   weatherCode: number;
   weatherLabel: string;
   weatherIcon: string;
   latitude: number;
   longitude: number;
+  altitude: number;
   locationName: string;
   pressure: number;
   pressureTrend: 'rising' | 'stable' | 'falling';
+  pressureChangeRate: number;
   sunrise: string;
   sunset: string;
   waterTemp: number;
@@ -60,10 +63,11 @@ export function useWeather() {
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
-        const { latitude, longitude } = position.coords;
+        const { latitude, longitude, altitude: gpsAltitude } = position.coords;
+        const altitude = gpsAltitude ?? 0;
         try {
           const res = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset&forecast_days=1&timezone=auto`
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset&forecast_days=1&timezone=auto`
           );
           if (!res.ok) throw new Error('API грешка');
           const data = await res.json();
@@ -102,15 +106,18 @@ export function useWeather() {
           setWeather({
             temperature: Math.round(current.temperature_2m),
             windSpeed: Math.round(current.wind_speed_10m),
+            windDirection: Math.round(current.wind_direction_10m ?? 0),
             humidity: current.relative_humidity_2m,
             weatherCode: current.weather_code,
             weatherLabel: info.label,
             weatherIcon: info.icon,
             latitude,
             longitude,
+            altitude: Math.round(altitude),
             locationName,
             pressure: Math.round(current.surface_pressure),
             pressureTrend,
+            pressureChangeRate: pDiff,
             sunrise: fmtTime(sunrise),
             sunset: fmtTime(sunset),
             waterTemp,
