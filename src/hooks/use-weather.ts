@@ -63,10 +63,11 @@ export function useWeather() {
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
-        const { latitude, longitude } = position.coords;
+        const { latitude, longitude, altitude: gpsAltitude } = position.coords;
+        const altitude = gpsAltitude ?? 0;
         try {
           const res = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset&forecast_days=1&timezone=auto`
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset&forecast_days=1&timezone=auto`
           );
           if (!res.ok) throw new Error('API грешка');
           const data = await res.json();
