@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { getScoredFish, getFishModalData, type ScoredFish } from '@/lib/fish-guide';
+import { getDailyAdvice } from '@/lib/fish-advice';
 import type { MoonData } from '@/lib/moon';
 import type { WeatherData } from '@/hooks/use-weather';
 import {
