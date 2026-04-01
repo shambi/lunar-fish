@@ -43,6 +43,11 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
     return getFishModalData(selectedFish, temp, weatherCode, terrain);
   }, [selectedFish, temp, weatherCode, terrain]);
 
+  const advice = useMemo(() => {
+    if (!selectedFish) return null;
+    return getDailyAdvice(selectedFish, moon, weather, terrain);
+  }, [selectedFish, moon, weather, terrain]);
+
   return (
     <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
       <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
