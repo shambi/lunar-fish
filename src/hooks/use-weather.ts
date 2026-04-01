@@ -3,15 +3,18 @@ import { useState, useEffect } from 'react';
 export interface WeatherData {
   temperature: number;
   windSpeed: number;
+  windDirection: number;
   humidity: number;
   weatherCode: number;
   weatherLabel: string;
   weatherIcon: string;
   latitude: number;
   longitude: number;
+  altitude: number;
   locationName: string;
   pressure: number;
   pressureTrend: 'rising' | 'stable' | 'falling';
+  pressureChangeRate: number;
   sunrise: string;
   sunset: string;
   waterTemp: number;
