@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+import { getMoonTimes, getSolunarPeaks, type MoonTimes, type SolunarPeak } from '@/lib/moon-times';
+
 export interface WeatherData {
   temperature: number;
   windSpeed: number;
@@ -20,6 +22,9 @@ export interface WeatherData {
   sunset: string;
   moonrise: string;
   moonset: string;
+  moonTransit: string;
+  moonAntitransit: string;
+  solunarPeaks: SolunarPeak[];
   waterTemp: number;
 }
 
@@ -108,8 +113,11 @@ export function useWeather() {
           const todayIdx = (data.daily?.sunrise?.length ?? 1) - 1;
           const sunrise = data.daily?.sunrise?.[todayIdx] ?? '';
           const sunset = data.daily?.sunset?.[todayIdx] ?? '';
-          const moonriseRaw = '';
-          const moonsetRaw = '';
+
+          // Moon times from astronomical calculations
+          const moonTimesData = getMoonTimes(new Date(), latitude, longitude);
+          const solunarPeaks = getSolunarPeaks(moonTimesData);
+
           const fmtTime = (iso: string) => {
             if (!iso) return '--:--';
             const d = new Date(iso);
@@ -147,8 +155,11 @@ export function useWeather() {
             pressureHistory,
             sunrise: fmtTime(sunrise),
             sunset: fmtTime(sunset),
-            moonrise: fmtTime(moonriseRaw),
-            moonset: fmtTime(moonsetRaw),
+            moonrise: moonTimesData.moonrise ?? '--:--',
+            moonset: moonTimesData.moonset ?? '--:--',
+            moonTransit: moonTimesData.transit ?? '--:--',
+            moonAntitransit: moonTimesData.antitransit ?? '--:--',
+            solunarPeaks,
             waterTemp,
           });
         } catch (err) {
