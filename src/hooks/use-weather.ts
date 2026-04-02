@@ -104,16 +104,20 @@ export function useWeather() {
           const pressureChangeRate = pDiff6h / Math.max(pressureHistory.length - 1, 1);
           const pressureTrend: 'rising' | 'stable' | 'falling' = pDiff6h > 1.5 ? 'rising' : pDiff6h < -1.5 ? 'falling' : 'stable';
 
-          // Sunrise/sunset
-          const sunrise = data.daily?.sunrise?.[0] ?? '';
-          const sunset = data.daily?.sunset?.[0] ?? '';
+          // Sunrise/sunset/moonrise/moonset
+          // daily arrays have index 0 = past day, index 1 = today (because past_days=1)
+          const todayIdx = (data.daily?.sunrise?.length ?? 1) - 1;
+          const sunrise = data.daily?.sunrise?.[todayIdx] ?? '';
+          const sunset = data.daily?.sunset?.[todayIdx] ?? '';
+          const moonriseRaw = data.daily?.moonrise?.[todayIdx] ?? '';
+          const moonsetRaw = data.daily?.moonset?.[todayIdx] ?? '';
           const fmtTime = (iso: string) => {
             if (!iso) return '--:--';
             const d = new Date(iso);
             return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
           };
 
-          // Water temp approximation: soil_temperature_0cm not in current; approximate from air temp
+          // Water temp approximation
           const waterTemp = Math.round(current.temperature_2m * 0.85);
 
           // Reverse geocode for location name
@@ -140,9 +144,12 @@ export function useWeather() {
             locationName,
             pressure: Math.round(current.surface_pressure),
             pressureTrend,
-            pressureChangeRate: pDiff,
+            pressureChangeRate,
+            pressureHistory,
             sunrise: fmtTime(sunrise),
             sunset: fmtTime(sunset),
+            moonrise: fmtTime(moonriseRaw),
+            moonset: fmtTime(moonsetRaw),
             waterTemp,
           });
         } catch (err) {
