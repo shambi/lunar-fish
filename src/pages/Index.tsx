@@ -174,19 +174,85 @@ const Index = () => {
           {/* Divider + Second Row */}
           <div className="border-t border-border my-4" />
           <div className="grid grid-cols-3 gap-4 text-center">
-            <div className="flex flex-col items-center gap-1">
-              <Gauge className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display text-foreground">
-                {weather ? `${weather.pressure} хПа` : '—'}
-              </span>
-              {weather ? (
-                <span className={`text-xs font-medium ${weather.pressureTrend === 'rising' ? 'text-green-400' : weather.pressureTrend === 'falling' ? 'text-amber-400' : 'text-muted-foreground'}`}>
-                  {weather.pressureTrend === 'rising' ? '📈 Нарастващо' : weather.pressureTrend === 'falling' ? '📉 Падащо' : '➡️ Стабилно'}
-                </span>
-              ) : (
-                <span className="text-xs text-muted-foreground">Барометър</span>
-              )}
+            {/* Enhanced Barometer */}
+            <div className="col-span-3">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Gauge className="w-5 h-5 text-primary" />
+                  <span className="text-lg font-bold font-display text-foreground">
+                    {weather ? `${weather.pressure} хПа` : '—'}
+                  </span>
+                </div>
+                {weather && (
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                    weather.pressureTrend === 'rising' ? 'bg-green-500/20 text-green-400' :
+                    weather.pressureTrend === 'falling' ? 'bg-amber-500/20 text-amber-400' :
+                    'bg-muted text-muted-foreground'
+                  }`}>
+                    {weather.pressureTrend === 'rising' ? '📈 Нарастващо' : weather.pressureTrend === 'falling' ? '📉 Падащо' : '➡️ Стабилно'}
+                  </span>
+                )}
+              </div>
+              {/* Mini pressure graph */}
+              {weather && weather.pressureHistory.length > 1 && (() => {
+                const hist = weather.pressureHistory;
+                const values = hist.map(h => h.value);
+                const minV = Math.min(...values) - 0.5;
+                const maxV = Math.max(...values) + 0.5;
+                const range = maxV - minV || 1;
+                const w = 280;
+                const h = 48;
+                const padding = 4;
+                const points = values.map((v, i) => ({
+                  x: padding + (i / (values.length - 1)) * (w - padding * 2),
+                  y: padding + (1 - (v - minV) / range) * (h - padding * 2),
+                }));
+                const pathD = points.map((p, i) => {
+                  if (i === 0) return `M ${p.x} ${p.y}`;
+                  const prev = points[i - 1];
+                  const cx = (prev.x + p.x) / 2;
+                  return `C ${cx} ${prev.y}, ${cx} ${p.y}, ${p.x} ${p.y}`;
+                }).join(' ');
+                const areaD = `${pathD} L ${points[points.length-1].x} ${h} L ${points[0].x} ${h} Z`;
+                const lastP = points[points.length - 1];
+
+                // Fishing context line
+                const pDiff6h = values[values.length - 1] - values[0];
+                let contextText = '';
+                let contextColor = '';
+                if (pDiff6h > 3) { contextText = '🎣 Налягането скача — рибата се активира'; contextColor = '#4CAF50'; }
+                else if (pDiff6h > 1.5) { contextText = '🎣 Бавно нарастване — добри условия'; contextColor = '#4CAF50'; }
+                else if (pDiff6h < -3) { contextText = '🎣 Рязко падане — трудна хапка или сомът излиза от дупките'; contextColor = '#FF7043'; }
+                else if (pDiff6h < -1.5) { contextText = '🎣 Леко падане — очаквай деликатна хапка'; contextColor = '#FFA726'; }
+                else { contextText = '🎣 Стабилно налягане — рибата е комфортна'; contextColor = '#9CA3AF'; }
+
+                return (
+                  <div>
+                    <svg viewBox={`0 0 ${w} ${h}`} className="w-full" style={{ height: 48 }}>
+                      <defs>
+                        <linearGradient id="pressureGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.3" />
+                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+                        </linearGradient>
+                      </defs>
+                      <path d={areaD} fill="url(#pressureGradient)" />
+                      <path d={pathD} fill="none" stroke="hsl(var(--primary))" strokeWidth="1.5" />
+                      <circle cx={lastP.x} cy={lastP.y} r={3} fill="hsl(var(--primary))" style={{ filter: 'drop-shadow(0 0 4px hsl(var(--primary)))' }} />
+                    </svg>
+                    <div className="flex justify-between mt-1">
+                      {hist.map((h, i) => (
+                        <span key={i} className="text-[9px] text-muted-foreground">{h.time}</span>
+                      ))}
+                    </div>
+                    <p className="text-xs mt-2 font-medium" style={{ color: contextColor }}>{contextText}</p>
+                  </div>
+                );
+              })()}
             </div>
+          </div>
+          {/* Divider + Sun/Moon Row */}
+          <div className="border-t border-border my-4" />
+          <div className="grid grid-cols-2 gap-4 text-center">
             <div className="flex flex-col items-center gap-1">
               <div className="flex items-center gap-1">
                 <Sunrise className="w-5 h-5 text-primary" />
@@ -199,6 +265,22 @@ const Index = () => {
                 {weather ? `Залез ${weather.sunset}` : 'Изгрев / Залез'}
               </span>
             </div>
+            <div className="flex flex-col items-center gap-1">
+              <div className="flex items-center gap-1">
+                <Moon className="w-5 h-5 text-primary" />
+                <MoonStar className="w-5 h-5 text-primary" />
+              </div>
+              <span className="text-lg font-bold font-display text-foreground">
+                {weather ? weather.moonrise : '—'}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {weather ? `Залез 🌑 ${weather.moonset}` : 'Луна изгрев / залез'}
+              </span>
+            </div>
+          </div>
+          {/* Divider + Water Temp */}
+          <div className="border-t border-border my-4" />
+          <div className="flex justify-center">
             <div className="flex flex-col items-center gap-1">
               <Thermometer className="w-6 h-6 text-primary" />
               <span className="text-lg font-bold font-display text-foreground">
