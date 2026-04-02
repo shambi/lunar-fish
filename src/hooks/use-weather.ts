@@ -70,19 +70,39 @@ export function useWeather() {
         const altitude = gpsAltitude ?? 0;
         try {
           const res = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset&forecast_days=1&timezone=auto`
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset,moonrise,moonset&past_days=1&forecast_days=1&timezone=auto`
           );
           if (!res.ok) throw new Error('API грешка');
           const data = await res.json();
           const current = data.current;
           const info = getWeatherInfo(current.weather_code);
 
-          // Pressure trend from hourly data
+          // Pressure history — last 6 hours from hourly data (includes past_days=1)
           const hourlyPressure: number[] = data.hourly?.surface_pressure ?? [];
-          const currentHourIndex = new Date().getHours();
-          const prevHour = currentHourIndex > 0 ? currentHourIndex - 1 : 0;
-          const pDiff = (hourlyPressure[currentHourIndex] ?? 0) - (hourlyPressure[prevHour] ?? 0);
-          const pressureTrend: 'rising' | 'stable' | 'falling' = pDiff > 1 ? 'rising' : pDiff < -1 ? 'falling' : 'stable';
+          const hourlyTimes: string[] = data.hourly?.time ?? [];
+          const now = new Date();
+          // Find current hour index in the combined array
+          const currentHourStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}T${String(now.getHours()).padStart(2,'0')}:00`;
+          let curIdx = hourlyTimes.findIndex(t => t >= currentHourStr);
+          if (curIdx === -1) curIdx = hourlyTimes.length - 1;
+          const startIdx = Math.max(0, curIdx - 5);
+          const pressureHistory: { time: string; value: number }[] = [];
+          for (let i = startIdx; i <= curIdx; i++) {
+            const t = hourlyTimes[i];
+            if (t && hourlyPressure[i] != null) {
+              const d = new Date(t);
+              pressureHistory.push({
+                time: `${String(d.getHours()).padStart(2,'0')}:00`,
+                value: hourlyPressure[i],
+              });
+            }
+          }
+          // 6-hour trend
+          const firstP = pressureHistory[0]?.value ?? 0;
+          const lastP = pressureHistory[pressureHistory.length - 1]?.value ?? 0;
+          const pDiff6h = lastP - firstP;
+          const pressureChangeRate = pDiff6h / Math.max(pressureHistory.length - 1, 1);
+          const pressureTrend: 'rising' | 'stable' | 'falling' = pDiff6h > 1.5 ? 'rising' : pDiff6h < -1.5 ? 'falling' : 'stable';
 
           // Sunrise/sunset
           const sunrise = data.daily?.sunrise?.[0] ?? '';
