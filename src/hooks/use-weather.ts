@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+import { getMoonTimes, getSolunarPeaks, type MoonTimes, type SolunarPeak } from '@/lib/moon-times';
+
 export interface WeatherData {
   temperature: number;
   windSpeed: number;
@@ -20,6 +22,9 @@ export interface WeatherData {
   sunset: string;
   moonrise: string;
   moonset: string;
+  moonTransit: string;
+  moonAntitransit: string;
+  solunarPeaks: SolunarPeak[];
   waterTemp: number;
 }
 
