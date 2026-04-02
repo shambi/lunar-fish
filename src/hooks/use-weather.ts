@@ -70,7 +70,7 @@ export function useWeather() {
         const altitude = gpsAltitude ?? 0;
         try {
           const res = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset,moonrise,moonset&past_days=1&forecast_days=1&timezone=auto`
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset&past_days=1&forecast_days=1&timezone=auto`
           );
           if (!res.ok) throw new Error('API грешка');
           const data = await res.json();
@@ -104,13 +104,12 @@ export function useWeather() {
           const pressureChangeRate = pDiff6h / Math.max(pressureHistory.length - 1, 1);
           const pressureTrend: 'rising' | 'stable' | 'falling' = pDiff6h > 1.5 ? 'rising' : pDiff6h < -1.5 ? 'falling' : 'stable';
 
-          // Sunrise/sunset/moonrise/moonset
-          // daily arrays have index 0 = past day, index 1 = today (because past_days=1)
+          // Sunrise/sunset
           const todayIdx = (data.daily?.sunrise?.length ?? 1) - 1;
           const sunrise = data.daily?.sunrise?.[todayIdx] ?? '';
           const sunset = data.daily?.sunset?.[todayIdx] ?? '';
-          const moonriseRaw = data.daily?.moonrise?.[todayIdx] ?? '';
-          const moonsetRaw = data.daily?.moonset?.[todayIdx] ?? '';
+          const moonriseRaw = '';
+          const moonsetRaw = '';
           const fmtTime = (iso: string) => {
             if (!iso) return '--:--';
             const d = new Date(iso);
