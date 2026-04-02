@@ -15,8 +15,11 @@ export interface WeatherData {
   pressure: number;
   pressureTrend: 'rising' | 'stable' | 'falling';
   pressureChangeRate: number;
+  pressureHistory: { time: string; value: number }[];
   sunrise: string;
   sunset: string;
+  moonrise: string;
+  moonset: string;
   waterTemp: number;
 }
 
