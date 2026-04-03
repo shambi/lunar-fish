@@ -466,61 +466,14 @@ const Index = () => {
         </section>
 
         {/* Solunar Activity Section — SVG Timeline */}
-        {weather && weather.solunarPeaks && (() => {
-          const parseTime = (t: string): number => {
-            const [h, m] = t.split(':').map(Number);
-            return h + m / 60;
-          };
-          const pct = (t: string) => (parseTime(t) / 24) * 100;
-          const pctH = (h: number) => (h / 24) * 100;
-
-          const sunriseH = weather.sunrise ? parseTime(weather.sunrise) : 7;
-          const sunsetH = weather.sunset ? parseTime(weather.sunset) : 20;
-          const moonriseH = weather.moonrise && weather.moonrise !== '--:--' ? parseTime(weather.moonrise) : null;
-          const moonsetH = weather.moonset && weather.moonset !== '--:--' ? parseTime(weather.moonset) : null;
-
-          const transitionMin = 20 / 60; // 20 minutes in hours
-
-          // Fish silhouette path (small, ~12x6 viewbox scaled)
-          const fishPath = "M0 3 Q2 0 5 1 L9 0 L8 1.5 L9 3 L5 2 Q2 5 0 3Z";
-
-          return (
-            <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-              <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-                🌙 Солунарна активност
-              </h3>
-
-              <SolunarTimeline
-                weather={weather}
-                parseTime={parseTime}
-                pct={pct}
-                pctH={pctH}
-                sunriseH={sunriseH}
-                sunsetH={sunsetH}
-                moonriseH={moonriseH}
-                moonsetH={moonsetH}
-                transitionMin={transitionMin}
-                fishPath={fishPath}
-              />
-
-              {/* Legend */}
-              <div className="flex items-center justify-center gap-4 mt-3 text-[10px] text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'hsl(var(--primary))' }} />
-                  Главен пик
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'hsl(var(--primary) / 0.4)' }} />
-                  Малък пик
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="w-0.5 h-3 rounded-full" style={{ backgroundColor: 'hsl(var(--primary))', boxShadow: '0 0 4px hsl(var(--primary))' }} />
-                  Сега
-                </span>
-              </div>
-            </section>
-          );
-        })()}
+        {weather && weather.solunarPeaks && (
+          <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
+            <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+              🌙 Солунарна активност
+            </h3>
+            <SolunarTimeline weather={weather} />
+          </section>
+        )}
         <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
           <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
             🎣 Дневни професионални съвети
