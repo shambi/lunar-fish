@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { getMoonData } from '@/lib/moon';
 import { getSmartFishingTips } from '@/lib/fishing-expert';
 import { useWeather } from '@/hooks/use-weather';
