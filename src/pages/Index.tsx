@@ -6,7 +6,198 @@ import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader2, M
 import { FishGuide } from '@/components/FishGuide';
 import { ForecastCards } from '@/components/ForecastCards';
 
-const Index = () => {
+interface SolunarTimelineProps {
+  weather: any;
+  parseTime: (t: string) => number;
+  pct: (t: string) => number;
+  pctH: (h: number) => number;
+  sunriseH: number;
+  sunsetH: number;
+  moonriseH: number | null;
+  moonsetH: number | null;
+  transitionMin: number;
+  fishPath: string;
+}
+
+const SolunarTimeline = ({ weather, parseTime, pct, pctH, sunriseH, sunsetH, moonriseH, moonsetH, transitionMin, fishPath }: SolunarTimelineProps) => {
+  const [currentPct, setCurrentPct] = useState(() => {
+    const now = new Date();
+    return ((now.getHours() + now.getMinutes() / 60) / 24) * 100;
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      setCurrentPct(((now.getHours() + now.getMinutes() / 60) / 24) * 100);
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const svgW = 400;
+  const barY = 28;
+  const barH = 50;
+  const svgH = 110;
+
+  const toX = (p: number) => (p / 100) * svgW;
+
+  const sunriseP = pctH(sunriseH);
+  const sunsetP = pctH(sunsetH);
+  const transPct = (transitionMin / 24) * 100;
+
+  return (
+    <div>
+      <svg viewBox={`0 0 ${svgW} ${svgH}`} className="w-full" style={{ height: 130 }} preserveAspectRatio="xMidYMid meet">
+        <defs>
+          {/* Day/night gradients */}
+          <linearGradient id="sunriseGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="hsl(220 60% 8%)" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="hsl(45 90% 60%)" stopOpacity="0.12" />
+          </linearGradient>
+          <linearGradient id="sunsetGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="hsl(45 90% 60%)" stopOpacity="0.12" />
+            <stop offset="100%" stopColor="hsl(220 60% 8%)" stopOpacity="0.9" />
+          </linearGradient>
+          {/* Major peak gradient */}
+          <linearGradient id="majorPeakGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#00D4D4" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="#00D4D4" stopOpacity="0.05" />
+          </linearGradient>
+          {/* Minor peak gradient */}
+          <linearGradient id="minorPeakGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#00D4D4" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#00D4D4" stopOpacity="0.02" />
+          </linearGradient>
+          {/* Glow filter */}
+          <filter id="glowFilter">
+            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Layer 1: Day/Night background */}
+        {/* Night: 00:00 → sunrise-transition */}
+        <rect x={0} y={barY} width={toX(sunriseP - transPct)} height={barH} fill="hsl(220 60% 8%)" fillOpacity="0.9" rx="4" />
+        {/* Sunrise transition */}
+        <rect x={toX(sunriseP - transPct)} y={barY} width={toX(transPct * 2)} height={barH} fill="url(#sunriseGrad)" />
+        {/* Day */}
+        <rect x={toX(sunriseP + transPct)} y={barY} width={toX(sunsetP - sunriseP - transPct * 2)} height={barH} fill="hsl(45 90% 60%)" fillOpacity="0.12" />
+        {/* Sunset transition */}
+        <rect x={toX(sunsetP - transPct)} y={barY} width={toX(transPct * 2)} height={barH} fill="url(#sunsetGrad)" />
+        {/* Night: sunset+transition → 24:00 */}
+        <rect x={toX(sunsetP + transPct)} y={barY} width={svgW - toX(sunsetP + transPct)} height={barH} fill="hsl(220 60% 8%)" fillOpacity="0.9" rx="0" />
+
+        {/* Bar border */}
+        <rect x={0} y={barY} width={svgW} height={barH} fill="none" stroke="hsl(220 30% 20%)" strokeWidth="0.5" rx="4" />
+
+        {/* Layer 2: Solunar peaks */}
+        {weather.solunarPeaks.map((peak: any, i: number) => {
+          const startH = parseTime(peak.start);
+          const endH = parseTime(peak.end);
+          const isMajor = peak.type === 'major';
+          const x = toX(pctH(startH));
+          let w = endH > startH ? toX(pctH(endH)) - x : toX(pctH(24 - startH + endH));
+          w = Math.max(w, 8);
+          const peakH = isMajor ? barH : barH * 0.6;
+          const peakY = barY + (barH - peakH);
+
+          return (
+            <g key={i}>
+              <rect x={x} y={peakY} width={w} height={peakH} fill={isMajor ? 'url(#majorPeakGrad)' : 'url(#minorPeakGrad)'} rx="2" />
+              <line x1={x} y1={peakY} x2={x} y2={peakY + peakH} stroke="#00D4D4" strokeWidth="0.5" strokeOpacity={isMajor ? 0.6 : 0.3} />
+              <line x1={x + w} y1={peakY} x2={x + w} y2={peakY + peakH} stroke="#00D4D4" strokeWidth="0.5" strokeOpacity={isMajor ? 0.6 : 0.3} />
+
+              {/* Fish silhouettes inside */}
+              {isMajor ? (
+                <>
+                  <g transform={`translate(${x + w / 2 - 8}, ${barY + barH / 2 - 5}) scale(0.9)`} opacity="0.7">
+                    <path d={fishPath} fill="#00D4D4" />
+                  </g>
+                  <g transform={`translate(${x + w / 2 - 2}, ${barY + barH / 2 - 1}) scale(0.7)`} opacity="0.5">
+                    <path d={fishPath} fill="#00D4D4" />
+                  </g>
+                  <g transform={`translate(${x + w / 2 + 4}, ${barY + barH / 2 + 3}) scale(0.8)`} opacity="0.6">
+                    <path d={fishPath} fill="#00D4D4" />
+                  </g>
+                </>
+              ) : (
+                <g transform={`translate(${x + w / 2 - 4}, ${peakY + peakH / 2 - 2}) scale(0.7)`} opacity="0.5">
+                  <path d={fishPath} fill="#00D4D4" />
+                </g>
+              )}
+
+              {/* Moon icon above bar for major, smaller for minor */}
+              <text
+                x={x + w / 2}
+                y={barY - (isMajor ? 4 : 6)}
+                textAnchor="middle"
+                fontSize={isMajor ? 12 : 9}
+                opacity={isMajor ? 1 : 0.6}
+              >
+                🌙
+              </text>
+              {isMajor && (
+                <>
+                  <text x={x + w / 2 - 10} y={barY - 5} textAnchor="middle" fontSize="7" fill="#00D4D4" opacity="0.7">↑</text>
+                  <text x={x + w / 2 + 10} y={barY - 5} textAnchor="middle" fontSize="7" fill="#00D4D4" opacity="0.7">↑</text>
+                </>
+              )}
+            </g>
+          );
+        })}
+
+        {/* Layer 3: Celestial markers */}
+        {/* Sunrise icon */}
+        <text x={toX(sunriseP)} y={barY - 2} textAnchor="middle" fontSize="10">🌅</text>
+        <text x={toX(sunriseP)} y={barY + barH + 14} textAnchor="middle" fontSize="7" fill="#FFD700">{weather.sunrise}</text>
+
+        {/* Sunset icon */}
+        <text x={toX(sunsetP)} y={barY - 2} textAnchor="middle" fontSize="10">🌇</text>
+        <text x={toX(sunsetP)} y={barY + barH + 14} textAnchor="middle" fontSize="7" fill="#FF8C42">{weather.sunset}</text>
+
+        {/* Moonrise below bar */}
+        {moonriseH !== null && (
+          <>
+            <text x={toX(pctH(moonriseH))} y={barY + barH + 14} textAnchor="middle" fontSize="8">🌕</text>
+            <text x={toX(pctH(moonriseH))} y={barY + barH + 22} textAnchor="middle" fontSize="6" fill="#aaa">{weather.moonrise}</text>
+          </>
+        )}
+        {/* Moonset below bar */}
+        {moonsetH !== null && (
+          <>
+            <text x={toX(pctH(moonsetH))} y={barY + barH + 14} textAnchor="middle" fontSize="8">🌑</text>
+            <text x={toX(pctH(moonsetH))} y={barY + barH + 22} textAnchor="middle" fontSize="6" fill="#aaa">{weather.moonset}</text>
+          </>
+        )}
+
+        {/* Layer 4: Current time cursor */}
+        <line
+          x1={toX(currentPct)}
+          y1={barY - 2}
+          x2={toX(currentPct)}
+          y2={barY + barH + 2}
+          stroke="#00D4D4"
+          strokeWidth="1.5"
+          filter="url(#glowFilter)"
+        >
+          <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite" />
+        </line>
+        <circle cx={toX(currentPct)} cy={barY - 2} r="2" fill="#00D4D4" filter="url(#glowFilter)" />
+
+        {/* Time labels */}
+        {[0, 3, 6, 9, 12, 15, 18, 21, 24].map(h => (
+          <text key={h} x={toX(pctH(h))} y={svgH - 2} textAnchor="middle" fontSize="7" fill="hsl(220 20% 50%)">
+            {String(h === 24 ? 0 : h).padStart(2, '0')}
+          </text>
+        ))}
+      </svg>
+    </div>
+  );
+};
+
+
   const moon = useMemo(() => getMoonData(), []);
   const { weather, loading, error, locationDenied } = useWeather();
 
