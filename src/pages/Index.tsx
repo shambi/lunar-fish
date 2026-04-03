@@ -250,34 +250,7 @@ const Index = () => {
               })()}
             </div>
           </div>
-          {/* Divider + Sun/Moon Row */}
-          <div className="border-t border-border my-4" />
-          <div className="grid grid-cols-2 gap-4 text-center">
-            <div className="flex flex-col items-center gap-1">
-              <div className="flex items-center gap-1">
-                <Sunrise className="w-5 h-5 text-primary" />
-                <Sunset className="w-5 h-5 text-primary" />
-              </div>
-              <span className="text-lg font-bold font-display text-foreground">
-                {weather ? weather.sunrise : '—'}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {weather ? `Залез ${weather.sunset}` : 'Изгрев / Залез'}
-              </span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="flex items-center gap-1">
-                <Moon className="w-5 h-5 text-primary" />
-                <MoonStar className="w-5 h-5 text-primary" />
-              </div>
-              <span className="text-lg font-bold font-display text-foreground">
-                {weather ? weather.moonrise : '—'}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {weather ? `Залез 🌑 ${weather.moonset}` : 'Луна изгрев / залез'}
-              </span>
-            </div>
-          </div>
+          {/* Water Temp */}
           {/* Divider + Water Temp */}
           <div className="border-t border-border my-4" />
           <div className="flex justify-center">
