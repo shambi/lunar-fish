@@ -6,24 +6,12 @@ import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader2, M
 import { FishGuide } from '@/components/FishGuide';
 import { ForecastCards } from '@/components/ForecastCards';
 
-interface SolunarTimelineProps {
-  weather: any;
-  parseTime: (t: string) => number;
-  pct: (t: string) => number;
-  pctH: (h: number) => number;
-  sunriseH: number;
-  sunsetH: number;
-  moonriseH: number | null;
-  moonsetH: number | null;
-  transitionMin: number;
-  fishPath: string;
-}
-
-const SolunarTimeline = ({ weather, parseTime, pct, pctH, sunriseH, sunsetH, moonriseH, moonsetH, transitionMin, fishPath }: SolunarTimelineProps) => {
+const SolunarTimeline = ({ weather }: { weather: any }) => {
   const [currentPct, setCurrentPct] = useState(() => {
     const now = new Date();
     return ((now.getHours() + now.getMinutes() / 60) / 24) * 100;
   });
+  const [tooltip, setTooltip] = useState<{ text: string; x: number } | null>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -33,166 +21,181 @@ const SolunarTimeline = ({ weather, parseTime, pct, pctH, sunriseH, sunsetH, moo
     return () => clearInterval(interval);
   }, []);
 
+  // Auto-hide tooltip on mobile
+  useEffect(() => {
+    if (!tooltip) return;
+    const timer = setTimeout(() => setTooltip(null), 2000);
+    return () => clearTimeout(timer);
+  }, [tooltip]);
+
+  const parseTime = (t: string): number => {
+    const [h, m] = t.split(':').map(Number);
+    return h + m / 60;
+  };
+  const timeToPercent = (t: string) => (parseTime(t) / 24) * 100;
+  const hourToPercent = (h: number) => (h / 24) * 100;
+
+  const sunriseH = weather.sunrise && weather.sunrise !== '--:--' ? parseTime(weather.sunrise) : 7;
+  const sunsetH = weather.sunset && weather.sunset !== '--:--' ? parseTime(weather.sunset) : 20;
+  const moonriseH = weather.moonrise && weather.moonrise !== '--:--' ? parseTime(weather.moonrise) : null;
+  const moonsetH = weather.moonset && weather.moonset !== '--:--' ? parseTime(weather.moonset) : null;
+
   const svgW = 400;
-  const barY = 28;
-  const barH = 50;
-  const svgH = 110;
+  const barH = 56;
+  const barY = 0;
+  const toX = (pct: number) => (pct / 100) * svgW;
 
-  const toX = (p: number) => (p / 100) * svgW;
+  const sunriseP = hourToPercent(sunriseH);
+  const sunsetP = hourToPercent(sunsetH);
+  const transW = (15 / 1440) * 100; // 15 min
 
-  const sunriseP = pctH(sunriseH);
-  const sunsetP = pctH(sunsetH);
-  const transPct = (transitionMin / 24) * 100;
+  const fishPath = "M0 3 Q2 0 5 1 L9 0 L8 1.5 L9 3 L5 2 Q2 5 0 3Z";
 
   return (
-    <div>
-      <svg viewBox={`0 0 ${svgW} ${svgH}`} className="w-full" style={{ height: 130 }} preserveAspectRatio="xMidYMid meet">
-        <defs>
-          {/* Day/night gradients */}
-          <linearGradient id="sunriseGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="hsl(220 60% 8%)" stopOpacity="0.9" />
-            <stop offset="100%" stopColor="hsl(45 90% 60%)" stopOpacity="0.12" />
-          </linearGradient>
-          <linearGradient id="sunsetGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="hsl(45 90% 60%)" stopOpacity="0.12" />
-            <stop offset="100%" stopColor="hsl(220 60% 8%)" stopOpacity="0.9" />
-          </linearGradient>
-          {/* Major peak gradient */}
-          <linearGradient id="majorPeakGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#00D4D4" stopOpacity="0.5" />
-            <stop offset="100%" stopColor="#00D4D4" stopOpacity="0.05" />
-          </linearGradient>
-          {/* Minor peak gradient */}
-          <linearGradient id="minorPeakGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#00D4D4" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="#00D4D4" stopOpacity="0.02" />
-          </linearGradient>
-          {/* Glow filter */}
-          <filter id="glowFilter">
-            <feGaussianBlur stdDeviation="2" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
+    <div className="space-y-1">
+      {/* PART A — Sun Row */}
+      <div className="relative h-8" style={{ marginLeft: 0, marginRight: 0 }}>
+        {/* Sunrise */}
+        <div className="absolute flex flex-col items-center" style={{ left: `${sunriseP}%`, transform: 'translateX(-50%)' }}>
+          <Sunrise size={16} color="#FFD700" />
+          <span className="text-[10px] font-medium" style={{ color: '#FFD700' }}>{weather.sunrise}</span>
+        </div>
+        {/* Sunset */}
+        <div className="absolute flex flex-col items-center" style={{ left: `${sunsetP}%`, transform: 'translateX(-50%)' }}>
+          <Sunset size={16} color="#FF8C42" />
+          <span className="text-[10px] font-medium" style={{ color: '#FF8C42' }}>{weather.sunset}</span>
+        </div>
+      </div>
 
-        {/* Layer 1: Day/Night background */}
-        {/* Night: 00:00 → sunrise-transition */}
-        <rect x={0} y={barY} width={toX(sunriseP - transPct)} height={barH} fill="hsl(220 60% 8%)" fillOpacity="0.9" rx="4" />
-        {/* Sunrise transition */}
-        <rect x={toX(sunriseP - transPct)} y={barY} width={toX(transPct * 2)} height={barH} fill="url(#sunriseGrad)" />
-        {/* Day */}
-        <rect x={toX(sunriseP + transPct)} y={barY} width={toX(sunsetP - sunriseP - transPct * 2)} height={barH} fill="hsl(45 90% 60%)" fillOpacity="0.12" />
-        {/* Sunset transition */}
-        <rect x={toX(sunsetP - transPct)} y={barY} width={toX(transPct * 2)} height={barH} fill="url(#sunsetGrad)" />
-        {/* Night: sunset+transition → 24:00 */}
-        <rect x={toX(sunsetP + transPct)} y={barY} width={svgW - toX(sunsetP + transPct)} height={barH} fill="hsl(220 60% 8%)" fillOpacity="0.9" rx="0" />
+      {/* PART B — Timeline Bar (SVG) */}
+      <div className="relative">
+        {/* Tooltip */}
+        {tooltip && (
+          <div
+            className="absolute z-20 bg-card border border-primary rounded-lg px-2 py-1 text-xs shadow-lg pointer-events-none"
+            style={{ left: `${tooltip.x}%`, transform: 'translateX(-50%)', top: -32 }}
+          >
+            {tooltip.text}
+          </div>
+        )}
+        <svg viewBox={`0 0 ${svgW} ${barH}`} className="w-full rounded-lg overflow-hidden" style={{ height: 56 }} preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="srGrad2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#0a1628" />
+              <stop offset="100%" stopColor="hsl(45 80% 55%)" stopOpacity="0.15" />
+            </linearGradient>
+            <linearGradient id="ssGrad2" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="hsl(45 80% 55%)" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="#0a1628" />
+            </linearGradient>
+            <linearGradient id="majGrad2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#00D4D4" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#00D4D4" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="minGrad2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#00D4D4" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="#00D4D4" stopOpacity="0" />
+            </linearGradient>
+            <filter id="cursorGlow2">
+              <feGaussianBlur stdDeviation="2" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
 
-        {/* Bar border */}
-        <rect x={0} y={barY} width={svgW} height={barH} fill="none" stroke="hsl(220 30% 20%)" strokeWidth="0.5" rx="4" />
+          {/* Layer 1: Day/Night background */}
+          <rect x={0} y={0} width={toX(sunriseP - transW)} height={barH} fill="#0a1628" />
+          <rect x={toX(sunriseP - transW)} y={0} width={toX(transW * 2)} height={barH} fill="url(#srGrad2)" />
+          <rect x={toX(sunriseP + transW)} y={0} width={toX(sunsetP - sunriseP - transW * 2)} height={barH} fill="hsl(45 80% 55%)" fillOpacity="0.15" />
+          <rect x={toX(sunsetP - transW)} y={0} width={toX(transW * 2)} height={barH} fill="url(#ssGrad2)" />
+          <rect x={toX(sunsetP + transW)} y={0} width={svgW - toX(sunsetP + transW)} height={barH} fill="#0a1628" />
 
-        {/* Layer 2: Solunar peaks */}
-        {weather.solunarPeaks.map((peak: any, i: number) => {
-          const startH = parseTime(peak.start);
-          const endH = parseTime(peak.end);
-          const isMajor = peak.type === 'major';
-          const x = toX(pctH(startH));
-          let w = endH > startH ? toX(pctH(endH)) - x : toX(pctH(24 - startH + endH));
-          w = Math.max(w, 8);
-          const peakH = isMajor ? barH : barH * 0.6;
-          const peakY = barY + (barH - peakH);
+          {/* Layer 2: Solunar peaks */}
+          {weather.solunarPeaks.map((peak: any, i: number) => {
+            const startH = parseTime(peak.start);
+            const endH = parseTime(peak.end);
+            const isMajor = peak.type === 'major';
+            const x = toX(hourToPercent(startH));
+            let w = endH > startH ? toX(hourToPercent(endH)) - x : toX(hourToPercent(24 - startH + endH));
+            w = Math.max(w, 8);
+            const peakH = isMajor ? barH : barH * 0.6;
+            const peakY = 0;
 
-          return (
-            <g key={i}>
-              <rect x={x} y={peakY} width={w} height={peakH} fill={isMajor ? 'url(#majorPeakGrad)' : 'url(#minorPeakGrad)'} rx="2" />
-              <line x1={x} y1={peakY} x2={x} y2={peakY + peakH} stroke="#00D4D4" strokeWidth="0.5" strokeOpacity={isMajor ? 0.6 : 0.3} />
-              <line x1={x + w} y1={peakY} x2={x + w} y2={peakY + peakH} stroke="#00D4D4" strokeWidth="0.5" strokeOpacity={isMajor ? 0.6 : 0.3} />
+            return (
+              <g key={i} style={{ cursor: 'pointer' }} onClick={() => {
+                const label = isMajor ? 'Главен пик' : 'Малък пик';
+                setTooltip({ text: `🎣 ${label} · ${peak.start} – ${peak.end}`, x: hourToPercent(startH) + (hourToPercent(endH > startH ? endH : 24) - hourToPercent(startH)) / 2 });
+              }}>
+                <rect x={x} y={peakY} width={w} height={peakH} fill={isMajor ? 'url(#majGrad2)' : 'url(#minGrad2)'} />
+                <line x1={x} y1={peakY} x2={x} y2={peakY + peakH} stroke="#00D4D4" strokeWidth="1" strokeOpacity={isMajor ? 0.8 : 0.4} />
 
-              {/* Fish silhouettes inside */}
-              {isMajor ? (
-                <>
-                  <g transform={`translate(${x + w / 2 - 8}, ${barY + barH / 2 - 5}) scale(0.9)`} opacity="0.7">
-                    <path d={fishPath} fill="#00D4D4" />
-                  </g>
-                  <g transform={`translate(${x + w / 2 - 2}, ${barY + barH / 2 - 1}) scale(0.7)`} opacity="0.5">
-                    <path d={fishPath} fill="#00D4D4" />
-                  </g>
-                  <g transform={`translate(${x + w / 2 + 4}, ${barY + barH / 2 + 3}) scale(0.8)`} opacity="0.6">
-                    <path d={fishPath} fill="#00D4D4" />
-                  </g>
-                </>
-              ) : (
-                <g transform={`translate(${x + w / 2 - 4}, ${peakY + peakH / 2 - 2}) scale(0.7)`} opacity="0.5">
-                  <path d={fishPath} fill="#00D4D4" />
-                </g>
-              )}
+                {/* Fish silhouettes */}
+                {isMajor ? (
+                  <>
+                    <g transform={`translate(${x + w / 2 - 10}, ${barH / 2 - 6}) scale(1)`} opacity="0.7"><path d={fishPath} fill="#00D4D4" /></g>
+                    <g transform={`translate(${x + w / 2 - 2}, ${barH / 2 - 1}) scale(0.8)`} opacity="0.5"><path d={fishPath} fill="#00D4D4" /></g>
+                    <g transform={`translate(${x + w / 2 + 5}, ${barH / 2 + 4}) scale(0.9)`} opacity="0.6"><path d={fishPath} fill="#00D4D4" /></g>
+                  </>
+                ) : (
+                  <g transform={`translate(${x + w / 2 - 4}, ${peakH / 2 - 2}) scale(0.8)`} opacity="0.5"><path d={fishPath} fill="#00D4D4" /></g>
+                )}
+              </g>
+            );
+          })}
 
-              {/* Moon icon above bar for major, smaller for minor */}
-              <text
-                x={x + w / 2}
-                y={barY - (isMajor ? 4 : 6)}
-                textAnchor="middle"
-                fontSize={isMajor ? 12 : 9}
-                opacity={isMajor ? 1 : 0.6}
-              >
-                🌙
-              </text>
-              {isMajor && (
-                <>
-                  <text x={x + w / 2 - 10} y={barY - 5} textAnchor="middle" fontSize="7" fill="#00D4D4" opacity="0.7">↑</text>
-                  <text x={x + w / 2 + 10} y={barY - 5} textAnchor="middle" fontSize="7" fill="#00D4D4" opacity="0.7">↑</text>
-                </>
-              )}
-            </g>
-          );
-        })}
+          {/* Layer 3: Hour labels */}
+          {[0, 6, 12, 18, 24].map(h => (
+            <text key={h} x={toX(hourToPercent(h === 24 ? 23.99 : h))} y={barH - 4} textAnchor="middle" fontSize="8" fill="rgba(255,255,255,0.35)">{String(h === 24 ? 24 : h).padStart(2, '0')}</text>
+          ))}
 
-        {/* Layer 3: Celestial markers */}
-        {/* Sunrise icon */}
-        <text x={toX(sunriseP)} y={barY - 2} textAnchor="middle" fontSize="10">🌅</text>
-        <text x={toX(sunriseP)} y={barY + barH + 14} textAnchor="middle" fontSize="7" fill="#FFD700">{weather.sunrise}</text>
+          {/* Layer 4: "Сега" cursor */}
+          <line x1={toX(currentPct)} y1={0} x2={toX(currentPct)} y2={barH} stroke="#00D4D4" strokeWidth="2" filter="url(#cursorGlow2)">
+            <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite" />
+          </line>
+          {/* Triangle above */}
+          <polygon points={`${toX(currentPct) - 4},-1 ${toX(currentPct) + 4},-1 ${toX(currentPct)},5`} fill="#00D4D4" />
+        </svg>
+      </div>
 
-        {/* Sunset icon */}
-        <text x={toX(sunsetP)} y={barY - 2} textAnchor="middle" fontSize="10">🌇</text>
-        <text x={toX(sunsetP)} y={barY + barH + 14} textAnchor="middle" fontSize="7" fill="#FF8C42">{weather.sunset}</text>
-
-        {/* Moonrise below bar */}
+      {/* PART C — Moon Row */}
+      <div className="relative h-6">
         {moonriseH !== null && (
-          <>
-            <text x={toX(pctH(moonriseH))} y={barY + barH + 14} textAnchor="middle" fontSize="8">🌕</text>
-            <text x={toX(pctH(moonriseH))} y={barY + barH + 22} textAnchor="middle" fontSize="6" fill="#aaa">{weather.moonrise}</text>
-          </>
+          <div className="absolute flex items-center gap-0.5" style={{ left: `${hourToPercent(moonriseH)}%`, transform: 'translateX(-50%)' }}>
+            <span className="text-[10px]" style={{ color: '#00D4D4' }}>↑</span>
+            <Moon size={14} color="#00D4D4" />
+            <span className="text-[10px] font-medium" style={{ color: '#00D4D4', opacity: 0.8 }}>{weather.moonrise}</span>
+          </div>
         )}
-        {/* Moonset below bar */}
         {moonsetH !== null && (
-          <>
-            <text x={toX(pctH(moonsetH))} y={barY + barH + 14} textAnchor="middle" fontSize="8">🌑</text>
-            <text x={toX(pctH(moonsetH))} y={barY + barH + 22} textAnchor="middle" fontSize="6" fill="#aaa">{weather.moonset}</text>
-          </>
+          <div className="absolute flex items-center gap-0.5" style={{ left: `${hourToPercent(moonsetH)}%`, transform: 'translateX(-50%)' }}>
+            <span className="text-[10px]" style={{ color: '#00D4D4', opacity: 0.5 }}>↓</span>
+            <Moon size={14} color="#00D4D4" opacity={0.5} />
+            <span className="text-[10px] font-medium" style={{ color: '#00D4D4', opacity: 0.5 }}>{weather.moonset}</span>
+          </div>
         )}
+        {moonriseH === null && weather.moonrise && weather.moonrise !== '--:--' && (
+          <div className="absolute flex items-center gap-0.5" style={{ left: '2%' }}>
+            <span className="text-[10px]" style={{ color: '#00D4D4' }}>↑</span>
+            <Moon size={14} color="#00D4D4" />
+            <span className="text-[10px] font-medium" style={{ color: '#00D4D4', opacity: 0.8 }}>{weather.moonrise} (+1д)</span>
+          </div>
+        )}
+      </div>
 
-        {/* Layer 4: Current time cursor */}
-        <line
-          x1={toX(currentPct)}
-          y1={barY - 2}
-          x2={toX(currentPct)}
-          y2={barY + barH + 2}
-          stroke="#00D4D4"
-          strokeWidth="1.5"
-          filter="url(#glowFilter)"
-        >
-          <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite" />
-        </line>
-        <circle cx={toX(currentPct)} cy={barY - 2} r="2" fill="#00D4D4" filter="url(#glowFilter)" />
-
-        {/* Time labels */}
-        {[0, 3, 6, 9, 12, 15, 18, 21, 24].map(h => (
-          <text key={h} x={toX(pctH(h))} y={svgH - 2} textAnchor="middle" fontSize="7" fill="hsl(220 20% 50%)">
-            {String(h === 24 ? 0 : h).padStart(2, '0')}
-          </text>
-        ))}
-      </svg>
+      {/* PART D — Legend */}
+      <div className="flex items-center justify-center gap-4 text-[10px]" style={{ color: 'rgba(255,255,255,0.5)' }}>
+        <span className="flex items-center gap-1">
+          <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'rgba(0,212,212,0.7)' }} />
+          Главен пик — засилена активност
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: 'rgba(0,212,212,0.3)' }} />
+          Малък пик — умерена активност
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="w-0.5 h-3 rounded-full" style={{ backgroundColor: '#00D4D4', boxShadow: '0 0 4px #00D4D4' }} />
+          Сега
+        </span>
+      </div>
     </div>
   );
 };
