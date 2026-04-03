@@ -270,116 +270,62 @@ const Index = () => {
           )}
         </section>
 
-        {/* Solunar Activity Section */}
-        {weather && weather.solunarPeaks && (
-          <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-            <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-              🌙 Солунарна активност
-            </h3>
+        {/* Solunar Activity Section — SVG Timeline */}
+        {weather && weather.solunarPeaks && (() => {
+          const parseTime = (t: string): number => {
+            const [h, m] = t.split(':').map(Number);
+            return h + m / 60;
+          };
+          const pct = (t: string) => (parseTime(t) / 24) * 100;
+          const pctH = (h: number) => (h / 24) * 100;
 
-            {/* Moon rise/set times */}
-            <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="flex items-center gap-2 rounded-lg border border-border bg-secondary/50 px-3 py-2">
-                <Moon className="w-4 h-4 text-primary" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Изгрев на луната</p>
-                  <p className="text-sm font-bold text-foreground">{weather.moonrise}</p>
-                </div>
+          const sunriseH = weather.sunrise ? parseTime(weather.sunrise) : 7;
+          const sunsetH = weather.sunset ? parseTime(weather.sunset) : 20;
+          const moonriseH = weather.moonrise && weather.moonrise !== '--:--' ? parseTime(weather.moonrise) : null;
+          const moonsetH = weather.moonset && weather.moonset !== '--:--' ? parseTime(weather.moonset) : null;
+
+          const transitionMin = 20 / 60; // 20 minutes in hours
+
+          // Fish silhouette path (small, ~12x6 viewbox scaled)
+          const fishPath = "M0 3 Q2 0 5 1 L9 0 L8 1.5 L9 3 L5 2 Q2 5 0 3Z";
+
+          return (
+            <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
+              <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+                🌙 Солунарна активност
+              </h3>
+
+              <SolunarTimeline
+                weather={weather}
+                parseTime={parseTime}
+                pct={pct}
+                pctH={pctH}
+                sunriseH={sunriseH}
+                sunsetH={sunsetH}
+                moonriseH={moonriseH}
+                moonsetH={moonsetH}
+                transitionMin={transitionMin}
+                fishPath={fishPath}
+              />
+
+              {/* Legend */}
+              <div className="flex items-center justify-center gap-4 mt-3 text-[10px] text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'hsl(var(--primary))' }} />
+                  Главен пик
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: 'hsl(var(--primary) / 0.4)' }} />
+                  Малък пик
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-0.5 h-3 rounded-full" style={{ backgroundColor: 'hsl(var(--primary))', boxShadow: '0 0 4px hsl(var(--primary))' }} />
+                  Сега
+                </span>
               </div>
-              <div className="flex items-center gap-2 rounded-lg border border-border bg-secondary/50 px-3 py-2">
-                <MoonStar className="w-4 h-4 text-primary" />
-                <div>
-                  <p className="text-xs text-muted-foreground">Залез на луната</p>
-                  <p className="text-sm font-bold text-foreground">{weather.moonset}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* 24h Timeline */}
-            {(() => {
-              const parseTime = (t: string): number => {
-                const [h, m] = t.split(':').map(Number);
-                return h + m / 60;
-              };
-              const now = new Date();
-              const currentHour = now.getHours() + now.getMinutes() / 60;
-              const timelineW = 100; // percentage
-
-              return (
-                <div>
-                  {/* Timeline bar */}
-                  <div className="relative h-10 rounded-lg overflow-hidden bg-secondary/30 border border-border">
-                    {/* Peak blocks */}
-                    {weather.solunarPeaks.map((peak, i) => {
-                      const startH = parseTime(peak.start);
-                      const endH = parseTime(peak.end);
-                      // Handle wrap-around midnight
-                      const left = (startH / 24) * 100;
-                      let width: number;
-                      if (endH > startH) {
-                        width = ((endH - startH) / 24) * 100;
-                      } else {
-                        width = ((24 - startH + endH) / 24) * 100;
-                      }
-                      const isMajor = peak.type === 'major';
-                      return (
-                        <div
-                          key={i}
-                          className="absolute top-0 h-full flex items-center justify-center"
-                          style={{
-                            left: `${left}%`,
-                            width: `${Math.max(width, 2)}%`,
-                            backgroundColor: isMajor ? 'hsl(var(--primary) / 0.35)' : 'hsl(var(--primary) / 0.15)',
-                            borderLeft: `1px solid hsl(var(--primary) / ${isMajor ? '0.6' : '0.3'})`,
-                            borderRight: `1px solid hsl(var(--primary) / ${isMajor ? '0.6' : '0.3'})`,
-                          }}
-                        >
-                          <span className="text-[8px] font-medium text-primary truncate px-0.5">
-                            {isMajor ? 'Главен' : 'Малък'}
-                          </span>
-                        </div>
-                      );
-                    })}
-                    {/* Current time marker */}
-                    <div
-                      className="absolute top-0 h-full w-0.5"
-                      style={{
-                        left: `${(currentHour / 24) * 100}%`,
-                        backgroundColor: 'hsl(var(--primary))',
-                        boxShadow: '0 0 6px hsl(var(--primary))',
-                      }}
-                    />
-                  </div>
-                  {/* Time labels */}
-                  <div className="flex justify-between mt-1 px-0.5">
-                    {[0, 3, 6, 9, 12, 15, 18, 21].map(h => (
-                      <span key={h} className="text-[9px] text-muted-foreground">
-                        {String(h).padStart(2, '0')}
-                      </span>
-                    ))}
-                  </div>
-                  {/* Peak list */}
-                  <div className="mt-3 space-y-1.5">
-                    {weather.solunarPeaks.map((peak, i) => (
-                      <div key={i} className="flex items-center gap-2 text-xs">
-                        <span className={`w-2 h-2 rounded-full ${peak.type === 'major' ? 'bg-primary' : 'bg-primary/40'}`} />
-                        <span className="text-muted-foreground">{peak.label}:</span>
-                        <span className="font-medium text-foreground">{peak.start} — {peak.end}</span>
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
-                          peak.type === 'major' 
-                            ? 'bg-primary/20 text-primary' 
-                            : 'bg-muted text-muted-foreground'
-                        }`}>
-                          {peak.type === 'major' ? 'Главен' : 'Малък'}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })()}
-          </section>
-        )}
+            </section>
+          );
+        })()}
         <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
           <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
             🎣 Дневни професионални съвети
