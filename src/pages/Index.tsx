@@ -198,7 +198,7 @@ const SolunarTimeline = ({ weather, parseTime, pct, pctH, sunriseH, sunsetH, moo
 };
 
 
-  const moon = useMemo(() => getMoonData(), []);
+  const Index = () => {
   const { weather, loading, error, locationDenied } = useWeather();
 
   const today = new Date().toLocaleDateString('bg-BG', {
