@@ -91,7 +91,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
       </div>
 
       {/* PART 2 — Activity cards */}
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {peaks.map((peak: any, i: number) => {
           const isMajor = peak.type === 'major';
           const active = isInRange(peak.start, peak.end);
