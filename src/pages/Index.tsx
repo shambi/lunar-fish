@@ -124,8 +124,8 @@ const SolunarSection = ({ weather }: { weather: any }) => {
                     style={!isMajor ? { color: 'rgba(255,255,255,0.7)' } : undefined}>
                     {peak.start} —<br />{peak.end}
                   </div>
-                  <div className="mt-1" style={{
-                    fontSize: '10px',
+                  <div className="mt-0.5" style={{
+                    fontSize: '9px',
                     color: isMajor ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.35)',
                   }}>
                     {getPeakLocation(peak)}
