@@ -120,7 +120,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
               <div className="flex items-center">
                 {/* LEFT — Time range */}
                 <div className="w-[40%]">
-                  <div className={`font-bold leading-tight ${isMajor ? 'text-[22px] text-white' : 'text-[18px]'}`}
+                  <div className={`font-bold leading-tight ${isMajor ? 'text-[16px] text-white' : 'text-[14px]'}`}
                     style={!isMajor ? { color: 'rgba(255,255,255,0.7)' } : undefined}>
                     {peak.start} —<br />{peak.end}
                   </div>
