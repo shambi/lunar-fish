@@ -97,7 +97,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
           const active = isInRange(peak.start, peak.end);
 
           return (
-            <div key={i} className="relative rounded-xl p-3.5"
+            <div key={i} className="relative rounded-xl p-2.5"
               style={isMajor ? {
                 background: 'rgba(0,18,28,0.9)',
                 border: '1.5px solid #00D4D4',
