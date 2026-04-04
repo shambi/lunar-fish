@@ -198,7 +198,7 @@ const Index = () => {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  });
+  }).replace(/\s*г\.?\s*$/i, '');
 
   const tips = useMemo(() => {
     if (!weather) return null;

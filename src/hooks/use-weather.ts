@@ -131,10 +131,15 @@ export function useWeather() {
           let locationName = `${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`;
           try {
             const geoRes = await fetch(
-              `https://geocoding-api.open-meteo.com/v1/search?name=&latitude=${latitude}&longitude=${longitude}&count=1&language=bg`
+              `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=bg&zoom=10`
             );
+            if (geoRes.ok) {
+              const geoData = await geoRes.json();
+              const city = geoData.address?.city || geoData.address?.town || geoData.address?.village || geoData.address?.municipality;
+              if (city) locationName = city;
+            }
           } catch {
-            // ignore
+            // ignore — keep coordinates as fallback
           }
 
           setWeather({
