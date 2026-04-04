@@ -459,7 +459,7 @@ const Index = () => {
             <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
               🌙 Солунарна активност
             </h3>
-            <SolunarTimeline weather={weather} />
+            <SolunarSection weather={weather} />
           </section>
         )}
         <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
