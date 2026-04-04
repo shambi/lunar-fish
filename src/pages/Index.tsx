@@ -154,7 +154,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
                 {/* RIGHT — Fish icons */}
                 <div className="w-[20%] flex flex-col items-center gap-0.5">
                   {Array.from({ length: isMajor ? 3 : 1 }).map((_, fi) => (
-                    <Fish key={fi} size={16}
+                    <Fish key={fi} size={14}
                       style={isMajor ? {
                         color: '#00D4D4',
                         filter: 'drop-shadow(0 0 4px rgba(0,212,212,0.7))',
