@@ -135,8 +135,8 @@ const SolunarSection = ({ weather }: { weather: any }) => {
                 {/* CENTER — Title */}
                 <div className="w-[40%]">
                   <div className="font-bold tracking-wider"
-                    style={{
-                      fontSize: '13px',
+                     style={{
+                      fontSize: '11px',
                       letterSpacing: '1px',
                       color: isMajor ? '#00D4D4' : 'rgba(0,212,212,0.5)',
                     }}>
