@@ -512,7 +512,7 @@ const Index = () => {
         <FishGuide moon={moon} weather={weather} />
 
         <footer className="text-center mt-8 space-y-1">
-          <p className="text-xs text-muted-foreground">Стегнати линии и чисто небе 🎣</p>
+          <p className="text-xs text-muted-foreground">На слука! 🎣</p>
           {weather && (
             <p className="text-[10px] text-muted-foreground/60">
               📍 Данните са базирани на текущата ви локация • Open-Meteo API
