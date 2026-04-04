@@ -73,16 +73,16 @@ const SolunarSection = ({ weather }: { weather: any }) => {
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {/* PART 1 — Two pill badges */}
       <div className="flex gap-2">
-        <div className="flex-1 text-center rounded-[20px] py-1.5 px-3"
+        <div className="flex-1 text-center rounded-[20px] py-1 px-2"
           style={{ background: 'rgba(255,140,66,0.12)', border: '1px solid rgba(255,140,66,0.4)' }}>
           <span className="text-xs" style={{ color: '#FF8C42' }}>
             🌅 {weather.sunrise || '--:--'} • 🌄 {weather.sunset || '--:--'}
           </span>
         </div>
-        <div className="flex-1 text-center rounded-[20px] py-1.5 px-3"
+        <div className="flex-1 text-center rounded-[20px] py-1 px-2"
           style={{ background: 'rgba(0,212,212,0.08)', border: '1px solid rgba(0,212,212,0.3)' }}>
           <span className="text-xs" style={{ color: '#00D4D4' }}>
             🌙 {weather.moonrise || '--:--'} • 🌑 {weather.moonset || '--:--'}
@@ -91,13 +91,13 @@ const SolunarSection = ({ weather }: { weather: any }) => {
       </div>
 
       {/* PART 2 — Activity cards */}
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {peaks.map((peak: any, i: number) => {
           const isMajor = peak.type === 'major';
           const active = isInRange(peak.start, peak.end);
 
           return (
-            <div key={i} className="relative rounded-xl p-3.5"
+            <div key={i} className="relative rounded-xl p-2.5"
               style={isMajor ? {
                 background: 'rgba(0,18,28,0.9)',
                 border: '1.5px solid #00D4D4',
@@ -120,12 +120,12 @@ const SolunarSection = ({ weather }: { weather: any }) => {
               <div className="flex items-center">
                 {/* LEFT — Time range */}
                 <div className="w-[40%]">
-                  <div className={`font-bold leading-tight ${isMajor ? 'text-[22px] text-white' : 'text-[18px]'}`}
+                  <div className={`font-bold leading-tight ${isMajor ? 'text-[16px] text-white' : 'text-[14px]'}`}
                     style={!isMajor ? { color: 'rgba(255,255,255,0.7)' } : undefined}>
                     {peak.start} —<br />{peak.end}
                   </div>
-                  <div className="mt-1" style={{
-                    fontSize: '10px',
+                  <div className="mt-0.5" style={{
+                    fontSize: '9px',
                     color: isMajor ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.35)',
                   }}>
                     {getPeakLocation(peak)}
@@ -135,15 +135,15 @@ const SolunarSection = ({ weather }: { weather: any }) => {
                 {/* CENTER — Title */}
                 <div className="w-[40%]">
                   <div className="font-bold tracking-wider"
-                    style={{
-                      fontSize: '13px',
+                     style={{
+                      fontSize: '11px',
                       letterSpacing: '1px',
                       color: isMajor ? '#00D4D4' : 'rgba(0,212,212,0.5)',
                     }}>
                     {isMajor ? 'ГЛАВЕН ПИК' : 'МАЛЪК ПИК'}
                   </div>
                   <div style={{
-                    fontSize: '11px',
+                    fontSize: '10px',
                     color: isMajor ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.35)',
                     marginTop: '2px',
                   }}>
@@ -154,7 +154,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
                 {/* RIGHT — Fish icons */}
                 <div className="w-[20%] flex flex-col items-center gap-0.5">
                   {Array.from({ length: isMajor ? 3 : 1 }).map((_, fi) => (
-                    <Fish key={fi} size={16}
+                    <Fish key={fi} size={14}
                       style={isMajor ? {
                         color: '#00D4D4',
                         filter: 'drop-shadow(0 0 4px rgba(0,212,212,0.7))',
