@@ -82,7 +82,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
             🌅 {weather.sunrise || '--:--'} • 🌄 {weather.sunset || '--:--'}
           </span>
         </div>
-        <div className="flex-1 text-center rounded-[20px] py-1.5 px-3"
+        <div className="flex-1 text-center rounded-[20px] py-1 px-2"
           style={{ background: 'rgba(0,212,212,0.08)', border: '1px solid rgba(0,212,212,0.3)' }}>
           <span className="text-xs" style={{ color: '#00D4D4' }}>
             🌙 {weather.moonrise || '--:--'} • 🌑 {weather.moonset || '--:--'}
