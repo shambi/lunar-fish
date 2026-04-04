@@ -73,10 +73,10 @@ const SolunarSection = ({ weather }: { weather: any }) => {
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {/* PART 1 — Two pill badges */}
       <div className="flex gap-2">
-        <div className="flex-1 text-center rounded-[20px] py-1.5 px-3"
+        <div className="flex-1 text-center rounded-[20px] py-1 px-2"
           style={{ background: 'rgba(255,140,66,0.12)', border: '1px solid rgba(255,140,66,0.4)' }}>
           <span className="text-xs" style={{ color: '#FF8C42' }}>
             🌅 {weather.sunrise || '--:--'} • 🌄 {weather.sunset || '--:--'}
