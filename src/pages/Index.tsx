@@ -198,7 +198,7 @@ const Index = () => {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  });
+  }).replace(/\s*г\.?\s*$/i, '');
 
   const tips = useMemo(() => {
     if (!weather) return null;
@@ -226,7 +226,7 @@ const Index = () => {
         <header className="pt-6 pb-2 text-center">
           <img src="/logo-new.png" alt="Лунният Рибар лого" className="w-16 h-16 mx-auto mb-2 rounded-full drop-shadow-[0_0_12px_hsl(var(--primary)/0.5)]" />
           <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
-            Лунният Рибар
+            РИБО
           </h1>
           <p className="text-sm text-muted-foreground mt-1 capitalize">{today}</p>
           <div className="flex items-center justify-center gap-1 mt-1 text-xs text-muted-foreground">
@@ -512,7 +512,7 @@ const Index = () => {
         <FishGuide moon={moon} weather={weather} />
 
         <footer className="text-center mt-8 space-y-1">
-          <p className="text-xs text-muted-foreground">Стегнати линии и чисто небе 🎣</p>
+          <p className="text-xs text-muted-foreground">На слука! 🎣</p>
           {weather && (
             <p className="text-[10px] text-muted-foreground/60">
               📍 Данните са базирани на текущата ви локация • Open-Meteo API

@@ -51,7 +51,7 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
   return (
     <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
       <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-        🐟 Пълен гид за сладководни риби
+        🐟 Рибо гид
       </h3>
 
       {/* Terrain toggle */}
