@@ -143,7 +143,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
                     {isMajor ? 'ГЛАВЕН ПИК' : 'МАЛЪК ПИК'}
                   </div>
                   <div style={{
-                    fontSize: '11px',
+                    fontSize: '10px',
                     color: isMajor ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.35)',
                     marginTop: '2px',
                   }}>
