@@ -210,8 +210,13 @@ const Index = () => {
     });
   }, [moon, weather]);
 
+  const swimAnimations = ['fish-swim-1', 'fish-swim-2', 'fish-swim-3'];
   const fishIcons = Array.from({ length: moon.fishingScore }, (_, i) => (
-    <span key={i} className="text-2xl drop-shadow-[0_0_6px_hsl(180_80%_55%/0.6)]">
+    <span
+      key={i}
+      className="text-2xl drop-shadow-[0_0_6px_hsl(180_80%_55%/0.6)]"
+      style={{ animation: `${swimAnimations[i % 3]} ${7 + i * 1.2}s ease-in-out infinite` }}
+    >
       {i % 2 === 0 ? '🐟' : '🐠'}
     </span>
   ));
@@ -223,10 +228,24 @@ const Index = () => {
 
       <div className="relative z-10 max-w-md mx-auto px-4 pb-8">
         {/* Header */}
-        <header className="pt-6 pb-2 text-center">
-          <img src="/logo-new.png" alt="Лунният Рибар лого" className="w-16 h-16 mx-auto mb-2 rounded-full drop-shadow-[0_0_12px_hsl(var(--primary)/0.5)]" />
-          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
-            РИБО
+        <header className="pt-4 pb-1 text-center">
+          <h1
+            className="font-display text-3xl font-medium tracking-wide text-foreground"
+            style={{ animation: 'title-glow 4s ease-in-out infinite' }}
+          >
+            РИБ
+            <span className="relative inline-block">
+              О
+              {/* Fish hook integrated into О */}
+              <svg
+                className="absolute -bottom-1 -right-1.5 text-primary opacity-70"
+                width="14" height="18" viewBox="0 0 14 18" fill="none"
+                stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
+              >
+                <path d="M7 0 L7 10 Q7 15 4 15 Q1 15 1 12" />
+                <circle cx="1" cy="11" r="1" fill="currentColor" />
+              </svg>
+            </span>
           </h1>
           <p className="text-sm text-muted-foreground mt-1 capitalize">{today}</p>
           <div className="flex items-center justify-center gap-1 mt-1 text-xs text-muted-foreground">
@@ -255,11 +274,11 @@ const Index = () => {
         </header>
 
         {/* Moon Phase Hero */}
-        <section className="flex flex-col items-center mt-6 mb-8">
+        <section className="flex flex-col items-center mt-4 mb-6">
           <div
             className="text-8xl leading-none select-none"
             style={{
-              animation: 'pulse-glow 4s ease-in-out infinite, float 6s ease-in-out infinite',
+              animation: 'pulse-glow 4s ease-in-out infinite, moon-drift 10s ease-in-out infinite',
               borderRadius: '50%',
               filter: 'drop-shadow(0 0 20px hsl(180 80% 55% / 0.4))',
             }}
