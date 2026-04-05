@@ -468,8 +468,13 @@ export function scoreFish(
         if (isFullMoon) score += 5;
         score += 3; // active year-round bonus
         break;
+      case 'Уклей':
+        if (options.sunrise && options.sunrise !== '--:--') score += 5; // boost near sunrise
+        if (windSpeed < 10) score += 5; // boost calm wind
+        if (isFullMoon) score += 5; // boost full moon
+        break;
       case 'Сулка':
-        if (isNewMoon) score += 10;
+        if (isNewMoon) score += 10; // boost +2 during new moon
         if (isOvercast) score += 5;
         break;
       case 'Распер':

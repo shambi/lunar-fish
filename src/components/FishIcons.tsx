@@ -397,7 +397,7 @@ export const FISH_ICON_MAP: Record<string, (props: FishIconProps) => JSX.Element
   'Сом': CatfishIcon,
   'Щука': PikeIcon,
   'Каракуда': CrucianIcon,
-  'Бяла риба (Уклей)': BleakIcon,
+  'Уклей': BleakIcon,
   'Пъстърва': TroutIcon,
   'Кефал': MulletIcon,
   'Скобар': BarbelIcon,
