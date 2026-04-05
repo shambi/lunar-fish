@@ -97,7 +97,10 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
               }`}
             >
               {isGlow && (
-                <Badge className="absolute -top-2 -right-1 text-[9px] px-1.5 py-0 bg-primary text-primary-foreground">
+                <Badge
+                  className="absolute -top-2 -right-1 text-[9px] px-1.5 py-0 bg-primary text-primary-foreground"
+                  style={{ animation: 'star-signal 2.5s ease-in-out infinite' }}
+                >
                   ⭐
                 </Badge>
               )}
