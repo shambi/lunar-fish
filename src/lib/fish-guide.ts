@@ -137,19 +137,20 @@ export const FISH_DATABASE: FishSpecies[] = [
     ecoGreen: '✅ Разрешен период.\nМинимален размер: 15 см.',
   },
   {
-    name: 'Бяла риба (Уклей)',
+    name: 'Уклей',
     emoji: '🐟',
     habitat: 'both',
     isPredator: false,
     baseData: {
-      groundbait: 'Облачна захранка, фина фракция',
-      bait: 'Ларви, малки червеи, тесто',
+      groundbait: 'Ситна захранка с конопено семе и трохи — малки порции',
+      bait: 'Опариш, малък червей, тесто, хляб',
       line_mm: 0.10,
-      hook_size: '18-22',
-      rigs: 'Ултралек поплавъчен монтаж',
+      hook_size: '18',
+      rigs: 'Ваглер с тънък повод, ултралек поплавъчен монтаж',
     },
-    spawnMonths: [],
-    ecoGreen: '✅ Няма сезонна забрана.\nМинимален размер: 15 см.',
+    spawnMonths: [4, 5],
+    ecoRed: '⛔ Забранен период: 15 април — 31 май.\nРиболовът е забранен!',
+    ecoGreen: '✅ Разрешен период.\nМинимален размер: 15 см.',
   },
   {
     name: 'Пъстърва',
@@ -344,12 +345,12 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: true,
     baseData: {
-      groundbait: '',
-      bait: 'Живец, малки рибки',
+      groundbait: 'Не се захранва',
+      bait: 'Живец (уклей, бабушка до 10см), мъртва рибка',
       line_mm: 0.22,
       hook_size: '6',
-      lures: 'Воблери 7-12см, туистери, джигове 10-20г, цветове: бяло/сребристо нощем, натурални през деня',
-      rigs: 'Джиг монтаж, живца монтаж',
+      lures: 'Воблери 7-12см, туистери, джигове 10-20г — бяло/сребристо нощем, натурални цветове денем',
+      rigs: 'Джиг монтаж, живца монтаж, подводна плувка',
     },
     spawnMonths: [3, 4, 5],
     ecoRed: '⛔ Забранен период: 15 март — 15 май.\nВнимание — забраната започва\nпо-рано от повечето видове!\nМинимален размер: 45 см.',
@@ -467,8 +468,13 @@ export function scoreFish(
         if (isFullMoon) score += 5;
         score += 3; // active year-round bonus
         break;
+      case 'Уклей':
+        if (options.sunrise && options.sunrise !== '--:--') score += 5; // boost near sunrise
+        if (windSpeed < 10) score += 5; // boost calm wind
+        if (isFullMoon) score += 5; // boost full moon
+        break;
       case 'Сулка':
-        if (isNewMoon) score += 10;
+        if (isNewMoon) score += 10; // boost +2 during new moon
         if (isOvercast) score += 5;
         break;
       case 'Распер':

@@ -89,7 +89,7 @@ export function getMoonData(date: Date = new Date()): MoonData {
       { name: 'Шаран', icon: '🐟' },
       { name: 'Каракуда', icon: '🐠' },
       { name: 'Сом', icon: '🐋' },
-      { name: 'Бяла риба', icon: '🐡' },
+      { name: 'Уклей', icon: '🐡' },
     ];
   } else if (phaseName === 'Waxing Gibbous' || phaseName === 'Waning Gibbous') {
     fishingScore = 4;
