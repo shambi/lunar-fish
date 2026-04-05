@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect } from 'react';
 import { getMoonData } from '@/lib/moon';
 import { getSmartFishingTips } from '@/lib/fishing-expert';
 import { useWeather } from '@/hooks/use-weather';
-import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader2, MapPinOff, Gauge, Thermometer } from 'lucide-react';
+import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader2, MapPinOff, Gauge } from 'lucide-react';
 import { FishGuide } from '@/components/FishGuide';
 import { ForecastCards } from '@/components/ForecastCards';
 
@@ -452,18 +452,42 @@ const Index = () => {
               })()}
             </div>
           </div>
-          {/* Water Temp */}
-          {/* Divider + Water Temp */}
+          {/* Fish Activity Indicator */}
           <div className="border-t border-border my-4" />
-          <div className="flex justify-center">
-            <div className="flex flex-col items-center gap-1">
-              <Thermometer className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display text-foreground">
-                {weather ? `${weather.waterTemp}°C` : '—'}
-              </span>
-              <span className="text-xs text-muted-foreground">Вода</span>
-            </div>
-          </div>
+          {(() => {
+            if (!weather) return null;
+            const moon = getMoonData();
+            // Derive activity from pressure trend, moon score, weather
+            let activityScore = 0;
+            if (weather.pressureTrend === 'rising') activityScore += 2;
+            else if (weather.pressureTrend === 'stable') activityScore += 1;
+            activityScore += Math.min(moon.fishingScore, 3); // 0-3 from moon
+            const wc = weather.weatherCode;
+            if (wc <= 3) activityScore += 1; // clear/partly cloudy
+            if (weather.windSpeed < 15) activityScore += 1;
+            // Map to 3 levels: 0-3 low, 4-5 medium, 6+ high
+            const level = activityScore >= 6 ? 'high' : activityScore >= 4 ? 'medium' : 'low';
+            const config = {
+              high: { emoji: '🟢', label: 'Висока', color: 'hsl(var(--primary))', hint: 'Рибата е активна при тези условия' },
+              medium: { emoji: '🟡', label: 'Средна', color: 'hsl(40 90% 60%)', hint: 'Умерена активност — подберете захранката внимателно' },
+              low: { emoji: '🔴', label: 'Слаба', color: 'hsl(0 70% 55%)', hint: 'Очаква се по-слабо кълване' },
+            };
+            const c = config[level];
+            return (
+              <div className="flex flex-col items-center gap-1.5">
+                <svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
+                  <ellipse cx="22" cy="24" rx="14" ry="10" />
+                  <path d="M36 24 L44 16 M36 24 L44 32" />
+                  <circle cx="12" cy="22" r="1.5" fill="currentColor" />
+                </svg>
+                <span className="text-lg font-bold font-display" style={{ color: c.color }}>
+                  {c.emoji} {c.label}
+                </span>
+                <span className="text-[10px] text-muted-foreground">Активност</span>
+                <span className="text-[10px] text-muted-foreground/70 text-center max-w-[200px]">{c.hint}</span>
+              </div>
+            );
+          })()}
           {weather && (
             <div className="flex items-center justify-center gap-2 mt-4 pt-3 border-t border-border">
               <span className="text-xl">{weather.weatherIcon}</span>
