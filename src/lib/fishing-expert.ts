@@ -10,6 +10,24 @@ export interface SmartTips {
   targetFish: TargetFish[];
 }
 
+export type TimePeriod = 'morning' | 'day' | 'evening' | 'night';
+
+export function getTimePeriod(hour: number): TimePeriod {
+  if (hour >= 5 && hour < 10) return 'morning';
+  if (hour >= 10 && hour < 17) return 'day';
+  if (hour >= 17 && hour < 21) return 'evening';
+  return 'night';
+}
+
+export function getTimePeriodLabel(period: TimePeriod): string {
+  switch (period) {
+    case 'morning': return 'тази сутрин';
+    case 'day': return 'през деня';
+    case 'evening': return 'тази вечер';
+    case 'night': return 'през нощта';
+  }
+}
+
 export function getSmartFishingTips(
   moon: MoonData,
   temperature: number,
@@ -21,6 +39,9 @@ export function getSmartFishingTips(
     waterTemp?: number;
     sunrise?: string;
     sunset?: string;
+    timePeriod?: TimePeriod;
+    isInPeak?: boolean;
+    peakType?: 'major' | 'minor' | null;
   }
 ): SmartTips {
   const isHot = temperature > 25;
@@ -32,8 +53,12 @@ export function getSmartFishingTips(
   const pressureTrend = options?.pressureTrend ?? 'stable';
   const pressureDiff = options?.pressureDiff ?? 0;
   const waterTemp = options?.waterTemp;
-  const sunrise = options?.sunrise;
-  const sunset = options?.sunset;
+  const sunrise = options?.sunrise ?? '06:00';
+  const sunset = options?.sunset ?? '20:00';
+  const timePeriod = options?.timePeriod ?? getTimePeriod(new Date().getHours());
+  const isInPeak = options?.isInPeak ?? false;
+  const peakType = options?.peakType ?? null;
+  const timeLabel = isInPeak ? 'в момента' : getTimePeriodLabel(timePeriod);
 
   // Weather-based tip
   let weatherTip: string;
