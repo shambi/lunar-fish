@@ -72,43 +72,93 @@ const SolunarSection = ({ weather }: { weather: any }) => {
     return '';
   };
 
+  // Feeding advice logic
+  const getFeedingAdvice = (): { text: string; urgent: boolean } | null => {
+    if (!countdown || !weather?.temperature) return null;
+    const temp = weather.temperature;
+
+    // Currently inside a peak
+    if (countdown.active) {
+      return { text: '🐟 Рибата е активна — не захранвай повече, хвърляй стръв!', urgent: false };
+    }
+
+    const totalMin = (countdown.hours || 0) * 60 + countdown.minutes;
+
+    // More than 60 min away — no advice
+    if (totalMin > 60) return null;
+
+    const isMajor = countdown.type === 'major';
+
+    if (isMajor) {
+      if (totalMin > 30) {
+        // 60-30 min before major
+        if (temp < 8) return { text: '🎣 Захрани умерено — студената вода забавя рибата. По-малки порции.', urgent: false };
+        if (temp <= 18) return { text: '🎣 Захрани обилно — добри условия. Хвърли повече захранка на едно място.', urgent: false };
+        return { text: '🎣 Захрани умерено — топлата вода намалява апетита. По-малки порции.', urgent: false };
+      } else {
+        // 30-0 min before major
+        if (temp < 8) return { text: '⚡ Захрани сега! Малки порции — пикът започва скоро.', urgent: true };
+        if (temp <= 18) return { text: '⚡ Захрани сега! Хвърли обилно — пикът започва след малко!', urgent: true };
+        return { text: '⚡ Захрани сега! Умерено — пикът започва скоро.', urgent: true };
+      }
+    } else {
+      // Minor peak 60-0 min
+      if (temp < 8) return { text: '🎣 Малък пик наближава — символично захранване.', urgent: false };
+      return { text: '🎣 Малък пик наближава — лека захранка.', urgent: false };
+    }
+  };
+
+  const feedingAdvice = getFeedingAdvice();
+
+  // Fish SVG for peak cards (same as Активност component)
+  const PeakFishIcon = ({ glow, color }: { glow: boolean; color: string }) => (
+    <svg width="13" height="13" viewBox="0 0 48 48" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <ellipse cx="22" cy="24" rx="14" ry="10" />
+      <path d="M36 24 L44 16 M36 24 L44 32" />
+      <circle cx="12" cy="22" r="1.5" fill={color} />
+    </svg>
+  );
+
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       {/* PART 1 — Two pill badges */}
-      <div className="flex gap-2">
-        <div className="flex-1 text-center rounded-[20px] py-1 px-2"
+      <div className="flex gap-1.5">
+        <div className="flex-1 text-center rounded-[20px] py-[4px] px-[10px]"
           style={{ background: 'rgba(255,140,66,0.12)', border: '1px solid rgba(255,140,66,0.4)' }}>
-          <span className="text-xs" style={{ color: '#FF8C42' }}>
+          <span style={{ fontSize: '11px', color: '#FF8C42' }}>
             🌅 {weather.sunrise || '--:--'} • 🌄 {weather.sunset || '--:--'}
           </span>
         </div>
-        <div className="flex-1 text-center rounded-[20px] py-1 px-2"
+        <div className="flex-1 text-center rounded-[20px] py-[4px] px-[10px]"
           style={{ background: 'rgba(0,212,212,0.08)', border: '1px solid rgba(0,212,212,0.3)' }}>
-          <span className="text-xs" style={{ color: '#00D4D4' }}>
+          <span style={{ fontSize: '11px', color: '#00D4D4' }}>
             🌙 {weather.moonrise || '--:--'} • 🌑 {weather.moonset || '--:--'}
           </span>
         </div>
       </div>
 
       {/* PART 2 — Activity cards */}
-      <div className="space-y-1.5">
+      <div className="space-y-1">
         {peaks.map((peak: any, i: number) => {
           const isMajor = peak.type === 'major';
           const active = isInRange(peak.start, peak.end);
 
           return (
-            <div key={i} className="relative rounded-xl p-2.5"
-              style={isMajor ? {
-                background: 'rgba(0,18,28,0.9)',
-                border: '1.5px solid #00D4D4',
-                boxShadow: '0 0 12px rgba(0,212,212,0.25)',
-              } : {
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.1)',
+            <div key={i} className="relative rounded-lg"
+              style={{
+                padding: '10px',
+                ...(isMajor ? {
+                  background: 'rgba(0,18,28,0.9)',
+                  border: '1.5px solid #00D4D4',
+                  boxShadow: '0 0 10px rgba(0,212,212,0.2)',
+                } : {
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                }),
               }}>
               {/* СЕГА АКТИВНО badge */}
               {active && (
-                <div className="absolute -top-2.5 left-3 rounded-[10px] px-2.5 py-0.5 text-[10px] font-bold"
+                <div className="absolute -top-2 left-3 rounded-[10px] px-2 py-0.5 text-[9px] font-bold"
                   style={{
                     background: '#00D4D4', color: '#000',
                     animation: 'pulse-active 1.5s ease-in-out infinite',
@@ -120,8 +170,11 @@ const SolunarSection = ({ weather }: { weather: any }) => {
               <div className="flex items-center">
                 {/* LEFT — Time range */}
                 <div className="w-[40%]">
-                  <div className={`font-bold leading-tight ${isMajor ? 'text-[16px] text-white' : 'text-[14px]'}`}
-                    style={!isMajor ? { color: 'rgba(255,255,255,0.7)' } : undefined}>
+                  <div className="font-bold leading-tight"
+                    style={{
+                      fontSize: isMajor ? '18px' : '15px',
+                      color: isMajor ? '#fff' : 'rgba(255,255,255,0.7)',
+                    }}>
                     {peak.start} —<br />{peak.end}
                   </div>
                   <div className="mt-0.5" style={{
@@ -145,7 +198,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
                   <div style={{
                     fontSize: '10px',
                     color: isMajor ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.35)',
-                    marginTop: '2px',
+                    marginTop: '1px',
                   }}>
                     {isMajor ? 'Най-висока вероятност за удар.' : 'Умерена активност.'}
                   </div>
@@ -154,13 +207,10 @@ const SolunarSection = ({ weather }: { weather: any }) => {
                 {/* RIGHT — Fish icons */}
                 <div className="w-[20%] flex flex-col items-center gap-0.5">
                   {Array.from({ length: isMajor ? 3 : 1 }).map((_, fi) => (
-                    <Fish key={fi} size={14}
-                      style={isMajor ? {
-                        color: '#00D4D4',
-                        filter: 'drop-shadow(0 0 4px rgba(0,212,212,0.7))',
-                      } : {
-                        color: 'rgba(255,255,255,0.25)',
-                      }} />
+                    <PeakFishIcon key={fi}
+                      glow={isMajor}
+                      color={isMajor ? '#00D4D4' : 'rgba(0,212,212,0.3)'}
+                    />
                   ))}
                 </div>
               </div>
@@ -169,20 +219,31 @@ const SolunarSection = ({ weather }: { weather: any }) => {
         })}
       </div>
 
-      {/* PART 3 — Next peak countdown */}
+      {/* PART 3 — Next peak countdown + feeding advice */}
       {countdown && (
-        <p className="text-center text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-          {countdown.active ? (
-            <span style={{ color: '#00D4D4' }}>
-              Активен пик още <strong>{countdown.minutes}мин.</strong>
-            </span>
-          ) : (
-            <>
-              Следващ <strong className="text-white">{countdown.type === 'major' ? 'Главен' : 'Малък'} пик</strong> след{' '}
-              <strong className="text-white">{countdown.hours}ч. {countdown.minutes}мин.</strong>
-            </>
+        <div className="text-center">
+          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            {countdown.active ? (
+              <span style={{ color: '#00D4D4' }}>
+                Активен пик още <strong>{countdown.minutes}мин.</strong>
+              </span>
+            ) : (
+              <>
+                Следващ <strong className="text-white">{countdown.type === 'major' ? 'Главен' : 'Малък'} пик</strong> след{' '}
+                <strong className="text-white">{countdown.hours}ч. {countdown.minutes}мин.</strong>
+              </>
+            )}
+          </p>
+          {feedingAdvice && (
+            <p className="mt-1" style={{
+              fontSize: '11px',
+              color: feedingAdvice.urgent ? '#00D4D4' : 'rgba(255,255,255,0.7)',
+              fontWeight: feedingAdvice.urgent ? 600 : 400,
+            }}>
+              {feedingAdvice.text}
+            </p>
           )}
-        </p>
+        </div>
       )}
     </div>
   );
