@@ -268,7 +268,12 @@ export function getDailyAdvice(
   } else if (isMorning) {
     s3 = `Най-добрият прозорец е сега — между ${sunrise} и ${addHour(sunrise)}.`;
   } else if (isEvening) {
-    s3 = `Вечерният прозорец е сега — активността ще се засили до ${addHour(sunset.split(':').map(Number).map((v,i) => i===0 ? String(Math.min(v,23)).padStart(2,'0') : String(v+30 > 59 ? 0 : v+30).padStart(2,'0')).join(':') !== sunset ? sunset : subHour(sunset)}.`;
+    const sunsetPlus30 = (() => {
+      const [h, m] = sunset.split(':').map(Number);
+      const total = h * 60 + m + 30;
+      return `${String(Math.min(23, Math.floor(total / 60))).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+    })();
+    s3 = `Вечерният прозорец е сега — активността ще се засили до ${sunsetPlus30}.`;
   } else if (isDay) {
     if (temp > 25) {
       s3 = `Най-добрият прозорец е минал. Следващият добър момент е около ${subHour(sunset)}.`;
