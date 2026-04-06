@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { getMoonData } from '@/lib/moon';
-import { getSmartFishingTips } from '@/lib/fishing-expert';
+import { getSmartFishingTips, getTimePeriod } from '@/lib/fishing-expert';
 import { useWeather } from '@/hooks/use-weather';
 import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader2, MapPinOff, Gauge } from 'lucide-react';
 import { FishGuide } from '@/components/FishGuide';
@@ -261,6 +261,26 @@ const Index = () => {
     day: 'numeric',
   }).replace(/\s*г\.?\s*$/i, '');
 
+  const currentHour = new Date().getHours();
+  const timePeriod = getTimePeriod(currentHour);
+
+  // Detect if currently inside a solunar peak
+  const solunarContext = useMemo(() => {
+    if (!weather?.solunarPeaks) return { isInPeak: false, peakType: null as 'major' | 'minor' | null };
+    const now = new Date();
+    const currentMin = now.getHours() * 60 + now.getMinutes();
+    for (const peak of weather.solunarPeaks) {
+      const [sh, sm] = (peak.start || '').split(':').map(Number);
+      const [eh, em] = (peak.end || '').split(':').map(Number);
+      if (isNaN(sh) || isNaN(eh)) continue;
+      const s = sh * 60 + sm;
+      const e = eh * 60 + em;
+      const inRange = s <= e ? (currentMin >= s && currentMin <= e) : (currentMin >= s || currentMin <= e);
+      if (inRange) return { isInPeak: true, peakType: peak.type as 'major' | 'minor' };
+    }
+    return { isInPeak: false, peakType: null as 'major' | 'minor' | null };
+  }, [weather]);
+
   const tips = useMemo(() => {
     if (!weather) return null;
     return getSmartFishingTips(moon, weather.temperature, weather.windSpeed, weather.weatherCode, {
@@ -268,8 +288,11 @@ const Index = () => {
       waterTemp: weather.waterTemp,
       sunrise: weather.sunrise,
       sunset: weather.sunset,
+      timePeriod,
+      isInPeak: solunarContext.isInPeak,
+      peakType: solunarContext.peakType,
     });
-  }, [moon, weather]);
+  }, [moon, weather, timePeriod, solunarContext]);
 
   const swimAnimations = ['fish-swim-1', 'fish-swim-2', 'fish-swim-3'];
   const fishIcons = Array.from({ length: moon.fishingScore }, (_, i) => (
@@ -379,7 +402,15 @@ const Index = () => {
             </h3>
             <p className="text-sm text-foreground leading-relaxed">{tips.weatherTip}</p>
             <p className="text-sm text-foreground leading-relaxed">{tips.windTip}</p>
-            <p className="text-sm text-primary font-medium">{tips.timingTip}</p>
+            <p className="text-sm font-medium" style={{
+              color: solunarContext.isInPeak && solunarContext.peakType === 'major'
+                ? '#00D4D4'
+                : solunarContext.isInPeak && solunarContext.peakType === 'minor'
+                ? 'rgba(0,212,212,0.6)'
+                : undefined
+            }}>
+              {tips.timingTip}
+            </p>
           </section>
         )}
 
@@ -613,7 +644,7 @@ const Index = () => {
         <ForecastCards weather={weather} />
 
         {/* Fish Guide */}
-        <FishGuide moon={moon} weather={weather} />
+        <FishGuide moon={moon} weather={weather} solunarContext={solunarContext} />
 
         <footer className="text-center mt-8 space-y-1">
           <p className="text-xs text-muted-foreground">На слука! 🎣</p>
