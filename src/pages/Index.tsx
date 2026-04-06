@@ -402,7 +402,15 @@ const Index = () => {
             </h3>
             <p className="text-sm text-foreground leading-relaxed">{tips.weatherTip}</p>
             <p className="text-sm text-foreground leading-relaxed">{tips.windTip}</p>
-            <p className="text-sm text-primary font-medium">{tips.timingTip}</p>
+            <p className="text-sm font-medium" style={{
+              color: solunarContext.isInPeak && solunarContext.peakType === 'major'
+                ? '#00D4D4'
+                : solunarContext.isInPeak && solunarContext.peakType === 'minor'
+                ? 'rgba(0,212,212,0.6)'
+                : undefined
+            }}>
+              {tips.timingTip}
+            </p>
           </section>
         )}
 
