@@ -48,7 +48,8 @@ export function getDailyAdvice(
   fish: FishSpecies,
   moon: MoonData,
   weather: WeatherData | null,
-  terrain: 'river' | 'lake'
+  terrain: 'river' | 'lake',
+  solunarContext?: { isInPeak: boolean; peakType: 'major' | 'minor' | null }
 ): DailyAdvice {
   const name = fish.name;
   const temp = weather?.temperature ?? 18;
@@ -248,22 +249,36 @@ export function getDailyAdvice(
     }
   }
 
-  // ——— SENTENCE 3: WHEN ———
+  // ——— SENTENCE 3: WHEN (time-period aware) ———
   let s3 = '';
-  if (pt === 'stable' && temp >= 12 && temp <= 22) {
-    s3 = `При стабилно налягане очаквай равномерна активност през целия ден.`;
-  } else if (temp > 25) {
-    s3 = `Най-добрият прозорец е между ${sunrise} и ${addHour(sunrise)} — не го пропускай.`;
-  } else if (temp < 5) {
-    s3 = `Най-топлите часове около обяд са единственият шанс днес.`;
-  } else {
-    // Alternate between sunrise and sunset suggestions
-    const hour = new Date().getHours();
-    if (hour < 12) {
-      s3 = `Най-добрият прозорец е между ${sunrise} и ${addHour(sunrise)} — не го пропускай.`;
+  const hour = new Date().getHours();
+  const isNight = hour >= 21 || hour < 5;
+  const isMorning = hour >= 5 && hour < 10;
+  const isEvening = hour >= 17 && hour < 21;
+  const isDay = hour >= 10 && hour < 17;
+
+  // Solunar peak override
+  if (solunarContext?.isInPeak) {
+    const pLabel = solunarContext.peakType === 'major' ? 'главен' : 'малък';
+    s3 = `🎣 Хвърляй веднага — в момента тече ${pLabel} солунарен пик!`;
+  } else if (isNight && !isPredator) {
+    s3 = `Мирните риби са неактивни през нощта. Опитай утре от ${sunrise}.`;
+  } else if (isNight && isPredator) {
+    s3 = `Нощем ${name} е в своята стихия — хвърляй сега, активността е висока.`;
+  } else if (isMorning) {
+    s3 = `Най-добрият прозорец е сега — между ${sunrise} и ${addHour(sunrise)}.`;
+  } else if (isEvening) {
+    s3 = `Вечерният прозорец е сега — активността ще се засили до ${addHour(sunset.split(':').map(Number).map((v,i) => i===0 ? String(Math.min(v,23)).padStart(2,'0') : String(v+30 > 59 ? 0 : v+30).padStart(2,'0')).join(':') !== sunset ? sunset : subHour(sunset)}.`;
+  } else if (isDay) {
+    if (temp > 25) {
+      s3 = `Най-добрият прозорец е минал. Следващият добър момент е около ${subHour(sunset)}.`;
+    } else if (temp < 5) {
+      s3 = `Най-топлите часове около обяд са единственият шанс днес.`;
     } else {
-      s3 = `Около залез (${subHour(sunset)} — ${sunset}) активността ще се засили.`;
+      s3 = `През деня чакай търпеливо. Следващият добър момент е около ${subHour(sunset)}.`;
     }
+  } else {
+    s3 = `Около залез (${subHour(sunset)} — ${sunset}) активността ще се засили.`;
   }
 
   const tip = `${s1}\n${s2}\n${s3}`;

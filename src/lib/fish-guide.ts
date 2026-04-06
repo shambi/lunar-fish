@@ -32,6 +32,7 @@ export interface ScoringOptions {
   pressureTrend?: 'rising' | 'stable' | 'falling';
   moonPhaseName?: string;
   sunrise?: string;
+  timePeriod?: 'morning' | 'day' | 'evening' | 'night';
 }
 
 export const FISH_DATABASE: FishSpecies[] = [
@@ -481,6 +482,17 @@ export function scoreFish(
         if (temperature > 15) score += 10;
         if (isSunny) score += 5;
         break;
+    }
+
+    // Night-time scoring adjustments
+    const tp = options.timePeriod;
+    if (tp === 'night') {
+      const nocturnalBoost2 = ['Сом', 'Сулка', 'Щука'];
+      const nocturnalBoost1 = ['Мряна', 'Костур'];
+      const dayOnly = ['Червеноперка', 'Уклей', 'Толстолоб', 'Амур'];
+      if (nocturnalBoost2.includes(fish.name)) score += 10; // ~+2 stars
+      else if (nocturnalBoost1.includes(fish.name)) score += 5; // ~+1 star
+      else if (dayOnly.includes(fish.name)) score -= 5;
     }
   }
 
