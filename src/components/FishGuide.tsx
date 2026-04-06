@@ -17,15 +17,24 @@ import { FISH_ICON_MAP } from '@/components/FishIcons';
 interface FishGuideProps {
   moon: MoonData;
   weather: WeatherData | null;
+  solunarContext?: { isInPeak: boolean; peakType: 'major' | 'minor' | null };
 }
 
-export function FishGuide({ moon, weather }: FishGuideProps) {
+export function FishGuide({ moon, weather, solunarContext }: FishGuideProps) {
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
   const [selectedFish, setSelectedFish] = useState<ScoredFish | null>(null);
 
   const temp = weather?.temperature ?? 18;
   const wind = weather?.windSpeed ?? 5;
   const weatherCode = weather?.weatherCode ?? 0;
+
+  const timePeriod = useMemo(() => {
+    const h = new Date().getHours();
+    if (h >= 5 && h < 10) return 'morning' as const;
+    if (h >= 10 && h < 17) return 'day' as const;
+    if (h >= 17 && h < 21) return 'evening' as const;
+    return 'night' as const;
+  }, []);
 
   const scoredFish = useMemo(
     () => getScoredFish(moon.fishingScore, temp, wind, terrain, {
@@ -34,8 +43,9 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
       pressureTrend: weather?.pressureTrend,
       moonPhaseName: moon.phaseName,
       sunrise: weather?.sunrise,
+      timePeriod,
     }),
-    [moon.fishingScore, moon.phaseName, temp, wind, terrain, weatherCode, weather?.waterTemp, weather?.pressureTrend, weather?.sunrise]
+    [moon.fishingScore, moon.phaseName, temp, wind, terrain, weatherCode, weather?.waterTemp, weather?.pressureTrend, weather?.sunrise, timePeriod]
   );
 
   const modalData = useMemo(() => {
@@ -45,8 +55,8 @@ export function FishGuide({ moon, weather }: FishGuideProps) {
 
   const advice = useMemo(() => {
     if (!selectedFish) return null;
-    return getDailyAdvice(selectedFish, moon, weather, terrain);
-  }, [selectedFish, moon, weather, terrain]);
+    return getDailyAdvice(selectedFish, moon, weather, terrain, solunarContext);
+  }, [selectedFish, moon, weather, terrain, solunarContext]);
 
   return (
     <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
