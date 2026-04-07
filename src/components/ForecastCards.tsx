@@ -1,7 +1,8 @@
-import { useMemo, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getMoonData } from '@/lib/moon';
 import { getWeatherInfo } from '@/hooks/use-weather';
 import type { WeatherData } from '@/hooks/use-weather';
+import { calculateFishingScore } from '@/lib/fishing-score';
 
 interface DayForecast {
   date: Date;
@@ -18,18 +19,10 @@ interface ScoredDay extends DayForecast {
   moonEmoji: string;
   moonPhaseNameBg: string;
   moonBaseScore: number;
+  moonIllumination: number;
   finalScore: number;
   weatherIcon: string;
 }
-
-const SCORE_LABELS: Record<number, { label: string; color: string }> = {
-  5: { label: 'Отличен', color: '#00D4D4' },
-  4: { label: 'Добър', color: '#4CAF50' },
-  3: { label: 'Среден', color: '#FFA726' },
-  2: { label: 'Слаб', color: '#FF7043' },
-  1: { label: 'Лош', color: '#EF5350' },
-  0: { label: 'Лош', color: '#EF5350' },
-};
 
 function FishScoreIcon({ filled, size = 16 }: { filled: boolean; size?: number }) {
   return (
@@ -82,14 +75,19 @@ export function ForecastCards({ weather }: { weather: WeatherData | null }) {
           const precipitation = d.precipitation_sum[i];
           const pressure = Math.round(d.surface_pressure_mean?.[i] ?? 0);
 
-          let score = moon.fishingScore;
-          if (precipitation === 0) score += 1;
-          if (precipitation > 5) score -= 1;
-          if (windMax < 15) score += 1;
-          if (windMax > 30) score -= 1;
-          if (pressure > todayPressure) score += 1;
-          if (pressure < todayPressure) score -= 1;
-          score = Math.max(0, Math.min(5, score));
+          const pressureTrend: 'rising' | 'stable' | 'falling' =
+            pressure > todayPressure ? 'rising' : pressure < todayPressure ? 'falling' : 'stable';
+          const scoreResult = calculateFishingScore({
+            moonScore: moon.fishingScore,
+            moonIllumination: moon.illumination,
+            temperature: tempMax,
+            windSpeed: windMax,
+            weatherCode,
+            pressureTrend,
+            pressureChangeRate: pressure - todayPressure,
+            month: date.getMonth() + 1,
+            hour: 12,
+          });
 
           const dayNum = date.getDate().toString().padStart(2, '0');
           const monthNum = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -106,7 +104,8 @@ export function ForecastCards({ weather }: { weather: WeatherData | null }) {
             moonEmoji: moon.emoji,
             moonPhaseNameBg: moon.phaseNameBg,
             moonBaseScore: moon.fishingScore,
-            finalScore: score,
+            moonIllumination: moon.illumination,
+            finalScore: scoreResult.score,
             weatherIcon: info.icon,
           });
         }
@@ -131,7 +130,17 @@ export function ForecastCards({ weather }: { weather: WeatherData | null }) {
       <div className="grid grid-cols-2 gap-3">
         {days.map((day, idx) => {
           const isBest = idx === bestIdx && days[0].finalScore !== days[1].finalScore;
-          const { label: scoreLabel, color: scoreColor } = SCORE_LABELS[day.finalScore] ?? SCORE_LABELS[0];
+          const { label: scoreLabel, color: scoreColor } = calculateFishingScore({
+            moonScore: day.moonBaseScore,
+            moonIllumination: day.moonIllumination,
+            temperature: day.tempMax,
+            windSpeed: day.windMax,
+            weatherCode: day.weatherCode,
+            pressureTrend: day.pressure > weather.pressure ? 'rising' : day.pressure < weather.pressure ? 'falling' : 'stable',
+            pressureChangeRate: day.pressure - weather.pressure,
+            month: day.date.getMonth() + 1,
+            hour: 12,
+          });
 
           return (
             <div

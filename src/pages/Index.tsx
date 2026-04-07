@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { getMoonData } from '@/lib/moon';
 import { getSmartFishingTips, getTimePeriod } from '@/lib/fishing-expert';
+import { calculateFishingScore } from '@/lib/fishing-score';
 import { useWeather } from '@/hooks/use-weather';
 import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader as Loader2, MapPinOff, Gauge } from 'lucide-react';
 import { FishGuide } from '@/components/FishGuide';
@@ -263,6 +264,18 @@ const Index = () => {
 
   const currentHour = new Date().getHours();
   const timePeriod = getTimePeriod(currentHour);
+  const now = new Date();
+  const fishingScore = calculateFishingScore({
+    moonScore: moon.fishingScore,
+    moonIllumination: moon.illumination,
+    temperature: weather?.temperature ?? 15,
+    windSpeed: weather?.windSpeed ?? 10,
+    weatherCode: weather?.weatherCode ?? 1,
+    pressureTrend: weather?.pressureTrend ?? 'stable',
+    pressureChangeRate: weather?.pressureChangeRate ?? 0,
+    month: now.getMonth() + 1,
+    hour: now.getHours(),
+  });
 
   // Detect if currently inside a solunar peak
   const solunarContext = useMemo(() => {
@@ -295,7 +308,7 @@ const Index = () => {
   }, [moon, weather, timePeriod, solunarContext]);
 
   const swimAnimations = ['fish-swim-1', 'fish-swim-2', 'fish-swim-3'];
-  const fishIcons = Array.from({ length: moon.fishingScore }, (_, i) => (
+  const fishIcons = Array.from({ length: Math.max(0, Math.min(5, Math.round(fishingScore.score))) }, (_, i) => (
     <span
       key={i}
       className="text-2xl drop-shadow-[0_0_6px_hsl(180_80%_55%/0.6)]"
@@ -378,10 +391,25 @@ const Index = () => {
             <Fish className="w-4 h-4" />
             Прогноза за риболов
           </h3>
+          {fishingScore.isOverride && fishingScore.overrideReason && (
+            <div
+              className="mb-3"
+              style={{
+                background: 'rgba(239, 83, 80, 0.15)',
+                border: '1px solid #EF5350',
+                borderRadius: '8px',
+                padding: '10px 14px',
+                fontSize: '13px',
+                color: '#EF5350',
+              }}
+            >
+              ⚠️ {fishingScore.overrideReason}
+            </div>
+          )}
           <div className="flex items-center gap-3 mb-2">
             <div className="flex gap-1">{fishIcons}</div>
             <span className="text-lg font-bold font-display text-foreground">
-              {moon.fishingLabel}
+              {fishingScore.label}
             </span>
           </div>
           <p className="text-sm text-secondary-foreground leading-relaxed">
@@ -395,6 +423,11 @@ const Index = () => {
             <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
               🧠 Умни съвети
             </h3>
+            {fishingScore.isOverride && fishingScore.overrideReason && (
+              <p className="text-sm font-bold leading-relaxed" style={{ color: '#EF5350' }}>
+                ⚠️ {fishingScore.overrideReason}
+              </p>
+            )}
             <p className="text-sm text-foreground leading-relaxed">{tips.weatherTip}</p>
             <p className="text-sm text-foreground leading-relaxed">{tips.windTip}</p>
             <p className="text-sm font-medium" style={{
