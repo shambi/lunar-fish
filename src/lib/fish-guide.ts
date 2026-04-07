@@ -509,8 +509,8 @@ export function getScoredFish(
   const currentMonth = new Date().getMonth() + 1;
 
   const scored = FISH_DATABASE
-    // Hide fish that shouldn't appear on current terrain
-    .filter((fish) => fish.hideOnTerrain !== terrain)
+    // Show only fish compatible with selected terrain.
+    .filter((fish) => (fish.habitat === 'both' || fish.habitat === terrain) && fish.hideOnTerrain !== terrain)
     .map((fish) => {
       const score = scoreFish(fish, moonScore, temperature, windSpeed, currentMonth, terrain, options);
       const stars = Math.min(5, Math.max(1, Math.round(score / 20)));

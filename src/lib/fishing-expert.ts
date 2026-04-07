@@ -34,6 +34,7 @@ export function getSmartFishingTips(
   windSpeed: number,
   weatherCode: number,
   options?: {
+    terrain?: 'river' | 'lake';
     pressureTrend?: 'rising' | 'stable' | 'falling';
     pressureDiff?: number;
     waterTemp?: number;
@@ -55,10 +56,12 @@ export function getSmartFishingTips(
   const waterTemp = options?.waterTemp;
   const sunrise = options?.sunrise ?? '06:00';
   const sunset = options?.sunset ?? '20:00';
+  const terrain = options?.terrain ?? 'lake';
   const timePeriod = options?.timePeriod ?? getTimePeriod(new Date().getHours());
   const isInPeak = options?.isInPeak ?? false;
   const peakType = options?.peakType ?? null;
   const timeLabel = isInPeak ? 'в момента' : getTimePeriodLabel(timePeriod);
+  const terrainLabel = terrain === 'river' ? 'на река' : 'на водоем';
 
   // Weather-based tip
   let weatherTip: string;
@@ -75,9 +78,11 @@ export function getSmartFishingTips(
   } else if (isCold) {
     weatherTip = '❄️ Студено време — рибата е по-бавна. Използвайте бавни презентации и малки стръвки.';
   } else if (isRainy) {
-    weatherTip = `🌧️ Дъждовно — дъждът насища водата с кислород. Отличен момент за риболов ${timeLabel}!`;
+    weatherTip = terrain === 'river'
+      ? `🌧️ Дъждовно — мътната вода и кислородът активират рибата ${terrainLabel}. Отличен момент за риболов ${timeLabel}!`
+      : `🌧️ Дъждовно — дъждът насища водата с кислород ${terrainLabel}. Отличен момент за риболов ${timeLabel}!`;
   } else {
-    weatherTip = `✅ Приятно време — добри условия за риболов ${timeLabel}.`;
+    weatherTip = `✅ Приятно време — добри условия за риболов ${timeLabel} ${terrainLabel}.`;
   }
 
   // Night-specific moon illumination additions
@@ -99,11 +104,17 @@ export function getSmartFishingTips(
   // Wind-based tip
   let windTip: string;
   if (isWindy) {
-    windTip = `💨 Силен вятър ${timeLabel} — използвайте по-тежки тежести (40-60г) и ловете от подветрената страна.`;
+    windTip = terrain === 'river'
+      ? `💨 Силен вятър ${timeLabel} ${terrainLabel} — дръжте монтажа ниско и по-тежък (40-60г), насочвайте замятането по течението.`
+      : `💨 Силен вятър ${timeLabel} ${terrainLabel} — използвайте по-тежки тежести (40-60г) и ловете от подветрената страна.`;
   } else if (windSpeed > 10) {
-    windTip = `🍃 Умерен вятър ${timeLabel} — лек бриз помага за разбъркване на водата. Добри условия.`;
+    windTip = terrain === 'river'
+      ? `🍃 Умерен вятър ${timeLabel} ${terrainLabel} — бризът помага, но пазете стабилен контакт с дъното и контрол на линията.`
+      : `🍃 Умерен вятър ${timeLabel} ${terrainLabel} — лек бриз помага за разбъркване на водата. Добри условия.`;
   } else {
-    windTip = `🪶 Тихо ${timeLabel} — спокойна вода. Използвайте по-деликатни монтажи и по-тънко влакно.`;
+    windTip = terrain === 'river'
+      ? `🪶 Тихо ${timeLabel} ${terrainLabel} — при бавен поток рибата става предпазлива. Ползвайте по-деликатни монтажи и по-тънко влакно.`
+      : `🪶 Тихо ${timeLabel} ${terrainLabel} — спокойна вода. Използвайте по-деликатни монтажи и по-тънко влакно.`;
   }
 
   // Timing tip — solunar peak override first
@@ -146,9 +157,13 @@ export function getSmartFishingTips(
   } else if (timePeriod === 'night' && !isStormy) {
     fishingStyleTip = '🎣 Нощем хищниците излизат на лов. Използвай по-едри примамки с активна игра — тъмни цветове или фосфоресциращи. Сомът реагира на вибрация — опитай на кльонк или едра мъртва рибка.';
   } else if (isWindy && isHot) {
-    fishingStyleTip = '🎣 Фидер риболов на дъно в дълбоки участъци — вятърът и топлината карат рибата надолу.';
+    fishingStyleTip = terrain === 'river'
+      ? '🎣 Фидер риболов по ръба на основното течение — вятърът и топлината държат рибата в по-стабилните джобове.'
+      : '🎣 Фидер риболов на дъно в дълбоки участъци — вятърът и топлината карат рибата надолу.';
   } else if (isWindy) {
-    fishingStyleTip = '🎣 Дънен риболов с тежък фидер монтаж от подветрената страна.';
+    fishingStyleTip = terrain === 'river'
+      ? '🎣 Дънен риболов с тежък фидер монтаж по ръба на течението и зад естествени укрития.'
+      : '🎣 Дънен риболов с тежък фидер монтаж от подветрената страна.';
   } else if (timePeriod === 'morning') {
     fishingStyleTip = '🎣 Сутрешната активност е висока — използвай по-леки такъми и повърхностни примамки. Рибата се храни активно.';
   } else if (timePeriod === 'evening') {
@@ -156,7 +171,9 @@ export function getSmartFishingTips(
   } else if (isHot) {
     fishingStyleTip = '🎣 Спининг рано сутрин или нощен риболов с поплавък — рибата е активна в хладните часове.';
   } else if (isRainy) {
-    fishingStyleTip = `🎣 Поплавъчен риболов — дъждът активизира рибата в плитчините ${timeLabel}.`;
+    fishingStyleTip = terrain === 'river'
+      ? `🎣 Риболов близо до брега и вливащи се потоци — дъждът активизира рибата в оцветената вода ${timeLabel}.`
+      : `🎣 Поплавъчен риболов — дъждът активизира рибата в плитчините ${timeLabel}.`;
   } else if (isCold) {
     fishingStyleTip = '🎣 Финес риболов с микро джиг или дроп-шот — бавни и деликатни движения.';
   } else if (timePeriod === 'day') {

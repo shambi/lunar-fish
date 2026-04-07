@@ -254,6 +254,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
 const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
   const { weather, loading, error, locationDenied } = useWeather();
+  const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
 
   const today = new Date().toLocaleDateString('bg-BG', {
     weekday: 'long',
@@ -298,6 +299,7 @@ const Index = () => {
   const tips = useMemo(() => {
     if (!weather) return null;
     return getSmartFishingTips(moon, weather.temperature, weather.windSpeed, weather.weatherCode, {
+      terrain,
       pressureTrend: weather.pressureTrend,
       waterTemp: weather.waterTemp,
       sunrise: weather.sunrise,
@@ -306,7 +308,7 @@ const Index = () => {
       isInPeak: solunarContext.isInPeak,
       peakType: solunarContext.peakType,
     });
-  }, [moon, weather, timePeriod, solunarContext]);
+  }, [moon, weather, terrain, timePeriod, solunarContext]);
 
   const swimAnimations = ['fish-swim-1', 'fish-swim-2', 'fish-swim-3'];
   const fishIcons = Array.from({ length: Math.max(0, Math.min(5, Math.round(fishingScore.score))) }, (_, i) => (
@@ -691,7 +693,13 @@ const Index = () => {
         <ForecastCards weather={weather} />
 
         {/* Fish Guide */}
-        <FishGuide moon={moon} weather={weather} solunarContext={solunarContext} />
+        <FishGuide
+          moon={moon}
+          weather={weather}
+          terrain={terrain}
+          onTerrainChange={setTerrain}
+          solunarContext={solunarContext}
+        />
 
         <footer className="text-center mt-8 space-y-1">
           <p className="text-xs text-muted-foreground">На слука! 🎣</p>

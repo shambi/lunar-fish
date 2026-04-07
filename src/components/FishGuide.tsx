@@ -17,11 +17,12 @@ import { FISH_ICON_MAP } from '@/components/FishIcons';
 interface FishGuideProps {
   moon: MoonData;
   weather: WeatherData | null;
+  terrain: 'river' | 'lake';
+  onTerrainChange: (terrain: 'river' | 'lake') => void;
   solunarContext?: { isInPeak: boolean; peakType: 'major' | 'minor' | null };
 }
 
-export function FishGuide({ moon, weather, solunarContext }: FishGuideProps) {
-  const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
+export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarContext }: FishGuideProps) {
   const [selectedFish, setSelectedFish] = useState<ScoredFish | null>(null);
 
   const temp = weather?.temperature ?? 18;
@@ -67,7 +68,7 @@ export function FishGuide({ moon, weather, solunarContext }: FishGuideProps) {
       {/* Terrain toggle */}
       <div className="flex gap-2 mb-4">
         <button
-          onClick={() => setTerrain('lake')}
+          onClick={() => onTerrainChange('lake')}
           className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
             terrain === 'lake'
               ? 'border-primary bg-primary/20 text-primary'
@@ -77,7 +78,7 @@ export function FishGuide({ moon, weather, solunarContext }: FishGuideProps) {
           🏞️ Водоем
         </button>
         <button
-          onClick={() => setTerrain('river')}
+          onClick={() => onTerrainChange('river')}
           className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
             terrain === 'river'
               ? 'border-primary bg-primary/20 text-primary'
