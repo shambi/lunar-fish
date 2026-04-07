@@ -72,6 +72,12 @@ export function getDailyAdvice(
   const isOvercast = wc > 2;
   const isSunny = wc <= 1;
   const isRaining = wasRaining(wc);
+  const hour = new Date().getHours();
+  const isNight = hour >= 21 || hour < 5;
+  const isMorning = hour >= 5 && hour < 10;
+  const isEvening = hour >= 17 && hour < 21;
+  const isDay = hour >= 10 && hour < 17;
+  const isSunHours = isMorning || isDay;
 
   // Count negative factors
   const negatives: boolean[] = [
@@ -172,7 +178,7 @@ export function getDailyAdvice(
     } else if (isPredator && !s1.includes('цвет')) {
       if (isOvercast) {
         secondary = ` Облачното небе е твой съюзник — използвай ярки цветове: оранжево, жълто, шартрьоз.`;
-      } else if (isSunny && name !== 'Распер') {
+      } else if (isSunny && isSunHours && name !== 'Распер') {
         secondary = ` Силното слънце е скрило ${name} в сянката на крайбрежните дървета и тръстиката — заложи на естествени цветове: сребристо, кафяво, зелено и търси го там.`;
       }
     } else if (altitude > 500 && altitude <= 1000) {
@@ -228,7 +234,11 @@ export function getDailyAdvice(
     s2 = `Вълните от вятъра вкарват храна към брега — търси ${name} точно там.`;
   } else if (terrain === 'lake') {
     if (isPredator) {
-      s2 = `Хвърли воблер с активна игра край водната растителност като заложиш на ${isSunny ? 'естествени цветове заради силното слънце' : 'ярки цветове при облачното небе'}.`;
+      s2 = `Хвърли воблер с активна игра край водната растителност като заложиш на ${
+        isSunny && isSunHours
+          ? 'естествени цветове заради силното слънце'
+          : 'по-контрастни цветове при ниска светлина или облачно небе'
+      }.`;
     } else {
       if (temp < 12) {
         s2 = `В студена вода на водоем дръж стръвта близо до дъното и захранвай на малки порции с по-фина смес.`;
@@ -247,12 +257,6 @@ export function getDailyAdvice(
 
   // ——— SENTENCE 3: WHEN (time-period aware) ———
   let s3 = '';
-  const hour = new Date().getHours();
-  const isNight = hour >= 21 || hour < 5;
-  const isMorning = hour >= 5 && hour < 10;
-  const isEvening = hour >= 17 && hour < 21;
-  const isDay = hour >= 10 && hour < 17;
-
   // Solunar peak override
   if (solunarContext?.isInPeak) {
     const pLabel = solunarContext.peakType === 'major' ? 'главен' : 'малък';
@@ -306,6 +310,8 @@ function getCommonMistake(
   const temp = weather?.temperature ?? 18;
   const wind = weather?.windSpeed ?? 5;
   const windDir = weather?.windDirection ?? 0;
+  const hour = new Date().getHours();
+  const isSunHours = hour >= 5 && hour < 17;
   const pRate = weather?.pressureChangeRate ?? 0;
   const isRaining = wasRaining(wc);
   const month = new Date().getMonth() + 1;
@@ -341,7 +347,7 @@ function getCommonMistake(
   }
 
   // Condition 5 — Sunny + predator
-  if (isSunny && isPredator) {
+  if (isSunny && isSunHours && isPredator) {
     return `В слънчево време много рибари хвърлят на открито — грешка. ${name} е в сянката на крайбрежните дървета и тръстиката.`;
   }
 

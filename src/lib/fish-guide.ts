@@ -538,6 +538,8 @@ export function getFishModalData(
   terrain: 'river' | 'lake'
 ): FishModalData {
   const currentMonth = new Date().getMonth() + 1;
+  const currentHour = new Date().getHours();
+  const isSunHours = currentHour >= 5 && currentHour < 17;
   const isSunny = [0, 1].includes(weatherCode);
 
   // Temperature-adjusted bait
@@ -566,7 +568,7 @@ export function getFishModalData(
   // Lure tip for predators
   let lureTip: string | null = null;
   if (fish.isPredator && fish.baseData.lures) {
-    const colorRec = isSunny
+    const colorRec = isSunny && isSunHours
       ? 'натурални цветове (сребро, зелено)'
       : 'ярки цветове (оранжево, жълто, шартрьоз)';
     lureTip = `${fish.baseData.lures} — препоръчани цветове: ${colorRec}`;
