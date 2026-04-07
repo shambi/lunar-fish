@@ -472,7 +472,7 @@ const Index = () => {
                     {weather ? `${weather.pressure} хПа` : '—'}
                   </span>
                 </div>
-                {weather && (
+                {weather ? (
                   <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
                     weather.pressureTrend === 'rising' ? 'bg-green-500/20 text-green-400' :
                     weather.pressureTrend === 'falling' ? 'bg-amber-500/20 text-amber-400' :
@@ -480,6 +480,8 @@ const Index = () => {
                   }`}>
                     {weather.pressureTrend === 'rising' ? '📈 Нарастващо' : weather.pressureTrend === 'falling' ? '📉 Падащо' : '➡️ Стабилно'}
                   </span>
+                ) : (
+                  <span className="text-xs text-muted-foreground">Зареждане...</span>
                 )}
               </div>
               {/* Mini pressure graph */}
@@ -537,12 +539,23 @@ const Index = () => {
                   </div>
                 );
               })()}
+              {!weather && (
+                <div className="flex items-center justify-center py-4">
+                  <span className="text-xs text-muted-foreground">Зареждане...</span>
+                </div>
+              )}
             </div>
           </div>
           {/* Fish Activity Indicator */}
           <div className="border-t border-border my-4" />
           {(() => {
-            if (!weather) return null;
+            if (!weather) {
+              return (
+                <div className="flex items-center justify-center py-3">
+                  <span className="text-xs text-muted-foreground">Зареждане...</span>
+                </div>
+              );
+            }
             const moon = getMoonData();
             // Derive activity from pressure trend, moon score, weather
             let activityScore = 0;
@@ -575,12 +588,16 @@ const Index = () => {
               </div>
             );
           })()}
-          {weather && (
-            <div className="flex items-center justify-center gap-2 mt-4 pt-3 border-t border-border">
-              <span className="text-xl">{weather.weatherIcon}</span>
-              <span className="text-sm text-muted-foreground">{weather.weatherLabel}</span>
-            </div>
-          )}
+          <div className="flex items-center justify-center gap-2 mt-4 pt-3 border-t border-border">
+            {weather ? (
+              <>
+                <span className="text-xl">{weather.weatherIcon}</span>
+                <span className="text-sm text-muted-foreground">{weather.weatherLabel}</span>
+              </>
+            ) : (
+              <span className="text-sm text-muted-foreground">Зареждане...</span>
+            )}
+          </div>
         </section>
 
         {/* Solunar Activity Section — SVG Timeline */}
@@ -594,7 +611,7 @@ const Index = () => {
             <div className="flex items-center justify-center gap-2 py-4">
               <Loader2 className="w-4 h-4 animate-spin text-primary" />
               <span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                Изчисляване на солунарните пикове...
+                Зареждане...
               </span>
             </div>
           )}

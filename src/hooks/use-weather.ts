@@ -68,7 +68,7 @@ function getLocation(): Promise<GeolocationPosition> {
       reject,
       {
         enableHighAccuracy: false,
-        timeout: 15000,
+        timeout: 5000,
         maximumAge: 300000
       }
     );
