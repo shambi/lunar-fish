@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect } from 'react';
 import { getMoonData } from '@/lib/moon';
 import { getSmartFishingTips, getTimePeriod } from '@/lib/fishing-expert';
 import { useWeather } from '@/hooks/use-weather';
-import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader2, MapPinOff, Gauge } from 'lucide-react';
+import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader as Loader2, MapPinOff, Gauge } from 'lucide-react';
 import { FishGuide } from '@/components/FishGuide';
 import { ForecastCards } from '@/components/ForecastCards';
 
@@ -336,12 +336,7 @@ const Index = () => {
             {loading ? (
               <>
                 <Loader2 className="w-3 h-3 animate-spin" />
-                <span>Търсене на локация...</span>
-              </>
-            ) : locationDenied ? (
-              <>
-                <MapPinOff className="w-3 h-3" />
-                <span>Локацията е отказана</span>
+                <span>Определяне на локация...</span>
               </>
             ) : weather ? (
               <>
@@ -350,8 +345,8 @@ const Index = () => {
               </>
             ) : (
               <>
-                <MapPinOff className="w-3 h-3" />
-                <span>Няма данни за локация</span>
+                <MapPin className="w-3 h-3" />
+                <span>София (по подразбиране)</span>
               </>
             )}
           </div>
@@ -589,14 +584,21 @@ const Index = () => {
         </section>
 
         {/* Solunar Activity Section — SVG Timeline */}
-        {weather && weather.solunarPeaks && (
-          <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-            <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-              🌙 Солунарна активност
-            </h3>
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
+          <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+            🌙 Солунарна активност
+          </h3>
+          {weather && weather.solunarPeaks ? (
             <SolunarSection weather={weather} />
-          </section>
-        )}
+          ) : (
+            <div className="flex items-center justify-center gap-2 py-4">
+              <Loader2 className="w-4 h-4 animate-spin text-primary" />
+              <span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                Изчисляване на солунарните пикове...
+              </span>
+            </div>
+          )}
+        </section>
         <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
           <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
             🎣 Дневни професионални съвети
