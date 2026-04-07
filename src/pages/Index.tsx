@@ -519,7 +519,25 @@ const Index = () => {
                     weather.pressureTrend === 'falling' ? 'bg-amber-500/20 text-amber-400' :
                     'bg-muted text-muted-foreground'
                   }`}>
-                    {weather.pressureTrend === 'rising' ? '📈 Нарастващо' : weather.pressureTrend === 'falling' ? '📉 Падащо' : '➡️ Стабилно'}
+                    <span className="inline-flex items-center gap-1">
+                      {weather.pressureTrend === 'rising' ? (
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d="M12 19V5" />
+                          <path d="M7 10L12 5L17 10" />
+                        </svg>
+                      ) : weather.pressureTrend === 'falling' ? (
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d="M12 5V19" />
+                          <path d="M7 14L12 19L17 14" />
+                        </svg>
+                      ) : (
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <path d="M5 12H19" />
+                          <path d="M15 8L19 12L15 16" />
+                        </svg>
+                      )}
+                      <span>{weather.pressureTrend === 'rising' ? 'Нарастващо' : weather.pressureTrend === 'falling' ? 'Падащо' : 'Стабилно'}</span>
+                    </span>
                   </span>
                 ) : (
                   <span className="text-xs text-muted-foreground">Зареждане...</span>
@@ -527,7 +545,22 @@ const Index = () => {
               </div>
               {weather && (
                 <div className="flex items-center gap-2 mb-2 rounded-md bg-secondary/30 px-2 py-1.5">
-                  <span className="text-sm" aria-hidden="true">🎣</span>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 48 48"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-primary/90 shrink-0"
+                    aria-hidden="true"
+                  >
+                    <ellipse cx="22" cy="24" rx="14" ry="10" />
+                    <path d="M36 24 L44 16 M36 24 L44 32" />
+                    <circle cx="12" cy="22" r="1.5" fill="currentColor" />
+                  </svg>
                   <p className="text-xs text-muted-foreground text-left">
                     {weather.pressureTrend === 'rising'
                       ? 'Налягането се покачва - чакай по-активна риба.'
@@ -573,11 +606,6 @@ const Index = () => {
                       <path d={pathD} fill="none" stroke="hsl(var(--primary))" strokeWidth="1.5" />
                       <circle cx={lastP.x} cy={lastP.y} r={3} fill="hsl(var(--primary))" style={{ filter: 'drop-shadow(0 0 4px hsl(var(--primary)))' }} />
                     </svg>
-                    <div className="flex justify-between mt-1">
-                      {hist.map((h, i) => (
-                        <span key={i} className="text-[9px] text-muted-foreground">{h.time}</span>
-                      ))}
-                    </div>
                   </div>
                 );
               })()}
