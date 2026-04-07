@@ -6,6 +6,7 @@ export interface FishingScoreParams {
   weatherCode: number;
   pressureTrend: 'rising' | 'stable' | 'falling';
   pressureChangeRate: number;
+  altitude: number;
   month: number;
   hour: number;
 }
@@ -58,6 +59,11 @@ export function calculateFishingScore(params: FishingScoreParams): FishingScoreR
 
   if (params.month >= 9 && params.month <= 10) score += 0.3;
   if (params.month >= 6 && params.month <= 8 && params.hour >= 10 && params.hour <= 16) score -= 0.3;
+
+  // Mild altitude factor: keeps elevation useful without dominating the score.
+  if (params.altitude >= 1200) score -= 0.3;
+  else if (params.altitude >= 700) score -= 0.2;
+  else if (params.altitude <= 250) score += 0.1;
 
   score = clamp(score, 0, 5);
   score = Math.round(score * 2) / 2;

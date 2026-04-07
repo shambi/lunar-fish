@@ -75,6 +75,20 @@ function getLocation(): Promise<GeolocationPosition> {
   });
 }
 
+async function fetchElevation(latitude: number, longitude: number, fallbackAltitude = 0): Promise<number> {
+  try {
+    const res = await fetch(
+      `https://api.open-elevation.com/api/v1/lookup?locations=${latitude},${longitude}`
+    );
+    if (!res.ok) return fallbackAltitude;
+    const data = await res.json();
+    const elevation = data?.results?.[0]?.elevation;
+    return Number.isFinite(elevation) ? Math.round(elevation) : fallbackAltitude;
+  } catch {
+    return fallbackAltitude;
+  }
+}
+
 async function fetchWeatherData(latitude: number, longitude: number, altitude: number = 0) {
   const res = await fetch(
     `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset&past_days=1&forecast_days=1&timezone=auto`
@@ -175,7 +189,7 @@ export function useWeather() {
       try {
         const position = await getLocation();
         const { latitude, longitude, altitude: gpsAltitude } = position.coords;
-        const altitude = gpsAltitude ?? 0;
+        const altitude = await fetchElevation(latitude, longitude, gpsAltitude ?? 0);
 
         const weatherData = await fetchWeatherData(latitude, longitude, altitude);
         setWeather(weatherData);
@@ -198,7 +212,8 @@ export function useWeather() {
         }
 
         try {
-          const weatherData = await fetchWeatherData(42.70, 23.35, 550);
+          const fallbackAltitude = await fetchElevation(42.70, 23.35, 550);
+          const weatherData = await fetchWeatherData(42.70, 23.35, fallbackAltitude);
           weatherData.locationName = 'София (по подразбиране)';
           setWeather(weatherData);
         } catch (fetchErr) {

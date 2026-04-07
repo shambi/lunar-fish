@@ -3,7 +3,7 @@ import { getMoonData } from '@/lib/moon';
 import { getSmartFishingTips, getTimePeriod } from '@/lib/fishing-expert';
 import { calculateFishingScore } from '@/lib/fishing-score';
 import { useWeather } from '@/hooks/use-weather';
-import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader as Loader2, MapPinOff, Gauge } from 'lucide-react';
+import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader as Loader2, Gauge, Mountain } from 'lucide-react';
 import { FishGuide } from '@/components/FishGuide';
 import { ForecastCards } from '@/components/ForecastCards';
 
@@ -273,6 +273,7 @@ const Index = () => {
     weatherCode: weather?.weatherCode ?? 1,
     pressureTrend: weather?.pressureTrend ?? 'stable',
     pressureChangeRate: weather?.pressureChangeRate ?? 0,
+    altitude: weather?.altitude ?? 0,
     month: now.getMonth() + 1,
     hour: now.getHours(),
   });
@@ -470,7 +471,7 @@ const Index = () => {
               <p className="text-xs text-muted-foreground mt-1">Показват се примерни данни</p>
             </div>
           ) : null}
-          <div className="grid grid-cols-3 gap-4 text-center">
+          <div className="grid grid-cols-4 gap-3 text-center">
             <div className="flex flex-col items-center gap-1">
               <ThermometerSun className="w-6 h-6 text-primary" />
               <span className="text-lg font-bold font-display text-foreground">
@@ -491,6 +492,13 @@ const Index = () => {
                 {weather ? `${weather.humidity}%` : '—'}
               </span>
               <span className="text-xs text-muted-foreground">Влажност</span>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <Mountain className="w-6 h-6 text-primary" />
+              <span className="text-lg font-bold font-display text-foreground">
+                {weather ? `${weather.altitude} м` : '—'}
+              </span>
+              <span className="text-xs text-muted-foreground">Надморска</span>
             </div>
           </div>
           {/* Divider + Second Row */}
@@ -517,6 +525,18 @@ const Index = () => {
                   <span className="text-xs text-muted-foreground">Зареждане...</span>
                 )}
               </div>
+              {weather && (
+                <div className="flex items-center gap-2 mb-2 rounded-md bg-secondary/30 px-2 py-1.5">
+                  <span className="text-sm" aria-hidden="true">🎣</span>
+                  <p className="text-xs text-muted-foreground text-left">
+                    {weather.pressureTrend === 'rising'
+                      ? 'Налягането се покачва - чакай по-активна риба.'
+                      : weather.pressureTrend === 'falling'
+                      ? 'Налягането пада - кълването вероятно ще е по-плахо.'
+                      : 'Стабилно налягане - добри условия за риболов.'}
+                  </p>
+                </div>
+              )}
               {/* Mini pressure graph */}
               {weather && weather.pressureHistory.length > 1 && (() => {
                 const hist = weather.pressureHistory;
@@ -540,16 +560,6 @@ const Index = () => {
                 const areaD = `${pathD} L ${points[points.length-1].x} ${h} L ${points[0].x} ${h} Z`;
                 const lastP = points[points.length - 1];
 
-                // Fishing context line
-                const pDiff6h = values[values.length - 1] - values[0];
-                let contextText = '';
-                let contextColor = '';
-                if (pDiff6h > 3) { contextText = '🎣 Налягането скача — рибата се активира'; contextColor = '#4CAF50'; }
-                else if (pDiff6h > 1.5) { contextText = '🎣 Бавно нарастване — добри условия'; contextColor = '#4CAF50'; }
-                else if (pDiff6h < -3) { contextText = '🎣 Рязко падане — трудна хапка или сомът излиза от дупките'; contextColor = '#FF7043'; }
-                else if (pDiff6h < -1.5) { contextText = '🎣 Леко падане — очаквай деликатна хапка'; contextColor = '#FFA726'; }
-                else { contextText = '🎣 Стабилно налягане — рибата е комфортна'; contextColor = '#9CA3AF'; }
-
                 return (
                   <div>
                     <svg viewBox={`0 0 ${w} ${h}`} className="w-full" style={{ height: 48 }}>
@@ -568,7 +578,6 @@ const Index = () => {
                         <span key={i} className="text-[9px] text-muted-foreground">{h.time}</span>
                       ))}
                     </div>
-                    <p className="text-xs mt-2 font-medium" style={{ color: contextColor }}>{contextText}</p>
                   </div>
                 );
               })()}
@@ -579,48 +588,6 @@ const Index = () => {
               )}
             </div>
           </div>
-          {/* Fish Activity Indicator */}
-          <div className="border-t border-border my-4" />
-          {(() => {
-            if (!weather) {
-              return (
-                <div className="flex items-center justify-center py-3">
-                  <span className="text-xs text-muted-foreground">Зареждане...</span>
-                </div>
-              );
-            }
-            const moon = getMoonData();
-            // Derive activity from pressure trend, moon score, weather
-            let activityScore = 0;
-            if (weather.pressureTrend === 'rising') activityScore += 2;
-            else if (weather.pressureTrend === 'stable') activityScore += 1;
-            activityScore += Math.min(moon.fishingScore, 3); // 0-3 from moon
-            const wc = weather.weatherCode;
-            if (wc <= 3) activityScore += 1; // clear/partly cloudy
-            if (weather.windSpeed < 15) activityScore += 1;
-            // Map to 3 levels: 0-3 low, 4-5 medium, 6+ high
-            const level = activityScore >= 6 ? 'high' : activityScore >= 4 ? 'medium' : 'low';
-            const config = {
-              high: { emoji: '🟢', label: 'Висока', color: 'hsl(var(--primary))', hint: 'Рибата е активна при тези условия' },
-              medium: { emoji: '🟡', label: 'Средна', color: 'hsl(40 90% 60%)', hint: 'Умерена активност — подберете захранката внимателно' },
-              low: { emoji: '🔴', label: 'Слаба', color: 'hsl(0 70% 55%)', hint: 'Очаква се по-слабо кълване' },
-            };
-            const c = config[level];
-            return (
-              <div className="flex flex-col items-center gap-1.5">
-                <svg width="24" height="24" viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                  <ellipse cx="22" cy="24" rx="14" ry="10" />
-                  <path d="M36 24 L44 16 M36 24 L44 32" />
-                  <circle cx="12" cy="22" r="1.5" fill="currentColor" />
-                </svg>
-                <span className="text-lg font-bold font-display" style={{ color: c.color }}>
-                  {c.emoji} {c.label}
-                </span>
-                <span className="text-[10px] text-muted-foreground">Активност</span>
-                <span className="text-[10px] text-muted-foreground/70 text-center max-w-[200px]">{c.hint}</span>
-              </div>
-            );
-          })()}
           <div className="flex items-center justify-center gap-2 mt-4 pt-3 border-t border-border">
             {weather ? (
               <>
