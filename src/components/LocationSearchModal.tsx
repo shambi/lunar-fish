@@ -116,10 +116,10 @@ export function LocationSearchModal({ open, onOpenChange, onApplyLocation }: Loc
                   locationName: forecast.weather.locationName,
                 });
               }}
-              className="absolute right-12 top-3 h-8 w-8 text-red-500 hover:text-red-400 hover:bg-red-500/10 disabled:text-muted-foreground"
+              className="absolute right-12 top-4 h-9 w-9 rounded-full border border-red-500/80 text-red-500 hover:text-red-400 hover:bg-red-500/10 disabled:text-muted-foreground disabled:border-muted-foreground/30 shadow-[0_0_0_1px_rgba(170,0,255,0.35),0_0_10px_rgba(170,0,255,0.5)]"
               aria-label="Задай за приложението"
             >
-              <ArrowRight className="h-[18px] w-[18px]" />
+              <ArrowRight className="h-5 w-5" />
             </Button>
           </DialogHeader>
 
