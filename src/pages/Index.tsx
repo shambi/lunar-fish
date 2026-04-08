@@ -6,6 +6,7 @@ import { useWeather } from '@/hooks/use-weather';
 import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader as Loader2, Gauge, Mountain } from 'lucide-react';
 import { FishGuide } from '@/components/FishGuide';
 import { ForecastCards } from '@/components/ForecastCards';
+import { LocationSearchModal } from '@/components/LocationSearchModal';
 
 const SolunarSection = ({ weather }: { weather: any }) => {
   const [now, setNow] = useState(() => new Date());
@@ -255,6 +256,7 @@ const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
   const { weather, loading, error, locationDenied } = useWeather();
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const today = new Date().toLocaleDateString('bg-BG', {
     weekday: 'long',
@@ -349,6 +351,19 @@ const Index = () => {
           </h1>
           <p className="text-sm text-muted-foreground mt-1 capitalize">{today}</p>
           <div className="flex items-center justify-center gap-1 mt-1 text-xs text-muted-foreground">
+            <button
+              type="button"
+              onClick={() => setIsSearchOpen(true)}
+              className="relative inline-flex items-center justify-center w-4 h-4 mr-0.5 text-primary/90 hover:text-primary transition-colors"
+              aria-label="Търси локация"
+            >
+              <span className="sonar-ripple" />
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="sonar-icon">
+                <path d="M12 12m-1.5 0a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0" />
+                <path d="M4.5 12a7.5 7.5 0 0 1 15 0" />
+                <path d="M1.5 12a10.5 10.5 0 0 1 21 0" />
+              </svg>
+            </button>
             {loading ? (
               <>
                 <Loader2 className="w-3 h-3 animate-spin" />
@@ -710,6 +725,7 @@ const Index = () => {
           )}
         </footer>
       </div>
+      <LocationSearchModal open={isSearchOpen} onOpenChange={setIsSearchOpen} />
     </div>
   );
 };

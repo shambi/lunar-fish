@@ -126,3 +126,38 @@
   0%, 100% { text-shadow: 0 0 8px hsl(180 80% 55% / 0.15); }
   50% { text-shadow: 0 0 14px hsl(180 80% 55% / 0.3); }
 }
+
+@keyframes sonar-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes sonar-ripple {
+  0% {
+    transform: scale(0.75);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+.sonar-icon {
+  animation: sonar-pulse 2.2s ease-in-out infinite;
+}
+
+.sonar-ripple {
+  position: absolute;
+  inset: 1px;
+  border-radius: 9999px;
+  border: 1px solid hsl(var(--primary) / 0.4);
+  animation: sonar-ripple 2.2s ease-out infinite;
+  pointer-events: none;
+}
