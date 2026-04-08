@@ -369,11 +369,11 @@ const Index = () => {
               <button
                 type="button"
                 onClick={() => setLocationOverride(null)}
-                className="relative inline-flex items-center justify-center w-7 h-7 text-red-500 hover:text-red-400 transition-colors rounded-full"
+                className="relative inline-flex items-center justify-center w-7 h-7 text-[#d9ec43] hover:text-[#e6f56f] transition-colors rounded-full"
                 aria-label="Върни към текуща локация"
               >
-                <span className="reset-neon-core" />
                 <LocateFixed className="w-[18px] h-[18px]" />
+                <span className="reset-neon-dot" />
               </button>
             )}
             {loading ? (

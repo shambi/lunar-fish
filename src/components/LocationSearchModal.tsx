@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowRight, Loader2, Search, Wind, ThermometerSun, Gauge, X } from 'lucide-react';
+import { Loader2, Search, Wind, ThermometerSun, Gauge, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -116,10 +116,13 @@ export function LocationSearchModal({ open, onOpenChange, onApplyLocation }: Loc
                   locationName: forecast.weather.locationName,
                 });
               }}
-              className="absolute right-12 top-4 h-9 w-9 rounded-full border border-red-500/80 text-red-500 hover:text-red-400 hover:bg-red-500/10 disabled:text-muted-foreground disabled:border-muted-foreground/30 shadow-[0_0_0_1px_rgba(170,0,255,0.35),0_0_10px_rgba(170,0,255,0.5)]"
+              className="absolute right-12 top-4 h-10 w-10 rounded-full border border-[#d9ec43]/80 text-[#d9ec43] hover:text-[#e6f56f] hover:bg-[#d9ec43]/10 disabled:text-muted-foreground disabled:border-muted-foreground/30 shadow-[0_0_0_1px_rgba(0,212,212,0.35),0_0_12px_rgba(0,212,212,0.5)]"
               aria-label="Задай за приложението"
             >
-              <ArrowRight className="h-5 w-5" />
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M3 9.5 H14 M3 14.5 H14 M14 9.5 L20 12 L14 14.5" stroke="#00D4D4" strokeWidth="2" />
+                <path d="M4 8.8 H15 M4 13.8 H15 M15 8.8 L21 11.8 L15 14.8" stroke="#d9ec43" strokeWidth="2" />
+              </svg>
             </Button>
           </DialogHeader>
 
