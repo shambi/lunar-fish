@@ -54,10 +54,21 @@ export function getWeatherInfo(code: number) {
   return WMO_CODES[code] || { label: 'Неизвестно', icon: '🌡️' };
 }
 
+async function fetchWithTimeout(input: string, timeoutMs: number): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(input, { signal: controller.signal });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 export async function fetchElevation(latitude: number, longitude: number, fallbackAltitude = 0): Promise<number> {
   try {
-    const res = await fetch(
-      `https://api.open-elevation.com/api/v1/lookup?locations=${latitude},${longitude}`
+    const res = await fetchWithTimeout(
+      `https://api.open-elevation.com/api/v1/lookup?locations=${latitude},${longitude}`,
+      3500
     );
     if (!res.ok) return fallbackAltitude;
     const data = await res.json();
@@ -69,8 +80,9 @@ export async function fetchElevation(latitude: number, longitude: number, fallba
 }
 
 export async function fetchWeatherData(latitude: number, longitude: number, altitude: number = 0): Promise<WeatherData> {
-  const res = await fetch(
-    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset&past_days=1&forecast_days=1&timezone=auto`
+  const res = await fetchWithTimeout(
+    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset&past_days=1&forecast_days=1&timezone=auto`,
+    8000
   );
   if (!res.ok) throw new Error('API error');
   const data = await res.json();
@@ -118,8 +130,9 @@ export async function fetchWeatherData(latitude: number, longitude: number, alti
 
   let locationName = `${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`;
   try {
-    const geoRes = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=bg&zoom=10`
+    const geoRes = await fetchWithTimeout(
+      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=bg&zoom=10`,
+      3000
     );
     if (geoRes.ok) {
       const geoData = await geoRes.json();

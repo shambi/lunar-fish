@@ -6,13 +6,15 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { buildLocationSuggestions, type LocationSuggestion } from '@/lib/location-search';
 import { getLocationForecast, type LocationForecastResult } from '@/lib/location-forecast';
+import type { LocationOverride } from '@/hooks/use-weather';
 
 interface LocationSearchModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onApplyLocation: (location: LocationOverride) => void;
 }
 
-export function LocationSearchModal({ open, onOpenChange }: LocationSearchModalProps) {
+export function LocationSearchModal({ open, onOpenChange, onApplyLocation }: LocationSearchModalProps) {
   const [query, setQuery] = useState('');
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
@@ -97,10 +99,29 @@ export function LocationSearchModal({ open, onOpenChange }: LocationSearchModalP
       <DialogContent className="w-[96vw] max-w-md h-[86vh] p-0 border-border bg-card/95 backdrop-blur-xl overflow-hidden">
         <div className="flex h-full flex-col">
           <DialogHeader className="px-4 pt-4 pb-2 border-b border-border">
-            <DialogTitle className="text-base font-display flex items-center gap-2">
-              <Search className="w-4 h-4 text-primary" />
-              Търсене на локация
-            </DialogTitle>
+            <div className="flex items-center justify-between gap-2">
+              <DialogTitle className="text-base font-display flex items-center gap-2">
+                <Search className="w-4 h-4 text-primary" />
+                Търсене на локация
+              </DialogTitle>
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                disabled={!forecast}
+                onClick={() => {
+                  if (!forecast) return;
+                  onApplyLocation({
+                    latitude: forecast.weather.latitude,
+                    longitude: forecast.weather.longitude,
+                    locationName: forecast.weather.locationName,
+                  });
+                }}
+                className="h-7 px-2 text-[11px]"
+              >
+                Задай за приложението
+              </Button>
+            </div>
           </DialogHeader>
 
           <div className="px-4 pt-3 pb-2">
@@ -184,8 +205,8 @@ export function LocationSearchModal({ open, onOpenChange }: LocationSearchModalP
 
             {forecast && (
               <div className="space-y-3 mt-2">
-                <section className="rounded-xl border border-border bg-card/60 p-4">
-                  <h3 className="font-display text-sm text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+                <section className="rounded-xl border border-border bg-card/60 p-3">
+                  <h3 className="font-display text-xs text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
                       <path d="M3 15a4 4 0 0 0 4 4h9a4 4 0 0 0 0-8 5 5 0 0 0-9.6-1.5A3.5 3.5 0 0 0 3 15z" />
                       <path d="M9 19l-1 2" />
@@ -193,25 +214,25 @@ export function LocationSearchModal({ open, onOpenChange }: LocationSearchModalP
                     </svg>
                     ПРОГНОЗА ЗА ВРЕМЕТО
                   </h3>
-                  <div className="flex items-center justify-between mb-3">
-                    <p className="text-sm text-foreground">{forecast.weather.locationName}</p>
-                    <span className="text-xl">{forecast.weather.weatherIcon}</span>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs text-foreground truncate pr-2">{forecast.weather.locationName}</p>
+                    <span className="text-base">{forecast.weather.weatherIcon}</span>
                   </div>
-                  <div className="grid grid-cols-3 gap-3 text-center">
+                  <div className="grid grid-cols-3 gap-2 text-center">
                     <div>
-                      <ThermometerSun className="w-4 h-4 text-primary mx-auto mb-1" />
-                      <p className="text-sm font-semibold">{forecast.weather.temperature}°C</p>
-                      <p className="text-[11px] text-muted-foreground">Темп.</p>
+                      <ThermometerSun className="w-3.5 h-3.5 text-primary mx-auto mb-0.5" />
+                      <p className="text-xs font-semibold">{forecast.weather.temperature}°C</p>
+                      <p className="text-[10px] text-muted-foreground">Темп.</p>
                     </div>
                     <div>
-                      <Wind className="w-4 h-4 text-primary mx-auto mb-1" />
-                      <p className="text-sm font-semibold">{forecast.weather.windSpeed} км/ч</p>
-                      <p className="text-[11px] text-muted-foreground">Вятър</p>
+                      <Wind className="w-3.5 h-3.5 text-primary mx-auto mb-0.5" />
+                      <p className="text-xs font-semibold">{forecast.weather.windSpeed} км/ч</p>
+                      <p className="text-[10px] text-muted-foreground">Вятър</p>
                     </div>
                     <div>
-                      <Gauge className="w-4 h-4 text-primary mx-auto mb-1" />
-                      <p className="text-sm font-semibold">{forecast.weather.pressure} хПа</p>
-                      <p className="text-[11px] text-muted-foreground">Налягане</p>
+                      <Gauge className="w-3.5 h-3.5 text-primary mx-auto mb-0.5" />
+                      <p className="text-xs font-semibold">{forecast.weather.pressure} хПа</p>
+                      <p className="text-[10px] text-muted-foreground">Налягане</p>
                     </div>
                   </div>
                 </section>

@@ -2,8 +2,8 @@ import { useMemo, useState, useEffect } from 'react';
 import { getMoonData } from '@/lib/moon';
 import { getSmartFishingTips, getTimePeriod } from '@/lib/fishing-expert';
 import { calculateFishingScore } from '@/lib/fishing-score';
-import { useWeather } from '@/hooks/use-weather';
-import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader as Loader2, Gauge, Mountain } from 'lucide-react';
+import { useWeather, type LocationOverride } from '@/hooks/use-weather';
+import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader as Loader2, Gauge, Mountain, LocateFixed } from 'lucide-react';
 import { FishGuide } from '@/components/FishGuide';
 import { ForecastCards } from '@/components/ForecastCards';
 import { LocationSearchModal } from '@/components/LocationSearchModal';
@@ -254,7 +254,8 @@ const SolunarSection = ({ weather }: { weather: any }) => {
 
 const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
-  const { weather, loading, error, locationDenied } = useWeather();
+  const [locationOverride, setLocationOverride] = useState<LocationOverride | null>(null);
+  const { weather, loading, error, locationDenied } = useWeather(locationOverride);
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -364,6 +365,16 @@ const Index = () => {
                 <path d="M1.5 12a10.5 10.5 0 0 1 21 0" />
               </svg>
             </button>
+            {locationOverride && (
+              <button
+                type="button"
+                onClick={() => setLocationOverride(null)}
+                className="inline-flex items-center justify-center w-4 h-4 text-primary/80 hover:text-primary transition-colors"
+                aria-label="Върни към текуща локация"
+              >
+                <LocateFixed className="w-3 h-3" />
+              </button>
+            )}
             {loading ? (
               <>
                 <Loader2 className="w-3 h-3 animate-spin" />
@@ -725,7 +736,14 @@ const Index = () => {
           )}
         </footer>
       </div>
-      <LocationSearchModal open={isSearchOpen} onOpenChange={setIsSearchOpen} />
+      <LocationSearchModal
+        open={isSearchOpen}
+        onOpenChange={setIsSearchOpen}
+        onApplyLocation={(nextLocation) => {
+          setLocationOverride(nextLocation);
+          setIsSearchOpen(false);
+        }}
+      />
     </div>
   );
 };
