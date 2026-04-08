@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Loader2, Search, Wind, ThermometerSun, Gauge, X, Fish } from 'lucide-react';
+import { Loader2, Search, Wind, ThermometerSun, Gauge, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { searchLocationsInBg, type LocationSuggestion } from '@/lib/location-search';
+import { buildLocationSuggestions, type LocationSuggestion } from '@/lib/location-search';
 import { getLocationForecast, type LocationForecastResult } from '@/lib/location-forecast';
 
 interface LocationSearchModalProps {
@@ -17,6 +17,8 @@ export function LocationSearchModal({ open, onOpenChange }: LocationSearchModalP
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
   const [selected, setSelected] = useState<LocationSuggestion | null>(null);
+  const [inputFocused, setInputFocused] = useState(false);
+  const [hideSuggestionsAfterPick, setHideSuggestionsAfterPick] = useState(false);
   const [forecast, setForecast] = useState<LocationForecastResult | null>(null);
   const [forecastLoading, setForecastLoading] = useState(false);
   const [forecastError, setForecastError] = useState<string | null>(null);
@@ -43,7 +45,7 @@ export function LocationSearchModal({ open, onOpenChange }: LocationSearchModalP
     const timeout = setTimeout(async () => {
       setLoadingSuggestions(true);
       try {
-        const result = await searchLocationsInBg(trimmed, abortController.signal);
+        const result = await buildLocationSuggestions(trimmed, abortController.signal);
         if (requestId === requestRef.current) {
           setSuggestions(result);
         }
@@ -65,12 +67,15 @@ export function LocationSearchModal({ open, onOpenChange }: LocationSearchModalP
   }, [query, open]);
 
   const emptyState = useMemo(
-    () => !loadingSuggestions && query.trim().length > 0 && suggestions.length === 0,
-    [loadingSuggestions, query, suggestions.length]
+    () => !loadingSuggestions && query.trim().length > 0 && suggestions.length === 0 && !hideSuggestionsAfterPick,
+    [loadingSuggestions, query, suggestions.length, hideSuggestionsAfterPick]
   );
+  const showDropdown = inputFocused && query.trim().length > 0 && !hideSuggestionsAfterPick;
 
   const handlePickLocation = async (item: LocationSuggestion) => {
     setSelected(item);
+    setHideSuggestionsAfterPick(true);
+    setInputFocused(false);
     setForecastLoading(true);
     setForecastError(null);
     try {
@@ -84,6 +89,8 @@ export function LocationSearchModal({ open, onOpenChange }: LocationSearchModalP
       setForecastLoading(false);
     }
   };
+
+  const fishScoreFilled = Math.max(0, Math.min(5, Math.round(forecast?.fishing.score ?? 0)));
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -101,7 +108,12 @@ export function LocationSearchModal({ open, onOpenChange }: LocationSearchModalP
               <Input
                 ref={inputRef}
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onFocus={() => setInputFocused(true)}
+                onBlur={() => setTimeout(() => setInputFocused(false), 120)}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setHideSuggestionsAfterPick(false);
+                }}
                 placeholder="Търси локация (напр. язовир Батак)"
                 className="pr-9"
               />
@@ -115,6 +127,7 @@ export function LocationSearchModal({ open, onOpenChange }: LocationSearchModalP
                     setQuery('');
                     setSuggestions([]);
                     setSelected(null);
+                    setHideSuggestionsAfterPick(false);
                     setForecast(null);
                     inputRef.current?.focus();
                   }}
@@ -122,31 +135,30 @@ export function LocationSearchModal({ open, onOpenChange }: LocationSearchModalP
                   <X className="h-4 w-4" />
                 </Button>
               )}
-            </div>
-          </div>
 
-          <div className="px-4 pb-2">
-            <div className="rounded-lg border border-border bg-secondary/20">
-              <div className="max-h-44 overflow-y-auto p-2 space-y-1">
-                {loadingSuggestions && (
-                  <div className="flex items-center justify-center py-5 text-muted-foreground text-sm gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Търсене...
-                  </div>
-                )}
-                {!loadingSuggestions && suggestions.map((item) => (
-                  <button
-                    key={item.id}
-                    className="w-full text-left rounded-md px-3 py-2 text-sm hover:bg-secondary transition-colors"
-                    onClick={() => handlePickLocation(item)}
-                  >
-                    {item.displayName}
-                  </button>
-                ))}
-                {emptyState && (
-                  <p className="text-sm text-center py-4 text-muted-foreground">Няма резултати</p>
-                )}
-              </div>
+              {showDropdown && (
+                <div className="absolute z-20 left-0 right-0 mt-2 rounded-lg border border-border bg-card/95 shadow-lg backdrop-blur-md max-h-44 overflow-y-auto p-2 space-y-1 transition-all">
+                  {loadingSuggestions && (
+                    <div className="flex items-center justify-center py-4 text-muted-foreground text-sm gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Търсене...
+                    </div>
+                  )}
+                  {!loadingSuggestions && suggestions.map((item) => (
+                    <button
+                      key={item.id}
+                      className="w-full text-left rounded-md px-3 py-2 text-sm hover:bg-secondary transition-colors"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => handlePickLocation(item)}
+                    >
+                      {item.displayName}
+                    </button>
+                  ))}
+                  {emptyState && (
+                    <p className="text-sm text-center py-3 text-muted-foreground">Няма резултати</p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
@@ -173,7 +185,14 @@ export function LocationSearchModal({ open, onOpenChange }: LocationSearchModalP
             {forecast && (
               <div className="space-y-3 mt-2">
                 <section className="rounded-xl border border-border bg-card/60 p-4">
-                  <h3 className="font-display text-sm text-muted-foreground uppercase tracking-wider mb-3">🌦️ Прогноза за времето</h3>
+                  <h3 className="font-display text-sm text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
+                      <path d="M3 15a4 4 0 0 0 4 4h9a4 4 0 0 0 0-8 5 5 0 0 0-9.6-1.5A3.5 3.5 0 0 0 3 15z" />
+                      <path d="M9 19l-1 2" />
+                      <path d="M13 19l-1 2" />
+                    </svg>
+                    ПРОГНОЗА ЗА ВРЕМЕТО
+                  </h3>
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-sm text-foreground">{forecast.weather.locationName}</p>
                     <span className="text-xl">{forecast.weather.weatherIcon}</span>
@@ -197,15 +216,62 @@ export function LocationSearchModal({ open, onOpenChange }: LocationSearchModalP
                   </div>
                 </section>
 
-                <section className="rounded-xl border border-border bg-card/60 p-4">
-                  <h3 className="font-display text-sm text-muted-foreground uppercase tracking-wider mb-3">🎣 Прогноза за риболов</h3>
+                <section
+                  className="rounded-xl bg-card/70 p-4"
+                  style={{
+                    border: '1.5px solid #00D4D4',
+                    boxShadow: '0 0 10px rgba(0,212,212,0.2)',
+                    background: 'rgba(0,18,28,0.72)',
+                  }}
+                >
+                  <h3 className="font-display text-sm text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 48 48"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-primary/90"
+                      aria-hidden="true"
+                    >
+                      <ellipse cx="22" cy="24" rx="14" ry="10" />
+                      <path d="M36 24 L44 16 M36 24 L44 32" />
+                      <circle cx="12" cy="22" r="1.5" fill="currentColor" />
+                    </svg>
+                    РИБО ПРОГНОЗА
+                  </h3>
+                  <div className="mb-2 flex items-center gap-1.5">
+                    {Array.from({ length: 5 }, (_, i) => (
+                      <svg
+                        key={`modal-score-fish-${i}`}
+                        width="16"
+                        height="16"
+                        viewBox="0 0 48 48"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={i < fishScoreFilled ? 'text-primary drop-shadow-[0_0_6px_hsl(var(--glow)/0.6)]' : 'text-muted-foreground/35'}
+                        aria-hidden="true"
+                      >
+                        <ellipse cx="22" cy="24" rx="14" ry="10" />
+                        <path d="M36 24 L44 16 M36 24 L44 32" />
+                        <path d="M14 14 Q18 8 26 14" />
+                        <path d="M16 28 L12 34" />
+                        <circle cx="12" cy="22" r="1.5" fill="currentColor" />
+                      </svg>
+                    ))}
+                  </div>
                   {forecast.fishing.isOverride && forecast.fishing.overrideReason && (
                     <div className="mb-2 rounded-md border border-destructive/40 bg-destructive/10 px-2 py-1.5 text-xs text-destructive">
                       {forecast.fishing.overrideReason}
                     </div>
                   )}
                   <div className="flex items-center gap-2 mb-1">
-                    <Fish className="w-4 h-4 text-primary" />
                     <p className="text-sm font-semibold" style={{ color: forecast.fishing.color }}>
                       {forecast.fishing.label}
                     </p>

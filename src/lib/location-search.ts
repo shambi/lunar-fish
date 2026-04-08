@@ -6,6 +6,7 @@ export interface LocationSuggestion {
   longitude: number;
   type?: string;
   class?: string;
+  source?: 'coords' | 'nominatim';
 }
 
 const searchCache = new Map<string, LocationSuggestion[]>();
@@ -23,6 +24,34 @@ function normalizeLabel(item: any): string {
 
 function isWaterRelevant(item: any) {
   return WATER_TYPES.has(String(item.type ?? '').toLowerCase()) || WATER_TYPES.has(String(item.class ?? '').toLowerCase());
+}
+
+export function parseCoordinateQuery(query: string): { latitude: number; longitude: number } | null {
+  const match = query
+    .trim()
+    .match(/^\s*(-?\d+(?:\.\d+)?)\s*[, ]\s*(-?\d+(?:\.\d+)?)\s*$/);
+  if (!match) return null;
+  const latitude = Number(match[1]);
+  const longitude = Number(match[2]);
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
+  if (latitude < -90 || latitude > 90) return null;
+  if (longitude < -180 || longitude > 180) return null;
+  return { latitude, longitude };
+}
+
+export function createCoordinateSuggestion(query: string): LocationSuggestion | null {
+  const parsed = parseCoordinateQuery(query);
+  if (!parsed) return null;
+  return {
+    id: `coords:${parsed.latitude.toFixed(4)},${parsed.longitude.toFixed(4)}`,
+    name: 'Координати',
+    displayName: `Координати: ${parsed.latitude.toFixed(4)}, ${parsed.longitude.toFixed(4)}`,
+    latitude: parsed.latitude,
+    longitude: parsed.longitude,
+    source: 'coords',
+    type: 'coordinate',
+    class: 'coordinate',
+  };
 }
 
 export async function searchLocationsInBg(query: string, signal?: AbortSignal): Promise<LocationSuggestion[]> {
@@ -55,6 +84,7 @@ export async function searchLocationsInBg(query: string, signal?: AbortSignal): 
       longitude: Number(item.lon),
       type: item.type,
       class: item.class,
+      source: 'nominatim' as const,
     }))
     .filter((item: LocationSuggestion) => Number.isFinite(item.latitude) && Number.isFinite(item.longitude));
 
@@ -74,4 +104,11 @@ export async function searchLocationsInBg(query: string, signal?: AbortSignal): 
 
   searchCache.set(key, boosted);
   return boosted;
+}
+
+export async function buildLocationSuggestions(query: string, signal?: AbortSignal): Promise<LocationSuggestion[]> {
+  const coordsSuggestion = createCoordinateSuggestion(query);
+  const nominatimResults = await searchLocationsInBg(query, signal);
+  if (!coordsSuggestion) return nominatimResults;
+  return [coordsSuggestion, ...nominatimResults];
 }
