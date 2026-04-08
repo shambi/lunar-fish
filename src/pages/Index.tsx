@@ -355,24 +355,24 @@ const Index = () => {
             <button
               type="button"
               onClick={() => setIsSearchOpen(true)}
-              className="relative inline-flex items-center justify-center w-4 h-4 mr-0.5 text-primary/90 hover:text-primary transition-colors"
+              className="relative inline-flex items-center justify-center w-7 h-7 mr-0.5 text-red-500 hover:text-red-400 transition-colors rounded-full"
               aria-label="Търси локация"
             >
               <span className="sonar-ripple" />
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="sonar-icon">
-                <path d="M12 12m-1.5 0a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0" />
-                <path d="M4.5 12a7.5 7.5 0 0 1 15 0" />
-                <path d="M1.5 12a10.5 10.5 0 0 1 21 0" />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="sonar-icon">
+                <path d="M12 12m-1.5 0a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0" fill="currentColor" />
+                <path d="M4.5 12a7.5 7.5 0 0 1 15 0" className="text-primary" />
+                <path d="M1.5 12a10.5 10.5 0 0 1 21 0" className="text-primary" />
               </svg>
             </button>
             {locationOverride && (
               <button
                 type="button"
                 onClick={() => setLocationOverride(null)}
-                className="inline-flex items-center justify-center w-4 h-4 text-primary/80 hover:text-primary transition-colors"
+                className="inline-flex items-center justify-center w-7 h-7 text-red-500 hover:text-red-400 transition-colors rounded-full"
                 aria-label="Върни към текуща локация"
               >
-                <LocateFixed className="w-3 h-3" />
+                <LocateFixed className="w-[18px] h-[18px]" />
               </button>
             )}
             {loading ? (

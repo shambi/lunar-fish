@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Loader2, Search, Wind, ThermometerSun, Gauge, X } from 'lucide-react';
+import { ArrowRight, Loader2, Search, Wind, ThermometerSun, Gauge, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -98,30 +98,29 @@ export function LocationSearchModal({ open, onOpenChange, onApplyLocation }: Loc
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[96vw] max-w-md h-[86vh] p-0 border-border bg-card/95 backdrop-blur-xl overflow-hidden">
         <div className="flex h-full flex-col">
-          <DialogHeader className="px-4 pt-4 pb-2 border-b border-border">
-            <div className="flex items-center justify-between gap-2">
-              <DialogTitle className="text-base font-display flex items-center gap-2">
-                <Search className="w-4 h-4 text-primary" />
-                Търсене на локация
-              </DialogTitle>
-              <Button
-                type="button"
-                size="sm"
-                variant="secondary"
-                disabled={!forecast}
-                onClick={() => {
-                  if (!forecast) return;
-                  onApplyLocation({
-                    latitude: forecast.weather.latitude,
-                    longitude: forecast.weather.longitude,
-                    locationName: forecast.weather.locationName,
-                  });
-                }}
-                className="h-7 px-2 text-[11px]"
-              >
-                Задай за приложението
-              </Button>
-            </div>
+          <DialogHeader className="relative px-4 pt-4 pb-2 border-b border-border">
+            <DialogTitle className="text-base font-display flex items-center gap-2 pr-20">
+              <Search className="w-4 h-4 text-primary" />
+              Търсене на локация
+            </DialogTitle>
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              disabled={!forecast}
+              onClick={() => {
+                if (!forecast) return;
+                onApplyLocation({
+                  latitude: forecast.weather.latitude,
+                  longitude: forecast.weather.longitude,
+                  locationName: forecast.weather.locationName,
+                });
+              }}
+              className="absolute right-12 top-3 h-8 w-8 text-red-500 hover:text-red-400 hover:bg-red-500/10 disabled:text-muted-foreground"
+              aria-label="Задай за приложението"
+            >
+              <ArrowRight className="h-[18px] w-[18px]" />
+            </Button>
           </DialogHeader>
 
           <div className="px-4 pt-3 pb-2">
