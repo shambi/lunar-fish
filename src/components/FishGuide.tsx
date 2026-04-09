@@ -75,7 +75,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               : 'border-border bg-secondary/30 text-muted-foreground hover:bg-secondary/50'
           }`}
         >
-          🏞️ Водоем
+          🏞️ Язовир/Езеро
         </button>
         <button
           onClick={() => onTerrainChange('river')}
@@ -153,7 +153,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   <p className="text-muted-foreground text-xs italic">{selectedFish.subtitle}</p>
                 )}
                 <DialogDescription className="text-muted-foreground text-xs">
-                  Резултат: {selectedFish.score}/100 • {selectedFish.habitat === 'river' ? 'Река' : selectedFish.habitat === 'lake' ? 'Водоем' : 'Река & Водоем'}
+                  Резултат: {selectedFish.score}/100 • {selectedFish.habitat === 'river' ? 'Река' : selectedFish.habitat === 'lake' ? 'Язовир/Езеро' : 'Река & Язовир/Езеро'}
                 </DialogDescription>
               </DialogHeader>
 

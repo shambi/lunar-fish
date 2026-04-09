@@ -55,9 +55,8 @@ export const FISH_DATABASE: FishSpecies[] = [
   {
     name: 'Амур',
     emoji: '🐠',
-    habitat: 'both',
+    habitat: 'lake',
     isPredator: false,
-    hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Растителна захранка с трева',
       bait: 'Тръстика, царевица, краставица, хляб',
@@ -89,7 +88,7 @@ export const FISH_DATABASE: FishSpecies[] = [
   {
     name: 'Сом',
     emoji: '🐋',
-    habitat: 'river',
+    habitat: 'both',
     isPredator: true,
     baseData: {
       groundbait: 'Кървава захранка, рибно брашно',
@@ -123,9 +122,8 @@ export const FISH_DATABASE: FishSpecies[] = [
   {
     name: 'Каракуда',
     emoji: '🐠',
-    habitat: 'both',
+    habitat: 'lake',
     isPredator: false,
-    hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Лека сладка захранка, трохи',
       bait: 'Червеи, ларви, хляб, тесто',
@@ -291,9 +289,8 @@ export const FISH_DATABASE: FishSpecies[] = [
   {
     name: 'Мряна',
     emoji: '🐟',
-    habitat: 'river',
+    habitat: 'both',
     isPredator: false,
-    hideOnTerrain: 'lake',
     baseData: {
       groundbait: 'Тежка дънна захранка, пелети',
       bait: 'Бойли, пелети, червеи, скариди',
@@ -584,7 +581,7 @@ export function getFishModalData(
   const rigTip = fish.baseData.rigs;
 
   // Eco warning — use per-fish ecoRed/ecoGreen data
-  const IARA_FOOTER = '\n\n📋 Проверете списъка на ИАРА за\nразрешени водоеми във вашия район.\niara.government.bg';
+  const IARA_FOOTER = '\n\n📋 Проверете списъка на ИАРА за\nразрешени язовири и езера във вашия район.\niara.government.bg';
   let ecoWarning: string;
   const isBanned = fish.spawnMonths.includes(currentMonth);
   if (isBanned && fish.ecoRed) {
