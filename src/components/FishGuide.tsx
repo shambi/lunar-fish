@@ -61,7 +61,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
   return (
     <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-      <h3 className="font-display text-sm font-bold uppercase tracking-wide mb-3 flex items-center gap-2" style={{ color: '#CBD5E1' }}>
+      <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#CBD5E1' }}>
         <svg
           width="18"
           height="18"
@@ -73,7 +73,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           strokeLinejoin="round"
           aria-hidden="true"
           style={{ 
-            filter: 'drop-shadow(0 0 8px #E4FF00) drop-shadow(0 0 4px #E4FF00)',
+            filter: 'drop-shadow(0 0 4px #E4FF00) drop-shadow(0 0 2px #E4FF00)',
             transform: 'translateY(0.5px)'
           }}
         >
@@ -91,20 +91,20 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
             terrain === 'lake'
               ? 'border-primary bg-primary/20 text-primary'
-              : 'border-border bg-secondary/30 text-muted-foreground hover:bg-secondary/50'
+              : 'border-border bg-secondary/30 text-white/90 hover:bg-secondary/50'
           }`}
         >
-          🏞️ Язовир/Езеро
+          Язовир/Езеро
         </button>
         <button
           onClick={() => onTerrainChange('river')}
           className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
             terrain === 'river'
               ? 'border-primary bg-primary/20 text-primary'
-              : 'border-border bg-secondary/30 text-muted-foreground hover:bg-secondary/50'
+              : 'border-border bg-secondary/30 text-white/90 hover:bg-secondary/50'
           }`}
         >
-          🌊 Река
+          Река
         </button>
       </div>
 
@@ -127,12 +127,12 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               }`}
             >
               {isGlow && (
-                <Badge
-                  className="absolute -top-2 -right-1 text-[9px] px-1.5 py-0 bg-primary text-primary-foreground"
+                <div
+                  className="absolute -top-2 -right-1 text-[9px] px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground font-bold"
                   style={{ animation: 'star-signal 2.5s ease-in-out infinite' }}
                 >
-                  ⭐
-                </Badge>
+                  ПРЕПОРЪЧАНО
+                </div>
               )}
               {FISH_ICON_MAP[fish.name]
                 ? FISH_ICON_MAP[fish.name]({ size: 40, strokeWidth: 2 })
@@ -163,9 +163,9 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     }
                   {selectedFish.name}
                   {selectedFish.isRecommended && (
-                    <Badge className="bg-primary text-primary-foreground text-[10px]">
-                      ⭐ Препоръчано днес
-                    </Badge>
+                    <div className="bg-primary text-primary-foreground text-[10px] px-2 py-0.5 rounded-full font-bold">
+                      Препоръчано днес
+                    </div>
                   )}
                 </DialogTitle>
                 {selectedFish.subtitle && (
