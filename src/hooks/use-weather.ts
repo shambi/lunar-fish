@@ -1,11 +1,6 @@
 import { useState, useEffect } from 'react';
 import { fetchElevation, fetchWeatherData, getWeatherInfo, type WeatherData } from '@/lib/weather-service';
 export { getWeatherInfo, type WeatherData } from '@/lib/weather-service';
-export interface LocationOverride {
-  latitude: number;
-  longitude: number;
-  locationName?: string;
-}
 
 function getLocation(): Promise<GeolocationPosition> {
   return new Promise((resolve, reject) => {
@@ -27,7 +22,7 @@ function getLocation(): Promise<GeolocationPosition> {
 }
 
 
-export function useWeather(locationOverride: LocationOverride | null = null) {
+export function useWeather() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,22 +33,6 @@ export function useWeather(locationOverride: LocationOverride | null = null) {
       setLoading(true);
       setError(null);
       try {
-        if (locationOverride) {
-          const fallbackAltitude = 0;
-          const altitude = await Promise.race<number>([
-            fetchElevation(locationOverride.latitude, locationOverride.longitude, fallbackAltitude),
-            new Promise<number>((resolve) => setTimeout(() => resolve(fallbackAltitude), 1500)),
-          ]);
-          const weatherData = await fetchWeatherData(locationOverride.latitude, locationOverride.longitude, altitude);
-          if (locationOverride.locationName) {
-            weatherData.locationName = locationOverride.locationName;
-          }
-          setWeather(weatherData);
-          setLocationDenied(false);
-          setLoading(false);
-          return;
-        }
-
         const position = await getLocation();
         const { latitude, longitude, altitude: gpsAltitude } = position.coords;
         const fallbackAltitude = gpsAltitude ?? 0;
@@ -97,7 +76,7 @@ export function useWeather(locationOverride: LocationOverride | null = null) {
     }
 
     initLocation();
-  }, [locationOverride?.latitude, locationOverride?.longitude, locationOverride?.locationName]);
+  }, []);
 
   return { weather, loading, error, locationDenied };
 }

@@ -2,11 +2,10 @@ import { useMemo, useState, useEffect } from 'react';
 import { getMoonData } from '@/lib/moon';
 import { getSmartFishingTips, getTimePeriod } from '@/lib/fishing-expert';
 import { calculateFishingScore } from '@/lib/fishing-score';
-import { useWeather, type LocationOverride } from '@/hooks/use-weather';
-import { Cloud, Wind, Droplets, ThermometerSun, MapPin, Anchor, Fish, Loader as Loader2, Gauge, Mountain, LocateFixed } from 'lucide-react';
+import { useWeather } from '@/hooks/use-weather';
+import { Cloud, Wind, Droplets, ThermometerSun, Anchor, Fish, Loader as Loader2, Gauge, Mountain, LocateFixed } from 'lucide-react';
 import { FishGuide } from '@/components/FishGuide';
 import { ForecastCards } from '@/components/ForecastCards';
-import { LocationSearchModal } from '@/components/LocationSearchModal';
 
 const SolunarSection = ({ weather }: { weather: any }) => {
   const [now, setNow] = useState(() => new Date());
@@ -254,10 +253,8 @@ const SolunarSection = ({ weather }: { weather: any }) => {
 
 const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
-  const [locationOverride, setLocationOverride] = useState<LocationOverride | null>(null);
-  const { weather, loading, error, locationDenied } = useWeather(locationOverride);
+  const { weather, loading, error, locationDenied } = useWeather();
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const today = new Date().toLocaleDateString('bg-BG', {
     weekday: 'long',
@@ -352,45 +349,15 @@ const Index = () => {
           </h1>
           <p className="text-sm text-muted-foreground mt-1 capitalize">{today}</p>
           <div className="flex items-center justify-center gap-1 mt-1 text-xs text-muted-foreground">
-            <button
-              type="button"
-              onClick={() => setIsSearchOpen(true)}
-              className="relative inline-flex items-center justify-center w-7 h-7 mr-0.5 text-red-500 hover:text-red-400 transition-colors rounded-full"
-              aria-label="Търси локация"
-            >
-              <span className="sonar-ripple" />
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="sonar-icon">
-                <path d="M12 12m-1.5 0a1.5 1.5 0 1 0 3 0a1.5 1.5 0 1 0 -3 0" fill="#AA00FF" />
-                <path d="M4.5 12a7.5 7.5 0 0 1 15 0" className="text-primary" />
-                <path d="M1.5 12a10.5 10.5 0 0 1 21 0" className="text-primary" />
-              </svg>
-            </button>
-            {locationOverride && (
-              <button
-                type="button"
-                onClick={() => setLocationOverride(null)}
-                className="relative inline-flex items-center justify-center w-7 h-7 text-[#d9ec43] hover:text-[#e6f56f] transition-colors rounded-full"
-                aria-label="Върни към текуща локация"
-              >
-                <LocateFixed className="w-[18px] h-[18px]" />
-                <span className="reset-neon-dot" />
-              </button>
-            )}
             {loading ? (
               <>
                 <Loader2 className="w-3 h-3 animate-spin" />
                 <span>Определяне на локация...</span>
               </>
             ) : weather ? (
-              <>
-                <MapPin className="w-3 h-3" />
-                <span>{weather.locationName}</span>
-              </>
+              <span>{weather.locationName}</span>
             ) : (
-              <>
-                <MapPin className="w-3 h-3" />
-                <span>София (по подразбиране)</span>
-              </>
+              <span>София (по подразбиране)</span>
             )}
           </div>
         </header>
@@ -737,14 +704,6 @@ const Index = () => {
           )}
         </footer>
       </div>
-      <LocationSearchModal
-        open={isSearchOpen}
-        onOpenChange={setIsSearchOpen}
-        onApplyLocation={(nextLocation) => {
-          setLocationOverride(nextLocation);
-          setIsSearchOpen(false);
-        }}
-      />
     </div>
   );
 };
