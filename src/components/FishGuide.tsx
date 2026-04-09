@@ -61,8 +61,27 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
   return (
     <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-      <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-        🐟 Рибо гид
+      <h3 className="font-display text-sm font-bold uppercase tracking-wide mb-3 flex items-center gap-2" style={{ color: '#CBD5E1' }}>
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 48 48"
+          fill="none"
+          stroke="#E4FF00"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+          style={{ 
+            filter: 'drop-shadow(0 0 8px #E4FF00) drop-shadow(0 0 4px #E4FF00)',
+            transform: 'translateY(0.5px)'
+          }}
+        >
+          <ellipse cx="22" cy="24" rx="14" ry="10" />
+          <path d="M36 24 L44 16 M36 24 L44 32" />
+          <circle cx="12" cy="22" r="1.5" fill="#E4FF00" />
+        </svg>
+        РИБО ГИД
       </h3>
 
       {/* Terrain toggle */}
