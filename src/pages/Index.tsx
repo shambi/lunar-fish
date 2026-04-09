@@ -128,13 +128,13 @@ const SolunarSection = ({ weather }: { weather: any }) => {
         <div className="flex-1 text-center rounded-[20px] py-[4px] px-[10px]"
           style={{ background: 'rgba(255,140,66,0.12)', border: '1px solid rgba(255,140,66,0.4)' }}>
           <span style={{ fontSize: '11px', color: '#FF8C42' }}>
-            {weather.sunrise || '--:--'} • {weather.sunset || '--:--'}
+            <span className="text-white">{weather.sunrise || '--:--'}</span> • <span className="text-white">{weather.sunset || '--:--'}</span>
           </span>
         </div>
         <div className="flex-1 text-center rounded-[20px] py-[4px] px-[10px]"
-          style={{ background: 'rgba(0,212,212,0.08)', border: '1px solid rgba(0,212,212,0.3)' }}>
-          <span style={{ fontSize: '11px', color: '#00D4D4' }}>
-            {weather.moonrise || '--:--'} • {weather.moonset || '--:--'}
+          style={{ background: 'rgba(0,245,255,0.08)', border: '1px solid rgba(0,245,255,0.3)' }}>
+          <span style={{ fontSize: '11px', color: '#00F5FF' }}>
+            <span className="text-white">{weather.moonrise || '--:--'}</span> • <span className="text-white">{weather.moonset || '--:--'}</span>
           </span>
         </div>
       </div>
@@ -448,11 +448,11 @@ const Index = () => {
           )}
           <div className="flex items-center gap-3 mb-2">
             <div className="flex gap-1">{fishIcons}</div>
-            <span className="text-lg font-bold font-display text-foreground">
+            <span className="text-lg font-bold font-display text-white">
               {fishingScore.label}
             </span>
           </div>
-          <p className="text-sm text-secondary-foreground leading-relaxed">
+          <p className="text-sm text-white/90 leading-relaxed">
             {stripEmojis(moon.fishingTip)}
           </p>
         </section>
@@ -499,31 +499,31 @@ const Index = () => {
               
               <div className="flex gap-3">
                 <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                  <Cloud className="w-4 h-4 text-[#00D4D4]" strokeWidth={1.5} />
+                  <Cloud className="w-4 h-4 text-[#00F5FF]" strokeWidth={1.5} />
                 </div>
-                <p className="text-sm text-secondary-foreground leading-relaxed">{tips.weatherTip}</p>
+                <p className="text-sm text-white/90 leading-relaxed">{tips.weatherTip}</p>
               </div>
 
               <div className="flex gap-3">
                 <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                  <Wind className="w-4 h-4 text-[#00D4D4]" strokeWidth={1.5} />
+                  <Wind className="w-4 h-4 text-[#00F5FF]" strokeWidth={1.5} />
                 </div>
-                <p className="text-sm text-secondary-foreground leading-relaxed">{tips.windTip}</p>
+                <p className="text-sm text-white/90 leading-relaxed">{tips.windTip}</p>
               </div>
 
               <div className="flex gap-3">
                 <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00D4D4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00F5FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
                   </svg>
                 </div>
                 <p className="text-sm font-medium leading-relaxed" style={{
                   color: solunarContext.isInPeak && solunarContext.peakType === 'major'
-                    ? '#00D4D4'
+                    ? '#00F5FF'
                     : solunarContext.isInPeak && solunarContext.peakType === 'minor'
-                    ? 'rgba(0,212,212,0.6)'
-                    : 'hsl(var(--secondary-foreground))'
+                    ? 'rgba(0,245,255,0.6)'
+                    : 'rgba(255, 255, 255, 0.9)'
                 }}>
                   {tips.timingTip}
                 </p>
@@ -560,9 +560,9 @@ const Index = () => {
           </h3>
           <div className="flex gap-3">
             <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-              <Anchor className="w-4 h-4 text-[#00D4D4]" strokeWidth={1.5} />
+              <Anchor className="w-4 h-4 text-[#00F5FF]" strokeWidth={1.5} />
             </div>
-            <p className="text-sm text-secondary-foreground leading-relaxed">
+            <p className="text-sm text-white/90 leading-relaxed">
               {tips ? tips.fishingStyleTip : stripEmojis(moon.fishingStyleTip)}
             </p>
           </div>
@@ -611,31 +611,31 @@ const Index = () => {
           <div className="grid grid-cols-4 gap-3 text-center">
             <div className="flex flex-col items-center gap-1">
               <ThermometerSun className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display text-foreground">
+              <span className="text-lg font-bold font-display text-white">
                 {weather ? `${weather.temperature}°C` : '—'}
               </span>
-              <span className="text-xs text-muted-foreground">Темп.</span>
+              <span className="text-xs text-white/90">Темп.</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <Wind className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display text-foreground">
+              <span className="text-lg font-bold font-display text-white">
                 {weather ? `${weather.windSpeed} км/ч` : '—'}
               </span>
-              <span className="text-xs text-muted-foreground">Вятър</span>
+              <span className="text-xs text-white/90">Вятър</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <Droplets className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display text-foreground">
+              <span className="text-lg font-bold font-display text-white">
                 {weather ? `${weather.humidity}%` : '—'}
               </span>
-              <span className="text-xs text-muted-foreground">Влажност</span>
+              <span className="text-xs text-white/90">Влажност</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <Mountain className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display text-foreground">
+              <span className="text-lg font-bold font-display text-white">
                 {weather ? `${weather.altitude} м` : '—'}
               </span>
-              <span className="text-xs text-muted-foreground">Надморска</span>
+              <span className="text-xs text-white/90">Надморска</span>
             </div>
           </div>
           {/* Divider + Second Row */}
@@ -646,7 +646,7 @@ const Index = () => {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Gauge className="w-5 h-5 text-primary" />
-                  <span className="text-lg font-bold font-display text-foreground">
+                  <span className="text-lg font-bold font-display text-white">
                     {weather ? `${weather.pressure} хПа` : '—'}
                   </span>
                 </div>
@@ -677,7 +677,7 @@ const Index = () => {
                     </span>
                   </span>
                 ) : (
-                  <span className="text-xs text-muted-foreground">Зареждане...</span>
+                  <span className="text-xs text-white/90">Зареждане...</span>
                 )}
               </div>
               {weather && (
@@ -698,7 +698,7 @@ const Index = () => {
                     <path d="M36 24 L44 16 M36 24 L44 32" />
                     <circle cx="12" cy="22" r="1.5" fill="currentColor" />
                   </svg>
-                  <p className="text-xs text-muted-foreground text-left">
+                  <p className="text-xs text-white/90 text-left">
                     {weather.pressureTrend === 'rising'
                       ? 'Налягането се покачва - чакай по-активна риба.'
                       : weather.pressureTrend === 'falling'
@@ -748,7 +748,7 @@ const Index = () => {
               })()}
               {!weather && (
                 <div className="flex items-center justify-center py-4">
-                  <span className="text-xs text-muted-foreground">Зареждане...</span>
+                  <span className="text-xs text-white/90">Зареждане...</span>
                 </div>
               )}
             </div>
@@ -757,10 +757,10 @@ const Index = () => {
             {weather ? (
               <>
                 <span className="text-xl">{weather.weatherIcon}</span>
-                <span className="text-sm text-muted-foreground">{weather.weatherLabel}</span>
+                <span className="text-sm text-white/90">{weather.weatherLabel}</span>
               </>
             ) : (
-              <span className="text-sm text-muted-foreground">Зареждане...</span>
+              <span className="text-sm text-white/90">Зареждане...</span>
             )}
           </div>
         </section>
@@ -826,7 +826,7 @@ const Index = () => {
 
           {/* Baits */}
           <div className="mb-6">
-            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-1">
+            <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-3 flex items-center gap-1">
               СТРЪВ
             </h4>
             <div className="grid grid-cols-2 gap-3">
@@ -835,7 +835,7 @@ const Index = () => {
                   key={bait.name}
                   className="flex items-center gap-3 rounded-lg border border-border bg-secondary/30 px-3 py-2.5"
                 >
-                  <span className="text-sm font-medium text-secondary-foreground">{bait.name}</span>
+                  <span className="text-sm font-medium text-white/90">{bait.name}</span>
                 </div>
               ))}
             </div>
@@ -843,7 +843,7 @@ const Index = () => {
 
           {/* Tackle */}
           <div>
-            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-1">
+            <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-3 flex items-center gap-1">
               ТАКЪМИ
             </h4>
             <div className="grid grid-cols-2 gap-3">
@@ -852,7 +852,7 @@ const Index = () => {
                   key={item.name}
                   className="flex items-center gap-3 rounded-lg border border-border bg-secondary/30 px-3 py-2.5"
                 >
-                  <span className="text-sm font-medium text-secondary-foreground">{item.name}</span>
+                  <span className="text-sm font-medium text-white/90">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -872,10 +872,10 @@ const Index = () => {
         />
 
         <footer className="text-center mt-8 space-y-1">
-          <p className="text-xs text-muted-foreground">Наслука!</p>
+          <p className="text-xs text-white/90">Наслука!</p>
           {weather && (
-            <p className="text-[10px] text-muted-foreground/60">
-              Данните са базирани на текущата ви локация • Open-Meteo API
+            <p className="text-[10px] text-white/90">
+              Данните са базирани на текущата ви локация • <span className="text-white">Open-Meteo API</span>
             </p>
           )}
         </footer>

@@ -90,7 +90,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
             terrain === 'lake'
               ? 'border-primary bg-primary/20 text-primary'
-              : 'border-border bg-secondary/30 text-secondary-foreground hover:bg-secondary/50'
+              : 'border-border bg-secondary/30 text-white/90 hover:bg-secondary/50'
           }`}
         >
           Язовир/Езеро
@@ -100,7 +100,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
             terrain === 'river'
               ? 'border-primary bg-primary/20 text-primary'
-              : 'border-border bg-secondary/30 text-secondary-foreground hover:bg-secondary/50'
+              : 'border-border bg-secondary/30 text-white/90 hover:bg-secondary/50'
           }`}
         >
           Река
@@ -175,16 +175,16 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 </DialogDescription>
               </DialogHeader>
 
-              <ScrollArea className="max-h-[55vh] pr-2">
-                <div className="space-y-4 text-sm">
+              <ScrollArea className="flex-1 pr-4">
+                <div className="space-y-4 py-2">
                   {/* Daily Advice */}
                   {advice && (
                     <>
                       <div>
-                        <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
                           Съвет за днес
                         </h4>
-                        <p className="text-foreground leading-relaxed whitespace-pre-line">{advice.tip}</p>
+                        <p className="text-white/90 leading-relaxed whitespace-pre-line">{advice.tip}</p>
                       </div>
                       <div className="border-t border-border" />
 
@@ -194,7 +194,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                             <h4 className="text-xs font-semibold uppercase tracking-wider mb-1 flex items-center gap-1" style={{ color: '#FFA726' }}>
                               Честа грешка днес
                             </h4>
-                            <p className="text-foreground leading-relaxed">{advice.mistake}</p>
+                            <p className="text-white/90 leading-relaxed">{advice.mistake}</p>
                           </div>
                           <div className="border-t border-border" />
                         </>
@@ -204,49 +204,49 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                   {/* Groundbait & Bait */}
                   <div>
-                    <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
                       Захранка & Стръв
                     </h4>
-                    <p className="text-foreground leading-relaxed">{modalData.groundbaitTip}</p>
-                    <p className="text-secondary-foreground leading-relaxed mt-1">{modalData.baitTip}</p>
+                    <p className="text-white leading-relaxed">{modalData.groundbaitTip}</p>
+                    <p className="text-white/90 leading-relaxed mt-1">{modalData.baitTip}</p>
                   </div>
 
                   {/* Line */}
                   <div>
-                    <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
                       Влакно & Монофил
                     </h4>
-                    <p className="text-foreground">{modalData.lineDiameter}</p>
+                    <p className="text-white">{modalData.lineDiameter}</p>
                   </div>
 
                   {/* Lures (predators only) */}
                   {modalData.lureTip && (
                     <div>
-                      <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
                         Воблери & Корди
                       </h4>
-                      <p className="text-foreground leading-relaxed">{modalData.lureTip}</p>
+                      <p className="text-white leading-relaxed">{modalData.lureTip}</p>
                     </div>
                   )}
 
                   {/* Hooks & Tackle */}
                   <div>
-                    <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
                       Такъми & Куки
                     </h4>
-                    <p className="text-foreground">{modalData.hookTip}</p>
-                    <p className="text-secondary-foreground mt-1">{modalData.rigTip}</p>
+                    <p className="text-white">{modalData.hookTip}</p>
+                    <p className="text-white/90 mt-1">{modalData.rigTip}</p>
                   </div>
 
                   {/* Eco warning */}
                   <div className="rounded-lg border border-border bg-secondary/30 p-3">
-                    <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
                       Еко-съвет
                     </h4>
-                    <p className="text-foreground whitespace-pre-line">{modalData.ecoWarning}</p>
+                    <p className="text-white/90 whitespace-pre-line">{modalData.ecoWarning}</p>
                   </div>
 
-                  <p className="text-[10px] text-muted-foreground/60 text-center pt-2">
+                  <p className="text-[10px] text-white/90 text-center pt-2">
                     Данните са базирани на луната и прогнозата
                   </p>
                 </div>

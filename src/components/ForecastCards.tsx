@@ -156,19 +156,19 @@ export function ForecastCards({ weather }: { weather: WeatherData | null }) {
               }`}
             >
               {/* Row 1: date label */}
-              <span className="text-[11px] text-muted-foreground">
-                {day.label} · {day.dateStr}
+              <span className="text-[11px] text-white/90">
+                {day.label} · <span className="text-white">{day.dateStr}</span>
               </span>
 
               {/* Row 2: moon */}
               <div className="flex items-center gap-1.5">
                 <span className="text-xl leading-none">{day.moonEmoji}</span>
-                <span className="text-xs font-medium text-foreground">{day.moonPhaseNameBg}</span>
+                <span className="text-xs font-medium text-white/90">{day.moonPhaseNameBg}</span>
               </div>
 
               {/* Row 3: weather line */}
-              <span className="text-[11px] text-muted-foreground">
-                {day.weatherIcon} {day.tempMax}°С · {day.windMax} км/ч
+              <span className="text-[11px] text-white/90">
+                {day.weatherIcon} <span className="text-white">{day.tempMax}°С</span> · <span className="text-white">{day.windMax} км/ч</span>
               </span>
 
               {/* Row 4: fish score */}
