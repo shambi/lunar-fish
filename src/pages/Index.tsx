@@ -6,6 +6,7 @@ import { useWeather } from '@/hooks/use-weather';
 import { Cloud, Wind, Droplets, ThermometerSun, Anchor, Fish, Loader as Loader2, Gauge, Mountain, LocateFixed } from 'lucide-react';
 import { FishGuide } from '@/components/FishGuide';
 import { ForecastCards } from '@/components/ForecastCards';
+import { PerchIcon, CarpIcon, PikeIcon, BreamIcon, CatfishIcon } from '@/components/FishIcons';
 
 const SolunarSection = ({ weather }: { weather: any }) => {
   const [now, setNow] = useState(() => new Date());
@@ -208,10 +209,12 @@ const SolunarSection = ({ weather }: { weather: any }) => {
                 {/* RIGHT — Fish icons */}
                 <div className="w-[20%] flex flex-col items-center gap-0.5">
                   {Array.from({ length: isMajor ? 3 : 1 }).map((_, fi) => (
-                    <PeakFishIcon key={fi}
-                      glow={isMajor}
-                      color={isMajor ? '#00D4D4' : 'rgba(0,212,212,0.3)'}
-                    />
+                    <span key={fi}>
+                      <PeakFishIcon
+                        glow={isMajor}
+                        color={isMajor ? '#00D4D4' : 'rgba(0,212,212,0.3)'}
+                      />
+                    </span>
                   ))}
                 </div>
               </div>
@@ -311,15 +314,20 @@ const Index = () => {
   }, [moon, weather, terrain, timePeriod, solunarContext]);
 
   const swimAnimations = ['fish-swim-1', 'fish-swim-2', 'fish-swim-3'];
-  const fishIcons = Array.from({ length: Math.max(0, Math.min(5, Math.round(fishingScore.score))) }, (_, i) => (
-    <span
-      key={i}
-      className="text-2xl drop-shadow-[0_0_6px_hsl(180_80%_55%/0.6)]"
-      style={{ animation: `${swimAnimations[i % 3]} ${7 + i * 1.2}s ease-in-out infinite` }}
-    >
-      {i % 2 === 0 ? '🐟' : '🐠'}
-    </span>
-  ));
+  const iconSequence = [PerchIcon, CarpIcon, PikeIcon, BreamIcon, CatfishIcon];
+  
+  const fishIcons = Array.from({ length: Math.max(0, Math.min(5, Math.round(fishingScore.score))) }, (_, i) => {
+    const Icon = iconSequence[i % iconSequence.length];
+    return (
+      <div
+        key={i}
+        className="drop-shadow-[0_0_8px_hsl(var(--primary)/0.4)]"
+        style={{ animation: `${swimAnimations[i % 3]} ${7 + i * 1.2}s ease-in-out infinite` }}
+      >
+        <Icon size={24} className="text-primary" />
+      </div>
+    );
+  });
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
@@ -383,10 +391,30 @@ const Index = () => {
         </section>
 
         {/* Fishing Forecast */}
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
+        <section 
+          className="rounded-xl bg-card/60 backdrop-blur-md p-5 mb-4"
+          style={{
+            border: '1px solid #00D4D4',
+            boxShadow: '0 0 10px rgba(0,212,212,0.2)',
+          }}
+        >
           <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-            <Fish className="w-4 h-4" />
-            Прогноза за риболов
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 48 48"
+              fill="none"
+              stroke="#DDD06A"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <ellipse cx="22" cy="24" rx="14" ry="10" />
+              <path d="M36 24 L44 16 M36 24 L44 32" />
+              <circle cx="12" cy="22" r="1.5" fill="#DDD06A" />
+            </svg>
+            РИБО ПРОГНОЗА
           </h3>
           {fishingScore.isOverride && fishingScore.overrideReason && (
             <div
