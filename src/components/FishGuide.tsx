@@ -93,7 +93,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               ? 'border-primary bg-primary/20 text-primary'
               : 'border-border bg-secondary/30 hover:bg-secondary/50'
           }`}
-          style={terrain !== 'lake' ? { color: 'rgba(255,255,255,0.8)' : undefined}
+          style={terrain !== 'lake' ? { color: 'rgba(255,255,255,0.8)' } : undefined}
         >
           Язовир/Езеро
         </button>
@@ -104,7 +104,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               ? 'border-primary bg-primary/20 text-primary'
               : 'border-border bg-secondary/30 hover:bg-secondary/50'
           }`}
-          style={terrain !== 'river' ? { color: 'rgba(255,255,255,0.8)' : undefined}
+          style={terrain !== 'river' ? { color: 'rgba(255,255,255,0.8)' } : undefined}
         >
           Река
         </button>
