@@ -127,7 +127,7 @@ export function ForecastCards({ weather }: { weather: WeatherData | null }) {
   return (
     <section className="mb-4">
       <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2 px-1" style={{ color: '#CBD5E1' }}>
-        <Cloud className="w-[18px] h-[18px]" strokeWidth={1.5} style={{ color: '#E4FF00', transform: 'translateY(0.5px)' }} />
+        <Cloud className="w-[18px] h-[18px]" strokeWidth={1.5} style={{ stroke: '#E4FF00', color: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
         ПРОГНОЗА ЗА СЛЕДВАЩИТЕ ДНИ
       </h3>
       <div className="grid grid-cols-2 gap-3">
@@ -156,19 +156,19 @@ export function ForecastCards({ weather }: { weather: WeatherData | null }) {
               }`}
             >
               {/* Row 1: date label */}
-              <span className="text-[11px] text-white/90">
-                {day.label} · <span className="text-white">{day.dateStr}</span>
+              <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                {day.label} · <span style={{ color: '#FFFFFF' }}>{day.dateStr}</span>
               </span>
 
               {/* Row 2: moon */}
               <div className="flex items-center gap-1.5">
                 <span className="text-xl leading-none">{day.moonEmoji}</span>
-                <span className="text-xs font-medium text-white/90">{day.moonPhaseNameBg}</span>
+                <span className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>{day.moonPhaseNameBg}</span>
               </div>
 
               {/* Row 3: weather line */}
-              <span className="text-[11px] text-white/90">
-                {day.weatherIcon} <span className="text-white">{day.tempMax}°С</span> · <span className="text-white">{day.windMax} км/ч</span>
+              <span className="text-[11px]" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                {day.weatherIcon} <span style={{ color: '#FFFFFF' }}>{day.tempMax}°С</span> · <span style={{ color: '#FFFFFF' }}>{day.windMax} км/ч</span>
               </span>
 
               {/* Row 4: fish score */}

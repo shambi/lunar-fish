@@ -350,8 +350,8 @@ const Index = () => {
         {/* Header */}
         <header className="pt-4 pb-1 text-center">
           <h1
-            className="font-display text-3xl font-medium tracking-wide text-foreground"
-            style={{ animation: 'title-glow 4s ease-in-out infinite' }}
+            className="font-display text-3xl font-medium tracking-wide"
+            style={{ color: '#CBD5E1', animation: 'title-glow 4s ease-in-out infinite' }}
           >
             РИБ
             <span className="relative inline-block">
@@ -367,8 +367,8 @@ const Index = () => {
               </svg>
             </span>
           </h1>
-          <p className="text-sm text-muted-foreground mt-1 capitalize">{today}</p>
-          <div className="flex items-center justify-center gap-1 mt-1 text-xs text-muted-foreground">
+          <p className="text-sm mt-1 capitalize" style={{ color: 'rgba(255,255,255,0.8)' }}>{today}</p>
+          <div className="flex items-center justify-center gap-1 mt-1 text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>
             {loading ? (
               <>
                 <Loader2 className="w-3 h-3 animate-spin" />
@@ -394,10 +394,10 @@ const Index = () => {
           >
             {moon.emoji}
           </div>
-          <h2 className="font-display text-xl font-semibold text-foreground mt-4">
+          <h2 className="font-display text-xl font-semibold mt-4" style={{ color: '#CBD5E1' }}>
             {moon.phaseNameBg}
           </h2>
-          <p className="text-sm text-primary font-medium mt-1">
+          <p className="text-sm font-medium mt-1" style={{ color: 'rgba(255,255,255,0.8)' }}>
             {moon.illumination}% Осветеност
           </p>
         </section>
@@ -422,7 +422,8 @@ const Index = () => {
               strokeLinejoin="round"
               aria-hidden="true"
               style={{ 
-                transform: 'translateY(0.5px)'
+                transform: 'translateY(0.5px)',
+                filter: 'drop-shadow(0 0 6px #E4FF00)'
               }}
             >
               <ellipse cx="22" cy="24" rx="14" ry="10" />
@@ -452,7 +453,7 @@ const Index = () => {
               {fishingScore.label}
             </span>
           </div>
-          <p className="text-sm text-white/90 leading-relaxed">
+          <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>
             {stripEmojis(moon.fishingTip)}
           </p>
         </section>
@@ -472,7 +473,8 @@ const Index = () => {
                 strokeLinejoin="round"
                 aria-hidden="true"
                 style={{ 
-                  transform: 'translateY(0.5px)'
+                  transform: 'translateY(0.5px)',
+                  filter: 'drop-shadow(0 0 6px #E4FF00)'
                 }}
               >
                 <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
@@ -491,7 +493,7 @@ const Index = () => {
                       <path d="M12 17h.01" />
                     </svg>
                   </div>
-                  <p className="text-sm font-bold leading-relaxed text-[#EF5350]">
+                  <p className="text-sm font-bold leading-relaxed" style={{ color: '#EF5350' }}>
                     {stripEmojis(fishingScore.overrideReason)}
                   </p>
                 </div>
@@ -501,14 +503,14 @@ const Index = () => {
                 <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
                   <Cloud className="w-4 h-4 text-[#00F5FF]" strokeWidth={1.5} />
                 </div>
-                <p className="text-sm text-white/90 leading-relaxed">{tips.weatherTip}</p>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{tips.weatherTip}</p>
               </div>
 
               <div className="flex gap-3">
                 <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
                   <Wind className="w-4 h-4 text-[#00F5FF]" strokeWidth={1.5} />
                 </div>
-                <p className="text-sm text-white/90 leading-relaxed">{tips.windTip}</p>
+                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{tips.windTip}</p>
               </div>
 
               <div className="flex gap-3">
@@ -523,7 +525,7 @@ const Index = () => {
                     ? '#00F5FF'
                     : solunarContext.isInPeak && solunarContext.peakType === 'minor'
                     ? 'rgba(0,245,255,0.6)'
-                    : 'rgba(255, 255, 255, 0.9)'
+                    : 'rgba(255, 255, 255, 0.8)'
                 }}>
                   {tips.timingTip}
                 </p>
@@ -546,7 +548,8 @@ const Index = () => {
               strokeLinejoin="round"
               aria-hidden="true"
               style={{ 
-                transform: 'translateY(0.5px)'
+                transform: 'translateY(0.5px)',
+                filter: 'drop-shadow(0 0 6px #E4FF00)'
               }}
             >
               <ellipse cx="22" cy="24" rx="16" ry="5" />
@@ -562,7 +565,7 @@ const Index = () => {
             <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
               <Anchor className="w-4 h-4 text-[#00F5FF]" strokeWidth={1.5} />
             </div>
-            <p className="text-sm text-white/90 leading-relaxed">
+            <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>
               {tips ? tips.fishingStyleTip : stripEmojis(moon.fishingStyleTip)}
             </p>
           </div>
@@ -600,42 +603,42 @@ const Index = () => {
           {loading ? (
             <div className="flex items-center justify-center gap-2 py-4 text-muted-foreground">
               <Loader2 className="w-5 h-5 animate-spin" />
-              <span className="text-sm">Зареждане на времето...</span>
+              <span className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане на времето...</span>
             </div>
           ) : error && !weather ? (
             <div className="text-center py-4">
-              <p className="text-sm text-muted-foreground">{error}</p>
-              <p className="text-xs text-muted-foreground mt-1">Показват се примерни данни</p>
+              <p className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>{error}</p>
+              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Показват се примерни данни</p>
             </div>
           ) : null}
           <div className="grid grid-cols-4 gap-3 text-center">
             <div className="flex flex-col items-center gap-1">
               <ThermometerSun className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display text-white">
+              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
                 {weather ? `${weather.temperature}°C` : '—'}
               </span>
-              <span className="text-xs text-white/90">Темп.</span>
+              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Темп.</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <Wind className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display text-white">
+              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
                 {weather ? `${weather.windSpeed} км/ч` : '—'}
               </span>
-              <span className="text-xs text-white/90">Вятър</span>
+              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Вятър</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <Droplets className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display text-white">
+              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
                 {weather ? `${weather.humidity}%` : '—'}
               </span>
-              <span className="text-xs text-white/90">Влажност</span>
+              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Влажност</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <Mountain className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display text-white">
+              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
                 {weather ? `${weather.altitude} м` : '—'}
               </span>
-              <span className="text-xs text-white/90">Надморска</span>
+              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Надморска</span>
             </div>
           </div>
           {/* Divider + Second Row */}
@@ -646,7 +649,7 @@ const Index = () => {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Gauge className="w-5 h-5 text-primary" />
-                  <span className="text-lg font-bold font-display text-white">
+                  <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
                     {weather ? `${weather.pressure} хПа` : '—'}
                   </span>
                 </div>
@@ -677,7 +680,7 @@ const Index = () => {
                     </span>
                   </span>
                 ) : (
-                  <span className="text-xs text-white/90">Зареждане...</span>
+                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане...</span>
                 )}
               </div>
               {weather && (
@@ -698,7 +701,7 @@ const Index = () => {
                     <path d="M36 24 L44 16 M36 24 L44 32" />
                     <circle cx="12" cy="22" r="1.5" fill="currentColor" />
                   </svg>
-                  <p className="text-xs text-white/90 text-left">
+                  <p className="text-xs text-left" style={{ color: 'rgba(255,255,255,0.8)' }}>
                     {weather.pressureTrend === 'rising'
                       ? 'Налягането се покачва - чакай по-активна риба.'
                       : weather.pressureTrend === 'falling'
@@ -748,7 +751,7 @@ const Index = () => {
               })()}
               {!weather && (
                 <div className="flex items-center justify-center py-4">
-                  <span className="text-xs text-white/90">Зареждане...</span>
+                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане...</span>
                 </div>
               )}
             </div>
@@ -757,10 +760,10 @@ const Index = () => {
             {weather ? (
               <>
                 <span className="text-xl">{weather.weatherIcon}</span>
-                <span className="text-sm text-white/90">{weather.weatherLabel}</span>
+                <span className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>{weather.weatherLabel}</span>
               </>
             ) : (
-              <span className="text-sm text-white/90">Зареждане...</span>
+              <span className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане...</span>
             )}
           </div>
         </section>
@@ -810,7 +813,8 @@ const Index = () => {
               strokeLinejoin="round"
               aria-hidden="true"
               style={{ 
-                transform: 'translateY(0.5px)'
+                transform: 'translateY(0.5px)',
+                filter: 'drop-shadow(0 0 6px #E4FF00)'
               }}
             >
               <path d="M2 24 L6 21 Q14 18 28 18 Q38 18 40 22 L42 24 L40 26 Q38 30 28 30 Q14 30 6 27Z" />
@@ -835,7 +839,7 @@ const Index = () => {
                   key={bait.name}
                   className="flex items-center gap-3 rounded-lg border border-border bg-secondary/30 px-3 py-2.5"
                 >
-                  <span className="text-sm font-medium text-white/90">{bait.name}</span>
+                  <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>{bait.name}</span>
                 </div>
               ))}
             </div>
@@ -852,7 +856,7 @@ const Index = () => {
                   key={item.name}
                   className="flex items-center gap-3 rounded-lg border border-border bg-secondary/30 px-3 py-2.5"
                 >
-                  <span className="text-sm font-medium text-white/90">{item.name}</span>
+                  <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>{item.name}</span>
                 </div>
               ))}
             </div>
@@ -872,9 +876,9 @@ const Index = () => {
         />
 
         <footer className="text-center mt-8 space-y-1">
-          <p className="text-xs text-white/90">Наслука!</p>
+          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Наслука!</p>
           {weather && (
-            <p className="text-[10px] text-white/90">
+            <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.8)' }}>
               Данните са базирани на текущата ви локация • <span className="text-white">Open-Meteo API</span>
             </p>
           )}

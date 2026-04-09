@@ -73,7 +73,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           strokeLinejoin="round"
           aria-hidden="true"
           style={{ 
-            transform: 'translateY(0.5px)'
+            transform: 'translateY(0.5px)',
+            filter: 'drop-shadow(0 0 6px #E4FF00)'
           }}
         >
           <ellipse cx="22" cy="24" rx="14" ry="10" />
@@ -90,8 +91,9 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
             terrain === 'lake'
               ? 'border-primary bg-primary/20 text-primary'
-              : 'border-border bg-secondary/30 text-white/90 hover:bg-secondary/50'
+              : 'border-border bg-secondary/30 hover:bg-secondary/50'
           }`}
+          style={terrain !== 'lake' ? { color: 'rgba(255,255,255,0.8)' : undefined}
         >
           Язовир/Езеро
         </button>
@@ -100,8 +102,9 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
             terrain === 'river'
               ? 'border-primary bg-primary/20 text-primary'
-              : 'border-border bg-secondary/30 text-white/90 hover:bg-secondary/50'
+              : 'border-border bg-secondary/30 hover:bg-secondary/50'
           }`}
+          style={terrain !== 'river' ? { color: 'rgba(255,255,255,0.8)' : undefined}
         >
           Река
         </button>
@@ -137,7 +140,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 ? FISH_ICON_MAP[fish.name]({ size: 40, strokeWidth: 2 })
                 : <span className="text-2xl">{fish.emoji}</span>
               }
-              <span className="text-xs font-medium text-foreground text-center leading-tight">
+              <span className="text-xs font-medium" style={{ color: '#CBD5E1' }} text-center leading-tight>
                 {fish.name}
               </span>
             </button>
@@ -145,7 +148,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
         })}
       </div>
 
-      <p className="text-[10px] text-muted-foreground/60 text-center mt-3">
+      <p className="text-[10px] text-center mt-3" style={{ color: 'rgba(255,255,255,0.8)' }}>
         Натиснете риба за подробна информация • Изчислено според текущите условия
       </p>
 
@@ -155,7 +158,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           {selectedFish && modalData && (
             <>
               <DialogHeader>
-                  <DialogTitle className="font-display flex items-center gap-2 text-foreground">
+                  <DialogTitle className="font-display flex items-center gap-2" style={{ color: '#CBD5E1' }}>
                     {FISH_ICON_MAP[selectedFish.name]
                       ? FISH_ICON_MAP[selectedFish.name]({ size: 40, strokeWidth: 2 })
                       : <span className="text-3xl">{selectedFish.emoji}</span>
@@ -168,9 +171,9 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   )}
                 </DialogTitle>
                 {selectedFish.subtitle && (
-                  <p className="text-muted-foreground text-xs italic">{selectedFish.subtitle}</p>
+                  <p className="text-xs italic" style={{ color: 'rgba(255,255,255,0.8)' }}>{selectedFish.subtitle}</p>
                 )}
-                <DialogDescription className="text-muted-foreground text-xs">
+                <DialogDescription className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>
                   Резултат: {selectedFish.score}/100 • {selectedFish.habitat === 'river' ? 'Река' : selectedFish.habitat === 'lake' ? 'Язовир/Езеро' : 'Река & Язовир/Езеро'}
                 </DialogDescription>
               </DialogHeader>
@@ -184,7 +187,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                         <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
                           Съвет за днес
                         </h4>
-                        <p className="text-white/90 leading-relaxed whitespace-pre-line">{advice.tip}</p>
+                        <p className="leading-relaxed whitespace-pre-line" style={{ color: 'rgba(255,255,255,0.8)' }}>{advice.tip}</p>
                       </div>
                       <div className="border-t border-border" />
 
@@ -194,7 +197,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                             <h4 className="text-xs font-semibold uppercase tracking-wider mb-1 flex items-center gap-1" style={{ color: '#FFA726' }}>
                               Честа грешка днес
                             </h4>
-                            <p className="text-white/90 leading-relaxed">{advice.mistake}</p>
+                            <p className="leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{advice.mistake}</p>
                           </div>
                           <div className="border-t border-border" />
                         </>
@@ -207,8 +210,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
                       Захранка & Стръв
                     </h4>
-                    <p className="text-white leading-relaxed">{modalData.groundbaitTip}</p>
-                    <p className="text-white/90 leading-relaxed mt-1">{modalData.baitTip}</p>
+                    <p className="leading-relaxed" style={{ color: '#FFFFFF' }}>{modalData.groundbaitTip}</p>
+                    <p className="leading-relaxed mt-1" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.baitTip}</p>
                   </div>
 
                   {/* Line */}
@@ -216,7 +219,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
                       Влакно & Монофил
                     </h4>
-                    <p className="text-white">{modalData.lineDiameter}</p>
+                    <p style={{ color: '#FFFFFF' }}>{modalData.lineDiameter}</p>
                   </div>
 
                   {/* Lures (predators only) */}
@@ -225,7 +228,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
                         Воблери & Корди
                       </h4>
-                      <p className="text-white leading-relaxed">{modalData.lureTip}</p>
+                      <p className="leading-relaxed" style={{ color: '#FFFFFF' }}>{modalData.lureTip}</p>
                     </div>
                   )}
 
@@ -234,8 +237,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
                       Такъми & Куки
                     </h4>
-                    <p className="text-white">{modalData.hookTip}</p>
-                    <p className="text-white/90 mt-1">{modalData.rigTip}</p>
+                    <p style={{ color: '#FFFFFF' }}>{modalData.hookTip}</p>
+                    <p className="mt-1" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.rigTip}</p>
                   </div>
 
                   {/* Eco warning */}
@@ -243,10 +246,10 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
                       Еко-съвет
                     </h4>
-                    <p className="text-white/90 whitespace-pre-line">{modalData.ecoWarning}</p>
+                    <p className="whitespace-pre-line" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.ecoWarning}</p>
                   </div>
 
-                  <p className="text-[10px] text-white/90 text-center pt-2">
+                  <p className="text-[10px] text-center pt-2" style={{ color: 'rgba(255,255,255,0.8)' }}>
                     Данните са базирани на луната и прогнозата
                   </p>
                 </div>
