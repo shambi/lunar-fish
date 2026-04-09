@@ -140,7 +140,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 ? FISH_ICON_MAP[fish.name]({ size: 40, strokeWidth: 2 })
                 : <span className="text-2xl">{fish.emoji}</span>
               }
-              <span className="text-xs font-medium" style={{ color: '#CBD5E1' }} text-center leading-tight>
+              <span className="text-xs font-medium text-center leading-tight" style={{ color: '#CBD5E1' }}>
                 {fish.name}
               </span>
             </button>
