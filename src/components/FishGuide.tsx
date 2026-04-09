@@ -166,7 +166,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
       {/* Fish detail modal */}
       <Dialog open={!!selectedFish} onOpenChange={(open) => !open && setSelectedFish(null)}>
-        <DialogContent className="max-w-sm bg-card border-border max-h-[85vh]">
+        <DialogContent className="max-w-sm bg-card border-border">
           {selectedFish && modalData && (
             <>
               <DialogHeader>
@@ -203,7 +203,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 </DialogDescription>
               </DialogHeader>
 
-              <ScrollArea className="flex-1 pr-4">
+              <ScrollArea className="h-[calc(90vh-280px)] pr-4">
                 <div className="space-y-4 py-2">
                   {/* Daily Advice */}
                   {advice && (
