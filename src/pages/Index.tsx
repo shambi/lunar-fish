@@ -351,7 +351,7 @@ const Index = () => {
         <header className="pt-4 pb-1 text-center">
           <h1
             className="font-display text-3xl font-medium tracking-wide"
-            style={{ color: '#CBD5E1', animation: 'title-glow 4s ease-in-out infinite' }}
+            style={{ color: '#E2E8F0', animation: 'title-glow 4s ease-in-out infinite' }}
           >
             РИБ
             <span className="relative inline-block">
@@ -367,8 +367,8 @@ const Index = () => {
               </svg>
             </span>
           </h1>
-          <p className="text-sm mt-1 capitalize" style={{ color: 'rgba(255,255,255,0.8)' }}>{today}</p>
-          <div className="flex items-center justify-center gap-1 mt-1 text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>
+          <p className="text-sm mt-1 capitalize" style={{ color: '#94A3B8' }}>{today}</p>
+          <div className="flex items-center justify-center gap-1 mt-1 text-xs" style={{ color: '#94A3B8' }}>
             {loading ? (
               <>
                 <Loader2 className="w-3 h-3 animate-spin" />
@@ -394,10 +394,10 @@ const Index = () => {
           >
             {moon.emoji}
           </div>
-          <h2 className="font-display text-xl font-semibold mt-4" style={{ color: '#CBD5E1' }}>
+          <h2 className="font-display text-xl font-semibold mt-4" style={{ color: '#E2E8F0' }}>
             {moon.phaseNameBg}
           </h2>
-          <p className="text-sm font-medium mt-1" style={{ color: 'rgba(255,255,255,0.8)' }}>
+          <p className="text-sm font-medium mt-1" style={{ color: '#2DD4BF' }}>
             {moon.illumination}% Осветеност
           </p>
         </section>
@@ -410,7 +410,7 @@ const Index = () => {
             boxShadow: '0 0 10px rgba(0,212,212,0.2)',
           }}
         >
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2" style={{ color: '#CBD5E1' }}>
+          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -461,7 +461,7 @@ const Index = () => {
         {/* Smart Weather Tips (only when weather is loaded) */}
         {tips && (
           <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-            <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#CBD5E1' }}>
+            <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
               <svg
                 width="18"
                 height="18"
@@ -536,7 +536,7 @@ const Index = () => {
 
         {/* Fishing Style Tip */}
         <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#CBD5E1' }}>
+          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -573,7 +573,7 @@ const Index = () => {
 
         {/* Weather Widget */}
         <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#CBD5E1' }}>
+          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -617,28 +617,28 @@ const Index = () => {
               <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
                 {weather ? `${weather.temperature}°C` : '—'}
               </span>
-              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Темп.</span>
+              <span className="text-xs" style={{ color: '#94A3B8' }}>Темп.</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <Wind className="w-6 h-6 text-primary" />
               <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
                 {weather ? `${weather.windSpeed} км/ч` : '—'}
               </span>
-              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Вятър</span>
+              <span className="text-xs" style={{ color: '#94A3B8' }}>Вятър</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <Droplets className="w-6 h-6 text-primary" />
               <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
                 {weather ? `${weather.humidity}%` : '—'}
               </span>
-              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Влажност</span>
+              <span className="text-xs" style={{ color: '#94A3B8' }}>Влажност</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <Mountain className="w-6 h-6 text-primary" />
               <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
                 {weather ? `${weather.altitude} м` : '—'}
               </span>
-              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Надморска</span>
+              <span className="text-xs" style={{ color: '#94A3B8' }}>Надморска</span>
             </div>
           </div>
           {/* Divider + Second Row */}
@@ -770,7 +770,7 @@ const Index = () => {
 
         {/* Solunar Activity Section — SVG Timeline */}
         <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#CBD5E1' }}>
+          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -801,7 +801,7 @@ const Index = () => {
           )}
         </section>
         <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#CBD5E1' }}>
+          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"

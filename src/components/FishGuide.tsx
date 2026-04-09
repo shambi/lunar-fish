@@ -61,7 +61,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
   return (
     <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-      <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#CBD5E1' }}>
+      <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
         <svg
           width="18"
           height="18"
@@ -170,7 +170,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           {selectedFish && modalData && (
             <>
               <DialogHeader>
-                  <DialogTitle className="font-display flex items-center gap-2" style={{ color: '#CBD5E1' }}>
+                  <DialogTitle className="font-display flex items-center gap-2" style={{ color: '#E2E8F0' }}>
                     {FISH_ICON_MAP[selectedFish.name]
                       ? FISH_ICON_MAP[selectedFish.name]({ size: 40, strokeWidth: 2 })
                       : <span className="text-3xl">{selectedFish.emoji}</span>
@@ -198,7 +198,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 {selectedFish.subtitle && (
                   <p className="text-xs italic" style={{ color: 'rgba(255,255,255,0.8)' }}>{selectedFish.subtitle}</p>
                 )}
-                <DialogDescription className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                <DialogDescription className="text-xs" style={{ color: '#94A3B8' }}>
                   Резултат: {selectedFish.score}/100 • {selectedFish.habitat === 'river' ? 'Река' : selectedFish.habitat === 'lake' ? 'Язовир/Езеро' : 'Река & Язовир/Езеро'}
                 </DialogDescription>
               </DialogHeader>
