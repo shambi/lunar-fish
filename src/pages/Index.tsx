@@ -410,20 +410,19 @@ const Index = () => {
             boxShadow: '0 0 10px rgba(0,212,212,0.2)',
           }}
         >
-          <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
+          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2" style={{ color: '#CBD5E1' }}>
             <svg
-              width="20"
-              height="20"
+              width="18"
+              height="18"
               viewBox="0 0 48 48"
               fill="none"
               stroke="#E4FF00"
-              strokeWidth="2"
+              strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
               aria-hidden="true"
               style={{ 
-                filter: 'drop-shadow(0 0 8px #E4FF00) drop-shadow(0 0 4px #E4FF00)',
-                transform: 'translateY(1px)'
+                transform: 'translateY(0.5px)'
               }}
             >
               <ellipse cx="22" cy="24" rx="14" ry="10" />
@@ -444,7 +443,7 @@ const Index = () => {
                 color: '#EF5350',
               }}
             >
-              ⚠️ {fishingScore.overrideReason}
+              ВНИМАНИЕ: {stripEmojis(fishingScore.overrideReason)}
             </div>
           )}
           <div className="flex items-center gap-3 mb-2">
@@ -468,12 +467,11 @@ const Index = () => {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="#E4FF00"
-                strokeWidth="2"
+                strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 aria-hidden="true"
                 style={{ 
-                  filter: 'drop-shadow(0 0 4px #E4FF00) drop-shadow(0 0 2px #E4FF00)',
                   transform: 'translateY(0.5px)'
                 }}
               >
@@ -487,7 +485,7 @@ const Index = () => {
               {fishingScore.isOverride && fishingScore.overrideReason && (
                 <div className="flex gap-3">
                   <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF5350" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF5350" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
                       <path d="M12 9v4" />
                       <path d="M12 17h.01" />
@@ -501,21 +499,21 @@ const Index = () => {
               
               <div className="flex gap-3">
                 <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                  <Cloud className="w-4 h-4 text-[#00D4D4]" strokeWidth={2} />
+                  <Cloud className="w-4 h-4 text-[#00D4D4]" strokeWidth={1.5} />
                 </div>
-                <p className="text-sm text-white/90 leading-relaxed">{tips.weatherTip}</p>
+                <p className="text-sm text-secondary-foreground leading-relaxed">{tips.weatherTip}</p>
               </div>
 
               <div className="flex gap-3">
                 <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                  <Wind className="w-4 h-4 text-[#00D4D4]" strokeWidth={2} />
+                  <Wind className="w-4 h-4 text-[#00D4D4]" strokeWidth={1.5} />
                 </div>
-                <p className="text-sm text-white/90 leading-relaxed">{tips.windTip}</p>
+                <p className="text-sm text-secondary-foreground leading-relaxed">{tips.windTip}</p>
               </div>
 
               <div className="flex gap-3">
                 <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00D4D4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00D4D4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
                   </svg>
@@ -525,7 +523,7 @@ const Index = () => {
                     ? '#00D4D4'
                     : solunarContext.isInPeak && solunarContext.peakType === 'minor'
                     ? 'rgba(0,212,212,0.6)'
-                    : 'rgba(255, 255, 255, 0.9)'
+                    : 'hsl(var(--secondary-foreground))'
                 }}>
                   {tips.timingTip}
                 </p>
@@ -540,29 +538,31 @@ const Index = () => {
             <svg
               width="18"
               height="18"
-              viewBox="0 0 24 24"
+              viewBox="0 0 48 48"
               fill="none"
               stroke="#E4FF00"
-              strokeWidth="2"
+              strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
               aria-hidden="true"
               style={{ 
-                filter: 'drop-shadow(0 0 4px #E4FF00) drop-shadow(0 0 2px #E4FF00)',
                 transform: 'translateY(0.5px)'
               }}
             >
-              <path d="M2 8s3-3 8-3 8 3 8 3" />
-              <path d="M18 8v13a4 4 0 0 1-8 0V8" />
-              <circle cx="14" cy="4" r="2" />
+              <ellipse cx="22" cy="24" rx="16" ry="5" />
+              <path d="M38 24 L46 17 M38 24 L46 31" />
+              <path d="M20 19 Q22 15 24 19" />
+              <path d="M24 29 Q26 33 28 29" />
+              <circle cx="9" cy="23" r="1.5" fill="#E4FF00" />
+              <path d="M10 24 L36 24" opacity="0.2" />
             </svg>
             СЪВЕТИ ЗА СТИЛ РИБОЛОВ
           </h3>
           <div className="flex gap-3">
             <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-              <Anchor className="w-4 h-4 text-[#00D4D4]" strokeWidth={2} />
+              <Anchor className="w-4 h-4 text-[#00D4D4]" strokeWidth={1.5} />
             </div>
-            <p className="text-sm text-white/90 leading-relaxed">
+            <p className="text-sm text-secondary-foreground leading-relaxed">
               {tips ? tips.fishingStyleTip : stripEmojis(moon.fishingStyleTip)}
             </p>
           </div>
@@ -577,12 +577,11 @@ const Index = () => {
               viewBox="0 0 24 24"
               fill="none"
               stroke="#E4FF00"
-              strokeWidth="2"
+              strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
               aria-hidden="true"
               style={{ 
-                filter: 'drop-shadow(0 0 4px #E4FF00) drop-shadow(0 0 2px #E4FF00)',
                 transform: 'translateY(0.5px)'
               }}
             >
@@ -595,7 +594,6 @@ const Index = () => {
               <path d="M20 12h2" />
               <path d="m6.34 17.66-1.41 1.41" />
               <path d="m19.07 4.93-1.41 1.41" />
-              <path d="M22 17h-6a4 4 0 1 1 0-8 5 5 0 0 0-8.54-4.58" />
             </svg>
             МЕТЕОРОЛОГИЧНИ УСЛОВИЯ
           </h3>
@@ -776,12 +774,11 @@ const Index = () => {
               viewBox="0 0 24 24"
               fill="none"
               stroke="#E4FF00"
-              strokeWidth="2"
+              strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
               aria-hidden="true"
               style={{ 
-                filter: 'drop-shadow(0 0 4px #E4FF00) drop-shadow(0 0 2px #E4FF00)',
                 transform: 'translateY(0.5px)'
               }}
             >
@@ -805,36 +802,31 @@ const Index = () => {
             <svg
               width="18"
               height="18"
-              viewBox="0 0 24 24"
+              viewBox="0 0 48 48"
               fill="none"
               stroke="#E4FF00"
-              strokeWidth="2"
+              strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
               aria-hidden="true"
               style={{ 
-                filter: 'drop-shadow(0 0 4px #E4FF00) drop-shadow(0 0 2px #E4FF00)',
                 transform: 'translateY(0.5px)'
               }}
             >
-              <path d="M15 7.13V6a3 3 0 0 0-5.14-2.1L8 2 2 8l1.9 1.86A3 3 0 0 0 6 15h1.13" />
-              <path d="M9 16.87V18a3 3 0 0 0 5.14 2.1L16 22l6-6-1.9-1.86A3 3 0 0 0 18 9h-1.13" />
-              <path d="M2 8l6 6" />
-              <path d="M16 16l6 6" />
+              <path d="M2 24 L6 21 Q14 18 28 18 Q38 18 40 22 L42 24 L40 26 Q38 30 28 30 Q14 30 6 27Z" />
+              <path d="M2 24 L6 23 M2 24 L6 25" />
+              <path d="M42 24 L48 15 M42 24 L48 33" />
+              <path d="M32 18 Q35 12 38 18" />
+              <path d="M32 30 Q35 36 38 30" />
+              <circle cx="8" cy="23" r="1.5" fill="#E4FF00" />
+              <path d="M2 24 L10 25" opacity="0.3" />
             </svg>
             РИБО СЪВЕТИ
           </h3>
 
           {/* Baits */}
           <div className="mb-6">
-            <h4 className="text-xs font-semibold text-[#00D4D4] uppercase tracking-wider mb-3 flex items-center gap-1">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2v8" />
-                <path d="m4.93 10.93 1.41 1.41" />
-                <path d="M2 18h2" />
-                <path d="M20 18h2" />
-                <path d="m19.07 10.93-1.41 1.41" />
-              </svg>
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-1">
               СТРЪВ
             </h4>
             <div className="grid grid-cols-2 gap-3">
@@ -843,7 +835,7 @@ const Index = () => {
                   key={bait.name}
                   className="flex items-center gap-3 rounded-lg border border-border bg-secondary/30 px-3 py-2.5"
                 >
-                  <span className="text-sm font-medium text-white/90">{bait.name}</span>
+                  <span className="text-sm font-medium text-secondary-foreground">{bait.name}</span>
                 </div>
               ))}
             </div>
@@ -851,11 +843,7 @@ const Index = () => {
 
           {/* Tackle */}
           <div>
-            <h4 className="text-xs font-semibold text-[#00D4D4] uppercase tracking-wider mb-3 flex items-center gap-1">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 5v14" />
-                <path d="M7 10l5 5 5-5" />
-              </svg>
+            <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-1">
               ТАКЪМИ
             </h4>
             <div className="grid grid-cols-2 gap-3">
@@ -864,7 +852,7 @@ const Index = () => {
                   key={item.name}
                   className="flex items-center gap-3 rounded-lg border border-border bg-secondary/30 px-3 py-2.5"
                 >
-                  <span className="text-sm font-medium text-white/90">{item.name}</span>
+                  <span className="text-sm font-medium text-secondary-foreground">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -884,7 +872,7 @@ const Index = () => {
         />
 
         <footer className="text-center mt-8 space-y-1">
-          <p className="text-xs text-muted-foreground">На слука!</p>
+          <p className="text-xs text-muted-foreground">Наслука!</p>
           {weather && (
             <p className="text-[10px] text-muted-foreground/60">
               Данните са базирани на текущата ви локация • Open-Meteo API

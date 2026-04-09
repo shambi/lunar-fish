@@ -3,6 +3,7 @@ import { getMoonData } from '@/lib/moon';
 import { getWeatherInfo } from '@/hooks/use-weather';
 import type { WeatherData } from '@/hooks/use-weather';
 import { calculateFishingScore } from '@/lib/fishing-score';
+import { Cloud } from 'lucide-react';
 
 interface DayForecast {
   date: Date;
@@ -126,32 +127,7 @@ export function ForecastCards({ weather }: { weather: WeatherData | null }) {
   return (
     <section className="mb-4">
       <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2 px-1" style={{ color: '#CBD5E1' }}>
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#E4FF00"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-          style={{ 
-            filter: 'drop-shadow(0 0 4px #E4FF00) drop-shadow(0 0 2px #E4FF00)',
-            transform: 'translateY(0.5px)'
-          }}
-        >
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v2" />
-          <path d="M12 20v2" />
-          <path d="m4.93 4.93 1.41 1.41" />
-          <path d="m17.66 17.66 1.41 1.41" />
-          <path d="M2 12h2" />
-          <path d="M20 12h2" />
-          <path d="m6.34 17.66-1.41 1.41" />
-          <path d="m19.07 4.93-1.41 1.41" />
-          <path d="M22 12a10 10 0 0 1-10 10" />
-        </svg>
+        <Cloud className="w-[18px] h-[18px]" strokeWidth={1.5} style={{ color: '#E4FF00', transform: 'translateY(0.5px)' }} />
         ПРОГНОЗА ЗА СЛЕДВАЩИТЕ ДНИ
       </h3>
       <div className="grid grid-cols-2 gap-3">

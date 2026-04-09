@@ -68,12 +68,11 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           viewBox="0 0 48 48"
           fill="none"
           stroke="#E4FF00"
-          strokeWidth="2"
+          strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden="true"
           style={{ 
-            filter: 'drop-shadow(0 0 4px #E4FF00) drop-shadow(0 0 2px #E4FF00)',
             transform: 'translateY(0.5px)'
           }}
         >
@@ -91,7 +90,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
             terrain === 'lake'
               ? 'border-primary bg-primary/20 text-primary'
-              : 'border-border bg-secondary/30 text-white/90 hover:bg-secondary/50'
+              : 'border-border bg-secondary/30 text-secondary-foreground hover:bg-secondary/50'
           }`}
         >
           Язовир/Езеро
@@ -101,7 +100,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
             terrain === 'river'
               ? 'border-primary bg-primary/20 text-primary'
-              : 'border-border bg-secondary/30 text-white/90 hover:bg-secondary/50'
+              : 'border-border bg-secondary/30 text-secondary-foreground hover:bg-secondary/50'
           }`}
         >
           Река
@@ -183,7 +182,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <>
                       <div>
                         <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
-                          🎯 Съвет за днес
+                          Съвет за днес
                         </h4>
                         <p className="text-foreground leading-relaxed whitespace-pre-line">{advice.tip}</p>
                       </div>
@@ -193,7 +192,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                         <>
                           <div>
                             <h4 className="text-xs font-semibold uppercase tracking-wider mb-1 flex items-center gap-1" style={{ color: '#FFA726' }}>
-                              ⚠️ Честа грешка днес
+                              Честа грешка днес
                             </h4>
                             <p className="text-foreground leading-relaxed">{advice.mistake}</p>
                           </div>
@@ -206,7 +205,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   {/* Groundbait & Bait */}
                   <div>
                     <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
-                      🪝 Захранка & Стръв
+                      Захранка & Стръв
                     </h4>
                     <p className="text-foreground leading-relaxed">{modalData.groundbaitTip}</p>
                     <p className="text-secondary-foreground leading-relaxed mt-1">{modalData.baitTip}</p>
@@ -215,7 +214,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   {/* Line */}
                   <div>
                     <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
-                      🎣 Влакно & Монофил
+                      Влакно & Монофил
                     </h4>
                     <p className="text-foreground">{modalData.lineDiameter}</p>
                   </div>
@@ -224,7 +223,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   {modalData.lureTip && (
                     <div>
                       <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
-                        🎯 Воблери & Корди
+                        Воблери & Корди
                       </h4>
                       <p className="text-foreground leading-relaxed">{modalData.lureTip}</p>
                     </div>
@@ -233,7 +232,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   {/* Hooks & Tackle */}
                   <div>
                     <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
-                      ⚓ Такъми & Куки
+                      Такъми & Куки
                     </h4>
                     <p className="text-foreground">{modalData.hookTip}</p>
                     <p className="text-secondary-foreground mt-1">{modalData.rigTip}</p>
@@ -242,13 +241,13 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   {/* Eco warning */}
                   <div className="rounded-lg border border-border bg-secondary/30 p-3">
                     <h4 className="text-xs font-semibold text-primary uppercase tracking-wider mb-1 flex items-center gap-1">
-                      🌿 Еко-съвет
+                      Еко-съвет
                     </h4>
                     <p className="text-foreground whitespace-pre-line">{modalData.ecoWarning}</p>
                   </div>
 
                   <p className="text-[10px] text-muted-foreground/60 text-center pt-2">
-                    📊 Данните са синхронизирани с луната и прогнозата
+                    Данните са базирани на луната и прогнозата
                   </p>
                 </div>
               </ScrollArea>
