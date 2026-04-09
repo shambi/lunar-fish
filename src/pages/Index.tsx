@@ -404,15 +404,16 @@ const Index = () => {
               height="16"
               viewBox="0 0 48 48"
               fill="none"
-              stroke="#DDD06A"
+              stroke="#E4FF00"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
               aria-hidden="true"
+              style={{ filter: 'drop-shadow(0 0 5px rgba(228, 255, 0, 0.4))' }}
             >
               <ellipse cx="22" cy="24" rx="14" ry="10" />
               <path d="M36 24 L44 16 M36 24 L44 32" />
-              <circle cx="12" cy="22" r="1.5" fill="#DDD06A" />
+              <circle cx="12" cy="22" r="1.5" fill="#E4FF00" />
             </svg>
             РИБО ПРОГНОЗА
           </h3>
