@@ -120,7 +120,7 @@ export async function fetchWeatherData(latitude: number, longitude: number, alti
   const moonTimesData = getMoonTimes(new Date(), latitude, longitude);
   const solunarPeaks = getSolunarPeaks(moonTimesData);
 
-  const fmtTime = (iso: string) => {
+  const formatIsoTime = (iso: string) => {
     if (!iso) return '--:--';
     const d = new Date(iso);
     return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
@@ -159,8 +159,8 @@ export async function fetchWeatherData(latitude: number, longitude: number, alti
     pressureTrend,
     pressureChangeRate,
     pressureHistory,
-    sunrise: fmtTime(sunrise),
-    sunset: fmtTime(sunset),
+    sunrise: formatIsoTime(sunrise),
+    sunset: formatIsoTime(sunset),
     moonrise: moonTimesData.moonrise ?? '--:--',
     moonset: moonTimesData.moonset ?? '--:--',
     moonTransit: moonTimesData.transit ?? '--:--',
