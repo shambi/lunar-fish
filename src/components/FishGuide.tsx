@@ -116,7 +116,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 </Badge>
               )}
               {FISH_ICON_MAP[fish.name]
-                ? FISH_ICON_MAP[fish.name]({ size: 40 })
+                ? FISH_ICON_MAP[fish.name]({ size: 40, strokeWidth: 2 })
                 : <span className="text-2xl">{fish.emoji}</span>
               }
               <span className="text-xs font-medium text-foreground text-center leading-tight">
@@ -139,7 +139,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               <DialogHeader>
                   <DialogTitle className="font-display flex items-center gap-2 text-foreground">
                     {FISH_ICON_MAP[selectedFish.name]
-                      ? FISH_ICON_MAP[selectedFish.name]({ size: 40 })
+                      ? FISH_ICON_MAP[selectedFish.name]({ size: 40, strokeWidth: 2 })
                       : <span className="text-3xl">{selectedFish.emoji}</span>
                     }
                   {selectedFish.name}

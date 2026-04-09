@@ -324,7 +324,7 @@ const Index = () => {
         className="drop-shadow-[0_0_8px_hsl(var(--primary)/0.4)]"
         style={{ animation: `${swimAnimations[i % 3]} ${7 + i * 1.2}s ease-in-out infinite` }}
       >
-        <Icon size={24} className="text-primary" />
+        <Icon size={24} className="text-primary" strokeWidth={2} />
       </div>
     );
   });
@@ -400,16 +400,19 @@ const Index = () => {
         >
           <h3 className="font-display text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
             <svg
-              width="16"
-              height="16"
+              width="20"
+              height="20"
               viewBox="0 0 48 48"
               fill="none"
               stroke="#E4FF00"
-              strokeWidth="1.5"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
               aria-hidden="true"
-              style={{ filter: 'drop-shadow(0 0 5px rgba(228, 255, 0, 0.4))' }}
+              style={{ 
+                filter: 'drop-shadow(0 0 8px #E4FF00) drop-shadow(0 0 4px #E4FF00)',
+                transform: 'translateY(1px)'
+              }}
             >
               <ellipse cx="22" cy="24" rx="14" ry="10" />
               <path d="M36 24 L44 16 M36 24 L44 32" />
