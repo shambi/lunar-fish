@@ -149,6 +149,21 @@
   }
 }
 
+@keyframes pulse-glow-citron {
+  0%, 100% { 
+    opacity: 0.85;
+    filter: drop-shadow(0 0 2px #E4FF00);
+  }
+  50% { 
+    opacity: 1;
+    filter: drop-shadow(0 0 6px #E4FF00) drop-shadow(0 0 3px #E4FF00);
+  }
+}
+
+.animate-pulse-glow-citron {
+  animation: pulse-glow-citron 2s ease-in-out infinite;
+}
+
 .sonar-icon {
   animation: sonar-pulse 2.2s ease-in-out infinite;
 }

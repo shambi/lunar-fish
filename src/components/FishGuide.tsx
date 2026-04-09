@@ -130,10 +130,23 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
             >
               {isGlow && (
                 <div
-                  className="absolute -top-2 -right-1 text-[9px] px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground font-bold"
+                  className="absolute -top-2 -right-1 text-[9px] px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground font-bold flex items-center gap-0.5"
                   style={{ animation: 'star-signal 2.5s ease-in-out infinite' }}
                 >
-                  ПРЕПОРЪЧАНО
+                  <svg
+                    width="10"
+                    height="10"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#E4FF00"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="animate-pulse-glow-citron"
+                  >
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                  </svg>
+                  <span>ПРЕПОРЪЧАНО</span>
                 </div>
               )}
               {FISH_ICON_MAP[fish.name]
@@ -165,8 +178,21 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     }
                   {selectedFish.name}
                   {selectedFish.isRecommended && (
-                    <div className="bg-primary text-primary-foreground text-[10px] px-2 py-0.5 rounded-full font-bold">
-                      Препоръчано днес
+                    <div className="bg-primary text-primary-foreground text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#E4FF00"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="animate-pulse-glow-citron"
+                      >
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                      </svg>
+                      <span>Препоръчано днес</span>
                     </div>
                   )}
                 </DialogTitle>
