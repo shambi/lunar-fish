@@ -95,7 +95,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           }`}
           style={terrain !== 'lake' ? { color: 'rgba(255,255,255,0.8)' } : undefined}
         >
-          Язовир/Езеро
+          Водоем
         </button>
         <button
           onClick={() => onTerrainChange('river')}
@@ -199,7 +199,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   <p className="text-xs italic" style={{ color: 'rgba(255,255,255,0.8)' }}>{selectedFish.subtitle}</p>
                 )}
                 <DialogDescription className="text-xs" style={{ color: '#94A3B8' }}>
-                  Резултат: {selectedFish.score}/100 • {selectedFish.habitat === 'river' ? 'Река' : selectedFish.habitat === 'lake' ? 'Язовир/Езеро' : 'Река & Язовир/Езеро'}
+                  Резултат: {selectedFish.score}/100 • {selectedFish.habitat === 'river' ? 'Река' : selectedFish.habitat === 'lake' ? 'Водоем' : 'Река & Водоем'}
                 </DialogDescription>
               </DialogHeader>
 

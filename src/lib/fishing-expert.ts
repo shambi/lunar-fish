@@ -61,12 +61,12 @@ export function getSmartFishingTips(
   const isInPeak = options?.isInPeak ?? false;
   const peakType = options?.peakType ?? null;
   const timeLabel = isInPeak ? 'в момента' : getTimePeriodLabel(timePeriod);
-  const terrainLabel = terrain === 'river' ? 'на река' : 'на язовир/езеро';
+  const terrainLabel = terrain === 'river' ? 'на река' : 'на водоем';
 
   // Weather-based tip
   let weatherTip: string;
   if (isStormy) {
-    weatherTip = 'Бурно време — избягвайте откритите язовири и езера. Безопасността е на първо място!';
+    weatherTip = 'Бурно време — избягвайте откритите водоеми. Безопасността е на първо място!';
   } else if (isHot) {
     weatherTip = timePeriod === 'morning'
       ? 'Горещо време — използвай сутрешния хлад, рибата е активна тази сутрин.'

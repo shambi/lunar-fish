@@ -151,8 +151,8 @@ const SolunarSection = ({ weather }: { weather: any }) => {
                 padding: '10px',
                 ...(isMajor ? {
                   background: 'rgba(0,18,28,0.9)',
-                  border: '1.5px solid #00D4D4',
-                  boxShadow: '0 0 10px rgba(0,212,212,0.2)',
+                  border: '1.5px solid #00F5FF',
+                  boxShadow: '0 0 10px rgba(0,245,255,0.2)',
                 } : {
                   background: 'rgba(255,255,255,0.04)',
                   border: '1px solid rgba(255,255,255,0.1)',
@@ -162,7 +162,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
               {active && (
                 <div className="absolute -top-2 left-3 rounded-[10px] px-2 py-0.5 text-[9px] font-bold"
                   style={{
-                    background: '#00D4D4', color: '#000',
+                    background: '#00F5FF', color: '#000',
                     animation: 'pulse-active 1.5s ease-in-out infinite',
                   }}>
                   СЕГА АКТИВНО
@@ -193,7 +193,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
                      style={{
                       fontSize: '11px',
                       letterSpacing: '1px',
-                      color: isMajor ? '#00D4D4' : 'rgba(0,212,212,0.5)',
+                      color: isMajor ? '#00F5FF' : 'rgba(0,245,255,0.5)',
                     }}>
                     {isMajor ? 'ГЛАВЕН ПИК' : 'МАЛЪК ПИК'}
                   </div>
@@ -212,7 +212,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
                     <span key={fi}>
                       <PeakFishIcon
                         glow={isMajor}
-                        color={isMajor ? '#00D4D4' : 'rgba(0,212,212,0.3)'}
+                        color={isMajor ? '#00F5FF' : 'rgba(0,245,255,0.3)'}
                       />
                     </span>
                   ))}
@@ -228,7 +228,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
         <div className="text-center">
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
             {countdown.active ? (
-              <span style={{ color: '#00D4D4' }}>
+              <span style={{ color: '#00F5FF' }}>
                 Активен пик още <strong>{countdown.minutes}мин.</strong>
               </span>
             ) : (
@@ -241,7 +241,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
           {feedingAdvice && (
             <p className="mt-1" style={{
               fontSize: '11px',
-              color: feedingAdvice.urgent ? '#00D4D4' : 'rgba(255,255,255,0.7)',
+              color: feedingAdvice.urgent ? '#00F5FF' : 'rgba(255,255,255,0.7)',
               fontWeight: feedingAdvice.urgent ? 600 : 400,
             }}>
               {feedingAdvice.text}
@@ -397,7 +397,7 @@ const Index = () => {
           <h2 className="font-display text-xl font-semibold mt-4" style={{ color: '#E2E8F0' }}>
             {moon.phaseNameBg}
           </h2>
-          <p className="text-sm font-medium mt-1" style={{ color: '#2DD4BF' }}>
+          <p className="text-sm font-medium mt-1" style={{ color: '#00F5FF' }}>
             {moon.illumination}% Осветеност
           </p>
         </section>
@@ -406,8 +406,8 @@ const Index = () => {
         <section 
           className="rounded-xl bg-card/60 backdrop-blur-md p-5 mb-4"
           style={{
-            border: '1px solid #00D4D4',
-            boxShadow: '0 0 10px rgba(0,212,212,0.2)',
+            border: '1px solid #00F5FF',
+            boxShadow: '0 0 10px rgba(0,245,255,0.2)',
           }}
         >
           <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2" style={{ color: '#94A3B8' }}>

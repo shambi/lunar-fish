@@ -581,7 +581,7 @@ export function getFishModalData(
   const rigTip = fish.baseData.rigs;
 
   // Eco warning — use per-fish ecoRed/ecoGreen data
-  const IARA_FOOTER = '\n\n📋 Проверете списъка на ИАРА за\nразрешени язовири и езера във вашия район.\niara.government.bg';
+  const IARA_FOOTER = '\n\n📋 Проверете списъка на ИАРА за\nразрешени водоеми във вашия район.\niara.government.bg';
   let ecoWarning: string;
   const isBanned = fish.spawnMonths.includes(currentMonth);
   if (isBanned && fish.ecoRed) {
