@@ -24,7 +24,7 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 function getLabelAndColor(score: number): { label: string; color: string } {
-  if (score >= 5) return { label: 'Отлично', color: '#00F5FF' };
+  if (score >= 5) return { label: 'Отлично', color: '#2eb5b7' };
   if (score >= 4) return { label: 'Добро', color: '#4CAF50' };
   if (score >= 3) return { label: 'Средно', color: '#FFA726' };
   if (score >= 2) return { label: 'Слабо', color: '#FF7043' };

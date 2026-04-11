@@ -209,7 +209,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   {advice && (
                     <>
                       <div>
-                        <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-1 flex items-center gap-1">
                           Съвет за днес
                         </h4>
                         <p className="leading-relaxed whitespace-pre-line" style={{ color: 'rgba(255,255,255,0.8)' }}>{advice.tip}</p>
@@ -232,7 +232,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                   {/* Groundbait & Bait */}
                   <div>
-                    <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-1 flex items-center gap-1">
                       Захранка & Стръв
                     </h4>
                     <p className="leading-relaxed" style={{ color: '#FFFFFF' }}>{modalData.groundbaitTip}</p>
@@ -241,7 +241,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                   {/* Line */}
                   <div>
-                    <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-1 flex items-center gap-1">
                       Влакно & Монофил
                     </h4>
                     <p style={{ color: '#FFFFFF' }}>{modalData.lineDiameter}</p>
@@ -250,7 +250,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   {/* Lures (predators only) */}
                   {modalData.lureTip && (
                     <div>
-                      <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-1 flex items-center gap-1">
                         Воблери & Корди
                       </h4>
                       <p className="leading-relaxed" style={{ color: '#FFFFFF' }}>{modalData.lureTip}</p>
@@ -259,7 +259,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                   {/* Hooks & Tackle */}
                   <div>
-                    <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-1 flex items-center gap-1">
                       Такъми & Куки
                     </h4>
                     <p style={{ color: '#FFFFFF' }}>{modalData.hookTip}</p>
@@ -268,7 +268,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                   {/* Eco warning */}
                   <div className="rounded-lg border border-border bg-secondary/30 p-3">
-                    <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-1 flex items-center gap-1">
                       Еко-съвет
                     </h4>
                     <p className="whitespace-pre-line" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.ecoWarning}</p>

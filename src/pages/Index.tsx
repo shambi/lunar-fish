@@ -132,8 +132,8 @@ const SolunarSection = ({ weather }: { weather: any }) => {
           </span>
         </div>
         <div className="flex-1 text-center rounded-[20px] py-[4px] px-[10px]"
-          style={{ background: 'rgba(0,245,255,0.08)', border: '1px solid rgba(0,245,255,0.3)' }}>
-          <span style={{ fontSize: '11px', color: '#00F5FF' }}>
+          style={{ background: 'rgba(46,181,183,0.08)', border: '1px solid rgba(46,181,183,0.3)' }}>
+          <span style={{ fontSize: '11px', color: '#2eb5b7' }}>
             <span className="text-white">{weather.moonrise || '--:--'}</span> • <span className="text-white">{weather.moonset || '--:--'}</span>
           </span>
         </div>
@@ -151,8 +151,8 @@ const SolunarSection = ({ weather }: { weather: any }) => {
                 padding: '10px',
                 ...(isMajor ? {
                   background: 'rgba(0,18,28,0.9)',
-                  border: '1.5px solid #00F5FF',
-                  boxShadow: '0 0 10px rgba(0,245,255,0.2)',
+                  border: '1.5px solid #2eb5b7',
+                  boxShadow: '0 0 10px rgba(46,181,183,0.2)',
                 } : {
                   background: 'rgba(255,255,255,0.04)',
                   border: '1px solid rgba(255,255,255,0.1)',
@@ -162,7 +162,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
               {active && (
                 <div className="absolute -top-2 left-3 rounded-[10px] px-2 py-0.5 text-[9px] font-bold"
                   style={{
-                    background: '#00F5FF', color: '#000',
+                    background: '#2eb5b7', color: '#000',
                     animation: 'pulse-active 1.5s ease-in-out infinite',
                   }}>
                   СЕГА АКТИВНО
@@ -193,7 +193,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
                      style={{
                       fontSize: '11px',
                       letterSpacing: '1px',
-                      color: isMajor ? '#00F5FF' : 'rgba(0,245,255,0.5)',
+                      color: isMajor ? '#2eb5b7' : 'rgba(46,181,183,0.5)',
                     }}>
                     {isMajor ? 'ГЛАВЕН ПИК' : 'МАЛЪК ПИК'}
                   </div>
@@ -212,7 +212,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
                     <span key={fi}>
                       <PeakFishIcon
                         glow={isMajor}
-                        color={isMajor ? '#00F5FF' : 'rgba(0,245,255,0.3)'}
+                        color={isMajor ? '#2eb5b7' : 'rgba(46,181,183,0.3)'}
                       />
                     </span>
                   ))}
@@ -228,7 +228,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
         <div className="text-center">
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
             {countdown.active ? (
-              <span style={{ color: '#00F5FF' }}>
+              <span style={{ color: '#2eb5b7' }}>
                 Активен пик още <strong>{countdown.minutes}мин.</strong>
               </span>
             ) : (
@@ -241,7 +241,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
           {feedingAdvice && (
             <p className="mt-1" style={{
               fontSize: '11px',
-              color: feedingAdvice.urgent ? '#00F5FF' : 'rgba(255,255,255,0.7)',
+              color: feedingAdvice.urgent ? '#2eb5b7' : 'rgba(255,255,255,0.7)',
               fontWeight: feedingAdvice.urgent ? 600 : 400,
             }}>
               {feedingAdvice.text}
@@ -350,22 +350,29 @@ const Index = () => {
         {/* Header */}
         <header className="pt-4 pb-1 text-center">
           <h1
-            className="font-display text-3xl font-medium tracking-wide"
+            className="font-display text-3xl font-medium tracking-wide flex items-center justify-center gap-1"
             style={{ color: '#E2E8F0', animation: 'title-glow 4s ease-in-out infinite' }}
           >
-            РИБ
-            <span className="relative inline-block">
-              О
-              {/* Fish hook integrated into О */}
-              <svg
-                className="absolute -bottom-1 -right-1.5 text-primary opacity-70"
-                width="14" height="18" viewBox="0 0 14 18" fill="none"
-                stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
-              >
-                <path d="M7 0 L7 10 Q7 15 4 15 Q1 15 1 12" />
-                <circle cx="1" cy="11" r="1" fill="currentColor" />
-              </svg>
-            </span>
+            РИБО
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 48 48"
+              fill="none"
+              stroke="#2eb5b7"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              style={{ 
+                transform: 'translateY(0.5px)',
+                filter: 'drop-shadow(0 0 6px #2eb5b7)'
+              }}
+            >
+              <ellipse cx="22" cy="24" rx="14" ry="10" />
+              <path d="M36 24 L44 16 M36 24 L44 32" />
+              <circle cx="12" cy="22" r="1.5" fill="#2eb5b7" />
+            </svg>
           </h1>
           <p className="text-sm mt-1 capitalize" style={{ color: '#94A3B8' }}>{today}</p>
           <div className="flex items-center justify-center gap-1 mt-1 text-xs" style={{ color: '#94A3B8' }}>
@@ -397,7 +404,7 @@ const Index = () => {
           <h2 className="font-display text-xl font-semibold mt-4" style={{ color: '#E2E8F0' }}>
             {moon.phaseNameBg}
           </h2>
-          <p className="text-sm font-medium mt-1" style={{ color: '#00F5FF' }}>
+          <p className="text-sm font-medium mt-1" style={{ color: '#2eb5b7' }}>
             {moon.illumination}% Осветеност
           </p>
         </section>
@@ -406,8 +413,8 @@ const Index = () => {
         <section 
           className="rounded-xl bg-card/60 backdrop-blur-md p-5 mb-4"
           style={{
-            border: '1px solid #00F5FF',
-            boxShadow: '0 0 10px rgba(0,245,255,0.2)',
+            border: '1px solid #2eb5b7',
+            boxShadow: '0 0 10px rgba(46,181,183,0.2)',
           }}
         >
           <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2" style={{ color: '#94A3B8' }}>
@@ -501,30 +508,30 @@ const Index = () => {
               
               <div className="flex gap-3">
                 <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                  <Cloud className="w-4 h-4 text-[#00F5FF]" strokeWidth={1.5} />
+                  <Cloud className="w-4 h-4 text-[#2eb5b7]" strokeWidth={1.5} />
                 </div>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{tips.weatherTip}</p>
               </div>
 
               <div className="flex gap-3">
                 <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                  <Wind className="w-4 h-4 text-[#00F5FF]" strokeWidth={1.5} />
+                  <Wind className="w-4 h-4 text-[#2eb5b7]" strokeWidth={1.5} />
                 </div>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{tips.windTip}</p>
               </div>
 
               <div className="flex gap-3">
                 <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00F5FF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
                   </svg>
                 </div>
                 <p className="text-sm font-medium leading-relaxed" style={{
                   color: solunarContext.isInPeak && solunarContext.peakType === 'major'
-                    ? '#00F5FF'
+                    ? '#2eb5b7'
                     : solunarContext.isInPeak && solunarContext.peakType === 'minor'
-                    ? 'rgba(0,245,255,0.6)'
+                    ? 'rgba(46,181,183,0.6)'
                     : 'rgba(255, 255, 255, 0.8)'
                 }}>
                   {tips.timingTip}
@@ -563,7 +570,7 @@ const Index = () => {
           </h3>
           <div className="flex gap-3">
             <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-              <Anchor className="w-4 h-4 text-[#00F5FF]" strokeWidth={1.5} />
+              <Anchor className="w-4 h-4 text-[#2eb5b7]" strokeWidth={1.5} />
             </div>
             <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>
               {tips ? tips.fishingStyleTip : stripEmojis(moon.fishingStyleTip)}
@@ -782,7 +789,8 @@ const Index = () => {
               strokeLinejoin="round"
               aria-hidden="true"
               style={{ 
-                transform: 'translateY(0.5px)'
+                transform: 'translateY(0.5px)',
+                filter: 'drop-shadow(0 0 6px #E4FF00)'
               }}
             >
               <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
@@ -830,7 +838,8 @@ const Index = () => {
 
           {/* Baits */}
           <div className="mb-6">
-            <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-3 flex items-center gap-1">
+            <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-3 flex items-center gap-1">
+              <Fish className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
               СТРЪВ
             </h4>
             <div className="grid grid-cols-2 gap-3">
@@ -847,7 +856,8 @@ const Index = () => {
 
           {/* Tackle */}
           <div>
-            <h4 className="text-xs font-semibold text-[#00F5FF] uppercase tracking-wider mb-3 flex items-center gap-1">
+            <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-3 flex items-center gap-1">
+              <Anchor className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
               ТАКЪМИ
             </h4>
             <div className="grid grid-cols-2 gap-3">
