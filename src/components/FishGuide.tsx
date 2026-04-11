@@ -166,7 +166,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
       {/* Fish detail modal */}
       <Dialog open={!!selectedFish} onOpenChange={(open) => !open && setSelectedFish(null)}>
-        <DialogContent className="max-w-sm bg-card border-border">
+        <DialogContent className="max-w-sm bg-card border-border" style={{ animation: 'modal-slide-in 0.3s ease-out' }}>
           {selectedFish && modalData && (
             <>
               <DialogHeader>
@@ -209,20 +209,29 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   {advice && (
                     <>
                       <div>
-                        <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-1 flex items-center gap-1">
+                        <h4 className="text-sm font-bold text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                          </svg>
                           Съвет за днес
                         </h4>
-                        <p className="leading-relaxed whitespace-pre-line" style={{ color: 'rgba(255,255,255,0.8)' }}>{advice.tip}</p>
+                        <p className="leading-[1.7] whitespace-pre-line" style={{ color: 'rgba(255,255,255,0.8)' }}>{advice.tip}</p>
                       </div>
                       <div className="border-t border-border" />
 
                       {advice.mistake && (
                         <>
                           <div>
-                            <h4 className="text-xs font-semibold uppercase tracking-wider mb-1 flex items-center gap-1" style={{ color: '#FFA726' }}>
+                            <h4 className="text-sm font-bold uppercase tracking-wider mb-2 flex items-center gap-1" style={{ color: '#FFA726' }}>
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFA726" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                                <path d="M12 9v4" />
+                                <path d="M12 17h.01" />
+                              </svg>
                               Честа грешка днес
                             </h4>
-                            <p className="leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{advice.mistake}</p>
+                            <p className="leading-[1.7]" style={{ color: 'rgba(255,255,255,0.8)' }}>{advice.mistake}</p>
                           </div>
                           <div className="border-t border-border" />
                         </>
@@ -232,46 +241,67 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                   {/* Groundbait & Bait */}
                   <div>
-                    <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <h4 className="text-sm font-bold text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
+                      <svg width="14" height="14" viewBox="0 0 48 48" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <ellipse cx="22" cy="24" rx="14" ry="10" />
+                        <path d="M36 24 L44 16 M36 24 L44 32" />
+                        <circle cx="12" cy="22" r="1.5" fill="#E4FF00" />
+                      </svg>
                       Захранка & Стръв
                     </h4>
-                    <p className="leading-relaxed" style={{ color: '#FFFFFF' }}>{modalData.groundbaitTip}</p>
-                    <p className="leading-relaxed mt-1" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.baitTip}</p>
+                    <p className="leading-[1.7]" style={{ color: '#FFFFFF' }}>{modalData.groundbaitTip}</p>
+                    <p className="leading-[1.7] mt-1" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.baitTip}</p>
                   </div>
 
                   {/* Line */}
                   <div>
-                    <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <h4 className="text-sm font-bold text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M2 12h20" />
+                        <path d="M6 8h12" />
+                        <path d="M10 4h4" />
+                      </svg>
                       Влакно & Монофил
                     </h4>
-                    <p style={{ color: '#FFFFFF' }}>{modalData.lineDiameter}</p>
+                    <p className="leading-[1.7]" style={{ color: '#FFFFFF' }}>{modalData.lineDiameter}</p>
                   </div>
 
                   {/* Lures (predators only) */}
                   {modalData.lureTip && (
                     <div>
-                      <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <h4 className="text-sm font-bold text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                        </svg>
                         Воблери & Корди
                       </h4>
-                      <p className="leading-relaxed" style={{ color: '#FFFFFF' }}>{modalData.lureTip}</p>
+                      <p className="leading-[1.7]" style={{ color: '#FFFFFF' }}>{modalData.lureTip}</p>
                     </div>
                   )}
 
                   {/* Hooks & Tackle */}
                   <div>
-                    <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <h4 className="text-sm font-bold text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+                      </svg>
                       Такъми & Куки
                     </h4>
-                    <p style={{ color: '#FFFFFF' }}>{modalData.hookTip}</p>
-                    <p className="mt-1" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.rigTip}</p>
+                    <p className="leading-[1.7]" style={{ color: '#FFFFFF' }}>{modalData.hookTip}</p>
+                    <p className="leading-[1.7] mt-1" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.rigTip}</p>
                   </div>
 
                   {/* Eco warning */}
-                  <div className="rounded-lg border border-border bg-secondary/30 p-3">
-                    <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-1 flex items-center gap-1">
+                  <div className="rounded-lg bg-secondary/30 p-3"
+                    style={{
+                      border: '2px solid #E4FF00',
+                      boxShadow: '0 0 10px rgba(228,255,0,0.2)',
+                    }}>
+                    <h4 className="text-sm font-bold text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
                       Еко-съвет
                     </h4>
                     <p className="whitespace-pre-line" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.ecoWarning}</p>
+                    <p className="text-[10px] opacity-70 mt-2" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.ecoFooter}</p>
                   </div>
 
                   <p className="text-[10px] text-center pt-2" style={{ color: 'rgba(255,255,255,0.8)' }}>

@@ -526,6 +526,7 @@ export interface FishModalData {
   hookTip: string;
   rigTip: string;
   ecoWarning: string;
+  ecoFooter: string;
 }
 
 export function getFishModalData(
@@ -591,7 +592,7 @@ export function getFishModalData(
   } else {
     ecoWarning = '✅ Разрешен период.';
   }
-  ecoWarning += IARA_FOOTER;
+  const ecoFooter = IARA_FOOTER;
 
-  return { groundbaitTip, baitTip, lineDiameter, lureTip, hookTip, rigTip, ecoWarning };
+  return { groundbaitTip, baitTip, lineDiameter, lureTip, hookTip, rigTip, ecoWarning, ecoFooter };
 }
