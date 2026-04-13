@@ -1,0 +1,21 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fishing rod -->
+  <line x1="10" y1="50" x2="45" y2="15" stroke="#8B4513" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Line -->
+  <line x1="45" y1="15" x2="50" y2="20" stroke="#00CED1" stroke-width="1.5"/>
+  <line x1="50" y1="20" x2="52" y2="25" stroke="#00CED1" stroke-width="1.5"/>
+  <line x1="52" y1="25" x2="53" y2="30" stroke="#00CED1" stroke-width="1.5"/>
+  <line x1="53" y1="30" x2="52" y2="35" stroke="#00CED1" stroke-width="1.5"/>
+  <line x1="52" y1="35" x2="50" y2="40" stroke="#00CED1" stroke-width="1.5"/>
+
+  <!-- Slow motion arrows -->
+  <path d="M 48 22 L 46 20 L 48 18" stroke="#FF6B6B" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M 50 27 L 48 25 L 50 23" stroke="#FF6B6B" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M 51 32 L 49 30 L 51 28" stroke="#FF6B6B" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M 50 37 L 48 35 L 50 33" stroke="#FF6B6B" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Hook -->
+  <circle cx="50" cy="40" r="2" fill="#8B9DC3"/>
+  <path d="M 50 42 L 50 46 Q 50 48, 52 48" stroke="#8B9DC3" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+</svg>

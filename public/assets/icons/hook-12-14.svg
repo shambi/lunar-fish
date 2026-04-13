@@ -1,0 +1,46 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="hookMetal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E0E7EF"/>
+      <stop offset="40%" stop-color="#8B9DC3"/>
+      <stop offset="70%" stop-color="#5C6B7D"/>
+      <stop offset="100%" stop-color="#8B9DC3"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Hook body - curved path -->
+  <path d="M 32 12
+           L 32 30
+           Q 32 42, 42 45
+           Q 48 46, 48 42
+           L 46 40"
+        stroke="url(#hookMetal)"
+        stroke-width="3"
+        fill="none"
+        stroke-linecap="round"/>
+
+  <!-- Eye (ушко) -->
+  <circle cx="32" cy="12" r="3.5"
+          stroke="url(#hookMetal)"
+          stroke-width="2.5"
+          fill="none"/>
+
+  <!-- Barb (зъбец) -->
+  <path d="M 44 44 L 46 42 L 47 43.5"
+        stroke="#5C6B7D"
+        stroke-width="2"
+        fill="none"
+        stroke-linecap="round"/>
+
+  <!-- Point (острие) -->
+  <path d="M 48 42 L 50 40"
+        stroke="#5C6B7D"
+        stroke-width="2.5"
+        stroke-linecap="round"/>
+
+  <!-- Highlight за metal shine -->
+  <path d="M 33 15 L 33 28"
+        stroke="#E0E7EF"
+        stroke-width="0.8"
+        opacity="0.6"/>
+</svg>

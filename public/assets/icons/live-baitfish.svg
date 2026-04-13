@@ -1,0 +1,33 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="fishGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4A90E2"/>
+      <stop offset="50%" stop-color="#357ABD"/>
+      <stop offset="100%" stop-color="#2E7D32"/>
+    </linearGradient>
+    <filter id="fishShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1"/>
+      <feOffset dx="1" dy="2" result="offsetblur"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Fish body -->
+  <ellipse cx="32" cy="32" rx="18" ry="8" fill="url(#fishGrad)" filter="url(#fishShadow)"/>
+
+  <!-- Fish tail -->
+  <path d="M 14 32 L 10 28 L 10 36 Z" fill="url(#fishGrad)"/>
+
+  <!-- Dorsal fin -->
+  <path d="M 28 24 L 30 20 L 32 24 Z" fill="#2E7D32" opacity="0.8"/>
+
+  <!-- Eye -->
+  <circle cx="38" cy="30" r="1.5" fill="#FFFFFF"/>
+  <circle cx="38.5" cy="29.5" r="0.8" fill="#000000"/>
+
+  <!-- Gills -->
+  <path d="M 35 28 L 37 26 L 37 30 Z" fill="#1A5F7A" opacity="0.6"/>
+</svg>

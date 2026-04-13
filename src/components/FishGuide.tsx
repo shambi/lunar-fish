@@ -166,7 +166,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
       {/* Fish detail modal */}
       <Dialog open={!!selectedFish} onOpenChange={(open) => !open && setSelectedFish(null)}>
-        <DialogContent className="max-w-sm bg-card border-border">
+        <DialogContent className="max-w-sm bg-card border-border" style={{ animation: 'modal-slide-in 0.3s ease-out' }}>
           {selectedFish && modalData && (
             <>
               <DialogHeader>
@@ -292,14 +292,15 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   </div>
 
                   {/* Eco warning */}
-                  <div className="rounded-lg bg-secondary/30 p-3 mb-3"
+                  <div className="rounded-lg bg-secondary/30 p-3"
                     style={{
-                      border: '1px solid #E4FF00',
+                      border: '2px solid #E4FF00',
+                      boxShadow: '0 0 10px rgba(228,255,0,0.2)',
                     }}>
-                    <h4 className="text-[14px] font-semibold text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
+                    <h4 className="text-sm font-bold text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
                       Еко-съвет
                     </h4>
-                    <p className="whitespace-pre-line text-[13px] leading-[1.4]" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.ecoWarning}</p>
+                    <p className="whitespace-pre-line" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.ecoWarning}</p>
                     <p className="text-[10px] opacity-70 mt-2" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.ecoFooter}</p>
                   </div>
 

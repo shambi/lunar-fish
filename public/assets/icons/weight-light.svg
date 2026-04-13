@@ -1,0 +1,29 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="leadGrad" x1="30%" y1="0%" x2="70%" y2="100%">
+      <stop offset="0%" stop-color="#718096"/>
+      <stop offset="50%" stop-color="#4A5568"/>
+      <stop offset="100%" stop-color="#2D3748"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Olive/egg shape weight -->
+  <ellipse cx="32" cy="34" rx="12" ry="16"
+           fill="url(#leadGrad)"/>
+
+  <!-- Highlight за metal -->
+  <ellipse cx="28" cy="26" rx="4" ry="6"
+           fill="#A0AEC0"
+           opacity="0.3"/>
+
+  <!-- Hole на върха -->
+  <circle cx="32" cy="18" r="2.5"
+          fill="#1A202C"/>
+  <circle cx="32" cy="17.5" r="1.8"
+          fill="#2D3748"/>
+
+  <!-- Shadow -->
+  <ellipse cx="32" cy="51" rx="10" ry="2"
+           fill="#000"
+           opacity="0.2"/>
+</svg>

@@ -1,0 +1,56 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="spool">
+      <stop offset="0%" stop-color="#3A4A5A"/>
+      <stop offset="50%" stop-color="#2C3E50"/>
+      <stop offset="100%" stop-color="#3A4A5A"/>
+    </linearGradient>
+
+    <linearGradient id="line" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#00FFFF" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#00D4FF" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#0099CC" stop-opacity="0.4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Spool body -->
+  <rect x="18" y="24" width="28" height="16"
+        fill="url(#spool)"
+        rx="2"/>
+
+  <!-- Spool ends (flanges) -->
+  <ellipse cx="32" cy="24" rx="14" ry="4" fill="#2C3E50"/>
+  <ellipse cx="32" cy="40" rx="14" ry="4" fill="#1A252F"/>
+
+  <!-- Wound line на макарата -->
+  <ellipse cx="32" cy="26" rx="13" ry="3"
+           fill="url(#line)"/>
+  <ellipse cx="32" cy="28" rx="12.5" ry="2.8"
+           fill="url(#line)"/>
+  <ellipse cx="32" cy="30" rx="12" ry="2.6"
+           fill="url(#line)"/>
+  <ellipse cx="32" cy="32" rx="11.5" ry="2.4"
+           fill="url(#line)"/>
+  <ellipse cx="32" cy="34" rx="11" ry="2.2"
+           fill="url(#line)"/>
+  <ellipse cx="32" cy="36" rx="10.5" ry="2"
+           fill="url(#line)"/>
+  <ellipse cx="32" cy="38" rx="10" ry="1.8"
+           fill="url(#line)"/>
+
+  <!-- Label plate -->
+  <rect x="24" y="28" width="16" height="8"
+        fill="#FFFFFF"
+        rx="1"
+        opacity="0.9"/>
+
+  <!-- Text "0.16" -->
+  <text x="32" y="34"
+        font-family="Arial, sans-serif"
+        font-size="6"
+        font-weight="bold"
+        fill="#2C3E50"
+        text-anchor="middle">
+    0.16
+  </text>
+</svg>

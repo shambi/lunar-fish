@@ -1,0 +1,27 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="sunriseGrad" cx="50%" cy="80%">
+      <stop offset="0%" stop-color="#FFF8E1"/>
+      <stop offset="30%" stop-color="#FFD54F"/>
+      <stop offset="70%" stop-color="#FF9800"/>
+      <stop offset="100%" stop-color="#E65100"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sun rising -->
+  <circle cx="32" cy="45" r="12" fill="url(#sunriseGrad)"/>
+
+  <!-- Sun rays -->
+  <line x1="32" y1="30" x2="32" y2="25" stroke="#FFD54F" stroke-width="2" stroke-linecap="round"/>
+  <line x1="38" y1="35" x2="42" y2="32" stroke="#FFD54F" stroke-width="2" stroke-linecap="round"/>
+  <line x1="38" y1="41" x2="42" y2="44" stroke="#FFD54F" stroke-width="2" stroke-linecap="round"/>
+  <line x1="32" y1="51" x2="32" y2="56" stroke="#FFD54F" stroke-width="2" stroke-linecap="round"/>
+  <line x1="26" y1="41" x2="22" y2="44" stroke="#FFD54F" stroke-width="2" stroke-linecap="round"/>
+  <line x1="26" y1="35" x2="22" y2="32" stroke="#FFD54F" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Horizon line -->
+  <line x1="0" y1="50" x2="64" y2="50" stroke="#4A90E2" stroke-width="1" opacity="0.5"/>
+
+  <!-- Time indicator -->
+  <text x="32" y="20" font-family="Arial" font-size="7" fill="#E65100" text-anchor="middle" font-weight="bold">MORNING</text>
+</svg>

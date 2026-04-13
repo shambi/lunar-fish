@@ -1,0 +1,40 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wormGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F77F88"/>
+      <stop offset="100%" stop-color="#E63946"/>
+    </linearGradient>
+    <filter id="wormShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1"/>
+      <feOffset dx="1" dy="2" result="offsetblur"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Large червей 1 -->
+  <path d="M 15 20 Q 25 15, 35 20 Q 45 25, 50 20 Q 55 15, 60 20"
+        stroke="url(#wormGrad1)"
+        stroke-width="6"
+        fill="none"
+        stroke-linecap="round"
+        filter="url(#wormShadow)"/>
+
+  <!-- Segments -->
+  <line x1="18" y1="18" x2="22" y2="22" stroke="#FFCCD5" stroke-width="0.8" opacity="0.6"/>
+  <line x1="25" y1="17" x2="29" y2="21" stroke="#FFCCD5" stroke-width="0.8" opacity="0.6"/>
+  <line x1="32" y1="19" x2="36" y2="23" stroke="#FFCCD5" stroke-width="0.8" opacity="0.6"/>
+  <line x1="39" y1="18" x2="43" y2="22" stroke="#FFCCD5" stroke-width="0.8" opacity="0.6"/>
+  <line x1="46" y1="17" x2="50" y2="21" stroke="#FFCCD5" stroke-width="0.8" opacity="0.6"/>
+  <line x1="53" y1="19" x2="57" y2="23" stroke="#FFCCD5" stroke-width="0.8" opacity="0.6"/>
+
+  <!-- Large червей 2 -->
+  <path d="M 10 35 Q 20 40, 30 35 Q 40 30, 45 35 Q 50 40, 55 35"
+        stroke="url(#wormGrad1)"
+        stroke-width="5.5"
+        fill="none"
+        stroke-linecap="round"
+        filter="url(#wormShadow)"/>
+</svg>

@@ -1,0 +1,54 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Glossy effect за бойли -->
+    <radialGradient id="glossy1">
+      <stop offset="0%" stop-color="#FFF" stop-opacity="0.8"/>
+      <stop offset="30%" stop-color="#FFDD99" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#FFB703"/>
+    </radialGradient>
+    <radialGradient id="glossy2">
+      <stop offset="0%" stop-color="#FFF" stop-opacity="0.8"/>
+      <stop offset="30%" stop-color="#FF9A9E" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#FB5607"/>
+    </radialGradient>
+    <radialGradient id="glossy3">
+      <stop offset="0%" stop-color="#FFF" stop-opacity="0.8"/>
+      <stop offset="30%" stop-color="#FFE5B4" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#FFBE0B"/>
+    </radialGradient>
+
+    <!-- Shadow -->
+    <filter id="boilieShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+      <feOffset dx="0" dy="3" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.3"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Бойл 1 - жълт -->
+  <circle cx="25" cy="30" r="12"
+          fill="url(#glossy1)"
+          filter="url(#boilieShadow)"/>
+  <!-- Texture spots -->
+  <circle cx="23" cy="27" r="0.8" fill="#E0A800" opacity="0.4"/>
+  <circle cx="28" cy="31" r="0.6" fill="#E0A800" opacity="0.4"/>
+
+  <!-- Бойл 2 - оранжев (припокрива се) -->
+  <circle cx="40" cy="28" r="11"
+          fill="url(#glossy2)"
+          filter="url(#boilieShadow)"/>
+  <circle cx="38" cy="25" r="0.7" fill="#C94000" opacity="0.3"/>
+
+  <!-- Бойл 3 - светъл жълт (отпред) -->
+  <circle cx="32" cy="40" r="10"
+          fill="url(#glossy3)"
+          filter="url(#boilieShadow)"/>
+  <circle cx="30" cy="37" r="0.8" fill="#E0A800" opacity="0.4"/>
+  <circle cx="34" cy="41" r="0.6" fill="#E0A800" opacity="0.4"/>
+</svg>

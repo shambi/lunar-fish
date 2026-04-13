@@ -1,0 +1,27 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="fishingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4A90E2"/>
+      <stop offset="100%" stop-color="#2E7D32"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fishing rod silhouette -->
+  <path d="M 8 50 L 8 45 L 12 40 L 16 42 L 20 38 L 24 40 L 28 36 L 32 38 L 36 34 L 40 36 L 44 32 L 48 34 L 52 30 L 56 32 L 60 28 L 60 50 Z"
+        fill="url(#fishingGrad)"
+        opacity="0.8"/>
+
+  <!-- Hook at end -->
+  <path d="M 60 28 Q 60 24, 56 26"
+        stroke="#8B9DC3"
+        stroke-width="2"
+        fill="none"
+        stroke-linecap="round"/>
+
+  <!-- Water ripples -->
+  <path d="M 10 52 Q 20 48, 30 52 Q 40 48, 50 52 Q 60 48, 64 52"
+        stroke="#4A90E2"
+        stroke-width="1"
+        fill="none"
+        opacity="0.5"/>
+</svg>

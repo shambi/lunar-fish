@@ -1,0 +1,25 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="waterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#E3F2FD"/>
+      <stop offset="50%" stop-color="#4A90E2"/>
+      <stop offset="100%" stop-color="#0D47A1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Water surface -->
+  <rect x="0" y="45" width="64" height="19" fill="url(#waterGrad)"/>
+
+  <!-- Depth lines -->
+  <line x1="10" y1="50" x2="54" y2="50" stroke="#FFFFFF" stroke-width="1" opacity="0.3"/>
+  <line x1="10" y1="55" x2="54" y2="55" stroke="#FFFFFF" stroke-width="1" opacity="0.2"/>
+  <line x1="10" y1="60" x2="54" y2="60" stroke="#FFFFFF" stroke-width="1" opacity="0.1"/>
+
+  <!-- Depth indicator -->
+  <text x="32" y="35" font-family="Arial" font-size="8" fill="#0D47A1" text-anchor="middle" font-weight="bold">DEEP</text>
+  <text x="32" y="42" font-family="Arial" font-size="6" fill="#4A90E2" text-anchor="middle">WATER</text>
+
+  <!-- Fish at depth -->
+  <ellipse cx="40" cy="58" rx="6" ry="3" fill="#FFFFFF" opacity="0.6"/>
+  <circle cx="45" cy="57" r="1" fill="#FFFFFF" opacity="0.4"/>
+</svg>

@@ -1,0 +1,45 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wormGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F77F88"/>
+      <stop offset="100%" stop-color="#E63946"/>
+    </linearGradient>
+    <filter id="wormShadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1"/>
+      <feOffset dx="1" dy="2" result="offsetblur"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Червей 1 - S извивка -->
+  <path d="M 18 25 Q 25 20, 28 28 Q 31 36, 25 42"
+        stroke="url(#wormGrad1)"
+        stroke-width="5"
+        fill="none"
+        stroke-linecap="round"
+        filter="url(#wormShadow)"/>
+
+  <!-- Segments на червея -->
+  <line x1="20" y1="23" x2="22" y2="25" stroke="#FFCCD5" stroke-width="0.5" opacity="0.6"/>
+  <line x1="24" y1="24" x2="26" y2="26" stroke="#FFCCD5" stroke-width="0.5" opacity="0.6"/>
+  <line x1="27" y1="30" x2="29" y2="32" stroke="#FFCCD5" stroke-width="0.5" opacity="0.6"/>
+
+  <!-- Червей 2 - навит -->
+  <path d="M 35 30 Q 42 25, 45 33 Q 48 41, 42 45"
+        stroke="url(#wormGrad1)"
+        stroke-width="4.5"
+        fill="none"
+        stroke-linecap="round"
+        filter="url(#wormShadow)"/>
+
+  <!-- Червей 3 - малък -->
+  <path d="M 28 45 Q 32 48, 35 45"
+        stroke="#F77F88"
+        stroke-width="3.5"
+        fill="none"
+        stroke-linecap="round"
+        opacity="0.9"/>
+</svg>
