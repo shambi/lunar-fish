@@ -166,7 +166,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
       {/* Fish detail modal */}
       <Dialog open={!!selectedFish} onOpenChange={(open) => !open && setSelectedFish(null)}>
-        <DialogContent className="max-w-sm bg-card border-border" style={{ animation: 'modal-slide-in 0.3s ease-out' }}>
+        <DialogContent className="max-w-sm bg-card border-border transition-all duration-300 ease-out">
           {selectedFish && modalData && (
             <>
               <DialogHeader>
@@ -292,16 +292,17 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   </div>
 
                   {/* Eco warning */}
-                  <div className="rounded-lg bg-secondary/30 p-3"
+                  <div className="rounded-lg bg-secondary/30 transition-all duration-300"
                     style={{
+                      padding: '12px 16px',
                       border: '2px solid #E4FF00',
                       boxShadow: '0 0 10px rgba(228,255,0,0.2)',
                     }}>
-                    <h4 className="text-sm font-bold text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
+                    <h4 className="text-[14px] font-bold text-[#2eb5b7] uppercase tracking-wider mb-1.5 flex items-center gap-1">
                       Еко-съвет
                     </h4>
-                    <p className="whitespace-pre-line" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.ecoWarning}</p>
-                    <p className="text-[10px] opacity-70 mt-2" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.ecoFooter}</p>
+                    <p className="whitespace-pre-line text-[13px]" style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.4' }}>{modalData.ecoWarning}</p>
+                    <p className="text-[11px] opacity-70 mt-1.5" style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.3' }}>{modalData.ecoFooter}</p>
                   </div>
 
                   <p className="text-[10px] text-center pt-2" style={{ color: 'rgba(255,255,255,0.8)' }}>

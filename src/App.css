@@ -54,3 +54,53 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Smooth Dialog Animations */
+@keyframes modal-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modal-slide-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+}
+
+[role="dialog"] {
+  animation: modal-slide-in 0.3s cubic-bezier(0.32, 0.72, 0.3, 1) forwards !important;
+}
+
+[role="dialog"][data-state="closed"] {
+  animation: modal-slide-out 0.2s cubic-bezier(0.32, 0.72, 0.3, 1) forwards !important;
+}
+
+/* Smooth transitions for all interactive elements */
+[role="dialog"] * {
+  transition: all 0.2s ease-out;
+}
+
+/* Ensure smooth backdrop fade */
+[role="dialog"] + div {
+  animation: fade-in 0.3s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
