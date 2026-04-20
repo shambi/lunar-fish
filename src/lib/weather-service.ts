@@ -79,7 +79,76 @@ export async function fetchElevation(latitude: number, longitude: number, fallba
   }
 }
 
-export async function fetchWeatherData(latitude: number, longitude: number, altitude: number = 0): Promise<WeatherData> {
+export async function reverseGeocode(lat: number, lon: number): Promise<string> {
+  const cacheKey = `geocode_${lat.toFixed(3)}_${lon.toFixed(3)}`;
+  const cached = localStorage.getItem(cacheKey);
+  if (cached) {
+    try {
+      const parsed = JSON.parse(cached);
+      const isExpired = Date.now() - parsed.timestamp > 86400000; // 24 hours
+      if (!isExpired) return parsed.name;
+    } catch {
+      // invalid cache, proceed
+    }
+  }
+
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse` +
+      `?lat=${lat}&lon=${lon}` +
+      `&format=json` +
+      `&accept-language=bg` +
+      `&zoom=10`,
+      {
+        headers: {
+          'User-Agent': 'RiboFishingApp/1.0'
+        }
+      }
+    );
+
+    if (!response.ok) throw new Error('Geocoding failed');
+
+    const data = await response.json();
+
+    // Priority order for Bulgarian locations:
+    // 1. City (град)
+    // 2. Town (малък град)
+    // 3. Village (село)
+    // 4. Municipality (община)
+    // 5. County/Region (област)
+    // 6. Fallback to coordinates
+
+    const address = data.address;
+
+    const placeName =
+      address?.city ||
+      address?.town ||
+      address?.village ||
+      address?.municipality ||
+      address?.county ||
+      address?.state ||
+      null;
+
+    if (placeName) {
+      const cacheData = {
+        name: placeName,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+      return placeName;
+    }
+
+    // Last resort — format coordinates nicely
+    return `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`;
+
+  } catch (error) {
+    console.warn('Reverse geocoding failed:', error);
+    // Return formatted coordinates as fallback
+    return `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`;
+  }
+}
+
+export async function fetchWeatherData(latitude: number, longitude: number, altitude: number = 0, locationName: string): Promise<WeatherData> {
   const res = await fetchWithTimeout(
     `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset&past_days=1&forecast_days=1&timezone=auto`,
     8000
@@ -127,21 +196,6 @@ export async function fetchWeatherData(latitude: number, longitude: number, alti
   };
 
   const waterTemp = Math.round(current.temperature_2m * 0.85);
-
-  let locationName = `${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`;
-  try {
-    const geoRes = await fetchWithTimeout(
-      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=bg&zoom=10`,
-      3000
-    );
-    if (geoRes.ok) {
-      const geoData = await geoRes.json();
-      const city = geoData.address?.city || geoData.address?.town || geoData.address?.village || geoData.address?.municipality;
-      if (city) locationName = city;
-    }
-  } catch {
-    // ignore reverse geocode errors
-  }
 
   return {
     temperature: Math.round(current.temperature_2m),

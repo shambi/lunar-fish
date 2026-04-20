@@ -268,7 +268,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
 
 const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
-  const { weather, loading, error, locationDenied } = useWeather();
+  const { weather, loading, locationLoading, error, locationDenied } = useWeather();
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
 
   const today = new Date().toLocaleDateString('bg-BG', {
@@ -393,10 +393,44 @@ const Index = () => {
                 <Loader2 className="w-3 h-3 animate-spin" />
                 <span>Определяне на локация...</span>
               </>
+            ) : locationLoading ? (
+              <span>📍 Определяне...</span>
             ) : weather ? (
-              <span>{weather.locationName}</span>
+              <span className="inline-flex items-center gap-1">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
+                  <path d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7z" />
+                </svg>
+                <span>{weather.locationName}</span>
+              </span>
             ) : (
-              <span>София (по подразбиране)</span>
+              <span className="inline-flex items-center gap-1">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
+                  <path d="M12 2C8.134 2 5 5.134 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.866-3.134-7-7-7z" />
+                </svg>
+                <span>София</span>
+              </span>
             )}
           </div>
         </header>

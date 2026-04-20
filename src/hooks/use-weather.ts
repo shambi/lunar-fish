@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { fetchElevation, fetchWeatherData, getWeatherInfo, type WeatherData } from '@/lib/weather-service';
+import { fetchElevation, fetchWeatherData, reverseGeocode, getWeatherInfo, type WeatherData } from '@/lib/weather-service';
 export { getWeatherInfo, type WeatherData } from '@/lib/weather-service';
 
 function getLocation(): Promise<GeolocationPosition> {
@@ -25,6 +25,7 @@ function getLocation(): Promise<GeolocationPosition> {
 export function useWeather() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [locationLoading, setLocationLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [locationDenied, setLocationDenied] = useState(false);
 
@@ -41,7 +42,12 @@ export function useWeather() {
           new Promise<number>((resolve) => setTimeout(() => resolve(fallbackAltitude), 1500)),
         ]);
 
-        const weatherData = await fetchWeatherData(latitude, longitude, altitude);
+        // Reverse geocode to get location name
+        setLocationLoading(true);
+        const locationName = await reverseGeocode(latitude, longitude);
+        setLocationLoading(false);
+
+        const weatherData = await fetchWeatherData(latitude, longitude, altitude, locationName);
         setWeather(weatherData);
         setLocationDenied(false);
         setLoading(false);
@@ -63,8 +69,7 @@ export function useWeather() {
 
         try {
           const fallbackAltitude = await fetchElevation(42.70, 23.35, 550);
-          const weatherData = await fetchWeatherData(42.70, 23.35, fallbackAltitude);
-          weatherData.locationName = 'София (по подразбиране)';
+          const weatherData = await fetchWeatherData(42.70, 23.35, fallbackAltitude, 'София');
           setWeather(weatherData);
         } catch (fetchErr) {
           console.error('Failed to fetch weather for fallback location:', fetchErr);
@@ -78,5 +83,5 @@ export function useWeather() {
     initLocation();
   }, []);
 
-  return { weather, loading, error, locationDenied };
+  return { weather, loading, locationLoading, error, locationDenied };
 }
