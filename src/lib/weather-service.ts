@@ -1,4 +1,5 @@
 import { getMoonTimes, getSolunarPeaks } from '@/lib/moon-times';
+import { WEATHER_API_CONFIG } from '@/config/weather-api';
 
 export interface WeatherData {
   temperature: number;
@@ -54,7 +55,7 @@ export function getWeatherInfo(code: number) {
   return WMO_CODES[code] || { label: 'Неизвестно', icon: '🌡️' };
 }
 
-async function fetchWithTimeout(input: string, timeoutMs: number): Promise<Response> {
+export async function fetchWithTimeout(input: string, timeoutMs: number): Promise<Response> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -67,8 +68,8 @@ async function fetchWithTimeout(input: string, timeoutMs: number): Promise<Respo
 export async function fetchElevation(latitude: number, longitude: number, fallbackAltitude = 0): Promise<number> {
   try {
     const res = await fetchWithTimeout(
-      `https://api.open-elevation.com/api/v1/lookup?locations=${latitude},${longitude}`,
-      3500
+      `${WEATHER_API_CONFIG.apis.elevation}?locations=${latitude},${longitude}`,
+      WEATHER_API_CONFIG.timeouts.elevation
     );
     if (!res.ok) return fallbackAltitude;
     const data = await res.json();
@@ -80,12 +81,12 @@ export async function fetchElevation(latitude: number, longitude: number, fallba
 }
 
 export async function reverseGeocode(lat: number, lon: number): Promise<string> {
-  const cacheKey = `geocode_${lat.toFixed(3)}_${lon.toFixed(3)}`;
+  const cacheKey = WEATHER_API_CONFIG.cacheKeys.geocoding(lat, lon);
   const cached = localStorage.getItem(cacheKey);
   if (cached) {
     try {
       const parsed = JSON.parse(cached);
-      const isExpired = Date.now() - parsed.timestamp > 86400000; // 24 hours
+      const isExpired = Date.now() - parsed.timestamp > WEATHER_API_CONFIG.cache.geocoding;
       if (!isExpired) return parsed.name;
     } catch {
       // invalid cache, proceed
@@ -93,17 +94,13 @@ export async function reverseGeocode(lat: number, lon: number): Promise<string> 
   }
 
   try {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse` +
+    const response = await fetchWithTimeout(
+      `${WEATHER_API_CONFIG.apis.geocoding}` +
       `?lat=${lat}&lon=${lon}` +
       `&format=json` +
       `&accept-language=bg` +
       `&zoom=10`,
-      {
-        headers: {
-          'User-Agent': 'RiboFishingApp/1.0'
-        }
-      }
+      WEATHER_API_CONFIG.timeouts.geocoding
     );
 
     if (!response.ok) throw new Error('Geocoding failed');
@@ -148,10 +145,10 @@ export async function reverseGeocode(lat: number, lon: number): Promise<string> 
   }
 }
 
-export async function fetchWeatherData(latitude: number, longitude: number, altitude: number = 0, locationName: string): Promise<WeatherData> {
+export async function fetchWeatherData(latitude: number, longitude: number, altitude: number = 0, locationName?: string): Promise<WeatherData> {
   const res = await fetchWithTimeout(
-    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset&past_days=1&forecast_days=1&timezone=auto`,
-    8000
+    `${WEATHER_API_CONFIG.apis.weather}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset&past_days=1&forecast_days=1&timezone=auto`,
+    WEATHER_API_CONFIG.timeouts.weather
   );
   if (!res.ok) throw new Error('API error');
   const data = await res.json();
@@ -208,7 +205,7 @@ export async function fetchWeatherData(latitude: number, longitude: number, alti
     latitude,
     longitude,
     altitude: Math.round(altitude),
-    locationName,
+    locationName: locationName || `${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`,
     pressure: Math.round(current.surface_pressure),
     pressureTrend,
     pressureChangeRate,

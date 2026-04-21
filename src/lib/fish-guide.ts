@@ -24,6 +24,12 @@ export interface FishSpecies {
   ecoGreen?: string;
   /** Subtitle shown in modal */
   subtitle?: string;
+  /** Altitude-based ban periods (IARA regulations by elevation) */
+  altitudeBans?: {
+    low?: { start: string; end: string; maxAlt: number };        // до 500m на н.в.
+    mid?: { start: string; end: string; minAlt: number; maxAlt: number };  // 500-1500m на н.в.
+    high?: { start: string; end: string; minAlt: number };       // над 1500m на н.в.
+  };
 }
 
 export interface ScoringOptions {
@@ -305,20 +311,19 @@ export const FISH_DATABASE: FishSpecies[] = [
   {
     name: 'Дъгова пъстърва',
     emoji: '🐟',
-    habitat: 'river',
+    habitat: 'both',
     isPredator: true,
-    hideOnTerrain: 'lake',
+    subtitle: 'Среща се в планински реки и стопански язовири за платен риболов. Не се размножава естествено в България.',
     baseData: {
       groundbait: '',
-      bait: 'Червеи, скариди, хайвер имитации',
+      bait: 'Червеи, скариди, хайвер имитации, паста',
       line_mm: 0.16,
       hook_size: '10',
       lures: 'Малки блесни 5-10г, воблери 4-7см, мухи — нимфи и мокри мухи',
-      rigs: 'Нахлист, спининг с тънко влакно',
+      rigs: 'Нахлист, спининг с тънко влакно, поплавък',
     },
-    spawnMonths: [10, 11, 12, 1],
-    ecoRed: '⛔ Забранен: 01.10 – 31.01',
-    ecoGreen: '✅ Мин. размер: 25см',
+    spawnMonths: [],
+    ecoGreen: '✅ Мин. размер: 22см\n🎣 Разрешена целогодишно в стопански язовири',
   },
   {
     name: 'Бибан',

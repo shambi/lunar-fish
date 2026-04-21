@@ -268,7 +268,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
 
 const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
-  const { weather, loading, locationLoading, error, locationDenied } = useWeather();
+  const { weather, loading, error, locationDenied } = useWeather();
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
 
   const today = new Date().toLocaleDateString('bg-BG', {
@@ -393,8 +393,6 @@ const Index = () => {
                 <Loader2 className="w-3 h-3 animate-spin" />
                 <span>Определяне на локация...</span>
               </>
-            ) : locationLoading ? (
-              <span>📍 Определяне...</span>
             ) : weather ? (
               <span className="inline-flex items-center gap-1">
                 <svg
