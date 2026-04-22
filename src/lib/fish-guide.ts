@@ -55,8 +55,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Косъм монтаж (Hair rig), фидер',
     },
     spawnMonths: [4, 5],
-    ecoRed: '⛔ Забранен: 15.04 – 31.05',
+    ecoRed: '⛔ Забранен: зависи от högde на н.в.',
     ecoGreen: '✅ Мин. размер: 30см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Амур',
@@ -71,8 +75,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Поплавъчен монтаж, свободна линия',
     },
     spawnMonths: [4, 5],
-    ecoRed: '⛔ Забранен: 15.04 – 31.05',
-    ecoGreen: '✅ Мин. размер: 40см',
+    ecoRed: '⛔ Забранен: зависи от території',
+    ecoGreen: '✅ Мин. размер: 30см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Толстолоб',
@@ -88,8 +96,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Тремпел монтаж, плаващ монтаж',
     },
     spawnMonths: [4, 5],
-    ecoRed: '⛔ Забранен: 15.04 – 31.05',
+    ecoRed: '⛔ Забранен: зависи от висока',
     ecoGreen: '✅ Мин. размер: 40см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Сом',
@@ -105,8 +117,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Дънен монтаж с тежка тежест, буй монтаж',
     },
     spawnMonths: [4, 5],
-    ecoRed: '⛔ Забранен: 15.04 – 31.05',
+    ecoRed: '⛔ Забранен: зависи от h',
     ecoGreen: '✅ Мин. размер: 65см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Щука',
@@ -122,8 +138,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Стоманен повод, спининг монтаж',
     },
     spawnMonths: [2, 3, 4],
-    ecoRed: '⛔ Забранен: 15.02 – 30.04',
+    ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 35см',
+    altitudeBans: {
+      low: { start: '15.02', end: '30.04', maxAlt: 500 },
+      mid: { start: '01.03', end: '15.05', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Каракуда',
@@ -138,8 +158,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Лек поплавъчен монтаж',
     },
     spawnMonths: [4, 5],
-    ecoRed: '⛔ Забранен: 15.04 – 31.05',
+    ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 16см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Уклей',
@@ -154,8 +178,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Ваглер с тънък повод, ултралек поплавъчен монтаж',
     },
     spawnMonths: [4, 5],
-    ecoRed: '⛔ Забранен: 15.04 – 31.05',
+    ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 15см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Пъстърва',
@@ -221,8 +249,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Поплавъчен монтаж, лек фидер',
     },
     spawnMonths: [4, 5],
-    ecoRed: '⛔ Забранен: 15.04 – 31.05',
+    ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 20см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   // ——— 9 NEW SPECIES ———
   {
@@ -239,8 +271,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Лек джиг монтаж, каролина монтаж',
     },
     spawnMonths: [4, 5],
-    ecoRed: '⛔ Забранен: 15.04 – 31.05',
+    ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 12см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Платика',
@@ -255,8 +291,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Фидер монтаж, легер с повод 40-60см',
     },
     spawnMonths: [4, 5],
-    ecoRed: '⛔ Забранен: 15.04 – 31.05',
+    ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 20см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Бабушка',
@@ -271,8 +311,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Ваглер, фидер с тънък повод 0.08мм',
     },
     spawnMonths: [4, 5],
-    ecoRed: '⛔ Забранен: 15.04 – 31.05',
+    ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 15см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Червеноперка',
@@ -289,8 +333,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Ваглер, повърхностен монтаж',
     },
     spawnMonths: [4, 5],
-    ecoRed: '⛔ Забранен: 15.04 – 31.05',
+    ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 15см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Мряна',
@@ -305,8 +353,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Тежък фидер 60-100г, кратък повод 10-15см',
     },
     spawnMonths: [4, 5],
-    ecoRed: '⛔ Забранен: 15.04 – 31.05',
+    ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 25см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Дъгова пъстърва',
@@ -339,8 +391,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Ултралайт спининг, дроп-шот монтаж',
     },
     spawnMonths: [4, 5],
-    ecoRed: '⛔ Забранен: 15.04 – 31.05',
+    ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 12см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Сулка',
@@ -356,8 +412,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Джиг монтаж, живца монтаж, подводна плувка',
     },
     spawnMonths: [3, 4, 5],
-    ecoRed: '⛔ Забранен: 15.03 – 15.05',
+    ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 45см',
+    altitudeBans: {
+      low: { start: '15.03', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.04', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Распер',
@@ -534,13 +594,32 @@ export interface FishModalData {
   ecoFooter: string;
 }
 
+/**
+ * Check if current date falls within a ban period (DD.MM format)
+ * @param date Current date
+ * @param startStr Start date in DD.MM format (e.g., "15.04")
+ * @param endStr End date in DD.MM format (e.g., "31.05")
+ */
+function isDateInPeriod(date: Date, startStr: string, endStr: string): boolean {
+  const [startDay, startMonth] = startStr.split('.').map(Number);
+  const [endDay, endMonth] = endStr.split('.').map(Number);
+  const year = date.getFullYear();
+
+  const start = new Date(year, startMonth - 1, startDay);
+  const end = new Date(year, endMonth - 1, endDay);
+
+  return date >= start && date <= end;
+}
+
 export function getFishModalData(
   fish: FishSpecies,
   temperature: number,
   weatherCode: number,
-  terrain: 'river' | 'lake'
+  terrain: 'river' | 'lake',
+  altitude?: number
 ): FishModalData {
   const currentMonth = new Date().getMonth() + 1;
+  const currentDate = new Date();
   const currentHour = new Date().getHours();
   const isSunHours = currentHour >= 5 && currentHour < 17;
   const isSunny = [0, 1].includes(weatherCode);
@@ -586,17 +665,53 @@ export function getFishModalData(
   }
   const rigTip = fish.baseData.rigs;
 
-  // Eco warning — use per-fish ecoRed/ecoGreen data
+  // ✅ Eco warning — altitude-aware logic
   const IARA_FOOTER = '\n\n📋 Проверете списъка на ИАРА за\nразрешени водоеми във вашия район.\niara.government.bg';
   let ecoWarning: string;
-  const isBanned = fish.spawnMonths.includes(currentMonth);
-  if (isBanned && fish.ecoRed) {
-    ecoWarning = fish.ecoRed;
-  } else if (fish.ecoGreen) {
-    ecoWarning = fish.ecoGreen;
+
+  // Check if fish has altitude-based bans
+  if (fish.altitudeBans && altitude !== undefined) {
+    const alt = altitude;
+    let applicableBan: { start: string; end: string } | null = null;
+
+    // Determine which altitude tier applies
+    if (fish.altitudeBans.low && alt <= fish.altitudeBans.low.maxAlt) {
+      applicableBan = fish.altitudeBans.low;
+    } else if (
+      fish.altitudeBans.mid &&
+      alt >= fish.altitudeBans.mid.minAlt &&
+      alt <= fish.altitudeBans.mid.maxAlt
+    ) {
+      applicableBan = fish.altitudeBans.mid;
+    } else if (fish.altitudeBans.high && alt >= fish.altitudeBans.high.minAlt) {
+      applicableBan = fish.altitudeBans.high;
+    }
+
+    // Show altitude-specific ban or permission
+    if (applicableBan) {
+      const isBanned = isDateInPeriod(currentDate, applicableBan.start, applicableBan.end);
+      if (isBanned) {
+        ecoWarning = `⛔ Забранен: ${applicableBan.start} – ${applicableBan.end}\n📍 Разположение: ${alt}м н.в.`;
+      } else {
+        ecoWarning = `✅ Разрешен период (${alt}м н.в.)\n⚠️ Забрана: ${applicableBan.start} – ${applicableBan.end}`;
+      }
+    } else if (fish.ecoGreen) {
+      ecoWarning = fish.ecoGreen;
+    } else {
+      ecoWarning = '✅ Разрешен период.';
+    }
   } else {
-    ecoWarning = '✅ Разрешен период.';
+    // Fallback to old logic for fish without altitude bans
+    const isBanned = fish.spawnMonths.includes(currentMonth);
+    if (isBanned && fish.ecoRed) {
+      ecoWarning = fish.ecoRed;
+    } else if (fish.ecoGreen) {
+      ecoWarning = fish.ecoGreen;
+    } else {
+      ecoWarning = '✅ Разрешен период.';
+    }
   }
+
   const ecoFooter = IARA_FOOTER;
 
   return { groundbaitTip, baitTip, lineDiameter, lureTip, hookTip, rigTip, ecoWarning, ecoFooter };

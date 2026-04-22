@@ -51,8 +51,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
   const modalData = useMemo(() => {
     if (!selectedFish) return null;
-    return getFishModalData(selectedFish, temp, weatherCode, terrain);
-  }, [selectedFish, temp, weatherCode, terrain]);
+    return getFishModalData(selectedFish, temp, weatherCode, terrain, weather?.altitude);
+  }, [selectedFish, temp, weatherCode, terrain, weather?.altitude]);
 
   const advice = useMemo(() => {
     if (!selectedFish) return null;
