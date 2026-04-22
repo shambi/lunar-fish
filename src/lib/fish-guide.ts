@@ -188,7 +188,7 @@ export const FISH_DATABASE: FishSpecies[] = [
   {
     name: 'Пъстърва',
     emoji: '🐟',
-    habitat: 'river',
+    habitat: 'both',
     isPredator: true,
     baseData: {
       groundbait: '',
