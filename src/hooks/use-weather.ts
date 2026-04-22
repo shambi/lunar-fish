@@ -80,7 +80,7 @@ export function useWeather() {
       try {
         const position = await getLocation();
         const { latitude, longitude, altitude: gpsAltitude } = position.coords;
-        const fallbackAltitude = gpsAltitude ?? 0;
+        const fallbackAltitude = gpsAltitude ?? WEATHER_API_CONFIG.fallback.altitude;
 
         // ✅ FIX #2: Use Promise.allSettled() for robust error handling
         // This allows partial success if one API fails
