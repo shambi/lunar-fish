@@ -7,18 +7,7 @@ import { Cloud, Wind, Droplets, ThermometerSun, Anchor, Fish, Loader as Loader2,
 import { FishGuide } from '@/components/FishGuide';
 import { ForecastCards } from '@/components/ForecastCards';
 import { PerchIcon, CarpIcon, PikeIcon, BreamIcon, CatfishIcon } from '@/components/FishIcons';
-import { adviceIconMap, getAdviceIcon } from '@/config/adviceIcons';
-
-// Helper functions for icon selection
-function getBaitIcon(baitName: string): React.ReactNode {
-  const iconFileName = getAdviceIcon(baitName);
-  return <img src={`/assets/icons/${iconFileName}`} alt={baitName} className="bait-icon" />;
-}
-
-function getTackleIcon(tackleName: string): React.ReactNode {
-  const iconFileName = getAdviceIcon(tackleName);
-  return <img src={`/assets/icons/${iconFileName}`} alt={tackleName} className="bait-icon" />;
-}
+import { AdviceIcon } from '@/components/AdviceIcon';
 
 const SolunarSection = ({ weather }: { weather: any }) => {
   const [now, setNow] = useState(() => new Date());
@@ -886,16 +875,20 @@ const Index = () => {
               <Fish className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
               СТРЪВ
             </h4>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
               {(tips?.baits ?? moon.baits).map((bait) => (
                 <div
                   key={bait.name}
-                  className="flex items-center gap-3 rounded-lg border border-border bg-secondary/30 px-3 py-2.5"
+                  className="flex items-center gap-2 rounded-lg border border-border bg-secondary/30 px-2.5 py-2 min-w-0"
                 >
-                  <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center">
-                    {getBaitIcon(bait.name)}
-                  </div>
-                  <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>{bait.name}</span>
+                  <AdviceIcon name={bait.name} size={28} />
+                  <span
+                    className="text-[12px] font-medium leading-tight whitespace-nowrap overflow-hidden text-ellipsis min-w-0 flex-1"
+                    title={bait.name}
+                    style={{ color: 'rgba(255,255,255,0.85)' }}
+                  >
+                    {bait.name}
+                  </span>
                 </div>
               ))}
             </div>
@@ -907,16 +900,20 @@ const Index = () => {
               <Anchor className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
               ТАКЪМИ
             </h4>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
               {(tips?.tackle ?? moon.tackle).map((item) => (
                 <div
                   key={item.name}
-                  className="flex items-center gap-3 rounded-lg border border-border bg-secondary/30 px-3 py-2.5"
+                  className="flex items-center gap-2 rounded-lg border border-border bg-secondary/30 px-2.5 py-2 min-w-0"
                 >
-                  <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center">
-                    {getTackleIcon(item.name)}
-                  </div>
-                  <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>{item.name}</span>
+                  <AdviceIcon name={item.name} size={28} />
+                  <span
+                    className="text-[12px] font-medium leading-tight whitespace-nowrap overflow-hidden text-ellipsis min-w-0 flex-1"
+                    title={item.name}
+                    style={{ color: 'rgba(255,255,255,0.85)' }}
+                  >
+                    {item.name}
+                  </span>
                 </div>
               ))}
             </div>
