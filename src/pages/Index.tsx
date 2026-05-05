@@ -7,18 +7,7 @@ import { Cloud, Wind, Droplets, ThermometerSun, Anchor, Fish, Loader as Loader2,
 import { FishGuide } from '@/components/FishGuide';
 import { ForecastCards } from '@/components/ForecastCards';
 import { PerchIcon, CarpIcon, PikeIcon, BreamIcon, CatfishIcon } from '@/components/FishIcons';
-import { adviceIconMap, getAdviceIcon } from '@/config/adviceIcons';
-
-// Helper functions for icon selection
-function getBaitIcon(baitName: string): React.ReactNode {
-  const iconFileName = getAdviceIcon(baitName);
-  return <img src={`/assets/icons/${iconFileName}`} alt={baitName} className="bait-icon" />;
-}
-
-function getTackleIcon(tackleName: string): React.ReactNode {
-  const iconFileName = getAdviceIcon(tackleName);
-  return <img src={`/assets/icons/${iconFileName}`} alt={tackleName} className="bait-icon" />;
-}
+import { AdviceIcon } from '@/components/AdviceIcon';
 
 const SolunarSection = ({ weather }: { weather: any }) => {
   const [now, setNow] = useState(() => new Date());
