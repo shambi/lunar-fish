@@ -615,7 +615,7 @@ export function getFishModalData(
   fish: FishSpecies,
   temperature: number,
   weatherCode: number,
-  terrain: 'river' | 'lake',
+  terrain: 'river' | 'lake' | 'both',
   altitude?: number
 ): FishModalData {
   const currentMonth = new Date().getMonth() + 1;
