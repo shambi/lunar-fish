@@ -900,16 +900,20 @@ const Index = () => {
               <Anchor className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
               ТАКЪМИ
             </h4>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2.5">
               {(tips?.tackle ?? moon.tackle).map((item) => (
                 <div
                   key={item.name}
-                  className="flex items-center gap-3 rounded-lg border border-border bg-secondary/30 px-3 py-2.5"
+                  className="flex items-center gap-2 rounded-lg border border-border bg-secondary/30 px-2.5 py-2 min-w-0"
                 >
-                  <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center">
-                    {getTackleIcon(item.name)}
-                  </div>
-                  <span className="text-sm font-medium" style={{ color: 'rgba(255,255,255,0.8)' }}>{item.name}</span>
+                  <AdviceIcon name={item.name} size={28} />
+                  <span
+                    className="text-[12px] font-medium leading-tight whitespace-nowrap overflow-hidden text-ellipsis min-w-0 flex-1"
+                    title={item.name}
+                    style={{ color: 'rgba(255,255,255,0.85)' }}
+                  >
+                    {item.name}
+                  </span>
                 </div>
               ))}
             </div>
