@@ -669,9 +669,10 @@ export function getFishModalData(
   const IARA_FOOTER = '\n\n📋 Проверете списъка на ИАРА за\nразрешени водоеми във вашия район.\niara.government.bg';
   let ecoWarning: string;
 
-  // Check if fish has altitude-based bans
-  if (fish.altitudeBans && altitude !== undefined) {
-    const alt = altitude;
+  // Check altitude-based bans. If altitude is missing, default to low (<500m)
+  // for safety — this is the stricter regime per ИАРА (15.04 – 31.05).
+  if (fish.altitudeBans) {
+    const alt = altitude ?? 0;
     let applicableBan: { start: string; end: string } | null = null;
 
     // Determine which altitude tier applies
@@ -690,10 +691,11 @@ export function getFishModalData(
     // Show altitude-specific ban or permission
     if (applicableBan) {
       const isBanned = isDateInPeriod(currentDate, applicableBan.start, applicableBan.end);
+      const altLabel = altitude !== undefined ? `${alt}м н.в.` : '<500м н.в. (по подразбиране)';
       if (isBanned) {
-        ecoWarning = `⛔ Забранен: ${applicableBan.start} – ${applicableBan.end}\n📍 Разположение: ${alt}м н.в.`;
+        ecoWarning = `⛔ Забранен: ${applicableBan.start} – ${applicableBan.end}\n📍 Разположение: ${altLabel}`;
       } else {
-        ecoWarning = `✅ Разрешен период (${alt}м н.в.)\n⚠️ Забрана: ${applicableBan.start} – ${applicableBan.end}`;
+        ecoWarning = `✅ Разрешен период (${altLabel})\n⚠️ Забрана: ${applicableBan.start} – ${applicableBan.end}`;
       }
     } else if (fish.ecoGreen) {
       ecoWarning = fish.ecoGreen;
