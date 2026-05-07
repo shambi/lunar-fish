@@ -203,7 +203,7 @@ export function getDailyAdvice(
     } else if (wind > 25 && terrain === 'river') {
       secondary = ` Силният вятър разбърква водата — хвърляй по посока на течението.`;
     } else if (wind < 10 && !s1.includes('тихо') && !s1.includes('Тихо')) {
-      secondary = ` Тихото огледално време прави ${name} по-подозрителен — използвай по-тънко влакно и по-малки куки.`;
+      secondary = ` Тихото огледално време ${pronounAcc(name)} прави по-${adjSuspicious(name)} — ${tackleHint(name, isPredator)}.`;
     } else if (isSouthWind(windDir)) {
       if (CARP_FAMILY.includes(name)) {
         secondary = ` Южният топъл вятър раздвижва шарановите — добър знак за деня.`;
