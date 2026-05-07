@@ -437,7 +437,7 @@ function getCommonMistake(
 
   // Condition 4 — Cold + predator
   if (temp < 5 && isPredator) {
-    return `В студена вода едрите примамки са грешка — ${name} не преследва нищо. Мини на деликатен монтаж с малка стръв.`;
+    return `В студена вода едрите примамки са грешка — ${name} не преследва нищо. Мини на ${tackleHint(name, isPredator)} с малка стръв.`;
   }
 
   // Condition 5 — Sunny + predator
