@@ -294,7 +294,7 @@ export function getDailyAdvice(
   // Specific fish WITHOUT terrain logic
   else if (name === 'Уклей') {
     s2 = `Уклеят се държи в горния воден слой — търси го на повърхността с ваглер и опариш при тихо време.`;
-    if (wind < 10) s2 += ` Тънкото влакно и малките куки са задължителни.`;
+    if (wind < 10) s2 += ` Влакно 0.08-0.12мм и куки №18-22 са задължителни.`;
   }
   else if (name === 'Сулка') {
     if (isFullMoon || illum >= 80) {
