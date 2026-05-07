@@ -270,18 +270,22 @@ const Index = () => {
   const currentHour = new Date().getHours();
   const timePeriod = getTimePeriod(currentHour);
   const now = new Date();
-  const fishingScore = calculateFishingScore({
-    moonScore: moon.fishingScore,
-    moonIllumination: moon.illumination,
-    temperature: weather?.temperature ?? 15,
-    windSpeed: weather?.windSpeed ?? 10,
-    weatherCode: weather?.weatherCode ?? 1,
-    pressureTrend: weather?.pressureTrend ?? 'stable',
-    pressureChangeRate: weather?.pressureChangeRate ?? 0,
-    altitude: weather?.altitude ?? 0,
-    month: now.getMonth() + 1,
-    hour: now.getHours(),
-  });
+  const fishingScore = useMemo(
+    () =>
+      calculateFishingScore({
+        moonScore: moon.fishingScore,
+        moonIllumination: moon.illumination,
+        temperature: weather?.temperature ?? 15,
+        windSpeed: weather?.windSpeed ?? 10,
+        weatherCode: weather?.weatherCode ?? 1,
+        pressureTrend: weather?.pressureTrend ?? 'stable',
+        pressureChangeRate: weather?.pressureChangeRate ?? 0,
+        altitude: weather?.altitude ?? 0,
+        month: now.getMonth() + 1,
+        hour: now.getHours(),
+      }),
+    [moon, weather],
+  );
 
   // Detect if currently inside a solunar peak
   const solunarContext = useMemo(() => {

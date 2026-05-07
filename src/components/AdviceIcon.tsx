@@ -816,89 +816,105 @@ function DefaultSvg() {
   return <><circle cx="14" cy="14" r="9" fill="none" stroke="#22D3EE" strokeWidth="1.4" /><path d="M9 14 Q14 9 19 14 Q14 19 9 14 Z" fill="#22D3EE" opacity="0.4" /></>;
 }
 
+/**
+ * ICON_MAP — single source of truth mapping every Kind → render function.
+ * Keeps the renderer flat and easy to scan; adding an icon = adding a row.
+ */
+type IconRenderer = (badge?: string) => React.ReactNode;
+
+const ICON_MAP: Record<Kind, IconRenderer> = {
+  // Hooks
+  'hook': (badge) => <HookSvg badge={badge} />,
+  'treble-hook': () => <TrebleHookSvg />,
+  'offset-hook': () => <OffsetHookSvg />,
+  // Lines
+  'line-fluoro': (badge) => <LineSvg color="#67E8F9" glow badge={badge} />,
+  'line-braid': (badge) => <LineSvg color="#A78BFA" badge={badge} />,
+  'line-mono': (badge) => <LineSvg color="#FDE68A" badge={badge} />,
+  // Weights
+  'weight-none': () => <WeightSvg size="none" />,
+  'weight-light': (badge) => <WeightSvg size="light" badge={badge} />,
+  'weight-medium': (badge) => <WeightSvg size="medium" badge={badge} />,
+  'weight-heavy': (badge) => <WeightSvg size="heavy" badge={badge} />,
+  // Boilies / pellets
+  'boilie-small': () => <BoilieSvg size={3.6} />,
+  'boilie-medium': () => <BoilieSvg size={4.5} />,
+  'boilie-large': () => <BoilieSvg size={5.5} />,
+  'boilie-popup': () => <BoilieSvg size={4.5} popup />,
+  'pellet': () => <PelletSvg />,
+  'method': () => <MethodSvg />,
+  // Vegetable
+  'corn': () => <CornSvg />,
+  'dough': () => <DoughSvg />,
+  'bread': () => <BreadSvg />,
+  'pea': () => <PeaSvg />,
+  'potato': () => <PotatoSvg />,
+  // Natural baits
+  'worm-small': () => <WormSvg small />,
+  'worm-large': () => <WormSvg />,
+  'baitfish': () => <FishBaitSvg />,
+  'deadfish': () => <FishBaitSvg dead />,
+  'maggot': () => <MaggotSvg />,
+  'bloodworm': () => <BloodwormSvg />,
+  'crayfish': () => <CrayfishSvg />,
+  'grasshopper': () => <GrasshopperSvg />,
+  'mussel': () => <MusselSvg />,
+  // Artificial lures
+  'spinner': () => <SpinnerSvg />,
+  'spoon': () => <SpoonSvg />,
+  'jig': () => <JigSvg />,
+  'popper': () => <PopperSvg />,
+  'crank': () => <CrankSvg />,
+  'twister': () => <TwisterSvg />,
+  'phosphor': () => <PhosphorSvg />,
+  'soft-lure': () => <SoftLureSvg />,
+  // Rigs (delegated)
+  'rig-finesse': () => <RigSvg kind="rig-finesse" />,
+  'rig-carolina': () => <RigSvg kind="rig-carolina" />,
+  'rig-texas': () => <RigSvg kind="rig-texas" />,
+  'rig-dropshot': () => <RigSvg kind="rig-dropshot" />,
+  'rig-leader': () => <RigSvg kind="rig-leader" />,
+  'rig-method': () => <RigSvg kind="rig-method" />,
+  'rig-feeder': () => <RigSvg kind="rig-feeder" />,
+  'rig-feeder-heavy': () => <RigSvg kind="rig-feeder-heavy" />,
+  'rig-float': () => <RigSvg kind="rig-float" />,
+  'rig-bottom': () => <RigSvg kind="rig-bottom" />,
+  'rig-klonk': () => <RigSvg kind="rig-klonk" />,
+  // Techniques
+  'tech-slow': () => <TechSvg kind="tech-slow" />,
+  'tech-fast': () => <TechSvg kind="tech-fast" />,
+  'tech-twitch': () => <TechSvg kind="tech-twitch" />,
+  'tech-jig': () => <TechSvg kind="tech-jig" />,
+  'tech-troll': () => <TechSvg kind="tech-troll" />,
+  'tech-bottom': () => <TechSvg kind="tech-bottom" />,
+  // Locations
+  'loc-deep': () => <LocSvg kind="loc-deep" />,
+  'loc-mid': () => <LocSvg kind="loc-mid" />,
+  'loc-shallow': () => <LocSvg kind="loc-shallow" />,
+  'loc-structure': () => <LocSvg kind="loc-structure" />,
+  'loc-open': () => <LocSvg kind="loc-open" />,
+  'loc-shore': () => <LocSvg kind="loc-shore" />,
+  // Time
+  'time-dawn': () => <TimeSvg kind="time-dawn" />,
+  'time-morning': () => <TimeSvg kind="time-morning" />,
+  'time-midday': () => <TimeSvg kind="time-midday" />,
+  'time-afternoon': () => <TimeSvg kind="time-afternoon" />,
+  'time-evening': () => <TimeSvg kind="time-evening" />,
+  'time-night': () => <TimeSvg kind="time-night" />,
+  // Conditions
+  'cond-clear': () => <CondSvg kind="cond-clear" />,
+  'cond-murky': () => <CondSvg kind="cond-murky" />,
+  'cond-current': () => <CondSvg kind="cond-current" />,
+  'cond-still': () => <CondSvg kind="cond-still" />,
+  'cond-rain': () => <CondSvg kind="cond-rain" />,
+  'cond-wind': () => <CondSvg kind="cond-wind" />,
+  // Fallback
+  'default': () => <DefaultSvg />,
+};
+
 function renderKind(kind: Kind, badge?: string): React.ReactNode {
-  switch (kind) {
-    case 'hook': return <HookSvg badge={badge} />;
-    case 'treble-hook': return <TrebleHookSvg />;
-    case 'offset-hook': return <OffsetHookSvg />;
-    case 'line-fluoro': return <LineSvg color="#67E8F9" badge={badge} />;
-    case 'line-braid': return <LineSvg color="#A78BFA" badge={badge} />;
-    case 'line-mono': return <LineSvg color="#FDE68A" badge={badge} />;
-    case 'weight-none': return <WeightSvg size="none" />;
-    case 'weight-light': return <WeightSvg size="light" badge={badge} />;
-    case 'weight-medium': return <WeightSvg size="medium" badge={badge} />;
-    case 'weight-heavy': return <WeightSvg size="heavy" badge={badge} />;
-    case 'boilie-small': return <BoilieSvg size={3.6} />;
-    case 'boilie-medium': return <BoilieSvg size={4.5} />;
-    case 'boilie-large': return <BoilieSvg size={5.5} />;
-    case 'boilie-popup': return <BoilieSvg size={4.5} popup />;
-    case 'corn': return <CornSvg />;
-    case 'worm-small': return <WormSvg small />;
-    case 'worm-large': return <WormSvg />;
-    case 'baitfish': return <FishBaitSvg />;
-    case 'deadfish': return <FishBaitSvg dead />;
-    case 'spinner': return <SpinnerSvg />;
-    case 'spoon': return <SpoonSvg />;
-    case 'jig': return <JigSvg />;
-    case 'popper': return <PopperSvg />;
-    case 'crank': return <CrankSvg />;
-    case 'twister': return <TwisterSvg />;
-    case 'phosphor': return <PhosphorSvg />;
-    case 'soft-lure': return <SoftLureSvg />;
-    case 'dough': return <DoughSvg />;
-    case 'bread': return <BreadSvg />;
-    case 'pea': return <PeaSvg />;
-    case 'potato': return <PotatoSvg />;
-    case 'pellet': return <PelletSvg />;
-    case 'method': return <MethodSvg />;
-    case 'maggot': return <MaggotSvg />;
-    case 'bloodworm': return <BloodwormSvg />;
-    case 'crayfish': return <CrayfishSvg />;
-    case 'grasshopper': return <GrasshopperSvg />;
-    case 'mussel': return <MusselSvg />;
-    case 'rig-finesse':
-    case 'rig-carolina':
-    case 'rig-texas':
-    case 'rig-dropshot':
-    case 'rig-leader':
-    case 'rig-method':
-    case 'rig-feeder':
-    case 'rig-feeder-heavy':
-    case 'rig-float':
-    case 'rig-bottom':
-    case 'rig-klonk':
-      return <RigSvg kind={kind} />;
-    case 'tech-slow':
-    case 'tech-fast':
-    case 'tech-twitch':
-    case 'tech-jig':
-    case 'tech-troll':
-    case 'tech-bottom':
-      return <TechSvg kind={kind} />;
-    case 'loc-deep':
-    case 'loc-mid':
-    case 'loc-shallow':
-    case 'loc-structure':
-    case 'loc-open':
-    case 'loc-shore':
-      return <LocSvg kind={kind} />;
-    case 'time-dawn':
-    case 'time-morning':
-    case 'time-midday':
-    case 'time-afternoon':
-    case 'time-evening':
-    case 'time-night':
-      return <TimeSvg kind={kind} />;
-    case 'cond-clear':
-    case 'cond-murky':
-    case 'cond-current':
-    case 'cond-still':
-    case 'cond-rain':
-    case 'cond-wind':
-      return <CondSvg kind={kind} />;
-    default:
-      return <DefaultSvg />;
-  }
+  const renderer = ICON_MAP[kind] ?? ICON_MAP.default;
+  return renderer(badge);
 }
 
 export interface AdviceIconProps {
