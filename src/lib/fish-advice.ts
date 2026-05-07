@@ -9,6 +9,47 @@ export interface DailyAdvice {
 
 const CARP_FAMILY = ['Шаран', 'Амур', 'Толстолоб', 'Каракуда', 'Лин'];
 
+// Per-species tackle specs (line diameter, hook size, lure/bait size)
+interface FishSpecs {
+  line: string;
+  hooks: string;
+  lure?: string;
+  bait?: string;
+}
+const FISH_SPECS: Record<string, FishSpecs> = {
+  // Predators
+  'Костур':         { line: '0.25-0.35мм', hooks: '№4-8',     lure: 'воблери 7-12см' },
+  'Щука':           { line: '0.30-0.40мм', hooks: '№2-6',     lure: 'воблери 10-15см' },
+  'Сом':            { line: '0.50-0.80мм', hooks: '№2/0-8/0', lure: 'пеле, живец 15см+' },
+  'Сулка':          { line: '0.28-0.35мм', hooks: '№2-4',     lure: 'воблери 8-12см' },
+  'Распер':         { line: '0.20-0.28мм', hooks: '№6-10',    lure: 'блесни 5-8см' },
+  // Peaceful
+  'Пъстърва':       { line: '0.14-0.18мм', hooks: '№10-14',   bait: 'червей, паста' },
+  'Дъгова пъстърва':{ line: '0.16-0.20мм', hooks: '№8-12',    bait: 'царевица, паста' },
+  'Шаран':          { line: '0.28-0.40мм', hooks: '№4-8',     bait: 'царевица, бойли' },
+  'Амур':           { line: '0.30-0.45мм', hooks: '№4-6',     bait: 'царевица, тесто' },
+  'Толстолоб':      { line: '0.25-0.35мм', hooks: '№6-10',    bait: 'технопланктон' },
+  'Каракуда':       { line: '0.22-0.30мм', hooks: '№8-12',    bait: 'царевица, пелети' },
+  'Лин':            { line: '0.20-0.28мм', hooks: '№8-14',    bait: 'червей, царевица' },
+  'Мряна':          { line: '0.16-0.22мм', hooks: '№10-16',   bait: 'червей, опариш' },
+  'Платика':        { line: '0.14-0.18мм', hooks: '№14-18',   bait: 'тесто, червей' },
+  'Бабушка':        { line: '0.12-0.16мм', hooks: '№16-20',   bait: 'тесто, хлебна' },
+  'Уклей':          { line: '0.08-0.12мм', hooks: '№18-22',   bait: 'опариш, хлебна' },
+  'Кефал':          { line: '0.16-0.20мм', hooks: '№10-14',   bait: 'хляб, тесто' },
+};
+
+// Grammatical gender for pronouns
+const FEMININE = new Set(['Пъстърва','Дъгова пъстърва','Мряна','Платика','Бабушка','Каракуда','Сулка','Щука']);
+function pronounAcc(name: string): string { return FEMININE.has(name) ? 'я' : 'го'; } // "makes it..."
+function pronounDat(name: string): string { return FEMININE.has(name) ? 'ѝ' : 'му'; } // "to it"
+function adjSuspicious(name: string): string { return FEMININE.has(name) ? 'подозрителна' : 'подозрителен'; }
+
+function tackleHint(name: string, isPredator: boolean): string {
+  const s = FISH_SPECS[name];
+  if (s) return `влакно ${s.line}, куки ${s.hooks}`;
+  return isPredator ? 'влакно 0.25-0.40мм, куки №4-8' : 'влакно 0.14-0.25мм, куки №10-16';
+}
+
 function windDirLabel(deg: number): string {
   if (deg >= 337.5 || deg < 22.5) return 'N';
   if (deg < 67.5) return 'NE';
@@ -116,16 +157,16 @@ export function getDailyAdvice(
     if (name === 'Сом') {
       s1 = `При пълнолуние сомът се крие по-дълбоко — лови в облачна нощ или преди изгрев, не на открито при лунна светлина.`;
     } else if (isPredator) {
-      s1 = `Пълнолунието е пик на активност за ${name} — използвай по-едри примамки с активна игра.`;
+      s1 = `Пълнолунието е пик на активност за ${name} — използвай ${FISH_SPECS[name]?.lure ?? 'по-едри примамки'} с активна игра.`;
     } else {
       s1 = `Пълнолунието е активирало ${name} — захрани обилно и изчакай.`;
     }
   } else if (isCrescent && isWaxing) {
-    s1 = `Растящият сърп постепенно активира ${name} — условията се подобряват с всяка нощ.`;
+    s1 = `Растящият сърп вдига активността — условията се подобряват с всяка нощ.`;
   } else if (isWaning) {
     s1 = `Намаляващата луна успокоява ${name} — по-деликатен и търпелив риболов.`;
   } else if (temp < 5) {
-    s1 = `${name} е в зимна апатия — движи се минимално, използвай най-малките куки и деликатен монтаж с малка стръв.`;
+    s1 = `${name} е в зимна апатия — движи се минимално, ${tackleHint(name, isPredator)}, малка стръв.`;
   } else if (temp >= 5 && temp <= 12) {
     s1 = `Хладната вода забавя ${name} но не го спира — по-малки порции, по-бавно водене.`;
   } else if (temp > 22 && !isPredator) {
@@ -162,7 +203,7 @@ export function getDailyAdvice(
     } else if (wind > 25 && terrain === 'river') {
       secondary = ` Силният вятър разбърква водата — хвърляй по посока на течението.`;
     } else if (wind < 10 && !s1.includes('тихо') && !s1.includes('Тихо')) {
-      secondary = ` Тихото огледално време прави ${name} по-подозрителен — използвай по-тънко влакно и по-малки куки.`;
+      secondary = ` Тихото огледално време ${pronounAcc(name)} прави по-${adjSuspicious(name)} — ${tackleHint(name, isPredator)}.`;
     } else if (isSouthWind(windDir)) {
       if (CARP_FAMILY.includes(name)) {
         secondary = ` Южният топъл вятър раздвижва шарановите — добър знак за деня.`;
@@ -253,7 +294,7 @@ export function getDailyAdvice(
   // Specific fish WITHOUT terrain logic
   else if (name === 'Уклей') {
     s2 = `Уклеят се държи в горния воден слой — търси го на повърхността с ваглер и опариш при тихо време.`;
-    if (wind < 10) s2 += ` Тънкото влакно и малките куки са задължителни.`;
+    if (wind < 10) s2 += ` Влакно 0.08-0.12мм и куки №18-22 са задължителни.`;
   }
   else if (name === 'Сулка') {
     if (isFullMoon || illum >= 80) {
@@ -275,7 +316,7 @@ export function getDailyAdvice(
     s2 = `Лови през нощта или на много голяма дълбочина с царевица на косъм монтаж.`;
   }
   else if ((name === 'Пъстърва' || name === 'Дъгова пъстърва')) {
-    s2 = `Бистрата вода изисква маскировка и дискретност — застани срещу течението, движи се бавно, избягвай да хвърляш сянка.`;
+    s2 = `Бистрата вода разкрива всичко — застани срещу течението, бавни движения, без сянка.`;
   }
   else if ((name === 'Костур' || name === 'Щука') && (month >= 9 && month <= 10)) {
     s2 = `Есента е времето на хищника — ${name} полудява, агресивен е и атакува всяка примамка с активна игра.`;
@@ -396,7 +437,7 @@ function getCommonMistake(
 
   // Condition 4 — Cold + predator
   if (temp < 5 && isPredator) {
-    return `В студена вода едрите примамки са грешка — ${name} не преследва нищо. Мини на деликатен монтаж с малка стръв.`;
+    return `В студена вода едрите примамки са грешка — ${name} не преследва нищо. Мини на ${tackleHint(name, isPredator)} с малка стръв.`;
   }
 
   // Condition 5 — Sunny + predator
