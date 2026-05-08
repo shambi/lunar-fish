@@ -648,7 +648,7 @@ const Index = () => {
               </svg>
               УМНИ СЪВЕТИ
             </h3>
-            <div className="space-y-5">
+            <div className="space-y-3">
               {fishingScore.isOverride && fishingScore.overrideReason && (
                 <div className="flex gap-3">
                   <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
@@ -887,12 +887,12 @@ const Index = () => {
           </h3>
 
           {/* Baits */}
-          <div className="mb-6">
+          <div className="mb-3">
             <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-3 flex items-center gap-1">
               <Fish className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
               СТРЪВ
             </h4>
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-1.5">
               {(tips?.baits ?? moon.baits).map((bait) => (
                 <div
                   key={bait.name}
@@ -917,7 +917,7 @@ const Index = () => {
               <Anchor className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
               ТАКЪМИ
             </h4>
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-1.5">
               {(tips?.tackle ?? moon.tackle).map((item) => (
                 <div
                   key={item.name}
