@@ -555,7 +555,7 @@ const Index = () => {
               {/* ALTITUDE */}
               <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center">
                 <Mountain className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
-                <div className="text-lg font-bold leading-none text-white">{weather ? weather.altitude : '—'}</div>
+                <div className="text-lg font-bold leading-none text-white">{weather ? `${Math.round(weather.altitude)} м. របាលាលាលាលាលាលា` : '—'}</div>
                 <div className="text-[8px] mt-0.5 opacity-60">М. Н.В.</div>
               </div>
               {/* WEATHER ICON */}
