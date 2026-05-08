@@ -569,7 +569,7 @@ const Index = () => {
 
         {/* Fishing Forecast */}
         <section 
-          className="rounded-xl bg-card/60 backdrop-blur-md p-5 mb-4"
+          className="rounded-xl bg-card/60 backdrop-blur-md p-3 mb-3"
           style={{
             border: '1px solid #2eb5b7',
             boxShadow: '0 0 10px rgba(46,181,183,0.2)',
@@ -625,7 +625,7 @@ const Index = () => {
 
         {/* Smart Weather Tips (only when weather is loaded) */}
         {tips && (
-          <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
+          <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-3">
             <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
               <svg
                 width="18"
@@ -700,7 +700,7 @@ const Index = () => {
         )}
 
         {/* Fishing Style Tip */}
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-3">
           <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
@@ -858,7 +858,7 @@ const Index = () => {
             </div>
           )}
         </section>
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-3">
           <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
