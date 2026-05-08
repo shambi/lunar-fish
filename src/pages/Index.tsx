@@ -9,245 +9,120 @@ import { ForecastCards } from '@/components/ForecastCards';
 import { PerchIcon, CarpIcon, PikeIcon, BreamIcon, CatfishIcon } from '@/components/FishIcons';
 import { AdviceIcon } from '@/components/AdviceIcon';
 
-const SolunarSection = ({ weather }: { weather: any }) => {
+const SolunarTimeline = ({ weather }: { weather: any }) => {
   const [now, setNow] = useState(() => new Date());
-
   useEffect(() => {
-    const interval = setInterval(() => setNow(new Date()), 30000);
-    return () => clearInterval(interval);
+    const t = setInterval(() => setNow(new Date()), 30000);
+    return () => clearInterval(t);
   }, []);
 
-  const parseTime = (t: string): number => {
-    if (!t || t === '--:--') return -1;
-    const [h, m] = t.split(':').map(Number);
+  const parseTime = (s: string) => {
+    if (!s || s === '--:--') return -1;
+    const [h, m] = s.split(':').map(Number);
     return h * 60 + m;
   };
-
+  const timeToX = (s: string) => {
+    const min = parseTime(s);
+    if (min < 0) return -10;
+    return 2 + (min / 1440) * 96;
+  };
   const currentMin = now.getHours() * 60 + now.getMinutes();
-
-  const isInRange = (start: string, end: string): boolean => {
-    const s = parseTime(start);
-    const e = parseTime(end);
+  const isInRange = (start: string, end: string) => {
+    const s = parseTime(start), e = parseTime(end);
     if (s < 0 || e < 0) return false;
-    if (s <= e) return currentMin >= s && currentMin <= e;
-    return currentMin >= s || currentMin <= e;
+    return s <= e ? (currentMin >= s && currentMin <= e) : (currentMin >= s || currentMin <= e);
   };
 
-  const peaks = [...(weather.solunarPeaks || [])].sort((a: any, b: any) => parseTime(a.start) - parseTime(b.start));
+  const peaks = [...(weather.solunarPeaks || [])].sort(
+    (a: any, b: any) => parseTime(a.start) - parseTime(b.start)
+  );
 
-  // Find next peak or active peak for countdown
   const getCountdown = () => {
-    for (const peak of peaks) {
-      if (isInRange(peak.start, peak.end)) {
-        const endMin = parseTime(peak.end);
-        const remaining = endMin > currentMin ? endMin - currentMin : (1440 - currentMin + endMin);
-        return { active: true, type: peak.type, minutes: remaining };
+    for (const p of peaks) {
+      if (isInRange(p.start, p.end)) {
+        const eMin = parseTime(p.end);
+        const remaining = eMin > currentMin ? eMin - currentMin : 1440 - currentMin + eMin;
+        return { active: true as const, type: p.type, minutes: remaining };
       }
     }
-    // Find next upcoming
-    for (const peak of peaks) {
-      const startMin = parseTime(peak.start);
-      if (startMin > currentMin) {
-        const diff = startMin - currentMin;
-        const h = Math.floor(diff / 60);
-        const m = diff % 60;
-        return { active: false, type: peak.type, hours: h, minutes: m };
+    for (const p of peaks) {
+      const sMin = parseTime(p.start);
+      if (sMin > currentMin) {
+        const diff = sMin - currentMin;
+        return { active: false as const, type: p.type, hours: Math.floor(diff / 60), minutes: diff % 60 };
       }
     }
-    // Wrap to first peak tomorrow
     if (peaks.length > 0) {
-      const startMin = parseTime(peaks[0].start);
-      const diff = (1440 - currentMin) + startMin;
-      const h = Math.floor(diff / 60);
-      const m = diff % 60;
-      return { active: false, type: peaks[0].type, hours: h, minutes: m };
+      const sMin = parseTime(peaks[0].start);
+      const diff = 1440 - currentMin + sMin;
+      return { active: false as const, type: peaks[0].type, hours: Math.floor(diff / 60), minutes: diff % 60 };
     }
     return null;
   };
-
   const countdown = getCountdown();
 
-  const getPeakLocation = (peak: any): string => {
-    if (peak.label?.includes('зенит')) return 'Луна в зенит';
-    if (peak.label?.includes('надир')) return 'Луна в надир';
-    if (peak.label?.includes('Изгрев') || peak.label?.includes('изгрев')) return 'Изгрев на луната';
-    if (peak.label?.includes('Залез') || peak.label?.includes('залез')) return 'Залез на луната';
-    return '';
-  };
-
-  // Feeding advice logic
-  const getFeedingAdvice = (): { text: string; urgent: boolean } | null => {
-    if (!countdown || !weather?.temperature) return null;
-    const temp = weather.temperature;
-
-    // Currently inside a peak
-    if (countdown.active) {
-      return { text: 'Рибата е активна — не захранвай повече, хвърляй стръв!', urgent: false };
-    }
-
-    const totalMin = (countdown.hours || 0) * 60 + countdown.minutes;
-
-    // More than 60 min away — no advice
-    if (totalMin > 60) return null;
-
-    const isMajor = countdown.type === 'major';
-
-    if (isMajor) {
-      if (totalMin > 30) {
-        // 60-30 min before major
-        if (temp < 8) return { text: 'Захрани умерено — студената вода забавя рибата. По-малки порции.', urgent: false };
-        if (temp <= 18) return { text: 'Захрани обилно — добри условия. Хвърли повече захранка на едно място.', urgent: false };
-        return { text: 'Захрани умерено — топлата вода намалява апетита. По-малки порции.', urgent: false };
-      } else {
-        // 30-0 min before major
-        if (temp < 8) return { text: 'Захрани сега! Малки порции — пикът започва скоро.', urgent: true };
-        if (temp <= 18) return { text: 'Захрани сега! Хвърли обилно — пикът започва след малко!', urgent: true };
-        return { text: 'Захрани сега! Умерено — пикът започва скоро.', urgent: true };
-      }
-    } else {
-      // Minor peak 60-0 min
-      if (temp < 8) return { text: 'Малък пик наближава — символично захранване.', urgent: false };
-      return { text: 'Малък пик наближава — лека захранка.', urgent: false };
-    }
-  };
-
-  const feedingAdvice = getFeedingAdvice();
-
-  // Fish SVG for peak cards (same as Активност component)
-  const PeakFishIcon = ({ glow, color }: { glow: boolean; color: string }) => (
-    <svg width="13" height="13" viewBox="0 0 48 48" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-      <ellipse cx="22" cy="24" rx="14" ry="10" />
-      <path d="M36 24 L44 16 M36 24 L44 32" />
-      <circle cx="12" cy="22" r="1.5" fill={color} />
-    </svg>
-  );
+  const sunriseX = timeToX(weather.sunrise);
+  const sunsetX = timeToX(weather.sunset);
+  const nowX = 2 + (currentMin / 1440) * 96;
 
   return (
-    <div className="space-y-1.5">
-      {/* PART 1 — Two pill badges */}
-      <div className="flex gap-1.5">
-        <div className="flex-1 text-center rounded-[20px] py-[4px] px-[10px]"
-          style={{ background: 'rgba(255,140,66,0.12)', border: '1px solid rgba(255,140,66,0.4)' }}>
-          <span style={{ fontSize: '11px', color: '#FF8C42' }}>
-            <span className="text-white">{weather.sunrise || '--:--'}</span> • <span className="text-white">{weather.sunset || '--:--'}</span>
-          </span>
-        </div>
-        <div className="flex-1 text-center rounded-[20px] py-[4px] px-[10px]"
-          style={{ background: 'rgba(46,181,183,0.08)', border: '1px solid rgba(46,181,183,0.3)' }}>
-          <span style={{ fontSize: '11px', color: '#2eb5b7' }}>
-            <span className="text-white">{weather.moonrise || '--:--'}</span> • <span className="text-white">{weather.moonset || '--:--'}</span>
-          </span>
-        </div>
+    <div className="space-y-2">
+      {/* Sun/Moon pills */}
+      <div className="flex justify-between text-[10px] opacity-80">
+        <span>🌅 <span className="text-white">{weather.sunrise || '--:--'}</span></span>
+        <span>🌙↑ <span className="text-white">{weather.moonrise || '--:--'}</span></span>
+        <span>🌙↓ <span className="text-white">{weather.moonset || '--:--'}</span></span>
+        <span>🌆 <span className="text-white">{weather.sunset || '--:--'}</span></span>
       </div>
 
-      {/* PART 2 — Activity cards */}
-      <div className="space-y-1">
-        {peaks.map((peak: any, i: number) => {
-          const isMajor = peak.type === 'major';
-          const active = isInRange(peak.start, peak.end);
-
+      {/* Timeline SVG */}
+      <svg viewBox="0 0 100 24" preserveAspectRatio="none" className="w-full" style={{ height: 46 }}>
+        <line x1="2" y1="12" x2="98" y2="12" stroke="rgba(255,255,255,0.15)" strokeWidth="0.4" />
+        {[0, 6, 12, 18, 24].map(h => {
+          const x = 2 + (h / 24) * 96;
+          return <line key={h} x1={x} y1="10.5" x2={x} y2="13.5" stroke="rgba(255,255,255,0.25)" strokeWidth="0.3" />;
+        })}
+        <line x1={nowX} y1="4" x2={nowX} y2="20" stroke="#E4FF00" strokeWidth="0.4" opacity="0.85" />
+        {sunriseX > 0 && <circle cx={sunriseX} cy="12" r="1.5" fill="#FF8C42" />}
+        {sunsetX > 0 && <circle cx={sunsetX} cy="12" r="1.5" fill="#FF8C42" />}
+        {peaks.map((p: any, i: number) => {
+          const x = timeToX(p.start);
+          const isMajor = p.type === 'major';
+          const active = isInRange(p.start, p.end);
           return (
-            <div key={i} className="relative rounded-lg"
-              style={{
-                padding: '10px',
-                ...(isMajor ? {
-                  background: 'rgba(0,18,28,0.9)',
-                  border: '1.5px solid #2eb5b7',
-                  boxShadow: '0 0 10px rgba(46,181,183,0.2)',
-                } : {
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                }),
-              }}>
-              {/* СЕГА АКТИВНО badge */}
-              {active && (
-                <div className="absolute -top-2 left-3 rounded-[10px] px-2 py-0.5 text-[9px] font-bold"
-                  style={{
-                    background: '#2eb5b7', color: '#000',
-                    animation: 'pulse-active 1.5s ease-in-out infinite',
-                  }}>
-                  СЕГА АКТИВНО
-                </div>
-              )}
-
-              <div className="flex items-center">
-                {/* LEFT — Time range */}
-                <div className="w-[40%]">
-                  <div className="font-bold leading-tight"
-                    style={{
-                      fontSize: isMajor ? '18px' : '15px',
-                      color: isMajor ? '#fff' : 'rgba(255,255,255,0.7)',
-                    }}>
-                    {peak.start} —<br />{peak.end}
-                  </div>
-                  <div className="mt-0.5" style={{
-                    fontSize: '9px',
-                    color: isMajor ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.35)',
-                  }}>
-                    {getPeakLocation(peak)}
-                  </div>
-                </div>
-
-                {/* CENTER — Title */}
-                <div className="w-[40%]">
-                  <div className="font-bold tracking-wider"
-                     style={{
-                      fontSize: '11px',
-                      letterSpacing: '1px',
-                      color: isMajor ? '#2eb5b7' : 'rgba(46,181,183,0.5)',
-                    }}>
-                    {isMajor ? 'ГЛАВЕН ПИК' : 'МАЛЪК ПИК'}
-                  </div>
-                  <div style={{
-                    fontSize: '10px',
-                    color: isMajor ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.35)',
-                    marginTop: '1px',
-                  }}>
-                    {isMajor ? 'Най-висока вероятност за удар.' : 'Умерена активност.'}
-                  </div>
-                </div>
-
-                {/* RIGHT — Fish icons */}
-                <div className="w-[20%] flex flex-col items-center gap-0.5">
-                  {Array.from({ length: isMajor ? 3 : 1 }).map((_, fi) => (
-                    <span key={fi}>
-                      <PeakFishIcon
-                        glow={isMajor}
-                        color={isMajor ? '#2eb5b7' : 'rgba(46,181,183,0.3)'}
-                      />
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
+            <g key={i}>
+              <circle
+                cx={x} cy="12" r={isMajor ? 2.2 : 1.6}
+                fill={isMajor ? '#2eb5b7' : 'rgba(46,181,183,0.55)'}
+                style={active ? { filter: 'drop-shadow(0 0 2px #2eb5b7)' } : {}}
+              >
+                {active && <animate attributeName="r" values={`${isMajor?2.2:1.6};${isMajor?3:2.2};${isMajor?2.2:1.6}`} dur="1.5s" repeatCount="indefinite" />}
+              </circle>
+              <text x={x} y="20" fontSize="2.6" fill="rgba(255,255,255,0.7)" textAnchor="middle">{p.start}</text>
+            </g>
           );
         })}
+        {sunriseX > 0 && <text x={sunriseX} y="7" fontSize="2.4" fill="rgba(255,140,66,0.85)" textAnchor="middle">изгрев</text>}
+        {sunsetX > 0 && <text x={sunsetX} y="7" fontSize="2.4" fill="rgba(255,140,66,0.85)" textAnchor="middle">залез</text>}
+      </svg>
+
+      {/* Legend */}
+      <div className="flex items-center justify-center gap-3 text-[9px] opacity-70">
+        <span className="inline-flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full" style={{ background: '#2eb5b7' }} />Главен</span>
+        <span className="inline-flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full" style={{ background: 'rgba(46,181,183,0.55)' }} />Малък</span>
+        <span className="inline-flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full" style={{ background: '#FF8C42' }} />Слънце</span>
       </div>
 
-      {/* PART 3 — Next peak countdown + feeding advice */}
-      {countdown && (
-        <div className="text-center">
-          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {countdown.active ? (
-              <span style={{ color: '#2eb5b7' }}>
-                Активен пик още <strong>{countdown.minutes}мин.</strong>
-              </span>
-            ) : (
-              <>
-                Следващ <strong className="text-white">{countdown.type === 'major' ? 'Главен' : 'Малък'} пик</strong> след{' '}
-                <strong className="text-white">{countdown.hours}ч. {countdown.minutes}мин.</strong>
-              </>
-            )}
-          </p>
-          {feedingAdvice && (
-            <p className="mt-1" style={{
-              fontSize: '11px',
-              color: feedingAdvice.urgent ? '#2eb5b7' : 'rgba(255,255,255,0.7)',
-              fontWeight: feedingAdvice.urgent ? 600 : 400,
-            }}>
-              {feedingAdvice.text}
-            </p>
-          )}
+      {countdown?.active && (
+        <div className="text-center text-[11px] font-semibold rounded py-1 px-2 border"
+          style={{ background: 'rgba(46,181,183,0.12)', borderColor: 'rgba(46,181,183,0.5)', color: '#2eb5b7' }}>
+          ⚡ АКТИВЕН {countdown.type === 'major' ? 'ГЛАВЕН' : 'МАЛЪК'} ПИК · още {countdown.minutes}мин
+        </div>
+      )}
+      {countdown && !countdown.active && (
+        <div className="text-center text-[10px]" style={{ color: 'rgba(255,255,255,0.65)' }}>
+          Следващ <span className="text-white font-semibold">{countdown.type === 'major' ? 'Главен' : 'Малък'}</span> пик след{' '}
+          <span className="text-white font-semibold">{countdown.hours}ч {countdown.minutes}м</span>
         </div>
       )}
     </div>
@@ -448,13 +323,13 @@ const Index = () => {
 
         {/* Fishing Forecast */}
         <section 
-          className="rounded-xl bg-card/60 backdrop-blur-md p-5 mb-4"
+          className="rounded-xl bg-card/60 backdrop-blur-md p-3 mb-3"
           style={{
             border: '1px solid #2eb5b7',
             boxShadow: '0 0 10px rgba(46,181,183,0.2)',
           }}
         >
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2" style={{ color: '#94A3B8' }}>
+          <h3 className="font-display text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -504,8 +379,8 @@ const Index = () => {
 
         {/* Smart Weather Tips (only when weather is loaded) */}
         {tips && (
-          <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-            <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
+          <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-3">
+            <h3 className="font-display text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
               <svg
                 width="18"
                 height="18"
@@ -527,7 +402,7 @@ const Index = () => {
               </svg>
               УМНИ СЪВЕТИ
             </h3>
-            <div className="space-y-5">
+            <div className="space-y-3">
               {fishingScore.isOverride && fishingScore.overrideReason && (
                 <div className="flex gap-3">
                   <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
@@ -579,8 +454,8 @@ const Index = () => {
         )}
 
         {/* Fishing Style Tip */}
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-3">
+          <h3 className="font-display text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -615,206 +490,98 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Weather Widget */}
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#E4FF00"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-              style={{ 
-                transform: 'translateY(0.5px)'
-              }}
-            >
+        {/* Weather Widget — Bento Grid */}
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-3">
+          <h3 className="font-display text-[10px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ filter: 'drop-shadow(0 0 6px #E4FF00)' }}>
               <circle cx="12" cy="12" r="4" />
-              <path d="M12 2v2" />
-              <path d="M12 20v2" />
-              <path d="m4.93 4.93 1.41 1.41" />
-              <path d="m17.66 17.66 1.41 1.41" />
-              <path d="M2 12h2" />
-              <path d="M20 12h2" />
-              <path d="m6.34 17.66-1.41 1.41" />
-              <path d="m19.07 4.93-1.41 1.41" />
+              <path d="M12 2v2" /><path d="M12 20v2" />
+              <path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" />
+              <path d="M2 12h2" /><path d="M20 12h2" />
+              <path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
             </svg>
-            МЕТЕОРОЛОГИЧНИ УСЛОВИЯ
+            УСЛОВИЯ
           </h3>
-          {loading ? (
-            <div className="flex items-center justify-center gap-2 py-4 text-muted-foreground">
-              <Loader2 className="w-5 h-5 animate-spin" />
-              <span className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане на времето...</span>
+          {loading && !weather ? (
+            <div className="flex items-center justify-center gap-2 py-3 text-muted-foreground">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане на времето...</span>
             </div>
-          ) : error && !weather ? (
-            <div className="text-center py-4">
-              <p className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>{error}</p>
-              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Показват се примерни данни</p>
-            </div>
-          ) : null}
-          <div className="grid grid-cols-4 gap-3 text-center">
-            <div className="flex flex-col items-center gap-1">
-              <ThermometerSun className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
-                {weather ? `${weather.temperature}°C` : '—'}
-              </span>
-              <span className="text-xs" style={{ color: '#94A3B8' }}>Темп.</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <Wind className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
-                {weather ? `${weather.windSpeed} км/ч` : '—'}
-              </span>
-              <span className="text-xs" style={{ color: '#94A3B8' }}>Вятър</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <Droplets className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
-                {weather ? `${weather.humidity}%` : '—'}
-              </span>
-              <span className="text-xs" style={{ color: '#94A3B8' }}>Влажност</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <Mountain className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
-                {weather ? `${weather.altitude} м` : '—'}
-              </span>
-              <span className="text-xs" style={{ color: '#94A3B8' }}>Надморска</span>
-            </div>
-          </div>
-          {/* Divider + Second Row */}
-          <div className="border-t border-border my-4" />
-          <div className="grid grid-cols-3 gap-4 text-center">
-            {/* Enhanced Barometer */}
-            <div className="col-span-3">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Gauge className="w-5 h-5 text-primary" />
-                  <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
-                    {weather ? `${weather.pressure} хПа` : '—'}
-                  </span>
-                </div>
-                {weather ? (
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                    weather.pressureTrend === 'rising' ? 'bg-green-500/20 text-green-400' :
-                    weather.pressureTrend === 'falling' ? 'bg-amber-500/20 text-amber-400' :
-                    'bg-muted text-muted-foreground'
-                  }`}>
-                    <span className="inline-flex items-center gap-1">
-                      {weather.pressureTrend === 'rising' ? (
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <path d="M12 19V5" />
-                          <path d="M7 10L12 5L17 10" />
-                        </svg>
-                      ) : weather.pressureTrend === 'falling' ? (
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <path d="M12 5V19" />
-                          <path d="M7 14L12 19L17 14" />
-                        </svg>
-                      ) : (
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <path d="M5 12H19" />
-                          <path d="M15 8L19 12L15 16" />
-                        </svg>
-                      )}
-                      <span>{weather.pressureTrend === 'rising' ? 'Нарастващо' : weather.pressureTrend === 'falling' ? 'Падащо' : 'Стабилно'}</span>
-                    </span>
-                  </span>
-                ) : (
-                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане...</span>
-                )}
+          ) : (
+            <div className="grid grid-cols-3 gap-1.5">
+              {/* TEMP */}
+              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center">
+                <ThermometerSun className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
+                <div className="text-lg font-bold leading-none text-white">{weather ? `${weather.temperature}°` : '—'}</div>
+                <div className="text-[8px] mt-0.5 opacity-60">ТЕМП.</div>
               </div>
-              {weather && (
-                <div className="flex items-center gap-2 mb-2 rounded-md bg-secondary/30 px-2 py-1.5">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 48 48"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="text-primary/90 shrink-0"
-                    aria-hidden="true"
-                  >
-                    <ellipse cx="22" cy="24" rx="14" ry="10" />
-                    <path d="M36 24 L44 16 M36 24 L44 32" />
-                    <circle cx="12" cy="22" r="1.5" fill="currentColor" />
-                  </svg>
-                  <p className="text-xs text-left" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                    {weather.pressureTrend === 'rising'
-                      ? 'Налягането се покачва - чакай по-активна риба.'
-                      : weather.pressureTrend === 'falling'
-                      ? 'Налягането пада - кълването вероятно ще е по-плахо.'
-                      : 'Стабилно налягане - добри условия за риболов.'}
-                  </p>
-                </div>
-              )}
-              {/* Mini pressure graph */}
-              {weather && weather.pressureHistory.length > 1 && (() => {
-                const hist = weather.pressureHistory;
-                const values = hist.map(h => h.value);
-                const minV = Math.min(...values) - 0.5;
-                const maxV = Math.max(...values) + 0.5;
-                const range = maxV - minV || 1;
-                const w = 280;
-                const h = 48;
-                const padding = 4;
-                const points = values.map((v, i) => ({
-                  x: padding + (i / (values.length - 1)) * (w - padding * 2),
-                  y: padding + (1 - (v - minV) / range) * (h - padding * 2),
-                }));
-                const pathD = points.map((p, i) => {
-                  if (i === 0) return `M ${p.x} ${p.y}`;
-                  const prev = points[i - 1];
-                  const cx = (prev.x + p.x) / 2;
-                  return `C ${cx} ${prev.y}, ${cx} ${p.y}, ${p.x} ${p.y}`;
-                }).join(' ');
-                const areaD = `${pathD} L ${points[points.length-1].x} ${h} L ${points[0].x} ${h} Z`;
-                const lastP = points[points.length - 1];
-
-                return (
-                  <div>
-                    <svg viewBox={`0 0 ${w} ${h}`} className="w-full" style={{ height: 48 }}>
-                      <defs>
-                        <linearGradient id="pressureGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.3" />
-                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
-                        </linearGradient>
-                      </defs>
-                      <path d={areaD} fill="url(#pressureGradient)" />
-                      <path d={pathD} fill="none" stroke="hsl(var(--primary))" strokeWidth="1.5" />
-                      <circle cx={lastP.x} cy={lastP.y} r={3} fill="hsl(var(--primary))" style={{ filter: 'drop-shadow(0 0 4px hsl(var(--primary)))' }} />
+              {/* WIND */}
+              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center">
+                <Wind className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
+                <div className="text-lg font-bold leading-none text-white">{weather ? weather.windSpeed : '—'}</div>
+                <div className="text-[8px] mt-0.5 opacity-60">КМ/Ч</div>
+              </div>
+              {/* PRESSURE w/ sparkline */}
+              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center">
+                <Gauge className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
+                {weather && weather.pressureHistory.length > 1 ? (() => {
+                  const values = weather.pressureHistory.map(h => h.value);
+                  const min = Math.min(...values);
+                  const max = Math.max(...values);
+                  const range = max - min || 1;
+                  const w = 40, h = 8;
+                  const d = values.map((v, i) => {
+                    const x = (i / (values.length - 1)) * w;
+                    const y = h - ((v - min) / range) * h;
+                    return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
+                  }).join(' ');
+                  return (
+                    <svg viewBox="0 0 40 8" className="w-full h-2 mb-0.5">
+                      <path d={d} fill="none" stroke="#2eb5b7" strokeWidth="1" />
                     </svg>
-                  </div>
-                );
-              })()}
-              {!weather && (
-                <div className="flex items-center justify-center py-4">
-                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане...</span>
+                  );
+                })() : <div className="h-2 mb-0.5" />}
+                <div className="text-base font-bold leading-none text-white">{weather ? weather.pressure : '—'}</div>
+                <div className="text-[8px] mt-0.5 opacity-60">
+                  {weather ? (weather.pressureTrend === 'rising' ? '↗ хПа' : weather.pressureTrend === 'falling' ? '↘ хПа' : '→ хПа') : 'хПа'}
                 </div>
-              )}
+              </div>
+              {/* HUMIDITY */}
+              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center">
+                <Droplets className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
+                <div className="text-lg font-bold leading-none text-white">{weather ? `${weather.humidity}%` : '—'}</div>
+                <div className="text-[8px] mt-0.5 opacity-60">ВЛАГА</div>
+              </div>
+              {/* ALTITUDE */}
+              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center">
+                <Mountain className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
+                <div className="text-lg font-bold leading-none text-white">{weather ? weather.altitude : '—'}</div>
+                <div className="text-[8px] mt-0.5 opacity-60">М. Н.В.</div>
+              </div>
+              {/* WEATHER ICON */}
+              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center flex flex-col justify-center">
+                <span className="text-xl leading-none">{weather ? weather.weatherIcon : '—'}</span>
+                <div className="text-[8px] mt-1 opacity-60 leading-tight whitespace-nowrap overflow-hidden text-ellipsis" title={weather?.weatherLabel}>
+                  {weather?.weatherLabel ?? '...'}
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center justify-center gap-2 mt-4 pt-3 border-t border-border">
-            {weather ? (
-              <>
-                <span className="text-xl">{weather.weatherIcon}</span>
-                <span className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>{weather.weatherLabel}</span>
-              </>
-            ) : (
-              <span className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане...</span>
-            )}
-          </div>
+          )}
+          {/* Pressure trend hint */}
+          {weather && (
+            <p className="text-[10px] mt-2 text-center" style={{ color: 'rgba(255,255,255,0.65)' }}>
+              {weather.pressureTrend === 'rising'
+                ? 'Налягането се покачва — по-активна риба.'
+                : weather.pressureTrend === 'falling'
+                ? 'Налягането пада — кълването ще е плахо.'
+                : 'Стабилно налягане — добри условия.'}
+            </p>
+          )}
         </section>
 
-        {/* Solunar Activity Section — SVG Timeline */}
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
+        {/* Solunar Activity Section — Compact Timeline */}
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-3">
+          <h3 className="font-display text-[10px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -835,7 +602,7 @@ const Index = () => {
             СОЛУНАРНА АКТИВНОСТ
           </h3>
           {weather && weather.solunarPeaks ? (
-            <SolunarSection weather={weather} />
+            <SolunarTimeline weather={weather} />
           ) : (
             <div className="flex items-center justify-center gap-2 py-4">
               <Loader2 className="w-4 h-4 animate-spin text-primary" />
@@ -845,8 +612,8 @@ const Index = () => {
             </div>
           )}
         </section>
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-3">
+          <h3 className="font-display text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -874,12 +641,12 @@ const Index = () => {
           </h3>
 
           {/* Baits */}
-          <div className="mb-6">
+          <div className="mb-3">
             <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-3 flex items-center gap-1">
               <Fish className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
               СТРЪВ
             </h4>
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-1.5">
               {(tips?.baits ?? moon.baits).map((bait) => (
                 <div
                   key={bait.name}
@@ -904,7 +671,7 @@ const Index = () => {
               <Anchor className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
               ТАКЪМИ
             </h4>
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-1.5">
               {(tips?.tackle ?? moon.tackle).map((item) => (
                 <div
                   key={item.name}
