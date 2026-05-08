@@ -848,7 +848,7 @@ const Index = () => {
             СОЛУНАРНА АКТИВНОСТ
           </h3>
           {weather && weather.solunarPeaks ? (
-            <SolunarSection weather={weather} />
+            <SolunarTimeline weather={weather} />
           ) : (
             <div className="flex items-center justify-center gap-2 py-4">
               <Loader2 className="w-4 h-4 animate-spin text-primary" />
