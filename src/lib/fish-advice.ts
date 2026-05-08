@@ -7,6 +7,11 @@ export interface DailyAdvice {
   mistake: string | null; // 1 sentence or null
 }
 
+// Grammar helper: Get appropriate pronoun based on fish gender
+export const getPronoun = (fish: FishSpecies): string => {
+  return fish.gender === 'f' ? 'я' : 'го';
+};
+
 const CARP_FAMILY = ['Шаран', 'Амур', 'Толстолоб', 'Каракуда', 'Лин'];
 
 // Per-species tackle specs (line diameter, hook size, lure/bait size)
