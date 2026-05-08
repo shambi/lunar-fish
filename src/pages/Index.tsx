@@ -255,6 +255,127 @@ const SolunarSection = ({ weather }: { weather: any }) => {
 };
 
 
+const SolunarTimeline = ({ weather }: { weather: any }) => {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const t = setInterval(() => setNow(new Date()), 30000);
+    return () => clearInterval(t);
+  }, []);
+
+  const parseTime = (s: string) => {
+    if (!s || s === '--:--') return -1;
+    const [h, m] = s.split(':').map(Number);
+    return h * 60 + m;
+  };
+  const timeToX = (s: string) => {
+    const min = parseTime(s);
+    if (min < 0) return -10;
+    return 2 + (min / 1440) * 96;
+  };
+  const currentMin = now.getHours() * 60 + now.getMinutes();
+  const isInRange = (start: string, end: string) => {
+    const s = parseTime(start), e = parseTime(end);
+    if (s < 0 || e < 0) return false;
+    return s <= e ? (currentMin >= s && currentMin <= e) : (currentMin >= s || currentMin <= e);
+  };
+
+  const peaks = [...(weather.solunarPeaks || [])].sort(
+    (a: any, b: any) => parseTime(a.start) - parseTime(b.start)
+  );
+
+  const getCountdown = () => {
+    for (const p of peaks) {
+      if (isInRange(p.start, p.end)) {
+        const eMin = parseTime(p.end);
+        const remaining = eMin > currentMin ? eMin - currentMin : 1440 - currentMin + eMin;
+        return { active: true as const, type: p.type, minutes: remaining };
+      }
+    }
+    for (const p of peaks) {
+      const sMin = parseTime(p.start);
+      if (sMin > currentMin) {
+        const diff = sMin - currentMin;
+        return { active: false as const, type: p.type, hours: Math.floor(diff / 60), minutes: diff % 60 };
+      }
+    }
+    if (peaks.length > 0) {
+      const sMin = parseTime(peaks[0].start);
+      const diff = 1440 - currentMin + sMin;
+      return { active: false as const, type: peaks[0].type, hours: Math.floor(diff / 60), minutes: diff % 60 };
+    }
+    return null;
+  };
+  const countdown = getCountdown();
+
+  const sunriseX = timeToX(weather.sunrise);
+  const sunsetX = timeToX(weather.sunset);
+  const nowX = 2 + (currentMin / 1440) * 96;
+
+  return (
+    <div className="space-y-2">
+      {/* Sun/Moon pills */}
+      <div className="flex justify-between text-[10px] opacity-80">
+        <span>🌅 <span className="text-white">{weather.sunrise || '--:--'}</span></span>
+        <span>🌙↑ <span className="text-white">{weather.moonrise || '--:--'}</span></span>
+        <span>🌙↓ <span className="text-white">{weather.moonset || '--:--'}</span></span>
+        <span>🌆 <span className="text-white">{weather.sunset || '--:--'}</span></span>
+      </div>
+
+      {/* Timeline SVG */}
+      <svg viewBox="0 0 100 24" preserveAspectRatio="none" className="w-full" style={{ height: 46 }}>
+        <line x1="2" y1="12" x2="98" y2="12" stroke="rgba(255,255,255,0.15)" strokeWidth="0.4" />
+        {[0, 6, 12, 18, 24].map(h => {
+          const x = 2 + (h / 24) * 96;
+          return <line key={h} x1={x} y1="10.5" x2={x} y2="13.5" stroke="rgba(255,255,255,0.25)" strokeWidth="0.3" />;
+        })}
+        <line x1={nowX} y1="4" x2={nowX} y2="20" stroke="#E4FF00" strokeWidth="0.4" opacity="0.85" />
+        {sunriseX > 0 && <circle cx={sunriseX} cy="12" r="1.5" fill="#FF8C42" />}
+        {sunsetX > 0 && <circle cx={sunsetX} cy="12" r="1.5" fill="#FF8C42" />}
+        {peaks.map((p: any, i: number) => {
+          const x = timeToX(p.start);
+          const isMajor = p.type === 'major';
+          const active = isInRange(p.start, p.end);
+          return (
+            <g key={i}>
+              <circle
+                cx={x} cy="12" r={isMajor ? 2.2 : 1.6}
+                fill={isMajor ? '#2eb5b7' : 'rgba(46,181,183,0.55)'}
+                style={active ? { filter: 'drop-shadow(0 0 2px #2eb5b7)' } : {}}
+              >
+                {active && <animate attributeName="r" values={`${isMajor?2.2:1.6};${isMajor?3:2.2};${isMajor?2.2:1.6}`} dur="1.5s" repeatCount="indefinite" />}
+              </circle>
+              <text x={x} y="20" fontSize="2.6" fill="rgba(255,255,255,0.7)" textAnchor="middle">{p.start}</text>
+            </g>
+          );
+        })}
+        {sunriseX > 0 && <text x={sunriseX} y="7" fontSize="2.4" fill="rgba(255,140,66,0.85)" textAnchor="middle">изгрев</text>}
+        {sunsetX > 0 && <text x={sunsetX} y="7" fontSize="2.4" fill="rgba(255,140,66,0.85)" textAnchor="middle">залез</text>}
+      </svg>
+
+      {/* Legend */}
+      <div className="flex items-center justify-center gap-3 text-[9px] opacity-70">
+        <span className="inline-flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full" style={{ background: '#2eb5b7' }} />Главен</span>
+        <span className="inline-flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full" style={{ background: 'rgba(46,181,183,0.55)' }} />Малък</span>
+        <span className="inline-flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full" style={{ background: '#FF8C42' }} />Слънце</span>
+      </div>
+
+      {countdown?.active && (
+        <div className="text-center text-[11px] font-semibold rounded py-1 px-2 border"
+          style={{ background: 'rgba(46,181,183,0.12)', borderColor: 'rgba(46,181,183,0.5)', color: '#2eb5b7' }}>
+          ⚡ АКТИВЕН {countdown.type === 'major' ? 'ГЛАВЕН' : 'МАЛЪК'} ПИК · още {countdown.minutes}мин
+        </div>
+      )}
+      {countdown && !countdown.active && (
+        <div className="text-center text-[10px]" style={{ color: 'rgba(255,255,255,0.65)' }}>
+          Следващ <span className="text-white font-semibold">{countdown.type === 'major' ? 'Главен' : 'Малък'}</span> пик след{' '}
+          <span className="text-white font-semibold">{countdown.hours}ч {countdown.minutes}м</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
+
 const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
   const { weather, loading, error, locationDenied } = useWeather();
