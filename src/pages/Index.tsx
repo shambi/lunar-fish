@@ -615,205 +615,97 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Weather Widget */}
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#E4FF00"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-              style={{ 
-                transform: 'translateY(0.5px)'
-              }}
-            >
+        {/* Weather Widget — Bento Grid */}
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-3">
+          <h3 className="font-display text-[10px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ filter: 'drop-shadow(0 0 6px #E4FF00)' }}>
               <circle cx="12" cy="12" r="4" />
-              <path d="M12 2v2" />
-              <path d="M12 20v2" />
-              <path d="m4.93 4.93 1.41 1.41" />
-              <path d="m17.66 17.66 1.41 1.41" />
-              <path d="M2 12h2" />
-              <path d="M20 12h2" />
-              <path d="m6.34 17.66-1.41 1.41" />
-              <path d="m19.07 4.93-1.41 1.41" />
+              <path d="M12 2v2" /><path d="M12 20v2" />
+              <path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" />
+              <path d="M2 12h2" /><path d="M20 12h2" />
+              <path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
             </svg>
-            МЕТЕОРОЛОГИЧНИ УСЛОВИЯ
+            УСЛОВИЯ
           </h3>
-          {loading ? (
-            <div className="flex items-center justify-center gap-2 py-4 text-muted-foreground">
-              <Loader2 className="w-5 h-5 animate-spin" />
-              <span className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане на времето...</span>
+          {loading && !weather ? (
+            <div className="flex items-center justify-center gap-2 py-3 text-muted-foreground">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане на времето...</span>
             </div>
-          ) : error && !weather ? (
-            <div className="text-center py-4">
-              <p className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>{error}</p>
-              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Показват се примерни данни</p>
-            </div>
-          ) : null}
-          <div className="grid grid-cols-4 gap-3 text-center">
-            <div className="flex flex-col items-center gap-1">
-              <ThermometerSun className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
-                {weather ? `${weather.temperature}°C` : '—'}
-              </span>
-              <span className="text-xs" style={{ color: '#94A3B8' }}>Темп.</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <Wind className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
-                {weather ? `${weather.windSpeed} км/ч` : '—'}
-              </span>
-              <span className="text-xs" style={{ color: '#94A3B8' }}>Вятър</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <Droplets className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
-                {weather ? `${weather.humidity}%` : '—'}
-              </span>
-              <span className="text-xs" style={{ color: '#94A3B8' }}>Влажност</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <Mountain className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
-                {weather ? `${weather.altitude} м` : '—'}
-              </span>
-              <span className="text-xs" style={{ color: '#94A3B8' }}>Надморска</span>
-            </div>
-          </div>
-          {/* Divider + Second Row */}
-          <div className="border-t border-border my-4" />
-          <div className="grid grid-cols-3 gap-4 text-center">
-            {/* Enhanced Barometer */}
-            <div className="col-span-3">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Gauge className="w-5 h-5 text-primary" />
-                  <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
-                    {weather ? `${weather.pressure} хПа` : '—'}
-                  </span>
-                </div>
-                {weather ? (
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                    weather.pressureTrend === 'rising' ? 'bg-green-500/20 text-green-400' :
-                    weather.pressureTrend === 'falling' ? 'bg-amber-500/20 text-amber-400' :
-                    'bg-muted text-muted-foreground'
-                  }`}>
-                    <span className="inline-flex items-center gap-1">
-                      {weather.pressureTrend === 'rising' ? (
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <path d="M12 19V5" />
-                          <path d="M7 10L12 5L17 10" />
-                        </svg>
-                      ) : weather.pressureTrend === 'falling' ? (
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <path d="M12 5V19" />
-                          <path d="M7 14L12 19L17 14" />
-                        </svg>
-                      ) : (
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <path d="M5 12H19" />
-                          <path d="M15 8L19 12L15 16" />
-                        </svg>
-                      )}
-                      <span>{weather.pressureTrend === 'rising' ? 'Нарастващо' : weather.pressureTrend === 'falling' ? 'Падащо' : 'Стабилно'}</span>
-                    </span>
-                  </span>
-                ) : (
-                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане...</span>
-                )}
+          ) : (
+            <div className="grid grid-cols-3 gap-1.5">
+              {/* TEMP */}
+              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center">
+                <ThermometerSun className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
+                <div className="text-lg font-bold leading-none text-white">{weather ? `${weather.temperature}°` : '—'}</div>
+                <div className="text-[8px] mt-0.5 opacity-60">ТЕМП.</div>
               </div>
-              {weather && (
-                <div className="flex items-center gap-2 mb-2 rounded-md bg-secondary/30 px-2 py-1.5">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 48 48"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="text-primary/90 shrink-0"
-                    aria-hidden="true"
-                  >
-                    <ellipse cx="22" cy="24" rx="14" ry="10" />
-                    <path d="M36 24 L44 16 M36 24 L44 32" />
-                    <circle cx="12" cy="22" r="1.5" fill="currentColor" />
-                  </svg>
-                  <p className="text-xs text-left" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                    {weather.pressureTrend === 'rising'
-                      ? 'Налягането се покачва - чакай по-активна риба.'
-                      : weather.pressureTrend === 'falling'
-                      ? 'Налягането пада - кълването вероятно ще е по-плахо.'
-                      : 'Стабилно налягане - добри условия за риболов.'}
-                  </p>
-                </div>
-              )}
-              {/* Mini pressure graph */}
-              {weather && weather.pressureHistory.length > 1 && (() => {
-                const hist = weather.pressureHistory;
-                const values = hist.map(h => h.value);
-                const minV = Math.min(...values) - 0.5;
-                const maxV = Math.max(...values) + 0.5;
-                const range = maxV - minV || 1;
-                const w = 280;
-                const h = 48;
-                const padding = 4;
-                const points = values.map((v, i) => ({
-                  x: padding + (i / (values.length - 1)) * (w - padding * 2),
-                  y: padding + (1 - (v - minV) / range) * (h - padding * 2),
-                }));
-                const pathD = points.map((p, i) => {
-                  if (i === 0) return `M ${p.x} ${p.y}`;
-                  const prev = points[i - 1];
-                  const cx = (prev.x + p.x) / 2;
-                  return `C ${cx} ${prev.y}, ${cx} ${p.y}, ${p.x} ${p.y}`;
-                }).join(' ');
-                const areaD = `${pathD} L ${points[points.length-1].x} ${h} L ${points[0].x} ${h} Z`;
-                const lastP = points[points.length - 1];
-
-                return (
-                  <div>
-                    <svg viewBox={`0 0 ${w} ${h}`} className="w-full" style={{ height: 48 }}>
-                      <defs>
-                        <linearGradient id="pressureGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.3" />
-                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
-                        </linearGradient>
-                      </defs>
-                      <path d={areaD} fill="url(#pressureGradient)" />
-                      <path d={pathD} fill="none" stroke="hsl(var(--primary))" strokeWidth="1.5" />
-                      <circle cx={lastP.x} cy={lastP.y} r={3} fill="hsl(var(--primary))" style={{ filter: 'drop-shadow(0 0 4px hsl(var(--primary)))' }} />
+              {/* WIND */}
+              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center">
+                <Wind className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
+                <div className="text-lg font-bold leading-none text-white">{weather ? weather.windSpeed : '—'}</div>
+                <div className="text-[8px] mt-0.5 opacity-60">КМ/Ч</div>
+              </div>
+              {/* PRESSURE w/ sparkline */}
+              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center">
+                <Gauge className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
+                {weather && weather.pressureHistory.length > 1 ? (() => {
+                  const values = weather.pressureHistory.map(h => h.value);
+                  const min = Math.min(...values);
+                  const max = Math.max(...values);
+                  const range = max - min || 1;
+                  const w = 40, h = 8;
+                  const d = values.map((v, i) => {
+                    const x = (i / (values.length - 1)) * w;
+                    const y = h - ((v - min) / range) * h;
+                    return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
+                  }).join(' ');
+                  return (
+                    <svg viewBox="0 0 40 8" className="w-full h-2 mb-0.5">
+                      <path d={d} fill="none" stroke="#2eb5b7" strokeWidth="1" />
                     </svg>
-                  </div>
-                );
-              })()}
-              {!weather && (
-                <div className="flex items-center justify-center py-4">
-                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане...</span>
+                  );
+                })() : <div className="h-2 mb-0.5" />}
+                <div className="text-base font-bold leading-none text-white">{weather ? weather.pressure : '—'}</div>
+                <div className="text-[8px] mt-0.5 opacity-60">
+                  {weather ? (weather.pressureTrend === 'rising' ? '↗ хПа' : weather.pressureTrend === 'falling' ? '↘ хПа' : '→ хПа') : 'хПа'}
                 </div>
-              )}
+              </div>
+              {/* HUMIDITY */}
+              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center">
+                <Droplets className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
+                <div className="text-lg font-bold leading-none text-white">{weather ? `${weather.humidity}%` : '—'}</div>
+                <div className="text-[8px] mt-0.5 opacity-60">ВЛАГА</div>
+              </div>
+              {/* ALTITUDE */}
+              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center">
+                <Mountain className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
+                <div className="text-lg font-bold leading-none text-white">{weather ? weather.altitude : '—'}</div>
+                <div className="text-[8px] mt-0.5 opacity-60">М. Н.В.</div>
+              </div>
+              {/* WEATHER ICON */}
+              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center flex flex-col justify-center">
+                <span className="text-xl leading-none">{weather ? weather.weatherIcon : '—'}</span>
+                <div className="text-[8px] mt-1 opacity-60 leading-tight whitespace-nowrap overflow-hidden text-ellipsis" title={weather?.weatherLabel}>
+                  {weather?.weatherLabel ?? '...'}
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center justify-center gap-2 mt-4 pt-3 border-t border-border">
-            {weather ? (
-              <>
-                <span className="text-xl">{weather.weatherIcon}</span>
-                <span className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>{weather.weatherLabel}</span>
-              </>
-            ) : (
-              <span className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане...</span>
-            )}
-          </div>
+          )}
+          {/* Pressure trend hint */}
+          {weather && (
+            <p className="text-[10px] mt-2 text-center" style={{ color: 'rgba(255,255,255,0.65)' }}>
+              {weather.pressureTrend === 'rising'
+                ? 'Налягането се покачва — по-активна риба.'
+                : weather.pressureTrend === 'falling'
+                ? 'Налягането пада — кълването ще е плахо.'
+                : 'Стабилно налягане — добри условия.'}
+            </p>
+          )}
         </section>
 
-        {/* Solunar Activity Section — SVG Timeline */}
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
+        {/* Solunar Activity Section — Compact Timeline */}
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-3">
           <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
