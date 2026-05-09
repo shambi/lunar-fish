@@ -315,31 +315,31 @@ const Index = () => {
         {(() => {
           const score = fishingScore.score;
           const inPeak = solunarContext.isInPeak;
-          let verdict = 'ИЗЧАКАЙ';
+          let verdict = 'Слаба активност';
           let context = 'Условията са слаби';
           let glow = false;
           let color = '#7F93A8';
           if (fishingScore.isOverride) {
-            verdict = 'НЕ ЛОВУВАЙ';
+            verdict = 'Не ловувай';
             context = stripEmojis(fishingScore.overrideReason || 'Опасни условия');
             color = '#FF8C42';
           } else if (inPeak) {
-            verdict = 'ХВЪРЛЯЙ СЕГА';
-            context = solunarContext.peakType === 'major' ? 'Главен солунарен пик активен' : 'Малък солунарен пик активен';
+            verdict = 'Активен прозорец';
+            context = solunarContext.peakType === 'major' ? 'Главен солунарен пик' : 'Малък солунарен пик';
             glow = true;
             color = '#2eb5b7';
           } else if (score >= 4) {
-            verdict = 'ХВЪРЛЯЙ СЕГА';
-            context = 'Активна риба';
+            verdict = 'Активен прозорец';
+            context = 'Рибата е будна';
             glow = true;
             color = '#2eb5b7';
           } else if (score >= 3) {
-            verdict = 'ЗАХРАНИ СЕГА';
-            context = 'Подготви точката за пик';
+            verdict = 'Следващ пик скоро';
+            context = 'Подготви точката';
             color = '#E4FF00';
           } else if (score >= 2) {
-            verdict = 'ИЗЧАКАЙ ПИК';
-            context = 'Слаба активност в момента';
+            verdict = 'Стабилни условия';
+            context = 'Активността е слаба';
             color = '#E4FF00';
           }
           return (
@@ -347,32 +347,32 @@ const Index = () => {
               className="rounded-2xl backdrop-blur-md p-4 mb-3"
               style={{
                 background: glow
-                  ? 'linear-gradient(135deg, rgba(46,181,183,0.10), rgba(46,181,183,0.02))'
+                  ? 'linear-gradient(135deg, rgba(46,181,183,0.08), rgba(46,181,183,0.02))'
                   : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${glow ? 'rgba(46,181,183,0.45)' : 'rgba(255,255,255,0.06)'}`,
-                boxShadow: glow ? '0 0 24px rgba(46,181,183,0.18)' : 'none',
+                border: `1px solid ${glow ? 'rgba(46,181,183,0.35)' : 'rgba(255,255,255,0.06)'}`,
+                boxShadow: glow ? '0 0 16px rgba(46,181,183,0.12)' : 'none',
               }}
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <div
-                    className="font-display text-3xl font-bold tracking-tight leading-none"
-                    style={{ color, textShadow: glow ? `0 0 20px ${color}66` : 'none' }}
+                    className="font-display text-lg font-medium tracking-tight leading-none"
+                    style={{ color }}
                   >
                     {verdict}
                   </div>
-                  <div className="text-[12px] mt-1.5 leading-snug" style={{ color: 'rgba(234,247,255,0.75)' }}>
+                  <div className="text-[12px] mt-1.5 leading-snug" style={{ color: 'rgba(234,247,255,0.65)' }}>
                     {context}
                   </div>
                 </div>
                 <div className="flex flex-col items-end shrink-0">
                   <div className="flex gap-0.5">{fishIcons}</div>
-                  <div className="text-[9px] mt-1 uppercase tracking-wider" style={{ color: 'rgba(127,147,168,0.9)' }}>
+                  <div className="text-[9px] mt-1 uppercase tracking-wider" style={{ color: 'rgba(127,147,168,0.8)' }}>
                     {fishingScore.label}
                   </div>
                 </div>
               </div>
-              <p className="text-[11px] mt-3 pt-3 border-t border-white/5 leading-relaxed" style={{ color: 'rgba(234,247,255,0.55)' }}>
+              <p className="text-[11px] mt-3 pt-3 border-t border-white/5 leading-relaxed" style={{ color: 'rgba(234,247,255,0.5)' }}>
                 {stripEmojis(moon.fishingTip)}
               </p>
             </section>
