@@ -701,9 +701,9 @@ const Index = () => {
 
           {/* Baits */}
           <div className="mb-3">
-            <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-3 flex items-center gap-1">
-              <Fish className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
-              СТРЪВ
+            <h4 className="text-xs font-medium text-[#2eb5b7] uppercase tracking-wider mb-3 flex items-center gap-1">
+              <Fish className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', opacity: 0.85 }} />
+              Стръв
             </h4>
             <div className="grid grid-cols-2 gap-1.5">
               {(tips?.baits ?? moon.baits).map((bait) => (
@@ -726,9 +726,9 @@ const Index = () => {
 
           {/* Tackle */}
           <div>
-            <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-3 flex items-center gap-1">
-              <Anchor className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
-              ТАКЪМИ
+            <h4 className="text-xs font-medium text-[#2eb5b7] uppercase tracking-wider mb-3 flex items-center gap-1">
+              <Anchor className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', opacity: 0.85 }} />
+              Такъми
             </h4>
             <div className="grid grid-cols-2 gap-1.5">
               {(tips?.tackle ?? moon.tackle).map((item) => (
