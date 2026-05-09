@@ -113,18 +113,8 @@ const SolunarTimeline = ({ weather }: { weather: any }) => {
         <span className="inline-flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full" style={{ background: '#FF8C42' }} />Слънце</span>
       </div>
 
-      {countdown?.active && (
-        <div className="text-center text-[11px] font-semibold rounded py-1 px-2 border"
-          style={{ background: 'rgba(46,181,183,0.12)', borderColor: 'rgba(46,181,183,0.5)', color: '#2eb5b7' }}>
-          ⚡ АКТИВЕН {countdown.type === 'major' ? 'ГЛАВЕН' : 'МАЛЪК'} ПИК · още {countdown.minutes}мин
-        </div>
-      )}
-      {countdown && !countdown.active && (
-        <div className="text-center text-[10px]" style={{ color: 'rgba(255,255,255,0.65)' }}>
-          Следващ <span className="text-white font-semibold">{countdown.type === 'major' ? 'Главен' : 'Малък'}</span> пик след{' '}
-          <span className="text-white font-semibold">{countdown.hours}ч {countdown.minutes}м</span>
-        </div>
-      )}
+      {/* countdown is rendered as the section's verdict above the timeline */}
+      {void countdown}
     </div>
   );
 };
