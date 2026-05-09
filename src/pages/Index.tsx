@@ -514,6 +514,37 @@ const Index = () => {
             </svg>
             УСЛОВИЯ
           </h3>
+          {/* Interpretation lead — Level 2 */}
+          {weather && (() => {
+            const trend = weather.pressureTrend;
+            const wind = weather.windSpeed;
+            let title = 'Стабилно налягане';
+            let effect = 'Рибата е спокойна — работи бавна презентация';
+            let dot = '#7F93A8';
+            if (trend === 'rising') {
+              title = 'Покачващо налягане';
+              effect = 'По-активна риба — увеличи темпото';
+              dot = '#2eb5b7';
+            } else if (trend === 'falling') {
+              title = 'Падащо налягане';
+              effect = 'Очаквай агресивни удари преди фронта';
+              dot = '#E4FF00';
+            }
+            if (wind > 25) {
+              title = 'Силен вятър';
+              effect = 'Лови по подветрения бряг — мътна вода';
+              dot = '#FF8C42';
+            }
+            return (
+              <div className="mb-3 flex items-start gap-2.5">
+                <span className="mt-1.5 inline-block w-1.5 h-1.5 rounded-full shrink-0" style={{ background: dot, boxShadow: `0 0 8px ${dot}` }} />
+                <div className="min-w-0">
+                  <div className="text-[15px] font-semibold leading-tight" style={{ color: '#EAF7FF' }}>{title}</div>
+                  <div className="text-[11px] mt-0.5 leading-snug" style={{ color: 'rgba(127,147,168,0.95)' }}>→ {effect}</div>
+                </div>
+              </div>
+            );
+          })()}
           {loading && !weather ? (
             <div className="flex items-center justify-center gap-2 py-3 text-muted-foreground">
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -522,19 +553,19 @@ const Index = () => {
           ) : (
             <div className="grid grid-cols-3 gap-1.5">
               {/* TEMP */}
-              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center">
+              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center">
                 <ThermometerSun className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
-                <div className="text-lg font-bold leading-none text-white">{weather ? `${weather.temperature}°` : '—'}</div>
-                <div className="text-[8px] mt-0.5 opacity-60">ТЕМП.</div>
+                <div className="text-base font-bold leading-none text-white">{weather ? `${weather.temperature}°` : '—'}</div>
+                <div className="text-[8px] mt-0.5 opacity-50">ТЕМП.</div>
               </div>
               {/* WIND */}
-              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center">
+              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center">
                 <Wind className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
-                <div className="text-lg font-bold leading-none text-white">{weather ? weather.windSpeed : '—'}</div>
-                <div className="text-[8px] mt-0.5 opacity-60">КМ/Ч</div>
+                <div className="text-base font-bold leading-none text-white">{weather ? weather.windSpeed : '—'}</div>
+                <div className="text-[8px] mt-0.5 opacity-50">КМ/Ч</div>
               </div>
               {/* PRESSURE w/ sparkline */}
-              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center">
+              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center">
                 <Gauge className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
                 {weather && weather.pressureHistory.length > 1 ? (() => {
                   const values = weather.pressureHistory.map(h => h.value);
@@ -553,41 +584,31 @@ const Index = () => {
                     </svg>
                   );
                 })() : <div className="h-2 mb-0.5" />}
-                <div className="text-base font-bold leading-none text-white">{weather ? weather.pressure : '—'}</div>
-                <div className="text-[8px] mt-0.5 opacity-60">
+                <div className="text-sm font-bold leading-none text-white">{weather ? weather.pressure : '—'}</div>
+                <div className="text-[8px] mt-0.5 opacity-50">
                   {weather ? (weather.pressureTrend === 'rising' ? '↗ хПа' : weather.pressureTrend === 'falling' ? '↘ хПа' : '→ хПа') : 'хПа'}
                 </div>
               </div>
               {/* HUMIDITY */}
-              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center">
+              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center">
                 <Droplets className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
-                <div className="text-lg font-bold leading-none text-white">{weather ? `${weather.humidity}%` : '—'}</div>
-                <div className="text-[8px] mt-0.5 opacity-60">ВЛАГА</div>
+                <div className="text-base font-bold leading-none text-white">{weather ? `${weather.humidity}%` : '—'}</div>
+                <div className="text-[8px] mt-0.5 opacity-50">ВЛАГА</div>
               </div>
               {/* ALTITUDE */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center">
                 <Mountain className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#E4FF00' }} />
-                <div className="text-lg font-bold leading-none text-white">{weather ? Math.round(weather.altitude) : '—'}</div>
-                <div className="text-[8px] mt-0.5 opacity-60">М. Н.В.</div>
+                <div className="text-base font-bold leading-none text-white">{weather ? Math.round(weather.altitude) : '—'}</div>
+                <div className="text-[8px] mt-0.5 opacity-50">М. Н.В.</div>
               </div>
               {/* WEATHER ICON */}
-              <div className="rounded-lg border border-border/50 bg-secondary/20 p-2 text-center flex flex-col justify-center">
+              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center flex flex-col justify-center">
                 <span className="text-xl leading-none">{weather ? weather.weatherIcon : '—'}</span>
-                <div className="text-[8px] mt-1 opacity-60 leading-tight whitespace-nowrap overflow-hidden text-ellipsis" title={weather?.weatherLabel}>
+                <div className="text-[8px] mt-1 opacity-50 leading-tight whitespace-nowrap overflow-hidden text-ellipsis" title={weather?.weatherLabel}>
                   {weather?.weatherLabel ?? '...'}
                 </div>
               </div>
             </div>
-          )}
-          {/* Pressure trend hint */}
-          {weather && (
-            <p className="text-[10px] mt-2 text-center" style={{ color: 'rgba(255,255,255,0.65)' }}>
-              {weather.pressureTrend === 'rising'
-                ? 'Налягането се покачва — по-активна риба.'
-                : weather.pressureTrend === 'falling'
-                ? 'Налягането пада — кълването ще е плахо.'
-                : 'Стабилно налягане — добри условия.'}
-            </p>
           )}
         </section>
 
