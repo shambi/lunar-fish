@@ -382,7 +382,7 @@ const Index = () => {
         {/* Smart Weather Tips (only when weather is loaded) */}
         {tips && (
           <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
-            <h3 className="font-display text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+            <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
               <svg
                 width="18"
                 height="18"
@@ -395,14 +395,14 @@ const Index = () => {
                 aria-hidden="true"
                 style={{ 
                   transform: 'translateY(0.5px)',
-                  filter: 'drop-shadow(0 0 6px #E4FF00)'
+                  opacity: 0.85
                 }}
               >
                 <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
                 <path d="M9 18h6" />
                 <path d="M10 22h4" />
               </svg>
-              УМНИ СЪВЕТИ
+              Анализ
             </h3>
             <div className="space-y-3">
               {fishingScore.isOverride && fishingScore.overrideReason && (
