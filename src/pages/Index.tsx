@@ -457,7 +457,7 @@ const Index = () => {
 
         {/* Fishing Style Tip */}
         <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
-          <h3 className="font-display text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+          <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -470,7 +470,7 @@ const Index = () => {
               aria-hidden="true"
               style={{ 
                 transform: 'translateY(0.5px)',
-                filter: 'drop-shadow(0 0 6px #E4FF00)'
+                opacity: 0.85
               }}
             >
               <ellipse cx="22" cy="24" rx="16" ry="5" />
@@ -480,7 +480,7 @@ const Index = () => {
               <circle cx="9" cy="23" r="1.5" fill="#E4FF00" />
               <path d="M10 24 L36 24" opacity="0.2" />
             </svg>
-            СЪВЕТИ ЗА СТИЛ РИБОЛОВ
+            Съвети за стил
           </h3>
           <div className="flex gap-3">
             <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
