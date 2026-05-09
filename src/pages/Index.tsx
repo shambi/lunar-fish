@@ -391,7 +391,7 @@ const Index = () => {
 
         {/* Smart Weather Tips (only when weather is loaded) */}
         {tips && (
-          <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-3">
+          <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
             <h3 className="font-display text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
               <svg
                 width="18"
@@ -466,7 +466,7 @@ const Index = () => {
         )}
 
         {/* Fishing Style Tip */}
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-3">
+        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
           <h3 className="font-display text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
@@ -503,7 +503,7 @@ const Index = () => {
         </section>
 
         {/* Weather Widget — Bento Grid */}
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-3">
+        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
           <h3 className="font-display text-[10px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ filter: 'drop-shadow(0 0 6px #E4FF00)' }}>
               <circle cx="12" cy="12" r="4" />
@@ -592,7 +592,7 @@ const Index = () => {
         </section>
 
         {/* Solunar Activity Section — Compact Timeline */}
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-3">
+        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
           <h3 className="font-display text-[10px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
@@ -624,7 +624,7 @@ const Index = () => {
             </div>
           )}
         </section>
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-3">
+        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
           <h3 className="font-display text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
