@@ -672,7 +672,7 @@ const Index = () => {
           )}
         </section>
         <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
-          <h3 className="font-display text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+          <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -685,7 +685,7 @@ const Index = () => {
               aria-hidden="true"
               style={{ 
                 transform: 'translateY(0.5px)',
-                filter: 'drop-shadow(0 0 6px #E4FF00)'
+                opacity: 0.85
               }}
             >
               <path d="M2 24 L6 21 Q14 18 28 18 Q38 18 40 22 L42 24 L40 26 Q38 30 28 30 Q14 30 6 27Z" />
@@ -696,7 +696,7 @@ const Index = () => {
               <circle cx="8" cy="23" r="1.5" fill="#E4FF00" />
               <path d="M2 24 L10 25" opacity="0.3" />
             </svg>
-            РИБО СЪВЕТИ
+            Съвети
           </h3>
 
           {/* Baits */}
