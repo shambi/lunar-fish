@@ -14,6 +14,7 @@ export interface FishSpecies {
   emoji: string;
   habitat: Habitat;
   isPredator: boolean;
+  gender: 'm' | 'f';
   baseData: FishBaseData;
   spawnMonths: number[];
   spawnWarning?: string;
@@ -47,6 +48,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐟',
     habitat: 'both',
     isPredator: false,
+    gender: 'm',
     baseData: {
       groundbait: 'Сладка захранка с царевица и пеле',
       bait: 'Бойли, царевица, червеи',
@@ -67,6 +69,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐠',
     habitat: 'lake',
     isPredator: false,
+    gender: 'm',
     baseData: {
       groundbait: 'Растителна захранка с трева',
       bait: 'Тръстика, царевица, краставица, хляб',
@@ -87,6 +90,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐡',
     habitat: 'lake',
     isPredator: false,
+    gender: 'm',
     hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Технопланктон, фитопланктон смес',
@@ -108,6 +112,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐋',
     habitat: 'both',
     isPredator: true,
+    gender: 'm',
     baseData: {
       groundbait: 'Кървава захранка, рибно брашно',
       bait: 'Жива риба, черен дроб, пиявици',
@@ -129,6 +134,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🦈',
     habitat: 'both',
     isPredator: true,
+    gender: 'f',
     baseData: {
       groundbait: '',
       bait: 'Жива рибка, мъртва рибка',
@@ -150,6 +156,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐠',
     habitat: 'lake',
     isPredator: false,
+    gender: 'f',
     baseData: {
       groundbait: 'Лека сладка захранка, трохи',
       bait: 'Червеи, ларви, хляб, тесто',
@@ -170,6 +177,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐟',
     habitat: 'both',
     isPredator: false,
+    gender: 'm',
     baseData: {
       groundbait: 'Ситна захранка с конопено семе и трохи — малки порции',
       bait: 'Опариш, малък червей, тесто, хляб',
@@ -190,6 +198,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐟',
     habitat: 'both',
     isPredator: true,
+    gender: 'f',
     baseData: {
       groundbait: '',
       bait: 'Червеи, ларви, икра',
@@ -207,6 +216,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐠',
     habitat: 'river',
     isPredator: false,
+    gender: 'm',
     baseData: {
       groundbait: 'Хлебна захранка, варено жито',
       bait: 'Хляб, тесто, червеи, водорасли',
@@ -223,6 +233,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐟',
     habitat: 'river',
     isPredator: true,
+    gender: 'm',
     baseData: {
       groundbait: 'Каменна захранка, тежка смес',
       bait: 'Червеи, ларви, рачета',
@@ -240,6 +251,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐠',
     habitat: 'lake',
     isPredator: false,
+    gender: 'm',
     hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Сладка захранка с ванилия',
@@ -262,6 +274,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐟',
     habitat: 'both',
     isPredator: true,
+    gender: 'm',
     baseData: {
       groundbait: 'Малки живи рибки, червеи',
       bait: 'Малки воблери, туистери, живец',
@@ -283,6 +296,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐟',
     habitat: 'both',
     isPredator: false,
+    gender: 'f',
     baseData: {
       groundbait: 'Фидер микс с трохи и червеи',
       bait: 'Червеи, опариш, царевица, тесто',
@@ -303,6 +317,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐟',
     habitat: 'both',
     isPredator: false,
+    gender: 'f',
     baseData: {
       groundbait: 'Ситна захранка с конопено семе',
       bait: 'Опариш, червей, малка царевица, тесто',
@@ -323,6 +338,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐟',
     habitat: 'lake',
     isPredator: false,
+    gender: 'f',
     hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Ситна повърхностна захранка',
@@ -345,6 +361,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐟',
     habitat: 'both',
     isPredator: false,
+    gender: 'f',
     baseData: {
       groundbait: 'Тежка дънна захранка, пелети',
       bait: 'Бойли, пелети, червеи, скариди',
@@ -365,6 +382,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐟',
     habitat: 'both',
     isPredator: true,
+    gender: 'f',
     subtitle: 'Среща се в планински реки и стопански язовири за платен риболов. Не се размножава естествено в България.',
     baseData: {
       groundbait: '',
@@ -382,6 +400,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐟',
     habitat: 'both',
     isPredator: true,
+    gender: 'm',
     baseData: {
       groundbait: 'Не се захранва',
       bait: 'Малки червеи, личинки',
@@ -403,6 +422,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐟',
     habitat: 'both',
     isPredator: true,
+    gender: 'f',
     baseData: {
       groundbait: 'Не се захранва',
       bait: 'Живец (уклей, бабушка до 10см), мъртва рибка',
@@ -424,6 +444,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     emoji: '🐟',
     habitat: 'river',
     isPredator: true,
+    gender: 'm',
     hideOnTerrain: 'lake',
     subtitle: 'Среща се в р. Дунав и долните течения на Марица, Тунджа и Арда.',
     baseData: {
@@ -615,7 +636,7 @@ export function getFishModalData(
   fish: FishSpecies,
   temperature: number,
   weatherCode: number,
-  terrain: 'river' | 'lake',
+  terrain: 'river' | 'lake' | 'both',
   altitude?: number
 ): FishModalData {
   const currentMonth = new Date().getMonth() + 1;
@@ -669,9 +690,10 @@ export function getFishModalData(
   const IARA_FOOTER = '\n\n📋 Проверете списъка на ИАРА за\nразрешени водоеми във вашия район.\niara.government.bg';
   let ecoWarning: string;
 
-  // Check if fish has altitude-based bans
-  if (fish.altitudeBans && altitude !== undefined) {
-    const alt = altitude;
+  // Check altitude-based bans. If altitude is missing, default to low (<500m)
+  // for safety — this is the stricter regime per ИАРА (15.04 – 31.05).
+  if (fish.altitudeBans) {
+    const alt = altitude ?? 0;
     let applicableBan: { start: string; end: string } | null = null;
 
     // Determine which altitude tier applies
@@ -690,10 +712,11 @@ export function getFishModalData(
     // Show altitude-specific ban or permission
     if (applicableBan) {
       const isBanned = isDateInPeriod(currentDate, applicableBan.start, applicableBan.end);
+      const altLabel = altitude !== undefined ? `${alt}м н.в.` : '<500м н.в. (по подразбиране)';
       if (isBanned) {
-        ecoWarning = `⛔ Забранен: ${applicableBan.start} – ${applicableBan.end}\n📍 Разположение: ${alt}м н.в.`;
+        ecoWarning = `⛔ Забранен: ${applicableBan.start} – ${applicableBan.end}\n📍 Разположение: ${altLabel}`;
       } else {
-        ecoWarning = `✅ Разрешен период (${alt}м н.в.)\n⚠️ Забрана: ${applicableBan.start} – ${applicableBan.end}`;
+        ecoWarning = `✅ Разрешен период (${altLabel})\n⚠️ Забрана: ${applicableBan.start} – ${applicableBan.end}`;
       }
     } else if (fish.ecoGreen) {
       ecoWarning = fish.ecoGreen;
