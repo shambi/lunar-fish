@@ -604,7 +604,7 @@ const Index = () => {
 
         {/* Solunar Activity Section — Compact Timeline */}
         <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
-          <h3 className="font-display text-[10px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+          <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -617,12 +617,12 @@ const Index = () => {
               aria-hidden="true"
               style={{ 
                 transform: 'translateY(0.5px)',
-                filter: 'drop-shadow(0 0 6px #E4FF00)'
+                opacity: 0.85
               }}
             >
               <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
             </svg>
-            СОЛУНАРНА АКТИВНОСТ
+            Солунарна активност
           </h3>
           {weather && weather.solunarPeaks ? (
             <>
@@ -645,18 +645,18 @@ const Index = () => {
                   }
                   if (!next && peaks.length) { const s=parse(peaks[0].start); next = { ...peaks[0], diff: 1440-nowMin+s }; }
                 }
-                const verdict = active ? 'ПИК В МОМЕНТА' : (next && next.diff <= 60 ? 'ПРИГОТВИ СЕ' : 'ИЗЧАКАЙ ПИК');
+                const verdict = active ? 'Активен прозорец' : (next && next.diff <= 60 ? 'Следващ пик скоро' : 'Стабилни условия');
                 const subtitle = active
                   ? `${active.type === 'major' ? 'Главен' : 'Малък'} пик · още ${active.remaining}мин`
                   : next ? `Следващ ${next.type === 'major' ? 'главен' : 'малък'} пик след ${Math.floor(next.diff/60)}ч ${next.diff%60}м` : '';
                 const color = active ? '#2eb5b7' : (next && next.diff <= 60 ? '#E4FF00' : '#7F93A8');
                 return (
                   <div className="mb-3">
-                    <div className="font-display text-2xl font-bold tracking-tight leading-none"
-                      style={{ color, textShadow: active ? `0 0 16px ${color}66` : 'none' }}>
+                    <div className="font-display text-lg font-medium tracking-tight leading-none"
+                      style={{ color }}>
                       {verdict}
                     </div>
-                    <div className="text-[11px] mt-1.5" style={{ color: 'rgba(127,147,168,0.95)' }}>{subtitle}</div>
+                    <div className="text-[11px] mt-1.5" style={{ color: 'rgba(127,147,168,0.85)' }}>{subtitle}</div>
                   </div>
                 );
               })()}
