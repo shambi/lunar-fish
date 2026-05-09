@@ -20,6 +20,20 @@ function getTackleIcon(tackleName: string): React.ReactNode {
   return <img src={`/assets/icons/${iconFileName}`} alt={tackleName} className="bait-icon" />;
 }
 
+// Helper functions for solunar timeline
+const getMinutesFromMidnight = (timeStr: string): number => {
+  const [h, m] = timeStr.split(':').map(Number);
+  return h * 60 + m;
+};
+
+const isPeakActive = (peak: any): boolean => {
+  const now = new Date();
+  const currentMin = now.getHours() * 60 + now.getMinutes();
+  const startMin = getMinutesFromMidnight(peak.start);
+  const endMin = getMinutesFromMidnight(peak.end);
+  return currentMin >= startMin && currentMin <= endMin;
+};
+
 const SolunarSection = ({ weather }: { weather: any }) => {
   const [now, setNow] = useState(() => new Date());
 
@@ -45,6 +59,7 @@ const SolunarSection = ({ weather }: { weather: any }) => {
   };
 
   const peaks = [...(weather.solunarPeaks || [])].sort((a: any, b: any) => parseTime(a.start) - parseTime(b.start));
+  const activePeak = peaks.find(peak => isPeakActive(peak));
 
   // Find next peak or active peak for countdown
   const getCountdown = () => {
@@ -134,134 +149,91 @@ const SolunarSection = ({ weather }: { weather: any }) => {
   );
 
   return (
-    <div className="space-y-1.5">
-      {/* PART 1 — Two pill badges */}
-      <div className="flex gap-1.5">
-        <div className="flex-1 text-center rounded-[20px] py-[4px] px-[10px]"
-          style={{ background: 'rgba(255,140,66,0.12)', border: '1px solid rgba(255,140,66,0.4)' }}>
-          <span style={{ fontSize: '11px', color: '#FF8C42' }}>
-            <span className="text-white">{weather.sunrise || '--:--'}</span> • <span className="text-white">{weather.sunset || '--:--'}</span>
-          </span>
+    <section className="rounded-xl border border-border/50 bg-card/40 backdrop-blur-sm p-4 mb-4">
+      <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider mb-3 opacity-60">
+        <Moon className="w-4 h-4" style={{color: '#2eb5b7'}} />
+        СОЛУНАРНА АКТИВНОСТ
+      </h3>
+      
+      {/* Rise/Set times grid */}
+      <div className="grid grid-cols-4 gap-2 mb-4 text-[10px]">
+        <div className="flex items-center gap-1 opacity-60">
+          <span>🌅</span>
+          <span>{weather.sunrise}</span>
         </div>
-        <div className="flex-1 text-center rounded-[20px] py-[4px] px-[10px]"
-          style={{ background: 'rgba(46,181,183,0.08)', border: '1px solid rgba(46,181,183,0.3)' }}>
-          <span style={{ fontSize: '11px', color: '#2eb5b7' }}>
-            <span className="text-white">{weather.moonrise || '--:--'}</span> • <span className="text-white">{weather.moonset || '--:--'}</span>
-          </span>
+        <div className="flex items-center gap-1 opacity-60">
+          <span>🌙</span>
+          <span>{weather.moonrise}</span>
+        </div>
+        <div className="flex items-center gap-1 opacity-60">
+          <span>🌙</span>
+          <span>{weather.moonset}</span>
+        </div>
+        <div className="flex items-center gap-1 opacity-60">
+          <span>🌆</span>
+          <span>{weather.sunset}</span>
         </div>
       </div>
-
-      {/* PART 2 — Activity cards */}
-      <div className="space-y-1">
-        {peaks.map((peak: any, i: number) => {
-          const isMajor = peak.type === 'major';
-          const active = isInRange(peak.start, peak.end);
-
-          return (
-            <div key={i} className="relative rounded-lg"
-              style={{
-                padding: '10px',
-                ...(isMajor ? {
-                  background: 'rgba(0,18,28,0.9)',
-                  border: '1.5px solid #2eb5b7',
-                  boxShadow: '0 0 10px rgba(46,181,183,0.2)',
-                } : {
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                }),
-              }}>
-              {/* СЕГА АКТИВНО badge */}
-              {active && (
-                <div className="absolute -top-2 left-3 rounded-[10px] px-2 py-0.5 text-[9px] font-bold"
-                  style={{
-                    background: '#2eb5b7', color: '#000',
-                    animation: 'pulse-active 1.5s ease-in-out infinite',
-                  }}>
-                  СЕГА АКТИВНО
-                </div>
-              )}
-
-              <div className="flex items-center">
-                {/* LEFT — Time range */}
-                <div className="w-[40%]">
-                  <div className="font-bold leading-tight"
-                    style={{
-                      fontSize: isMajor ? '18px' : '15px',
-                      color: isMajor ? '#fff' : 'rgba(255,255,255,0.7)',
-                    }}>
-                    {peak.start} —<br />{peak.end}
-                  </div>
-                  <div className="mt-0.5" style={{
-                    fontSize: '9px',
-                    color: isMajor ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.35)',
-                  }}>
-                    {getPeakLocation(peak)}
-                  </div>
-                </div>
-
-                {/* CENTER — Title */}
-                <div className="w-[40%]">
-                  <div className="font-bold tracking-wider"
-                     style={{
-                      fontSize: '11px',
-                      letterSpacing: '1px',
-                      color: isMajor ? '#2eb5b7' : 'rgba(46,181,183,0.5)',
-                    }}>
-                    {isMajor ? 'ГЛАВЕН ПИК' : 'МАЛЪК ПИК'}
-                  </div>
-                  <div style={{
-                    fontSize: '10px',
-                    color: isMajor ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.35)',
-                    marginTop: '1px',
-                  }}>
-                    {isMajor ? 'Най-висока вероятност за удар.' : 'Умерена активност.'}
-                  </div>
-                </div>
-
-                {/* RIGHT — Fish icons */}
-                <div className="w-[20%] flex flex-col items-center gap-0.5">
-                  {Array.from({ length: isMajor ? 3 : 1 }).map((_, fi) => (
-                    <span key={fi}>
-                      <PeakFishIcon
-                        glow={isMajor}
-                        color={isMajor ? '#2eb5b7' : 'rgba(46,181,183,0.3)'}
-                      />
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          );
-        })}
+      
+      {/* Timeline SVG */}
+      <div className="relative mb-3">
+        <svg viewBox="0 0 100 30" className="w-full" style={{height: '80px'}}>
+          <line x1="5" y1="15" x2="95" y2="15" 
+                stroke="rgba(255,255,255,0.1)" strokeWidth="0.5"/>
+          
+          {peaks.map((peak, idx) => {
+            const x = (getMinutesFromMidnight(peak.start) / 1440) * 90 + 5;
+            const isMajor = peak.type === 'major';
+            const isActive = isPeakActive(peak);
+            
+            return (
+              <g key={idx}>
+                <circle 
+                  cx={x} 
+                  cy="15" 
+                  r={isMajor ? 2.5 : 1.5}
+                  fill={isMajor ? '#2eb5b7' : 'rgba(46,181,183,0.4)'}
+                  className={isActive ? 'animate-pulse' : ''}
+                />
+                <text 
+                  x={x} 
+                  y="24" 
+                  fontSize="3" 
+                  fill="rgba(255,255,255,0.5)" 
+                  textAnchor="middle"
+                >
+                  {peak.start}
+                </text>
+                {isMajor && (
+                  <text 
+                    x={x} 
+                    y="10" 
+                    fontSize="2.5" 
+                    fill="#ff8c42" 
+                    textAnchor="middle"
+                  >
+                    главен
+                  </text>
+                )}
+              </g>
+            );
+          })}
+        </svg>
       </div>
-
-      {/* PART 3 — Next peak countdown + feeding advice */}
-      {countdown && (
-        <div className="text-center">
-          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            {countdown.active ? (
-              <span style={{ color: '#2eb5b7' }}>
-                Активен пик още <strong>{countdown.minutes}мин.</strong>
-              </span>
-            ) : (
-              <>
-                Следващ <strong className="text-white">{countdown.type === 'major' ? 'Главен' : 'Малък'} пик</strong> след{' '}
-                <strong className="text-white">{countdown.hours}ч. {countdown.minutes}мин.</strong>
-              </>
-            )}
-          </p>
-          {feedingAdvice && (
-            <p className="mt-1" style={{
-              fontSize: '11px',
-              color: feedingAdvice.urgent ? '#2eb5b7' : 'rgba(255,255,255,0.7)',
-              fontWeight: feedingAdvice.urgent ? 600 : 400,
-            }}>
-              {feedingAdvice.text}
-            </p>
-          )}
+      
+      {/* Active peak indicator */}
+      {activePeak && (
+        <div className="rounded-lg border border-primary/40 bg-primary/10 p-2.5 text-center">
+          <div className="text-sm font-medium" style={{color: '#2eb5b7'}}>
+            Активен прозорец
+          </div>
+          <div className="text-xs opacity-70">
+            {activePeak.type === 'major' ? 'Главен пик' : 'Малък пик'} • 
+            {countdown.minutes}мин остават
+          </div>
         </div>
       )}
-    </div>
+    </section>
   );
 };
 
@@ -455,13 +427,13 @@ const Index = () => {
 
         {/* Fishing Forecast */}
         <section 
-          className="rounded-xl bg-card/60 backdrop-blur-md p-5 mb-4"
+          className="rounded-xl bg-card/60 backdrop-blur-md p-4 mb-4"
           style={{
             border: '1px solid #2eb5b7',
             boxShadow: '0 0 10px rgba(46,181,183,0.2)',
           }}
         >
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2" style={{ color: '#94A3B8' }}>
+          <h3 className="font-display text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-2" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -511,8 +483,8 @@ const Index = () => {
 
         {/* Smart Weather Tips (only when weather is loaded) */}
         {tips && (
-          <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-            <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
+          <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-4 mb-4">
+            <h3 className="font-display text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
               <svg
                 width="18"
                 height="18"
@@ -534,7 +506,7 @@ const Index = () => {
               </svg>
               УМНИ СЪВЕТИ
             </h3>
-            <div className="space-y-5">
+            <div className="space-y-3">
               {fishingScore.isOverride && fishingScore.overrideReason && (
                 <div className="flex gap-3">
                   <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
@@ -586,8 +558,8 @@ const Index = () => {
         )}
 
         {/* Fishing Style Tip */}
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-4 mb-4">
+          <h3 className="font-display text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -623,8 +595,8 @@ const Index = () => {
         </section>
 
         {/* Weather Widget */}
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-4 mb-4">
+          <h3 className="font-display text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -662,166 +634,53 @@ const Index = () => {
               <p className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Показват се примерни данни</p>
             </div>
           ) : null}
-          <div className="grid grid-cols-4 gap-3 text-center">
-            <div className="flex flex-col items-center gap-1">
-              <ThermometerSun className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
-                {weather ? `${weather.temperature}°C` : '—'}
-              </span>
-              <span className="text-xs" style={{ color: '#94A3B8' }}>Темп.</span>
+          <div className="grid grid-cols-3 gap-2">
+            {/* Temperature */}
+            <div className="rounded-lg border border-border/40 bg-secondary/10 p-3 text-center">
+              <ThermometerSun className="w-5 h-5 mx-auto mb-1.5" style={{color: '#2eb5b7'}}/>
+              <div className="text-2xl font-bold">{weather.temperature}°</div>
+              <div className="text-[10px] mt-0.5 opacity-50">ТЕМП.</div>
             </div>
-            <div className="flex flex-col items-center gap-1">
-              <Wind className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
-                {weather ? `${weather.windSpeed} км/ч` : '—'}
-              </span>
-              <span className="text-xs" style={{ color: '#94A3B8' }}>Вятър</span>
+            
+            {/* Wind */}
+            <div className="rounded-lg border border-border/40 bg-secondary/10 p-3 text-center">
+              <Wind className="w-5 h-5 mx-auto mb-1.5" style={{color: '#2eb5b7'}}/>
+              <div className="text-xl font-bold">{weather.windSpeed}</div>
+              <div className="text-[10px] mt-0.5 opacity-50">КМ/Ч</div>
             </div>
-            <div className="flex flex-col items-center gap-1">
-              <Droplets className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
-                {weather ? `${weather.humidity}%` : '—'}
-              </span>
-              <span className="text-xs" style={{ color: '#94A3B8' }}>Влажност</span>
+            
+            {/* Pressure */}
+            <div className="rounded-lg border border-border/40 bg-secondary/10 p-3 text-center">
+              <Gauge className="w-5 h-5 mx-auto mb-1.5" style={{color: '#2eb5b7'}}/>
+              <div className="text-xl font-bold">{weather.pressure}</div>
+              <div className="text-[10px] mt-0.5 opacity-50">хПа</div>
             </div>
-            <div className="flex flex-col items-center gap-1">
-              <Mountain className="w-6 h-6 text-primary" />
-              <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
-                {weather ? `${weather.altitude} м` : '—'}
-              </span>
-              <span className="text-xs" style={{ color: '#94A3B8' }}>Надморска</span>
+            
+            {/* Humidity */}
+            <div className="rounded-lg border border-border/40 bg-secondary/10 p-3 text-center">
+              <Droplets className="w-5 h-5 mx-auto mb-1.5" style={{color: '#2eb5b7'}}/>
+              <div className="text-xl font-bold">{weather.humidity}%</div>
+              <div className="text-[10px] mt-0.5 opacity-50">ВЛАГА</div>
             </div>
-          </div>
-          {/* Divider + Second Row */}
-          <div className="border-t border-border my-4" />
-          <div className="grid grid-cols-3 gap-4 text-center">
-            {/* Enhanced Barometer */}
-            <div className="col-span-3">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Gauge className="w-5 h-5 text-primary" />
-                  <span className="text-lg font-bold font-display" style={{ color: '#FFFFFF' }}>
-                    {weather ? `${weather.pressure} хПа` : '—'}
-                  </span>
-                </div>
-                {weather ? (
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                    weather.pressureTrend === 'rising' ? 'bg-green-500/20 text-green-400' :
-                    weather.pressureTrend === 'falling' ? 'bg-amber-500/20 text-amber-400' :
-                    'bg-muted text-muted-foreground'
-                  }`}>
-                    <span className="inline-flex items-center gap-1">
-                      {weather.pressureTrend === 'rising' ? (
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <path d="M12 19V5" />
-                          <path d="M7 10L12 5L17 10" />
-                        </svg>
-                      ) : weather.pressureTrend === 'falling' ? (
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <path d="M12 5V19" />
-                          <path d="M7 14L12 19L17 14" />
-                        </svg>
-                      ) : (
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <path d="M5 12H19" />
-                          <path d="M15 8L19 12L15 16" />
-                        </svg>
-                      )}
-                      <span>{weather.pressureTrend === 'rising' ? 'Нарастващо' : weather.pressureTrend === 'falling' ? 'Падащо' : 'Стабилно'}</span>
-                    </span>
-                  </span>
-                ) : (
-                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане...</span>
-                )}
-              </div>
-              {weather && (
-                <div className="flex items-center gap-2 mb-2 rounded-md bg-secondary/30 px-2 py-1.5">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 48 48"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="text-primary/90 shrink-0"
-                    aria-hidden="true"
-                  >
-                    <ellipse cx="22" cy="24" rx="14" ry="10" />
-                    <path d="M36 24 L44 16 M36 24 L44 32" />
-                    <circle cx="12" cy="22" r="1.5" fill="currentColor" />
-                  </svg>
-                  <p className="text-xs text-left" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                    {weather.pressureTrend === 'rising'
-                      ? 'Налягането се покачва - чакай по-активна риба.'
-                      : weather.pressureTrend === 'falling'
-                      ? 'Налягането пада - кълването вероятно ще е по-плахо.'
-                      : 'Стабилно налягане - добри условия за риболов.'}
-                  </p>
-                </div>
-              )}
-              {/* Mini pressure graph */}
-              {weather && weather.pressureHistory.length > 1 && (() => {
-                const hist = weather.pressureHistory;
-                const values = hist.map(h => h.value);
-                const minV = Math.min(...values) - 0.5;
-                const maxV = Math.max(...values) + 0.5;
-                const range = maxV - minV || 1;
-                const w = 280;
-                const h = 48;
-                const padding = 4;
-                const points = values.map((v, i) => ({
-                  x: padding + (i / (values.length - 1)) * (w - padding * 2),
-                  y: padding + (1 - (v - minV) / range) * (h - padding * 2),
-                }));
-                const pathD = points.map((p, i) => {
-                  if (i === 0) return `M ${p.x} ${p.y}`;
-                  const prev = points[i - 1];
-                  const cx = (prev.x + p.x) / 2;
-                  return `C ${cx} ${prev.y}, ${cx} ${p.y}, ${p.x} ${p.y}`;
-                }).join(' ');
-                const areaD = `${pathD} L ${points[points.length-1].x} ${h} L ${points[0].x} ${h} Z`;
-                const lastP = points[points.length - 1];
-
-                return (
-                  <div>
-                    <svg viewBox={`0 0 ${w} ${h}`} className="w-full" style={{ height: 48 }}>
-                      <defs>
-                        <linearGradient id="pressureGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.3" />
-                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
-                        </linearGradient>
-                      </defs>
-                      <path d={areaD} fill="url(#pressureGradient)" />
-                      <path d={pathD} fill="none" stroke="hsl(var(--primary))" strokeWidth="1.5" />
-                      <circle cx={lastP.x} cy={lastP.y} r={3} fill="hsl(var(--primary))" style={{ filter: 'drop-shadow(0 0 4px hsl(var(--primary)))' }} />
-                    </svg>
-                  </div>
-                );
-              })()}
-              {!weather && (
-                <div className="flex items-center justify-center py-4">
-                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане...</span>
-                </div>
-              )}
+            
+            {/* Altitude */}
+            <div className="rounded-lg border border-border/40 bg-secondary/10 p-3 text-center">
+              <Mountain className="w-5 h-5 mx-auto mb-1.5" style={{color: '#2eb5b7'}}/>
+              <div className="text-lg font-bold">{weather.altitude}</div>
+              <div className="text-[10px] mt-0.5 opacity-50">М.Н.В.</div>
             </div>
-          </div>
-          <div className="flex items-center justify-center gap-2 mt-4 pt-3 border-t border-border">
-            {weather ? (
-              <>
-                <span className="text-xl">{weather.weatherIcon}</span>
-                <span className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>{weather.weatherLabel}</span>
-              </>
-            ) : (
-              <span className="text-sm" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане...</span>
-            )}
+            
+            {/* Weather Icon */}
+            <div className="rounded-lg border border-border/40 bg-secondary/10 p-3 text-center flex flex-col items-center justify-center">
+              <span className="text-3xl mb-0.5">{weather.weatherIcon}</span>
+              <div className="text-[9px] opacity-50">{weather.weatherLabel}</div>
+            </div>
           </div>
         </section>
 
         {/* Solunar Activity Section — SVG Timeline */}
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-4 mb-4">
+          <h3 className="font-display text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -852,8 +711,8 @@ const Index = () => {
             </div>
           )}
         </section>
-        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-          <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
+        <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-4 mb-4">
+          <h3 className="font-display text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -886,7 +745,7 @@ const Index = () => {
               <Fish className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
               СТРЪВ
             </h4>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2">
               {(tips?.baits ?? moon.baits).map((bait) => (
                 <div
                   key={bait.name}
@@ -907,7 +766,7 @@ const Index = () => {
               <Anchor className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
               ТАКЪМИ
             </h4>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-2">
               {(tips?.tackle ?? moon.tackle).map((item) => (
                 <div
                   key={item.name}
