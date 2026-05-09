@@ -321,61 +321,73 @@ const Index = () => {
           </p>
         </section>
 
-        {/* Fishing Forecast */}
-        <section 
-          className="rounded-xl bg-card/60 backdrop-blur-md p-3 mb-3"
-          style={{
-            border: '1px solid #2eb5b7',
-            boxShadow: '0 0 10px rgba(46,181,183,0.2)',
-          }}
-        >
-          <h3 className="font-display text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 48 48"
-              fill="none"
-              stroke="#E4FF00"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-              style={{ 
-                transform: 'translateY(0.5px)',
-                filter: 'drop-shadow(0 0 6px #E4FF00)'
-              }}
-            >
-              <ellipse cx="22" cy="24" rx="14" ry="10" />
-              <path d="M36 24 L44 16 M36 24 L44 32" />
-              <circle cx="12" cy="22" r="1.5" fill="#E4FF00" />
-            </svg>
-            РИБО ПРОГНОЗА
-          </h3>
-          {fishingScore.isOverride && fishingScore.overrideReason && (
-            <div
-              className="mb-3"
+        {/* DECISION BANNER — Level 1 action */}
+        {(() => {
+          const score = fishingScore.score;
+          const inPeak = solunarContext.isInPeak;
+          let verdict = 'ИЗЧАКАЙ';
+          let context = 'Условията са слаби';
+          let glow = false;
+          let color = '#7F93A8';
+          if (fishingScore.isOverride) {
+            verdict = 'НЕ ЛОВУВАЙ';
+            context = stripEmojis(fishingScore.overrideReason || 'Опасни условия');
+            color = '#FF8C42';
+          } else if (inPeak) {
+            verdict = 'ХВЪРЛЯЙ СЕГА';
+            context = solunarContext.peakType === 'major' ? 'Главен солунарен пик активен' : 'Малък солунарен пик активен';
+            glow = true;
+            color = '#2eb5b7';
+          } else if (score >= 4) {
+            verdict = 'ХВЪРЛЯЙ СЕГА';
+            context = 'Активна риба';
+            glow = true;
+            color = '#2eb5b7';
+          } else if (score >= 3) {
+            verdict = 'ЗАХРАНИ СЕГА';
+            context = 'Подготви точката за пик';
+            color = '#E4FF00';
+          } else if (score >= 2) {
+            verdict = 'ИЗЧАКАЙ ПИК';
+            context = 'Слаба активност в момента';
+            color = '#E4FF00';
+          }
+          return (
+            <section
+              className="rounded-2xl backdrop-blur-md p-4 mb-3"
               style={{
-                background: 'rgba(239, 83, 80, 0.15)',
-                border: '1px solid #EF5350',
-                borderRadius: '8px',
-                padding: '10px 14px',
-                fontSize: '13px',
-                color: '#EF5350',
+                background: glow
+                  ? 'linear-gradient(135deg, rgba(46,181,183,0.10), rgba(46,181,183,0.02))'
+                  : 'rgba(255,255,255,0.03)',
+                border: `1px solid ${glow ? 'rgba(46,181,183,0.45)' : 'rgba(255,255,255,0.06)'}`,
+                boxShadow: glow ? '0 0 24px rgba(46,181,183,0.18)' : 'none',
               }}
             >
-              ВНИМАНИЕ: {stripEmojis(fishingScore.overrideReason)}
-            </div>
-          )}
-          <div className="flex items-center gap-3 mb-2">
-            <div className="flex gap-1">{fishIcons}</div>
-            <span className="text-lg font-bold font-display text-white">
-              {fishingScore.label}
-            </span>
-          </div>
-          <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>
-            {stripEmojis(moon.fishingTip)}
-          </p>
-        </section>
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div
+                    className="font-display text-3xl font-bold tracking-tight leading-none"
+                    style={{ color, textShadow: glow ? `0 0 20px ${color}66` : 'none' }}
+                  >
+                    {verdict}
+                  </div>
+                  <div className="text-[12px] mt-1.5 leading-snug" style={{ color: 'rgba(234,247,255,0.75)' }}>
+                    {context}
+                  </div>
+                </div>
+                <div className="flex flex-col items-end shrink-0">
+                  <div className="flex gap-0.5">{fishIcons}</div>
+                  <div className="text-[9px] mt-1 uppercase tracking-wider" style={{ color: 'rgba(127,147,168,0.9)' }}>
+                    {fishingScore.label}
+                  </div>
+                </div>
+              </div>
+              <p className="text-[11px] mt-3 pt-3 border-t border-white/5 leading-relaxed" style={{ color: 'rgba(234,247,255,0.55)' }}>
+                {stripEmojis(moon.fishingTip)}
+              </p>
+            </section>
+          );
+        })()}
 
         {/* Smart Weather Tips (only when weather is loaded) */}
         {tips && (
