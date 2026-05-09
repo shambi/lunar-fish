@@ -315,31 +315,31 @@ const Index = () => {
         {(() => {
           const score = fishingScore.score;
           const inPeak = solunarContext.isInPeak;
-          let verdict = 'ИЗЧАКАЙ';
+          let verdict = 'Слаба активност';
           let context = 'Условията са слаби';
           let glow = false;
           let color = '#7F93A8';
           if (fishingScore.isOverride) {
-            verdict = 'НЕ ЛОВУВАЙ';
+            verdict = 'Не ловувай';
             context = stripEmojis(fishingScore.overrideReason || 'Опасни условия');
             color = '#FF8C42';
           } else if (inPeak) {
-            verdict = 'ХВЪРЛЯЙ СЕГА';
-            context = solunarContext.peakType === 'major' ? 'Главен солунарен пик активен' : 'Малък солунарен пик активен';
+            verdict = 'Активен прозорец';
+            context = solunarContext.peakType === 'major' ? 'Главен солунарен пик' : 'Малък солунарен пик';
             glow = true;
             color = '#2eb5b7';
           } else if (score >= 4) {
-            verdict = 'ХВЪРЛЯЙ СЕГА';
-            context = 'Активна риба';
+            verdict = 'Активен прозорец';
+            context = 'Рибата е будна';
             glow = true;
             color = '#2eb5b7';
           } else if (score >= 3) {
-            verdict = 'ЗАХРАНИ СЕГА';
-            context = 'Подготви точката за пик';
+            verdict = 'Следващ пик скоро';
+            context = 'Подготви точката';
             color = '#E4FF00';
           } else if (score >= 2) {
-            verdict = 'ИЗЧАКАЙ ПИК';
-            context = 'Слаба активност в момента';
+            verdict = 'Стабилни условия';
+            context = 'Активността е слаба';
             color = '#E4FF00';
           }
           return (
@@ -347,32 +347,32 @@ const Index = () => {
               className="rounded-2xl backdrop-blur-md p-4 mb-3"
               style={{
                 background: glow
-                  ? 'linear-gradient(135deg, rgba(46,181,183,0.10), rgba(46,181,183,0.02))'
+                  ? 'linear-gradient(135deg, rgba(46,181,183,0.08), rgba(46,181,183,0.02))'
                   : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${glow ? 'rgba(46,181,183,0.45)' : 'rgba(255,255,255,0.06)'}`,
-                boxShadow: glow ? '0 0 24px rgba(46,181,183,0.18)' : 'none',
+                border: `1px solid ${glow ? 'rgba(46,181,183,0.35)' : 'rgba(255,255,255,0.06)'}`,
+                boxShadow: glow ? '0 0 16px rgba(46,181,183,0.12)' : 'none',
               }}
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <div
-                    className="font-display text-3xl font-bold tracking-tight leading-none"
-                    style={{ color, textShadow: glow ? `0 0 20px ${color}66` : 'none' }}
+                    className="font-display text-lg font-medium tracking-tight leading-none"
+                    style={{ color }}
                   >
                     {verdict}
                   </div>
-                  <div className="text-[12px] mt-1.5 leading-snug" style={{ color: 'rgba(234,247,255,0.75)' }}>
+                  <div className="text-[12px] mt-1.5 leading-snug" style={{ color: 'rgba(234,247,255,0.65)' }}>
                     {context}
                   </div>
                 </div>
                 <div className="flex flex-col items-end shrink-0">
                   <div className="flex gap-0.5">{fishIcons}</div>
-                  <div className="text-[9px] mt-1 uppercase tracking-wider" style={{ color: 'rgba(127,147,168,0.9)' }}>
+                  <div className="text-[9px] mt-1 uppercase tracking-wider" style={{ color: 'rgba(127,147,168,0.8)' }}>
                     {fishingScore.label}
                   </div>
                 </div>
               </div>
-              <p className="text-[11px] mt-3 pt-3 border-t border-white/5 leading-relaxed" style={{ color: 'rgba(234,247,255,0.55)' }}>
+              <p className="text-[11px] mt-3 pt-3 border-t border-white/5 leading-relaxed" style={{ color: 'rgba(234,247,255,0.5)' }}>
                 {stripEmojis(moon.fishingTip)}
               </p>
             </section>
@@ -382,7 +382,7 @@ const Index = () => {
         {/* Smart Weather Tips (only when weather is loaded) */}
         {tips && (
           <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
-            <h3 className="font-display text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+            <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
               <svg
                 width="18"
                 height="18"
@@ -395,14 +395,14 @@ const Index = () => {
                 aria-hidden="true"
                 style={{ 
                   transform: 'translateY(0.5px)',
-                  filter: 'drop-shadow(0 0 6px #E4FF00)'
+                  opacity: 0.85
                 }}
               >
                 <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
                 <path d="M9 18h6" />
                 <path d="M10 22h4" />
               </svg>
-              УМНИ СЪВЕТИ
+              Анализ
             </h3>
             <div className="space-y-3">
               {fishingScore.isOverride && fishingScore.overrideReason && (
@@ -457,7 +457,7 @@ const Index = () => {
 
         {/* Fishing Style Tip */}
         <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
-          <h3 className="font-display text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+          <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -470,7 +470,7 @@ const Index = () => {
               aria-hidden="true"
               style={{ 
                 transform: 'translateY(0.5px)',
-                filter: 'drop-shadow(0 0 6px #E4FF00)'
+                opacity: 0.85
               }}
             >
               <ellipse cx="22" cy="24" rx="16" ry="5" />
@@ -480,7 +480,7 @@ const Index = () => {
               <circle cx="9" cy="23" r="1.5" fill="#E4FF00" />
               <path d="M10 24 L36 24" opacity="0.2" />
             </svg>
-            СЪВЕТИ ЗА СТИЛ РИБОЛОВ
+            Съвети за стил
           </h3>
           <div className="flex gap-3">
             <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
@@ -494,15 +494,15 @@ const Index = () => {
 
         {/* Weather Widget — Bento Grid */}
         <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
-          <h3 className="font-display text-[10px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ filter: 'drop-shadow(0 0 6px #E4FF00)' }}>
+          <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ opacity: 0.85 }}>
               <circle cx="12" cy="12" r="4" />
               <path d="M12 2v2" /><path d="M12 20v2" />
               <path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" />
               <path d="M2 12h2" /><path d="M20 12h2" />
               <path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />
             </svg>
-            УСЛОВИЯ
+            Условия
           </h3>
           {/* Interpretation lead — Level 2 */}
           {weather && (() => {
@@ -604,7 +604,7 @@ const Index = () => {
 
         {/* Solunar Activity Section — Compact Timeline */}
         <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
-          <h3 className="font-display text-[10px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+          <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -617,12 +617,12 @@ const Index = () => {
               aria-hidden="true"
               style={{ 
                 transform: 'translateY(0.5px)',
-                filter: 'drop-shadow(0 0 6px #E4FF00)'
+                opacity: 0.85
               }}
             >
               <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
             </svg>
-            СОЛУНАРНА АКТИВНОСТ
+            Солунарна активност
           </h3>
           {weather && weather.solunarPeaks ? (
             <>
@@ -645,18 +645,18 @@ const Index = () => {
                   }
                   if (!next && peaks.length) { const s=parse(peaks[0].start); next = { ...peaks[0], diff: 1440-nowMin+s }; }
                 }
-                const verdict = active ? 'ПИК В МОМЕНТА' : (next && next.diff <= 60 ? 'ПРИГОТВИ СЕ' : 'ИЗЧАКАЙ ПИК');
+                const verdict = active ? 'Активен прозорец' : (next && next.diff <= 60 ? 'Следващ пик скоро' : 'Стабилни условия');
                 const subtitle = active
                   ? `${active.type === 'major' ? 'Главен' : 'Малък'} пик · още ${active.remaining}мин`
                   : next ? `Следващ ${next.type === 'major' ? 'главен' : 'малък'} пик след ${Math.floor(next.diff/60)}ч ${next.diff%60}м` : '';
                 const color = active ? '#2eb5b7' : (next && next.diff <= 60 ? '#E4FF00' : '#7F93A8');
                 return (
                   <div className="mb-3">
-                    <div className="font-display text-2xl font-bold tracking-tight leading-none"
-                      style={{ color, textShadow: active ? `0 0 16px ${color}66` : 'none' }}>
+                    <div className="font-display text-lg font-medium tracking-tight leading-none"
+                      style={{ color }}>
                       {verdict}
                     </div>
-                    <div className="text-[11px] mt-1.5" style={{ color: 'rgba(127,147,168,0.95)' }}>{subtitle}</div>
+                    <div className="text-[11px] mt-1.5" style={{ color: 'rgba(127,147,168,0.85)' }}>{subtitle}</div>
                   </div>
                 );
               })()}
@@ -672,7 +672,7 @@ const Index = () => {
           )}
         </section>
         <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
-          <h3 className="font-display text-[11px] font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+          <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg
               width="18"
               height="18"
@@ -685,7 +685,7 @@ const Index = () => {
               aria-hidden="true"
               style={{ 
                 transform: 'translateY(0.5px)',
-                filter: 'drop-shadow(0 0 6px #E4FF00)'
+                opacity: 0.85
               }}
             >
               <path d="M2 24 L6 21 Q14 18 28 18 Q38 18 40 22 L42 24 L40 26 Q38 30 28 30 Q14 30 6 27Z" />
@@ -696,14 +696,14 @@ const Index = () => {
               <circle cx="8" cy="23" r="1.5" fill="#E4FF00" />
               <path d="M2 24 L10 25" opacity="0.3" />
             </svg>
-            РИБО СЪВЕТИ
+            Съвети
           </h3>
 
           {/* Baits */}
           <div className="mb-3">
-            <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-3 flex items-center gap-1">
-              <Fish className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
-              СТРЪВ
+            <h4 className="text-xs font-medium text-[#2eb5b7] uppercase tracking-wider mb-3 flex items-center gap-1">
+              <Fish className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', opacity: 0.85 }} />
+              Стръв
             </h4>
             <div className="grid grid-cols-2 gap-1.5">
               {(tips?.baits ?? moon.baits).map((bait) => (
@@ -726,9 +726,9 @@ const Index = () => {
 
           {/* Tackle */}
           <div>
-            <h4 className="text-xs font-semibold text-[#2eb5b7] uppercase tracking-wider mb-3 flex items-center gap-1">
-              <Anchor className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
-              ТАКЪМИ
+            <h4 className="text-xs font-medium text-[#2eb5b7] uppercase tracking-wider mb-3 flex items-center gap-1">
+              <Anchor className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', opacity: 0.85 }} />
+              Такъми
             </h4>
             <div className="grid grid-cols-2 gap-1.5">
               {(tips?.tackle ?? moon.tackle).map((item) => (
