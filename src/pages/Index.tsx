@@ -484,7 +484,7 @@ const Index = () => {
           </h3>
           <div className="flex gap-3">
             <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-              <Anchor className="w-4 h-4 text-[#2eb5b7]" strokeWidth={1.5} />
+              <Anchor className="w-4 h-4" style={{ color: 'rgba(234,247,255,0.45)' }} strokeWidth={1.5} />
             </div>
             <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>
               {tips ? tips.fishingStyleTip : stripEmojis(moon.fishingStyleTip)}
