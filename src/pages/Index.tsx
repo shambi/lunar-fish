@@ -710,7 +710,7 @@ const Index = () => {
               {(tips?.baits ?? moon.baits).map((bait) => (
                 <div
                   key={bait.name}
-                  className="flex items-center gap-2 rounded-lg border border-border bg-secondary/30 px-2.5 py-2 min-w-0"
+                  className="flex items-center gap-2 rounded-lg border border-white/5 bg-white/[0.03] px-2.5 py-2 min-w-0"
                 >
                   <AdviceIcon name={bait.name} size={28} />
                   <span
@@ -735,7 +735,7 @@ const Index = () => {
               {(tips?.tackle ?? moon.tackle).map((item) => (
                 <div
                   key={item.name}
-                  className="flex items-center gap-2 rounded-lg border border-border bg-secondary/30 px-2.5 py-2 min-w-0"
+                  className="flex items-center gap-2 rounded-lg border border-white/5 bg-white/[0.03] px-2.5 py-2 min-w-0"
                 >
                   <AdviceIcon name={item.name} size={28} />
                   <span
