@@ -685,43 +685,7 @@ const Index = () => {
             Солунарна активност
           </h3>
           {weather && weather.solunarPeaks ? (
-            <>
-              {(() => {
-                const parse = (s: string) => { if (!s || s === '--:--') return -1; const [h,m]=s.split(':').map(Number); return h*60+m; };
-                const nowMin = new Date().getHours()*60 + new Date().getMinutes();
-                const peaks = [...weather.solunarPeaks].sort((a:any,b:any)=>parse(a.start)-parse(b.start));
-                let active: any = null;
-                for (const p of peaks) {
-                  const s=parse(p.start), e=parse(p.end);
-                  if (s<0||e<0) continue;
-                  const inR = s<=e ? (nowMin>=s && nowMin<=e) : (nowMin>=s || nowMin<=e);
-                  if (inR) { active = { ...p, remaining: (e>nowMin?e-nowMin:1440-nowMin+e) }; break; }
-                }
-                let next: any = null;
-                if (!active) {
-                  for (const p of peaks) {
-                    const s=parse(p.start);
-                    if (s>nowMin) { next = { ...p, diff: s-nowMin }; break; }
-                  }
-                  if (!next && peaks.length) { const s=parse(peaks[0].start); next = { ...peaks[0], diff: 1440-nowMin+s }; }
-                }
-                const verdict = active ? 'Активен прозорец' : (next && next.diff <= 60 ? 'Следващ пик скоро' : 'Стабилни условия');
-                const subtitle = active
-                  ? `${active.type === 'major' ? 'Главен' : 'Малък'} пик · още ${active.remaining}мин`
-                  : next ? `Следващ ${next.type === 'major' ? 'главен' : 'малък'} пик след ${Math.floor(next.diff/60)}ч ${next.diff%60}м` : '';
-                const color = active ? '#2eb5b7' : (next && next.diff <= 60 ? '#E4FF00' : '#7F93A8');
-                return (
-                  <div className="mb-3">
-                    <div className="font-display text-lg font-medium tracking-tight leading-none"
-                      style={{ color }}>
-                      {verdict}
-                    </div>
-                    <div className="text-[11px] mt-1.5" style={{ color: 'rgba(127,147,168,0.85)' }}>{subtitle}</div>
-                  </div>
-                );
-              })()}
-              <SolunarTimeline weather={weather} />
-            </>
+            <SolunarSection weather={weather} />
           ) : (
             <div className="flex items-center justify-center gap-2 py-4">
               <Loader2 className="w-4 h-4 animate-spin text-primary" />
