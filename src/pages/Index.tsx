@@ -544,19 +544,19 @@ const Index = () => {
             <div className="grid grid-cols-3 gap-1.5">
               {/* TEMP */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center">
-                <ThermometerSun className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <ThermometerSun className="w-4 h-4 mx-auto mb-0.5" style={{ color: 'rgba(234,247,255,0.5)' }} />
                 <div className="text-base font-bold leading-none text-white">{weather ? `${weather.temperature}°` : '—'}</div>
                 <div className="text-[8px] mt-0.5 opacity-50">ТЕМП.</div>
               </div>
               {/* WIND */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center">
-                <Wind className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <Wind className="w-4 h-4 mx-auto mb-0.5" style={{ color: 'rgba(234,247,255,0.5)' }} />
                 <div className="text-base font-bold leading-none text-white">{weather ? weather.windSpeed : '—'}</div>
                 <div className="text-[8px] mt-0.5 opacity-50">КМ/Ч</div>
               </div>
-              {/* PRESSURE w/ sparkline */}
+              {/* PRESSURE w/ sparkline (cyan kept — active trend data) */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center">
-                <Gauge className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <Gauge className="w-4 h-4 mx-auto mb-0.5" style={{ color: 'rgba(234,247,255,0.5)' }} />
                 {weather && weather.pressureHistory.length > 1 ? (() => {
                   const values = weather.pressureHistory.map(h => h.value);
                   const min = Math.min(...values);
@@ -568,9 +568,10 @@ const Index = () => {
                     const y = h - ((v - min) / range) * h;
                     return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
                   }).join(' ');
+                  const trendColor = weather.pressureTrend === 'stable' ? 'rgba(234,247,255,0.55)' : '#2eb5b7';
                   return (
                     <svg viewBox="0 0 40 8" className="w-full h-2 mb-0.5">
-                      <path d={d} fill="none" stroke="#2eb5b7" strokeWidth="1" />
+                      <path d={d} fill="none" stroke={trendColor} strokeWidth="1" />
                     </svg>
                   );
                 })() : <div className="h-2 mb-0.5" />}
@@ -581,13 +582,13 @@ const Index = () => {
               </div>
               {/* HUMIDITY */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center">
-                <Droplets className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <Droplets className="w-4 h-4 mx-auto mb-0.5" style={{ color: 'rgba(234,247,255,0.5)' }} />
                 <div className="text-base font-bold leading-none text-white">{weather ? `${weather.humidity}%` : '—'}</div>
                 <div className="text-[8px] mt-0.5 opacity-50">ВЛАГА</div>
               </div>
               {/* ALTITUDE */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center">
-                <Mountain className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <Mountain className="w-4 h-4 mx-auto mb-0.5" style={{ color: 'rgba(234,247,255,0.5)' }} />
                 <div className="text-base font-bold leading-none text-white">{weather ? Math.round(weather.altitude) : '—'}</div>
                 <div className="text-[8px] mt-0.5 opacity-50">М. Н.В.</div>
               </div>
