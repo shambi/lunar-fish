@@ -9,112 +9,171 @@ import { ForecastCards } from '@/components/ForecastCards';
 import { PerchIcon, CarpIcon, PikeIcon, BreamIcon, CatfishIcon } from '@/components/FishIcons';
 import { AdviceIcon } from '@/components/AdviceIcon';
 
-const SolunarTimeline = ({ weather }: { weather: any }) => {
+const SolunarSection = ({ weather }: { weather: any }) => {
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 30000);
     return () => clearInterval(t);
   }, []);
 
-  const parseTime = (s: string) => {
+  const parse = (s?: string) => {
     if (!s || s === '--:--') return -1;
     const [h, m] = s.split(':').map(Number);
     return h * 60 + m;
   };
-  const timeToX = (s: string) => {
-    const min = parseTime(s);
-    if (min < 0) return -10;
-    return 2 + (min / 1440) * 96;
+  const fmt = (mins: number) => {
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    return h > 0 ? `${h}ч ${m}м` : `${m}м`;
   };
-  const currentMin = now.getHours() * 60 + now.getMinutes();
-  const isInRange = (start: string, end: string) => {
-    const s = parseTime(start), e = parseTime(end);
-    if (s < 0 || e < 0) return false;
-    return s <= e ? (currentMin >= s && currentMin <= e) : (currentMin >= s || currentMin <= e);
-  };
+  const xOf = (mins: number) => 2 + (mins / 1440) * 96;
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const nowX = xOf(nowMin);
 
   const peaks = [...(weather.solunarPeaks || [])].sort(
-    (a: any, b: any) => parseTime(a.start) - parseTime(b.start)
+    (a: any, b: any) => parse(a.start) - parse(b.start)
   );
 
-  const getCountdown = () => {
+  // Active / next peak detection
+  let active: any = null;
+  for (const p of peaks) {
+    const s = parse(p.start), e = parse(p.end);
+    if (s < 0 || e < 0) continue;
+    const inR = s <= e ? (nowMin >= s && nowMin <= e) : (nowMin >= s || nowMin <= e);
+    if (inR) { active = { ...p, remaining: e > nowMin ? e - nowMin : 1440 - nowMin + e }; break; }
+  }
+  let next: any = null;
+  if (!active) {
     for (const p of peaks) {
-      if (isInRange(p.start, p.end)) {
-        const eMin = parseTime(p.end);
-        const remaining = eMin > currentMin ? eMin - currentMin : 1440 - currentMin + eMin;
-        return { active: true as const, type: p.type, minutes: remaining };
-      }
+      const s = parse(p.start);
+      if (s > nowMin) { next = { ...p, diff: s - nowMin }; break; }
     }
-    for (const p of peaks) {
-      const sMin = parseTime(p.start);
-      if (sMin > currentMin) {
-        const diff = sMin - currentMin;
-        return { active: false as const, type: p.type, hours: Math.floor(diff / 60), minutes: diff % 60 };
-      }
-    }
-    if (peaks.length > 0) {
-      const sMin = parseTime(peaks[0].start);
-      const diff = 1440 - currentMin + sMin;
-      return { active: false as const, type: peaks[0].type, hours: Math.floor(diff / 60), minutes: diff % 60 };
-    }
-    return null;
-  };
-  const countdown = getCountdown();
+    if (!next && peaks.length) { const s = parse(peaks[0].start); next = { ...peaks[0], diff: 1440 - nowMin + s }; }
+  }
 
-  const sunriseX = timeToX(weather.sunrise);
-  const sunsetX = timeToX(weather.sunset);
-  const nowX = 2 + (currentMin / 1440) * 96;
+  // Verdict + interpretation
+  let verdict: string;
+  let accent: string;
+  let interpretation: string;
+  if (active) {
+    verdict = 'Активен прозорец';
+    accent = '#2eb5b7';
+    interpretation = active.type === 'major'
+      ? 'Рибата е активна — не захранвай повече, хвърляй стръв.'
+      : 'Кратък пик на активност — наблюдавай и реагирай.';
+  } else if (next && next.diff <= 60) {
+    verdict = 'Пикът наближава';
+    accent = '#E4FF00';
+    interpretation = next.type === 'major'
+      ? 'Захрани точката сега и подготви снаряжението.'
+      : 'Подгответе се — кратък прозорец след малко.';
+  } else if (next && next.diff <= 120) {
+    verdict = 'Следващ пик скоро';
+    accent = '#2eb5b7';
+    interpretation = 'Спокоен момент — добро време за смяна на тактиката.';
+  } else {
+    verdict = 'Стабилни условия';
+    accent = '#7F93A8';
+    interpretation = 'Концентрирай се около главния пик за най-добри резултати.';
+  }
+
+  const status = active
+    ? `остават ${fmt(active.remaining)} · ${active.type === 'major' ? 'главен' : 'малък'} пик`
+    : next
+      ? `след ${fmt(next.diff)} · ${next.type === 'major' ? 'главен' : 'малък'} пик`
+      : '';
+
+  // Astronomical events
+  const events: { label: string; time: string; color: string; glyph: string }[] = [
+    { label: 'изгрев', time: weather.sunrise || '--:--', color: '#FF8C42', glyph: '↑' },
+    { label: 'луна ↑', time: weather.moonrise || '--:--', color: '#9FB4C7', glyph: '☾' },
+    { label: 'луна ↓', time: weather.moonset || '--:--', color: '#9FB4C7', glyph: '☾' },
+    { label: 'залез', time: weather.sunset || '--:--', color: '#FF8C42', glyph: '↓' },
+  ];
 
   return (
-    <div className="space-y-2">
-      {/* Sun/Moon pills */}
-      <div className="flex justify-between text-[10px] opacity-80">
-        <span>🌅 <span className="text-white">{weather.sunrise || '--:--'}</span></span>
-        <span>🌙↑ <span className="text-white">{weather.moonrise || '--:--'}</span></span>
-        <span>🌙↓ <span className="text-white">{weather.moonset || '--:--'}</span></span>
-        <span>🌆 <span className="text-white">{weather.sunset || '--:--'}</span></span>
+    <div className="space-y-2.5">
+      {/* Status banner */}
+      <div className="flex items-baseline justify-between gap-3">
+        <div className="min-w-0">
+          <div className="font-display text-[17px] font-medium tracking-tight leading-none truncate" style={{ color: accent }}>
+            {verdict}
+          </div>
+          {status && (
+            <div className="text-[10.5px] mt-1" style={{ color: 'rgba(159,180,199,0.75)' }}>{status}</div>
+          )}
+        </div>
+        <div className="text-[10px] tabular-nums opacity-60 shrink-0">
+          {String(now.getHours()).padStart(2, '0')}:{String(now.getMinutes()).padStart(2, '0')}
+        </div>
       </div>
 
-      {/* Timeline SVG */}
-      <svg viewBox="0 0 100 24" preserveAspectRatio="none" className="w-full" style={{ height: 46 }}>
-        <line x1="2" y1="12" x2="98" y2="12" stroke="rgba(255,255,255,0.15)" strokeWidth="0.4" />
-        {[0, 6, 12, 18, 24].map(h => {
-          const x = 2 + (h / 24) * 96;
-          return <line key={h} x1={x} y1="10.5" x2={x} y2="13.5" stroke="rgba(255,255,255,0.25)" strokeWidth="0.3" />;
-        })}
-        <line x1={nowX} y1="4" x2={nowX} y2="20" stroke="#E4FF00" strokeWidth="0.4" opacity="0.85" />
-        {sunriseX > 0 && <circle cx={sunriseX} cy="12" r="1.5" fill="#FF8C42" />}
-        {sunsetX > 0 && <circle cx={sunsetX} cy="12" r="1.5" fill="#FF8C42" />}
-        {peaks.map((p: any, i: number) => {
-          const x = timeToX(p.start);
-          const isMajor = p.type === 'major';
-          const active = isInRange(p.start, p.end);
-          return (
-            <g key={i}>
-              <circle
-                cx={x} cy="12" r={isMajor ? 2.2 : 1.6}
-                fill={isMajor ? '#2eb5b7' : 'rgba(46,181,183,0.55)'}
-                style={active ? { filter: 'drop-shadow(0 0 2px #2eb5b7)' } : {}}
-              >
-                {active && <animate attributeName="r" values={`${isMajor?2.2:1.6};${isMajor?3:2.2};${isMajor?2.2:1.6}`} dur="1.5s" repeatCount="indefinite" />}
-              </circle>
-              <text x={x} y="20" fontSize="2.6" fill="rgba(255,255,255,0.7)" textAnchor="middle">{p.start}</text>
-            </g>
-          );
-        })}
-        {sunriseX > 0 && <text x={sunriseX} y="7" fontSize="2.4" fill="rgba(255,140,66,0.85)" textAnchor="middle">изгрев</text>}
-        {sunsetX > 0 && <text x={sunsetX} y="7" fontSize="2.4" fill="rgba(255,140,66,0.85)" textAnchor="middle">залез</text>}
-      </svg>
-
-      {/* Legend */}
-      <div className="flex items-center justify-center gap-3 text-[9px] opacity-70">
-        <span className="inline-flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full" style={{ background: '#2eb5b7' }} />Главен</span>
-        <span className="inline-flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full" style={{ background: 'rgba(46,181,183,0.55)' }} />Малък</span>
-        <span className="inline-flex items-center gap-1"><span className="inline-block w-2 h-2 rounded-full" style={{ background: '#FF8C42' }} />Слънце</span>
+      {/* 24h timeline with peak windows as bars */}
+      <div className="relative">
+        <svg viewBox="0 0 100 14" preserveAspectRatio="none" className="w-full" style={{ height: 38 }}>
+          {/* baseline */}
+          <line x1="2" y1="7" x2="98" y2="7" stroke="rgba(255,255,255,0.08)" strokeWidth="0.3" />
+          {/* hour ticks */}
+          {[0, 6, 12, 18, 24].map(h => {
+            const x = xOf(h * 60);
+            return (
+              <g key={h}>
+                <line x1={x} y1="6" x2={x} y2="8" stroke="rgba(255,255,255,0.18)" strokeWidth="0.25" />
+                <text x={x} y="13" fontSize="2.2" fill="rgba(255,255,255,0.35)" textAnchor="middle">{String(h).padStart(2, '0')}</text>
+              </g>
+            );
+          })}
+          {/* sun events */}
+          {[weather.sunrise, weather.sunset].map((t, i) => {
+            const m = parse(t);
+            if (m < 0) return null;
+            const x = xOf(m);
+            return <circle key={i} cx={x} cy="7" r="0.7" fill="#FF8C42" opacity="0.85" />;
+          })}
+          {/* peak windows as bars */}
+          {peaks.map((p: any, i: number) => {
+            const s = parse(p.start), e = parse(p.end);
+            if (s < 0 || e < 0) return null;
+            const isMajor = p.type === 'major';
+            const isActive = active && active.start === p.start;
+            const x1 = xOf(s);
+            const w = Math.max(0.6, xOf(e) - x1);
+            const h = isMajor ? 4.2 : 2.4;
+            const y = 7 - h / 2;
+            const fill = isActive ? '#2eb5b7' : isMajor ? 'rgba(46,181,183,0.55)' : 'rgba(46,181,183,0.28)';
+            return (
+              <g key={i}>
+                <rect x={x1} y={y} width={w} height={h} rx="0.6"
+                  fill={fill}
+                  style={isActive ? { filter: 'drop-shadow(0 0 1.5px #2eb5b7)' } : {}}>
+                  {isActive && <animate attributeName="opacity" values="1;0.6;1" dur="1.8s" repeatCount="indefinite" />}
+                </rect>
+              </g>
+            );
+          })}
+          {/* now marker */}
+          <line x1={nowX} y1="2" x2={nowX} y2="12" stroke="#E4FF00" strokeWidth="0.4" opacity="0.9" />
+          <circle cx={nowX} cy="2" r="0.9" fill="#E4FF00" />
+        </svg>
       </div>
 
-      {/* countdown is rendered as the section's verdict above the timeline */}
-      {void countdown}
+      {/* Astronomical events row */}
+      <div className="grid grid-cols-4 gap-1.5">
+        {events.map((e) => (
+          <div key={e.label} className="flex flex-col items-center justify-center rounded-md border border-white/5 bg-white/[0.02] py-1.5">
+            <span className="text-[8.5px] uppercase tracking-wider opacity-55">{e.label}</span>
+            <span className="font-display text-[12px] tabular-nums mt-0.5" style={{ color: e.color }}>
+              {e.time}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Interpretation */}
+      <div className="text-[11px] leading-snug border-l-2 pl-2.5 py-0.5"
+        style={{ borderColor: accent, color: 'rgba(220,232,242,0.78)' }}>
+        {interpretation}
+      </div>
     </div>
   );
 };
