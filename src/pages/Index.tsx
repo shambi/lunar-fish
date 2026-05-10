@@ -422,21 +422,21 @@ const Index = () => {
               
               <div className="flex gap-3">
                 <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                  <Cloud className="w-4 h-4 text-[#2eb5b7]" strokeWidth={1.5} />
+                  <Cloud className="w-4 h-4" style={{ color: 'rgba(234,247,255,0.45)' }} strokeWidth={1.5} />
                 </div>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{tips.weatherTip}</p>
               </div>
 
               <div className="flex gap-3">
                 <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                  <Wind className="w-4 h-4 text-[#2eb5b7]" strokeWidth={1.5} />
+                  <Wind className="w-4 h-4" style={{ color: 'rgba(234,247,255,0.45)' }} strokeWidth={1.5} />
                 </div>
                 <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{tips.windTip}</p>
               </div>
 
               <div className="flex gap-3">
                 <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={solunarContext.isInPeak ? '#2eb5b7' : 'rgba(234,247,255,0.45)'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
                   </svg>
