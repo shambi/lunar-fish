@@ -889,28 +889,12 @@ const Index = () => {
 
         {/* Solunar Activity Section — Compact Timeline */}
         <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
-          <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#E4FF00"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-              style={{ 
-                transform: 'translateY(0.5px)',
-                opacity: 0.85
-              }}
-            >
-              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-            </svg>
+          <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-2" style={{ color: '#94A3B8' }}>
+            <MoonPhaseDot phase={moon.phase} size={20} />
             Солунарна активност
           </h3>
           {weather && weather.solunarPeaks ? (
-            <SolunarSection weather={weather} />
+            <SolunarSection weather={weather} moonPhase={moon.phase} />
           ) : (
             <div className="flex items-center justify-center gap-2 py-4">
               <Loader2 className="w-4 h-4 animate-spin text-primary" />
