@@ -137,21 +137,14 @@ const SolunarSection = ({ weather, moonPhase }: { weather: any; moonPhase: numbe
     if (!next && peaks.length) { const s = parse(peaks[0].start); next = { ...peaks[0], diff: 1440 - nowMin + s }; }
   }
 
-  // Activity % calculation
-  let activityPct = 20;
-  if (active) {
-    activityPct = active.type === 'major' ? 88 : 65;
-    // small modulation by remaining
-    const frac = active.elapsed / Math.max(1, active.span);
-    activityPct += Math.round(Math.sin(frac * Math.PI) * 6);
-  } else if (next) {
-    // ramp toward next peak
-    const baseTarget = next.type === 'major' ? 80 : 60;
-    if (next.diff <= 60) activityPct = Math.round(35 + (60 - next.diff) / 60 * (baseTarget - 35));
-    else if (next.diff <= 180) activityPct = Math.round(20 + (180 - next.diff) / 180 * 20);
-    else activityPct = 18;
-  }
-  activityPct = Math.max(8, Math.min(96, activityPct));
+  // Activity % calculation — true formula: active peak minutes / 1440
+  const totalActiveMinutes = peaks.reduce((acc: number, p: any) => {
+    const s = parse(p.start), e = parse(p.end);
+    if (s < 0 || e < 0) return acc;
+    const span = s <= e ? e - s : 1440 - s + e;
+    return acc + span;
+  }, 0);
+  const activityPct = Math.max(0, Math.min(99, Math.round((totalActiveMinutes / 1440) * 100)));
 
   // Verdict + interpretation
   let verdict: string;
@@ -188,211 +181,210 @@ const SolunarSection = ({ weather, moonPhase }: { weather: any; moonPhase: numbe
       ? `след ${fmt(next.diff)} · ${next.type === 'major' ? 'главен' : 'малък'}`
       : '';
 
-  // Time formatted HH:MM:SS
-  const hh = String(now.getHours()).padStart(2, '0');
-  const mm = String(now.getMinutes()).padStart(2, '0');
-  const ss = String(now.getSeconds()).padStart(2, '0');
-  const clockText = `${hh}:${mm}:${ss}`;
+  // Day quality label
+  const dayQuality = activityPct >= 40 ? 'ОТЛИЧЕН ДЕН' : activityPct >= 25 ? 'ДОБЪР ДЕН' : activityPct >= 15 ? 'СРЕДЕН ДЕН' : 'СЛАБ ДЕН';
 
-  // Circular gauge — dotted ring
-  const ringDots = 60;
-  const ringRadius = 78;
-  const filledDots = Math.round((activityPct / 100) * ringDots);
-  const gaugeSize = 192;
-  const cx = gaugeSize / 2;
-  const cy = gaugeSize / 2;
+  // ===== Circle helpers =====
+  const polar = (cx: number, cy: number, r: number, angleDeg: number) => {
+    const rad = (angleDeg - 90) * Math.PI / 180;
+    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+  };
+  const timeToAngle = (mins: number) => (mins / 1440) * 360;
+  const arc = (cx: number, cy: number, r: number, startA: number, endA: number) => {
+    const sweep = ((endA - startA) % 360 + 360) % 360;
+    const start = polar(cx, cy, r, startA);
+    const end = polar(cx, cy, r, endA);
+    const large = sweep > 180 ? 1 : 0;
+    return `M ${start.x} ${start.y} A ${r} ${r} 0 ${large} 1 ${end.x} ${end.y}`;
+  };
+  const nowAngle = timeToAngle(nowMin);
+  const handEnd = polar(50, 50, 38, nowAngle);
 
-  // 24h timeline ticks for peaks (markers above linear bar)
-  const xOf = (mins: number) => 2 + (mins / 1440) * 96;
+  // 24h timeline x mapping
+  const xOf = (mins: number) => 3 + (mins / 1440) * 94;
   const nowX = xOf(nowMin);
 
   return (
-    <div className="space-y-3">
-      {/* HERO — Circular Tactical Gauge */}
-      <div className="relative flex flex-col items-center justify-center pt-1">
-        <svg width={gaugeSize} height={gaugeSize} viewBox={`0 0 ${gaugeSize} ${gaugeSize}`}>
-          {/* outer subtle ring */}
-          <circle cx={cx} cy={cy} r={ringRadius + 8} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
-          {/* dotted segments */}
-          {Array.from({ length: ringDots }).map((_, i) => {
-            const angle = (i / ringDots) * 2 * Math.PI - Math.PI / 2;
-            const x = cx + Math.cos(angle) * ringRadius;
-            const y = cy + Math.sin(angle) * ringRadius;
-            const isFilled = i < filledDots;
-            const isLeading = i === filledDots - 1 && alertMode === 'active';
-            return (
-              <circle
-                key={i}
-                cx={x}
-                cy={y}
-                r={isFilled ? 2.2 : 1.4}
-                fill={isFilled ? accent : 'rgba(255,255,255,0.08)'}
-                style={isLeading ? { filter: `drop-shadow(0 0 4px ${accent})` } : undefined}
-              >
-                {isLeading && <animate attributeName="r" values="2.2;3.2;2.2" dur="1.6s" repeatCount="indefinite" />}
-              </circle>
-            );
-          })}
-          {/* center label */}
-          <text x={cx} y={cy - 38} textAnchor="middle" fontSize="8.5" letterSpacing="2" fill="rgba(159,180,199,0.7)" style={{ fontFamily: 'inherit' }}>
-            АКТИВНОСТ
-          </text>
-        </svg>
-        {/* dot-matrix percentage overlay */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" style={{ paddingTop: 8 }}>
-          <div style={{ width: 92, marginTop: 4 }}>
-            <DotMatrixText text={String(activityPct)} dot={3.4} gap={1.1} color={accent} glow={alertMode === 'active'} />
-          </div>
-          <div className="text-[9px] tracking-[0.18em] mt-1.5" style={{ color: accent, opacity: 0.85 }}>
-            % {alertMode === 'active' ? '· ПИКОВ ПРОЗОРЕЦ' : ''}
-          </div>
-          {status && (
-            <div className="text-[9.5px] tabular-nums mt-1" style={{ color: 'rgba(159,180,199,0.7)' }}>
-              {status}
+    <div className="space-y-2.5">
+      {/* ROW 1: Circle + Sun + Moon */}
+      <div className="grid grid-cols-[auto_1fr] gap-2.5 items-stretch">
+        {/* Tactical Circle */}
+        <div className="relative w-[128px] h-[128px] flex-shrink-0">
+          <svg viewBox="0 0 100 100" className="w-full h-full">
+            {/* background track */}
+            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1.2" />
+            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(46,181,183,0.18)" strokeWidth="0.6" strokeDasharray="0.5 3" />
+
+            {/* Peak arcs */}
+            {peaks.map((p: any, i: number) => {
+              const s = parse(p.start), e = parse(p.end);
+              if (s < 0 || e < 0) return null;
+              const isMajor = p.type === 'major';
+              const isActive = active && active.start === p.start;
+              const sa = timeToAngle(s);
+              const ea = timeToAngle(e);
+              const stroke = isActive ? '#2eb5b7' : isMajor ? 'rgba(46,181,183,0.85)' : 'rgba(46,181,183,0.45)';
+              return (
+                <path
+                  key={i}
+                  d={arc(50, 50, 45, sa, ea)}
+                  fill="none"
+                  stroke={stroke}
+                  strokeWidth={isMajor ? 2.4 : 1.2}
+                  strokeLinecap="round"
+                  strokeDasharray={isMajor ? undefined : '1.2 1.4'}
+                  style={isActive ? { filter: `drop-shadow(0 0 1.6px ${stroke})` } : undefined}
+                >
+                  {isActive && <animate attributeName="opacity" values="1;0.55;1" dur="1.8s" repeatCount="indefinite" />}
+                </path>
+              );
+            })}
+
+            {/* Hour ticks */}
+            {[0, 6, 12, 18].map(h => {
+              const a = timeToAngle(h * 60);
+              const p1 = polar(50, 50, 41, a);
+              const p2 = polar(50, 50, 44, a);
+              return <line key={h} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="rgba(255,255,255,0.25)" strokeWidth="0.4" />;
+            })}
+
+            {/* Now hand */}
+            <line x1="50" y1="50" x2={handEnd.x} y2={handEnd.y} stroke="#E4FF00" strokeWidth="1" strokeLinecap="round" style={{ filter: 'drop-shadow(0 0 1.5px rgba(228,255,0,0.8))' }} />
+            <circle cx="50" cy="50" r="1.6" fill="#E4FF00" />
+
+            {/* Outer time labels */}
+            <text x="50" y="9" textAnchor="middle" fontSize="3" fill="rgba(255,255,255,0.4)">00</text>
+            <text x="92" y="51.5" textAnchor="end" fontSize="3" fill="rgba(255,255,255,0.4)">06</text>
+            <text x="50" y="95.5" textAnchor="middle" fontSize="3" fill="rgba(255,255,255,0.4)">12</text>
+            <text x="8" y="51.5" textAnchor="start" fontSize="3" fill="rgba(255,255,255,0.4)">18</text>
+          </svg>
+          {/* Center: dot-matrix percentage */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <div style={{ width: 46 }}>
+              <DotMatrixText text={String(activityPct)} dot={2.4} gap={0.85} color={accent} glow={alertMode === 'active'} />
             </div>
-          )}
+            <div className="text-[7px] tracking-[0.18em] mt-1" style={{ color: accent, opacity: 0.85 }}>% ПРОЗОРЕЦ</div>
+          </div>
+        </div>
+
+        {/* Sun + Moon stacked compact */}
+        <div className="grid grid-rows-2 gap-1.5">
+          <div className="rounded-lg border border-orange-400/20 bg-orange-400/[0.04] px-2.5 py-1.5">
+            <div className="flex items-center gap-1.5 mb-1">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#FF8C42" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+              </svg>
+              <span className="text-[8px] tracking-[0.18em] uppercase" style={{ color: 'rgba(255,140,66,0.75)' }}>СЛЪНЦЕ</span>
+            </div>
+            <div className="flex items-center justify-between text-[10px]">
+              <span className="inline-flex items-center gap-1 opacity-70"><SunRiseIcon color="#FF8C42" /><span>изгрев</span></span>
+              <span className="font-display tabular-nums font-semibold" style={{ color: '#FF8C42' }}>{weather.sunrise || '--:--'}</span>
+            </div>
+            <div className="flex items-center justify-between text-[10px]">
+              <span className="inline-flex items-center gap-1 opacity-70"><SunSetIcon color="#FF8C42" /><span>залез</span></span>
+              <span className="font-display tabular-nums font-semibold" style={{ color: '#FF8C42' }}>{weather.sunset || '--:--'}</span>
+            </div>
+          </div>
+          <div className="rounded-lg border border-primary/25 bg-primary/[0.04] px-2.5 py-1.5">
+            <div className="flex items-center gap-1.5 mb-1">
+              <MoonPhaseDot phase={moonPhase} size={11} />
+              <span className="text-[8px] tracking-[0.18em] uppercase" style={{ color: 'rgba(46,181,183,0.8)' }}>ЛУНА</span>
+            </div>
+            <div className="flex items-center justify-between text-[10px]">
+              <span className="inline-flex items-center gap-1 opacity-70"><MoonRiseIcon color="#2eb5b7" /><span>изгрев</span></span>
+              <span className="font-display tabular-nums font-semibold" style={{ color: '#2eb5b7' }}>{weather.moonrise || '--:--'}</span>
+            </div>
+            <div className="flex items-center justify-between text-[10px]">
+              <span className="inline-flex items-center gap-1 opacity-70"><MoonSetIcon color="#2eb5b7" /><span>залез</span></span>
+              <span className="font-display tabular-nums font-semibold" style={{ color: '#2eb5b7' }}>{weather.moonset || '--:--'}</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Verdict badge — small, pill-shaped */}
-      <div className="flex justify-center">
+      {/* ROW 2: Verdict pill + day quality */}
+      <div className="flex items-center justify-between gap-2">
         <div
-          className="inline-flex items-center gap-2 px-3 py-1 rounded-full"
+          className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full"
           style={{
             background: 'rgba(255,255,255,0.04)',
-            border: `1px solid ${alertMode === 'soon' ? 'rgba(228,255,0,0.55)' : alertMode === 'active' && active?.type === 'major' ? 'rgba(46,181,183,0.6)' : 'rgba(255,255,255,0.1)'}`,
-            boxShadow: alertMode === 'active' && active?.type === 'major' ? `0 0 12px rgba(46,181,183,0.35)` : undefined,
-            animation: alertMode === 'soon' || (alertMode === 'active' && active?.type === 'major') ? 'pulse-soft 2s ease-in-out infinite' : undefined,
+            border: `1px solid ${alertMode === 'soon' ? 'rgba(228,255,0,0.55)' : alertMode === 'active' ? 'rgba(46,181,183,0.55)' : 'rgba(255,255,255,0.1)'}`,
+            boxShadow: alertMode === 'active' ? `0 0 10px rgba(46,181,183,0.3)` : undefined,
+            animation: alertMode !== 'idle' ? 'pulse-soft 2s ease-in-out infinite' : undefined,
           }}
         >
-          <span
-            className="w-1.5 h-1.5 rounded-full"
-            style={{
-              background: accent,
-              boxShadow: `0 0 6px ${accent}`,
-              animation: alertMode !== 'idle' ? 'pulse-soft 1.4s ease-in-out infinite' : undefined,
-            }}
-          />
-          <span className="text-[11px] font-medium tracking-wide" style={{ color: '#E4EEF5' }}>
-            {verdict}
-          </span>
+          <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent, boxShadow: `0 0 6px ${accent}` }} />
+          <span className="text-[10.5px] font-medium tracking-wide" style={{ color: '#E4EEF5' }}>{verdict}</span>
+          {status && <span className="text-[9.5px] tabular-nums opacity-65" style={{ color: '#9FB4C7' }}>· {status}</span>}
         </div>
+        <span className="text-[8.5px] tracking-[0.2em] opacity-60" style={{ color: accent }}>{dayQuality}</span>
       </div>
 
-      {/* Dot-matrix live clock */}
-      <div className="flex justify-center pt-0.5">
-        <div style={{ width: 168 }}>
-          <DotMatrixText text={clockText} dot={2.4} gap={0.9} color="#E4EEF5" />
-        </div>
-      </div>
-
-      {/* Mini horizontal 24h timeline with peak markers above */}
-      <div className="relative pt-1">
-        <svg viewBox="0 0 100 16" preserveAspectRatio="none" className="w-full" style={{ height: 44 }}>
-          {/* peak markers above the line */}
-          {peaks.map((p: any, i: number) => {
-            const s = parse(p.start), e = parse(p.end);
-            if (s < 0 || e < 0) return null;
-            const isMajor = p.type === 'major';
-            const isActive = active && active.start === p.start;
-            const xs = xOf(s), xe = xOf(e);
-            const xc = (xs + xe) / 2;
-            const color = isActive ? '#2eb5b7' : isMajor ? 'rgba(46,181,183,0.7)' : 'rgba(159,180,199,0.55)';
-            return (
-              <g key={i}>
-                {isMajor ? (
-                  // major: filled diamond
-                  <path
-                    d={`M ${xc} 2 L ${xc + 1.6} 4 L ${xc} 6 L ${xc - 1.6} 4 Z`}
-                    fill={color}
-                    style={isActive ? { filter: `drop-shadow(0 0 1.5px ${color})` } : undefined}
-                  >
-                    {isActive && <animate attributeName="opacity" values="1;0.5;1" dur="1.6s" repeatCount="indefinite" />}
-                  </path>
-                ) : (
-                  // minor: small outline circle
-                  <circle cx={xc} cy={4} r="1.2" fill="none" stroke={color} strokeWidth="0.4" />
-                )}
-              </g>
-            );
-          })}
+      {/* ROW 3: Linear timeline with clear major/minor hierarchy */}
+      <div className="relative rounded-lg bg-white/[0.02] border border-white/5 px-1.5 py-2">
+        <svg viewBox="0 0 100 22" preserveAspectRatio="none" className="w-full" style={{ height: 56 }}>
           {/* baseline */}
-          <line x1="2" y1="10" x2="98" y2="10" stroke="rgba(255,255,255,0.1)" strokeWidth="0.3" />
+          <line x1="3" y1="14" x2="97" y2="14" stroke="rgba(255,255,255,0.1)" strokeWidth="0.3" />
           {/* hour ticks */}
           {[0, 6, 12, 18, 24].map(h => {
             const x = xOf(h * 60);
             return (
-              <g key={h}>
-                <circle cx={x} cy={10} r="0.55" fill="rgba(255,255,255,0.25)" />
-                <text x={x} y="15" fontSize="2.4" fill="rgba(255,255,255,0.4)" textAnchor="middle">{String(h).padStart(2, '0')}</text>
+              <g key={h} opacity="0.45">
+                <line x1={x} y1="13" x2={x} y2="15" stroke="rgba(255,255,255,0.4)" strokeWidth="0.3" />
+                <text x={x} y="20" fontSize="2.4" fill="rgba(255,255,255,0.5)" textAnchor="middle">{String(h).padStart(2, '0')}</text>
               </g>
             );
           })}
-          {/* peak bars on baseline */}
+          {/* sun events on baseline */}
+          {[['sunrise', weather.sunrise], ['sunset', weather.sunset]].map(([k, t]: any) => {
+            const m = parse(t);
+            if (m < 0) return null;
+            return <circle key={k} cx={xOf(m)} cy={14} r="0.7" fill="#FF8C42" opacity="0.85" />;
+          })}
+          {/* peak bars */}
           {peaks.map((p: any, i: number) => {
             const s = parse(p.start), e = parse(p.end);
             if (s < 0 || e < 0) return null;
             const isMajor = p.type === 'major';
             const isActive = active && active.start === p.start;
             const x1 = xOf(s);
-            const w = Math.max(0.6, xOf(e) - x1);
-            const h = isMajor ? 1.8 : 1.0;
-            const fill = isActive ? '#2eb5b7' : isMajor ? 'rgba(46,181,183,0.5)' : 'rgba(46,181,183,0.22)';
+            const w = Math.max(0.8, xOf(e) - x1);
+            const h = isMajor ? 8 : 4;
+            const y = 14 - h;
+            const fill = isActive
+              ? '#2eb5b7'
+              : isMajor
+                ? 'rgba(46,181,183,0.55)'
+                : 'rgba(46,181,183,0.18)';
+            const stroke = isMajor ? '#2eb5b7' : 'rgba(46,181,183,0.5)';
             return (
-              <rect key={`b${i}`} x={x1} y={10 - h / 2} width={w} height={h} rx="0.4" fill={fill} />
+              <g key={`pk${i}`}>
+                <rect
+                  x={x1}
+                  y={y}
+                  width={w}
+                  height={h}
+                  rx="0.6"
+                  fill={fill}
+                  stroke={stroke}
+                  strokeWidth="0.25"
+                  style={isActive ? { filter: `drop-shadow(0 0 1.5px #2eb5b7)` } : undefined}
+                >
+                  {isActive && <animate attributeName="opacity" values="1;0.55;1" dur="1.6s" repeatCount="indefinite" />}
+                </rect>
+                {isMajor && (
+                  <text x={x1 + w / 2} y={y - 0.6} fontSize="1.9" fill="#2eb5b7" textAnchor="middle" fontWeight="600" letterSpacing="0.2">▲</text>
+                )}
+              </g>
             );
           })}
-          {/* sun events */}
-          {[['sunrise', weather.sunrise], ['sunset', weather.sunset]].map(([k, t]: any) => {
-            const m = parse(t);
-            if (m < 0) return null;
-            return <circle key={k} cx={xOf(m)} cy={10} r="0.85" fill="#FF8C42" />;
-          })}
-          {/* now marker */}
-          <line x1={nowX} y1="6.5" x2={nowX} y2="13.5" stroke="#E4FF00" strokeWidth="0.45" />
-          <circle cx={nowX} cy={6.3} r="0.95" fill="#E4FF00" />
+          {/* now indicator */}
+          <line x1={nowX} y1="3" x2={nowX} y2="16" stroke="#E4FF00" strokeWidth="0.45" strokeDasharray="0.8 0.8" />
+          <circle cx={nowX} cy="14" r="0.95" fill="#E4FF00" style={{ filter: 'drop-shadow(0 0 1.4px rgba(228,255,0,0.8))' }} />
         </svg>
       </div>
 
-      {/* Bento grid: Sun + Moon times */}
-      <div className="grid grid-cols-2 gap-2">
-        <div className="rounded-xl bg-white/[0.03] border border-white/10 p-2.5">
-          <div className="flex items-center gap-1.5 mb-1.5">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FF8C42" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-            </svg>
-            <span className="text-[8.5px] tracking-[0.18em] uppercase" style={{ color: 'rgba(159,180,199,0.7)' }}>СЛЪНЦЕ</span>
-          </div>
-          <div className="space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5"><SunRiseIcon color="#E4FF00" /><span className="text-[9px] uppercase tracking-wider opacity-55">изгрев</span></span>
-              <span className="font-display text-[13px] tabular-nums" style={{ color: '#E4FF00' }}>{weather.sunrise || '--:--'}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5"><SunSetIcon color="#2eb5b7" /><span className="text-[9px] uppercase tracking-wider opacity-55">залез</span></span>
-              <span className="font-display text-[13px] tabular-nums" style={{ color: '#2eb5b7' }}>{weather.sunset || '--:--'}</span>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-xl bg-white/[0.03] border border-white/10 p-2.5">
-          <div className="flex items-center gap-1.5 mb-1.5">
-            <MoonPhaseDot phase={moonPhase} size={12} />
-            <span className="text-[8.5px] tracking-[0.18em] uppercase" style={{ color: 'rgba(159,180,199,0.7)' }}>ЛУНА</span>
-          </div>
-          <div className="space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5"><MoonRiseIcon color="#E4FF00" /><span className="text-[9px] uppercase tracking-wider opacity-55">изгрев</span></span>
-              <span className="font-display text-[13px] tabular-nums" style={{ color: '#E4FF00' }}>{weather.moonrise || '--:--'}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5"><MoonSetIcon color="#2eb5b7" /><span className="text-[9px] uppercase tracking-wider opacity-55">залез</span></span>
-              <span className="font-display text-[13px] tabular-nums" style={{ color: '#2eb5b7' }}>{weather.moonset || '--:--'}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Interpretation — terminal-style status line */}
+      {/* ROW 4: Interpretation — terminal-style */}
       <div className="rounded-lg bg-white/[0.02] border border-white/5 px-2.5 py-1.5 flex items-center gap-2">
         <span className="text-[9px] tabular-nums" style={{ color: accent, opacity: 0.85 }}>{'>'}</span>
         <span className="text-[10.5px] leading-snug" style={{ color: 'rgba(220,232,242,0.78)', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' }}>
