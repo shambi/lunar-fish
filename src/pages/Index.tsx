@@ -198,22 +198,41 @@ const SolunarSection = ({ weather, moonPhase }: { weather: any; moonPhase: numbe
     return `M ${start.x} ${start.y} A ${r} ${r} 0 ${large} 1 ${end.x} ${end.y}`;
   };
   const nowAngle = timeToAngle(nowMin);
-  const handEnd = polar(50, 50, 38, nowAngle);
 
-  // 24h timeline x mapping
-  const xOf = (mins: number) => 3 + (mins / 1440) * 94;
-  const nowX = xOf(nowMin);
+  // Current-time edge marker on circle (small "|")
+  const markerInner = polar(50, 50, 43, nowAngle);
+  const markerOuter = polar(50, 50, 49, nowAngle);
+
+  // Extract simplified event label from peak label
+  const eventOf = (label: string = ''): { short: string; emoji: string; arrow: string } | null => {
+    if (/зенит/i.test(label)) return { short: 'луна в зенит', emoji: '🌙', arrow: '↑' };
+    if (/надир/i.test(label)) return { short: 'луна в надир', emoji: '🌙', arrow: '↓' };
+    if (/изгрев на луната/i.test(label)) return { short: 'изгрев на луната', emoji: '🌙', arrow: '→' };
+    if (/залез на луната/i.test(label)) return { short: 'залез на луната', emoji: '🌙', arrow: '←' };
+    return null;
+  };
+
+  const clockStr = now.toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+
+  const nextEvent = next ? eventOf(next.label) : null;
+  const activeEvent = active ? eventOf(active.label) : null;
 
   return (
     <div className="space-y-2.5">
+      {/* Header row: title + digital clock */}
+      <div className="flex items-center justify-between">
+        <span className="text-[9px] tracking-[0.22em] uppercase opacity-55" style={{ color: '#9FB4C7' }}>солунарна активност</span>
+        <span className="font-mono text-[11px] tabular-nums tracking-wider" style={{ color: 'rgba(46,181,183,0.85)' }}>{clockStr}</span>
+      </div>
+
       {/* ROW 1: Circle + Sun + Moon */}
       <div className="grid grid-cols-[auto_1fr] gap-2.5 items-stretch">
         {/* Tactical Circle */}
         <div className="relative w-[128px] h-[128px] flex-shrink-0">
-          <svg viewBox="0 0 100 100" className="w-full h-full">
-            {/* background track */}
-            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1.2" />
-            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(46,181,183,0.18)" strokeWidth="0.6" strokeDasharray="0.5 3" />
+          <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible">
+            {/* background track — citron yellow border */}
+            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(228,255,0,0.55)" strokeWidth="0.9" />
+            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(228,255,0,0.18)" strokeWidth="0.4" strokeDasharray="0.5 3" />
 
             {/* Peak arcs */}
             {peaks.map((p: any, i: number) => {
@@ -223,20 +242,38 @@ const SolunarSection = ({ weather, moonPhase }: { weather: any; moonPhase: numbe
               const isActive = active && active.start === p.start;
               const sa = timeToAngle(s);
               const ea = timeToAngle(e);
-              const stroke = isActive ? '#2eb5b7' : isMajor ? 'rgba(46,181,183,0.85)' : 'rgba(46,181,183,0.45)';
+              const stroke = isActive ? '#2eb5b7' : isMajor ? 'rgba(46,181,183,0.9)' : 'rgba(46,181,183,0.5)';
               return (
                 <path
                   key={i}
                   d={arc(50, 50, 45, sa, ea)}
                   fill="none"
                   stroke={stroke}
-                  strokeWidth={isMajor ? 2.4 : 1.2}
+                  strokeWidth={isMajor ? 3.2 : 2}
                   strokeLinecap="round"
-                  strokeDasharray={isMajor ? undefined : '1.2 1.4'}
-                  style={isActive ? { filter: `drop-shadow(0 0 1.6px ${stroke})` } : undefined}
+                  strokeDasharray={isMajor ? undefined : '1.4 1.6'}
+                  style={isActive ? { filter: `drop-shadow(0 0 1.8px ${stroke})` } : undefined}
                 >
                   {isActive && <animate attributeName="opacity" values="1;0.55;1" dur="1.8s" repeatCount="indefinite" />}
                 </path>
+              );
+            })}
+
+            {/* Peak event icons outside circle */}
+            {peaks.map((p: any, i: number) => {
+              const s = parse(p.start), e = parse(p.end);
+              if (s < 0 || e < 0) return null;
+              const ev = eventOf(p.label);
+              if (!ev) return null;
+              const sa = timeToAngle(s);
+              const ea = timeToAngle(e);
+              const mid = sa + (((ea - sa) % 360 + 360) % 360) / 2;
+              const pos = polar(50, 50, 56, mid);
+              return (
+                <g key={`ico${i}`} transform={`translate(${pos.x}, ${pos.y})`}>
+                  <text textAnchor="middle" dominantBaseline="middle" fontSize="5" fill="#E4EEF5">{ev.emoji}</text>
+                  <text textAnchor="middle" dominantBaseline="middle" x="3.6" y="-1.6" fontSize="3.2" fill={p.type === 'major' ? '#2eb5b7' : 'rgba(46,181,183,0.7)'} fontWeight="700">{ev.arrow}</text>
+                </g>
               );
             })}
 
@@ -248,148 +285,137 @@ const SolunarSection = ({ weather, moonPhase }: { weather: any; moonPhase: numbe
               return <line key={h} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="rgba(255,255,255,0.25)" strokeWidth="0.4" />;
             })}
 
-            {/* Now hand */}
-            <line x1="50" y1="50" x2={handEnd.x} y2={handEnd.y} stroke="#E4FF00" strokeWidth="1" strokeLinecap="round" style={{ filter: 'drop-shadow(0 0 1.5px rgba(228,255,0,0.8))' }} />
-            <circle cx="50" cy="50" r="1.6" fill="#E4FF00" />
+            {/* Outer time labels — corrected clock positions */}
+            <text x="50" y="11" textAnchor="middle" fontSize="3.8" fill="rgba(255,255,255,0.55)">00</text>
+            <text x="91" y="51.5" textAnchor="end" fontSize="3.8" fill="rgba(255,255,255,0.55)">06</text>
+            <text x="50" y="93" textAnchor="middle" fontSize="3.8" fill="rgba(255,255,255,0.55)">12</text>
+            <text x="9" y="51.5" textAnchor="start" fontSize="3.8" fill="rgba(255,255,255,0.55)">18</text>
 
-            {/* Outer time labels */}
-            <text x="50" y="9" textAnchor="middle" fontSize="3" fill="rgba(255,255,255,0.4)">00</text>
-            <text x="92" y="51.5" textAnchor="end" fontSize="3" fill="rgba(255,255,255,0.4)">06</text>
-            <text x="50" y="95.5" textAnchor="middle" fontSize="3" fill="rgba(255,255,255,0.4)">12</text>
-            <text x="8" y="51.5" textAnchor="start" fontSize="3" fill="rgba(255,255,255,0.4)">18</text>
+            {/* Current time edge marker */}
+            <line
+              x1={markerInner.x} y1={markerInner.y}
+              x2={markerOuter.x} y2={markerOuter.y}
+              stroke="#E4FF00"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              style={{ filter: 'drop-shadow(0 0 1.4px rgba(228,255,0,0.85))' }}
+            />
           </svg>
-          {/* Center: dot-matrix percentage */}
+          {/* Center: dot-matrix percentage — cyan */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <div style={{ width: 46 }}>
-              <DotMatrixText text={String(activityPct)} dot={2.4} gap={0.85} color={accent} glow={alertMode === 'active'} />
+              <DotMatrixText text={String(activityPct)} dot={2.4} gap={0.85} color="#2eb5b7" glow={alertMode === 'active'} />
             </div>
-            <div className="text-[7px] tracking-[0.18em] mt-1" style={{ color: accent, opacity: 0.85 }}>% ПРОЗОРЕЦ</div>
+            <div className="text-[7.5px] tracking-[0.18em] -mt-0.5" style={{ color: 'rgba(255,255,255,0.7)' }}>% ПРОЗОРЕЦ</div>
           </div>
         </div>
 
         {/* Sun + Moon stacked compact */}
         <div className="grid grid-rows-2 gap-1.5">
-          <div className="rounded-lg border border-orange-400/20 bg-orange-400/[0.04] px-2.5 py-1.5">
+          <div className="rounded-lg border border-orange-400/25 bg-orange-400/[0.05] p-2">
             <div className="flex items-center gap-1.5 mb-1">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#FF8C42" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
               </svg>
-              <span className="text-[8px] tracking-[0.18em] uppercase" style={{ color: 'rgba(255,140,66,0.75)' }}>СЛЪНЦЕ</span>
+              <span className="text-[8px] tracking-[0.18em] uppercase" style={{ color: 'rgba(255,140,66,0.8)' }}>СЛЪНЦЕ</span>
             </div>
-            <div className="flex items-center justify-between text-[10px]">
-              <span className="inline-flex items-center gap-1 opacity-70"><SunRiseIcon color="#FF8C42" /><span>изгрев</span></span>
-              <span className="font-display tabular-nums font-semibold" style={{ color: '#FF8C42' }}>{weather.sunrise || '--:--'}</span>
-            </div>
-            <div className="flex items-center justify-between text-[10px]">
-              <span className="inline-flex items-center gap-1 opacity-70"><SunSetIcon color="#FF8C42" /><span>залез</span></span>
-              <span className="font-display tabular-nums font-semibold" style={{ color: '#FF8C42' }}>{weather.sunset || '--:--'}</span>
+            <div className="space-y-0.5 text-[10px]">
+              <div className="flex items-center gap-1">
+                <SunRiseIcon color="#FF8C42" />
+                <span className="opacity-60">изгрев</span>
+                <span className="ml-auto font-display tabular-nums font-semibold" style={{ color: '#FF8C42' }}>{weather.sunrise || '--:--'}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <SunSetIcon color="#FF8C42" />
+                <span className="opacity-60">залез</span>
+                <span className="ml-auto font-display tabular-nums font-semibold" style={{ color: '#FF8C42' }}>{weather.sunset || '--:--'}</span>
+              </div>
             </div>
           </div>
-          <div className="rounded-lg border border-primary/25 bg-primary/[0.04] px-2.5 py-1.5">
+          <div className="rounded-lg border border-primary/25 bg-primary/[0.05] p-2">
             <div className="flex items-center gap-1.5 mb-1">
               <MoonPhaseDot phase={moonPhase} size={11} />
               <span className="text-[8px] tracking-[0.18em] uppercase" style={{ color: 'rgba(46,181,183,0.8)' }}>ЛУНА</span>
             </div>
-            <div className="flex items-center justify-between text-[10px]">
-              <span className="inline-flex items-center gap-1 opacity-70"><MoonRiseIcon color="#2eb5b7" /><span>изгрев</span></span>
-              <span className="font-display tabular-nums font-semibold" style={{ color: '#2eb5b7' }}>{weather.moonrise || '--:--'}</span>
-            </div>
-            <div className="flex items-center justify-between text-[10px]">
-              <span className="inline-flex items-center gap-1 opacity-70"><MoonSetIcon color="#2eb5b7" /><span>залез</span></span>
-              <span className="font-display tabular-nums font-semibold" style={{ color: '#2eb5b7' }}>{weather.moonset || '--:--'}</span>
+            <div className="space-y-0.5 text-[10px]">
+              <div className="flex items-center gap-1">
+                <MoonRiseIcon color="#2eb5b7" />
+                <span className="opacity-60">изгрев</span>
+                <span className="ml-auto font-display tabular-nums font-semibold" style={{ color: '#2eb5b7' }}>{weather.moonrise || '--:--'}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <MoonSetIcon color="#2eb5b7" />
+                <span className="opacity-60">залез</span>
+                <span className="ml-auto font-display tabular-nums font-semibold" style={{ color: '#2eb5b7' }}>{weather.moonset || '--:--'}</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ROW 2: Verdict pill + day quality */}
-      <div className="flex items-center justify-between gap-2">
-        <div
-          className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full"
-          style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: `1px solid ${alertMode === 'soon' ? 'rgba(228,255,0,0.55)' : alertMode === 'active' ? 'rgba(46,181,183,0.55)' : 'rgba(255,255,255,0.1)'}`,
-            boxShadow: alertMode === 'active' ? `0 0 10px rgba(46,181,183,0.3)` : undefined,
-            animation: alertMode !== 'idle' ? 'pulse-soft 2s ease-in-out infinite' : undefined,
-          }}
-        >
-          <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent, boxShadow: `0 0 6px ${accent}` }} />
-          <span className="text-[10.5px] font-medium tracking-wide" style={{ color: '#E4EEF5' }}>{verdict}</span>
-          {status && <span className="text-[9.5px] tabular-nums opacity-65" style={{ color: '#9FB4C7' }}>· {status}</span>}
-        </div>
+      {/* Status badge — active gets strong neon */}
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        {active ? (
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full animate-pulse"
+            style={{
+              background: 'rgba(46,181,183,0.20)',
+              border: '2px solid #2eb5b7',
+              boxShadow: '0 0 20px rgba(46,181,183,0.5), inset 0 0 10px rgba(46,181,183,0.2)',
+            }}
+          >
+            <span className="relative flex w-2 h-2">
+              <span className="absolute inline-flex h-full w-full rounded-full opacity-70 animate-ping" style={{ background: '#2eb5b7' }} />
+              <span className="relative inline-flex rounded-full w-2 h-2" style={{ background: '#2eb5b7' }} />
+            </span>
+            <span className="text-[11px] font-medium" style={{ color: '#2eb5b7' }}>
+              Активен прозорец: {active.type === 'major' ? 'главен пик' : 'малък пик'}
+            </span>
+            <span className="text-[10px] tabular-nums opacity-85" style={{ color: '#E4EEF5' }}>· остават {fmt(active.remaining)}</span>
+          </div>
+        ) : (
+          <div
+            className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full"
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: `1px solid ${alertMode === 'soon' ? 'rgba(228,255,0,0.55)' : 'rgba(255,255,255,0.12)'}`,
+              animation: alertMode === 'soon' ? 'pulse-soft 2s ease-in-out infinite' : undefined,
+            }}
+          >
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent, boxShadow: `0 0 6px ${accent}` }} />
+            <span className="text-[10.5px] font-medium tracking-wide" style={{ color: '#E4EEF5' }}>{verdict}</span>
+            {status && <span className="text-[9.5px] tabular-nums opacity-65" style={{ color: '#9FB4C7' }}>· {status}</span>}
+          </div>
+        )}
         <span className="text-[8.5px] tracking-[0.2em] opacity-60" style={{ color: accent }}>{dayQuality}</span>
       </div>
 
-      {/* ROW 3: Linear timeline with clear major/minor hierarchy */}
-      <div className="relative rounded-lg bg-white/[0.02] border border-white/5 px-1.5 py-2">
-        <svg viewBox="0 0 100 22" preserveAspectRatio="none" className="w-full" style={{ height: 56 }}>
-          {/* baseline */}
-          <line x1="3" y1="14" x2="97" y2="14" stroke="rgba(255,255,255,0.1)" strokeWidth="0.3" />
-          {/* hour ticks */}
-          {[0, 6, 12, 18, 24].map(h => {
-            const x = xOf(h * 60);
-            return (
-              <g key={h} opacity="0.45">
-                <line x1={x} y1="13" x2={x} y2="15" stroke="rgba(255,255,255,0.4)" strokeWidth="0.3" />
-                <text x={x} y="20" fontSize="2.4" fill="rgba(255,255,255,0.5)" textAnchor="middle">{String(h).padStart(2, '0')}</text>
-              </g>
-            );
-          })}
-          {/* sun events on baseline */}
-          {[['sunrise', weather.sunrise], ['sunset', weather.sunset]].map(([k, t]: any) => {
-            const m = parse(t);
-            if (m < 0) return null;
-            return <circle key={k} cx={xOf(m)} cy={14} r="0.7" fill="#FF8C42" opacity="0.85" />;
-          })}
-          {/* peak bars */}
-          {peaks.map((p: any, i: number) => {
-            const s = parse(p.start), e = parse(p.end);
-            if (s < 0 || e < 0) return null;
-            const isMajor = p.type === 'major';
-            const isActive = active && active.start === p.start;
-            const x1 = xOf(s);
-            const w = Math.max(0.8, xOf(e) - x1);
-            const h = isMajor ? 8 : 4;
-            const y = 14 - h;
-            const fill = isActive
-              ? '#2eb5b7'
-              : isMajor
-                ? 'rgba(46,181,183,0.55)'
-                : 'rgba(46,181,183,0.18)';
-            const stroke = isMajor ? '#2eb5b7' : 'rgba(46,181,183,0.5)';
-            return (
-              <g key={`pk${i}`}>
-                <rect
-                  x={x1}
-                  y={y}
-                  width={w}
-                  height={h}
-                  rx="0.6"
-                  fill={fill}
-                  stroke={stroke}
-                  strokeWidth="0.25"
-                  style={isActive ? { filter: `drop-shadow(0 0 1.5px #2eb5b7)` } : undefined}
-                >
-                  {isActive && <animate attributeName="opacity" values="1;0.55;1" dur="1.6s" repeatCount="indefinite" />}
-                </rect>
-                {isMajor && (
-                  <text x={x1 + w / 2} y={y - 0.6} fontSize="1.9" fill="#2eb5b7" textAnchor="middle" fontWeight="600" letterSpacing="0.2">▲</text>
-                )}
-              </g>
-            );
-          })}
-          {/* now indicator */}
-          <line x1={nowX} y1="3" x2={nowX} y2="16" stroke="#E4FF00" strokeWidth="0.45" strokeDasharray="0.8 0.8" />
-          <circle cx={nowX} cy="14" r="0.95" fill="#E4FF00" style={{ filter: 'drop-shadow(0 0 1.4px rgba(228,255,0,0.8))' }} />
-        </svg>
-      </div>
-
-      {/* ROW 4: Interpretation — terminal-style */}
-      <div className="rounded-lg bg-white/[0.02] border border-white/5 px-2.5 py-1.5 flex items-center gap-2">
-        <span className="text-[9px] tabular-nums" style={{ color: accent, opacity: 0.85 }}>{'>'}</span>
-        <span className="text-[10.5px] leading-snug" style={{ color: 'rgba(220,232,242,0.78)', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' }}>
-          {interpretation}
-        </span>
+      {/* Unified interpretation lines — citron "|" prefix */}
+      <div className="rounded-lg bg-white/[0.02] border border-white/5 px-2.5 py-2 space-y-1.5">
+        {!active && next && (
+          <div className="flex items-start gap-2 text-[11px] leading-snug">
+            <span className="font-bold" style={{ color: '#E4FF00' }}>|</span>
+            <span style={{ color: 'rgba(220,232,242,0.85)' }}>
+              Пикът наближава след {fmt(next.diff)}
+              <span className="opacity-60"> · {next.type === 'major' ? 'главен' : 'малък'}</span>
+              {nextEvent && <span className="opacity-60"> · {nextEvent.short}</span>}
+            </span>
+          </div>
+        )}
+        {active && activeEvent && (
+          <div className="flex items-start gap-2 text-[11px] leading-snug">
+            <span className="font-bold" style={{ color: '#E4FF00' }}>|</span>
+            <span style={{ color: 'rgba(220,232,242,0.85)' }}>
+              {activeEvent.short} · остават {fmt(active.remaining)}
+            </span>
+          </div>
+        )}
+        <div className="flex items-start gap-2 text-[11px] leading-snug">
+          <span className="font-bold" style={{ color: '#E4FF00' }}>|</span>
+          <span style={{ color: 'rgba(220,232,242,0.78)', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' }}>
+            {interpretation}
+          </span>
+        </div>
       </div>
     </div>
   );
