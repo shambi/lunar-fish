@@ -9,414 +9,79 @@ import { ForecastCards } from '@/components/ForecastCards';
 import { PerchIcon, CarpIcon, PikeIcon, BreamIcon, CatfishIcon } from '@/components/FishIcons';
 import { AdviceIcon } from '@/components/AdviceIcon';
 
-/**
- * MoonPhaseDot — realistic SVG moon phase. phase 0..1 (0=new, 0.5=full).
- */
-export const MoonPhaseDot = ({ phase, size = 22 }: { phase: number; size?: number }) => {
-  const k = Math.cos(2 * Math.PI * phase); // 1=new, -1=full
-  const rx = Math.max(0.001, Math.abs(k));
-  const waxing = phase < 0.5;
-  const sweep1 = waxing ? 1 : 0;
-  const sweep2 = k < 0 ? sweep1 : 1 - sweep1;
-  const litPath = `M 0,-1 A 1,1 0 0 ${sweep1} 0,1 A ${rx},1 0 0 ${sweep2} 0,-1 Z`;
-  const illum = (1 - k) / 2;
-  return (
-    <svg width={size} height={size} viewBox="-1.1 -1.1 2.2 2.2" aria-hidden="true">
-      <defs>
-        <radialGradient id={`moonGlow-${size}`} cx="50%" cy="50%" r="50%">
-          <stop offset="60%" stopColor="rgba(226,238,247,0.0)" />
-          <stop offset="100%" stopColor="rgba(46,181,183,0.35)" />
-        </radialGradient>
-      </defs>
-      <circle r="1.08" fill={`url(#moonGlow-${size})`} />
-      <circle r="1" fill="#0B1622" stroke="rgba(255,255,255,0.15)" strokeWidth="0.02" />
-      <path d={litPath} fill="#E4EEF5" opacity={0.35 + illum * 0.65} />
-    </svg>
-  );
-};
-
-/* Outline icons for sun/moon rise & set */
-const SunRiseIcon = ({ color = '#E4FF00' }: { color?: string }) => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M12 14a4 4 0 0 1 8 0" /><path d="M2 18h20" /><path d="M5.6 10.6 4 9" /><path d="M18.4 10.6 20 9" /><path d="M12 7V4" /><path d="m8 22 4-4 4 4" />
-  </svg>
-);
-const SunSetIcon = ({ color = '#2eb5b7' }: { color?: string }) => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M12 14a4 4 0 0 1 8 0" /><path d="M2 18h20" /><path d="M5.6 10.6 4 9" /><path d="M18.4 10.6 20 9" /><path d="M12 4v3" /><path d="m16 22-4-4-4 4" />
-  </svg>
-);
-const MoonRiseIcon = ({ color = '#E4FF00' }: { color?: string }) => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M16 10a4 4 0 1 1-4-4" /><path d="M2 18h20" /><path d="m8 22 4-4 4 4" />
-  </svg>
-);
-const MoonSetIcon = ({ color = '#2eb5b7' }: { color?: string }) => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M16 10a4 4 0 1 1-4-4" /><path d="M2 18h20" /><path d="m16 22-4-4-4 4" />
-  </svg>
-);
-
-/* Dot-matrix style digit renderer (Nothing Phone aesthetic) */
-const DOT_GLYPHS: Record<string, string[]> = {
-  '0': ['01110','10001','10011','10101','11001','10001','01110'],
-  '1': ['00100','01100','00100','00100','00100','00100','01110'],
-  '2': ['01110','10001','00001','00010','00100','01000','11111'],
-  '3': ['11110','00001','00001','01110','00001','00001','11110'],
-  '4': ['00010','00110','01010','10010','11111','00010','00010'],
-  '5': ['11111','10000','11110','00001','00001','10001','01110'],
-  '6': ['00110','01000','10000','11110','10001','10001','01110'],
-  '7': ['11111','00001','00010','00100','01000','01000','01000'],
-  '8': ['01110','10001','10001','01110','10001','10001','01110'],
-  '9': ['01110','10001','10001','01111','00001','00010','01100'],
-  ':': ['00000','00000','00100','00000','00100','00000','00000'],
-};
-const DotMatrixText = ({ text, dot = 2.2, gap = 0.6, color = '#E4EEF5', glow = false }: { text: string; dot?: number; gap?: number; color?: string; glow?: boolean }) => {
-  const charW = 5, charH = 7;
-  const cellW = dot + gap;
-  const out: JSX.Element[] = [];
-  let cursorX = 0;
-  text.split('').forEach((ch, idx) => {
-    const g = DOT_GLYPHS[ch];
-    if (!g) { cursorX += cellW * 3; return; }
-    for (let r = 0; r < charH; r++) {
-      for (let c = 0; c < charW; c++) {
-        if (g[r][c] === '1') {
-          out.push(<rect key={`${idx}-${r}-${c}`} x={cursorX + c * cellW} y={r * cellW} width={dot} height={dot} rx={dot * 0.45} fill={color} />);
-        }
-      }
-    }
-    cursorX += (charW + 1) * cellW;
-  });
-  const w = cursorX;
-  const h = charH * cellW;
-  return (
-    <svg width="100%" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="xMidYMid meet" style={glow ? { filter: `drop-shadow(0 0 6px ${color})` } : undefined}>
-      {out}
-    </svg>
-  );
-};
-
-const SolunarSection = ({ weather, moonPhase }: { weather: any; moonPhase: number }) => {
+const SolunarTimeline = ({ weather }: { weather: any }) => {
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 1000);
+    const t = setInterval(() => setNow(new Date()), 30000);
     return () => clearInterval(t);
   }, []);
 
-  const parse = (s?: string) => {
+  const parseTime = (s: string) => {
     if (!s || s === '--:--') return -1;
     const [h, m] = s.split(':').map(Number);
     return h * 60 + m;
   };
-  const fmt = (mins: number) => {
-    const h = Math.floor(mins / 60);
-    const m = mins % 60;
-    return h > 0 ? `${h}ч ${m}м` : `${m}м`;
+
+  const currentMin = now.getHours() * 60 + now.getMinutes();
+  const isInRange = (start: string, end: string) => {
+    const s = parseTime(start), e = parseTime(end);
+    if (s < 0 || e < 0) return false;
+    return s <= e ? (currentMin >= s && currentMin <= e) : (currentMin >= s || currentMin <= e);
   };
-  const nowMin = now.getHours() * 60 + now.getMinutes();
 
   const peaks = [...(weather.solunarPeaks || [])].sort(
-    (a: any, b: any) => parse(a.start) - parse(b.start)
+    (a: any, b: any) => parseTime(a.start) - parseTime(b.start)
   );
 
-  // Active / next peak detection
-  let active: any = null;
-  for (const p of peaks) {
-    const s = parse(p.start), e = parse(p.end);
-    if (s < 0 || e < 0) continue;
-    const inR = s <= e ? (nowMin >= s && nowMin <= e) : (nowMin >= s || nowMin <= e);
-    if (inR) { active = { ...p, remaining: e > nowMin ? e - nowMin : 1440 - nowMin + e, span: (s <= e ? e - s : 1440 - s + e), elapsed: (nowMin >= s ? nowMin - s : 1440 - s + nowMin) }; break; }
-  }
-  let next: any = null;
-  if (!active) {
-    for (const p of peaks) {
-      const s = parse(p.start);
-      if (s > nowMin) { next = { ...p, diff: s - nowMin }; break; }
-    }
-    if (!next && peaks.length) { const s = parse(peaks[0].start); next = { ...peaks[0], diff: 1440 - nowMin + s }; }
-  }
-
-  // Activity % calculation — true formula: active peak minutes / 1440
-  const totalActiveMinutes = peaks.reduce((acc: number, p: any) => {
-    const s = parse(p.start), e = parse(p.end);
-    if (s < 0 || e < 0) return acc;
-    const span = s <= e ? e - s : 1440 - s + e;
-    return acc + span;
-  }, 0);
-  const activityPct = Math.max(0, Math.min(99, Math.round((totalActiveMinutes / 1440) * 100)));
-
-  // Verdict + interpretation
-  let verdict: string;
-  let accent: string;
-  let interpretation: string;
-  let alertMode: 'active' | 'soon' | 'idle' = 'idle';
-  if (active) {
-    verdict = active.type === 'major' ? 'Активен главен пик' : 'Активен прозорец';
-    accent = '#2eb5b7';
-    alertMode = 'active';
-    interpretation = active.type === 'major'
-      ? 'Рибата е активна — хвърляй стръв.'
-      : 'Кратък пик на активност — наблюдавай и реагирай.';
-  } else if (next && next.diff <= 60) {
-    verdict = 'Пикът наближава';
-    accent = '#E4FF00';
-    alertMode = 'soon';
-    interpretation = next.type === 'major'
-      ? 'Захрани точката сега и подготви снаряжението.'
-      : 'Подгответе се — кратък прозорец след малко.';
-  } else if (next && next.diff <= 120) {
-    verdict = 'Следващ пик скоро';
-    accent = '#9FB4C7';
-    interpretation = 'Спокоен момент — добро време за смяна на тактиката.';
-  } else {
-    verdict = 'Стабилни условия';
-    accent = '#7F93A8';
-    interpretation = 'Концентрирай се около главния пик за най-добри резултати.';
-  }
-
-  const status = active
-    ? `остават ${fmt(active.remaining)}`
-    : next
-      ? `след ${fmt(next.diff)} · ${next.type === 'major' ? 'главен' : 'малък'}`
-      : '';
-
-  // Day quality label
-  const dayQuality = activityPct >= 40 ? 'ОТЛИЧЕН ДЕН' : activityPct >= 25 ? 'ДОБЪР ДЕН' : activityPct >= 15 ? 'СРЕДЕН ДЕН' : 'СЛАБ ДЕН';
-
-  // ===== Circle helpers =====
-  const polar = (cx: number, cy: number, r: number, angleDeg: number) => {
-    const rad = (angleDeg - 90) * Math.PI / 180;
-    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
-  };
-  const timeToAngle = (mins: number) => (mins / 1440) * 360;
-  const arc = (cx: number, cy: number, r: number, startA: number, endA: number) => {
-    const sweep = ((endA - startA) % 360 + 360) % 360;
-    const start = polar(cx, cy, r, startA);
-    const end = polar(cx, cy, r, endA);
-    const large = sweep > 180 ? 1 : 0;
-    return `M ${start.x} ${start.y} A ${r} ${r} 0 ${large} 1 ${end.x} ${end.y}`;
-  };
-  const nowAngle = timeToAngle(nowMin);
-
-  // Current-time edge marker on circle (small "|")
-  const markerInner = polar(50, 50, 43, nowAngle);
-  const markerOuter = polar(50, 50, 49, nowAngle);
-
-  // Extract simplified event label from peak label
-  const eventOf = (label: string = ''): { short: string; emoji: string; arrow: string } | null => {
-    if (/зенит/i.test(label)) return { short: 'луна в зенит', emoji: '🌙', arrow: '↑' };
-    if (/надир/i.test(label)) return { short: 'луна в надир', emoji: '🌙', arrow: '↓' };
-    if (/изгрев на луната/i.test(label)) return { short: 'изгрев на луната', emoji: '🌙', arrow: '→' };
-    if (/залез на луната/i.test(label)) return { short: 'залез на луната', emoji: '🌙', arrow: '←' };
-    return null;
-  };
-
-  const clockStr = now.toLocaleTimeString('bg-BG', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-
-  const nextEvent = next ? eventOf(next.label) : null;
-  const activeEvent = active ? eventOf(active.label) : null;
-
   return (
-    <div className="space-y-2.5">
-      {/* Header row: title + digital clock */}
-      <div className="flex items-center justify-between">
-        <span className="text-[9px] tracking-[0.22em] uppercase opacity-55" style={{ color: '#9FB4C7' }}>солунарна активност</span>
-        <span className="font-mono text-[11px] tabular-nums tracking-wider" style={{ color: 'rgba(46,181,183,0.85)' }}>{clockStr}</span>
-      </div>
+    <div className="overflow-x-auto">
+      <table className="w-full text-left">
+        <tbody>
+          {peaks.map((peak: any, idx: number) => {
+            const isActive = isInRange(peak.start, peak.end);
+            const isMajor = peak.type === 'major';
 
-      {/* ROW 1: Circle + Sun + Moon */}
-      <div className="grid grid-cols-[auto_1fr] gap-2.5 items-stretch">
-        {/* Tactical Circle */}
-        <div className="relative w-[128px] h-[128px] flex-shrink-0">
-          <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible">
-            {/* background track — citron yellow border */}
-            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(228,255,0,0.55)" strokeWidth="0.9" />
-            <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(228,255,0,0.18)" strokeWidth="0.4" strokeDasharray="0.5 3" />
+            return (
+              <tr
+                key={idx}
+                className={`border-b border-white/5 transition-colors ${
+                  isActive
+                    ? 'bg-[#2eb5b7]/8'
+                    : 'hover:bg-white/3'
+                }`}
+              >
+                {/* Time */}
+                <td className="px-2 py-1.5 whitespace-nowrap">
+                  <div className="text-xs font-semibold text-white">
+                    {peak.start} — {peak.end}
+                  </div>
+                </td>
 
-            {/* Peak arcs */}
-            {peaks.map((p: any, i: number) => {
-              const s = parse(p.start), e = parse(p.end);
-              if (s < 0 || e < 0) return null;
-              const isMajor = p.type === 'major';
-              const isActive = active && active.start === p.start;
-              const sa = timeToAngle(s);
-              const ea = timeToAngle(e);
-              const stroke = isActive ? '#2eb5b7' : isMajor ? 'rgba(46,181,183,0.9)' : 'rgba(46,181,183,0.5)';
-              return (
-                <path
-                  key={i}
-                  d={arc(50, 50, 45, sa, ea)}
-                  fill="none"
-                  stroke={stroke}
-                  strokeWidth={isMajor ? 3.2 : 2}
-                  strokeLinecap="round"
-                  strokeDasharray={isMajor ? undefined : '1.4 1.6'}
-                  style={isActive ? { filter: `drop-shadow(0 0 1.8px ${stroke})` } : undefined}
-                >
-                  {isActive && <animate attributeName="opacity" values="1;0.55;1" dur="1.8s" repeatCount="indefinite" />}
-                </path>
-              );
-            })}
+                {/* Type */}
+                <td className="px-2 py-1.5">
+                  <div className={`text-[10px] font-bold uppercase tracking-wider inline-block ${
+                    isMajor ? 'text-[#2eb5b7]' : 'text-[#94A3B8]'
+                  }`}>
+                    {isMajor ? '★ Главен' : 'Малък'}
+                  </div>
+                </td>
 
-            {/* Peak event icons outside circle */}
-            {peaks.map((p: any, i: number) => {
-              const s = parse(p.start), e = parse(p.end);
-              if (s < 0 || e < 0) return null;
-              const ev = eventOf(p.label);
-              if (!ev) return null;
-              const sa = timeToAngle(s);
-              const ea = timeToAngle(e);
-              const mid = sa + (((ea - sa) % 360 + 360) % 360) / 2;
-              const pos = polar(50, 50, 56, mid);
-              return (
-                <g key={`ico${i}`} transform={`translate(${pos.x}, ${pos.y})`}>
-                  <text textAnchor="middle" dominantBaseline="middle" fontSize="5" fill="#E4EEF5">{ev.emoji}</text>
-                  <text textAnchor="middle" dominantBaseline="middle" x="3.6" y="-1.6" fontSize="3.2" fill={p.type === 'major' ? '#2eb5b7' : 'rgba(46,181,183,0.7)'} fontWeight="700">{ev.arrow}</text>
-                </g>
-              );
-            })}
-
-            {/* Hour ticks */}
-            {[0, 6, 12, 18].map(h => {
-              const a = timeToAngle(h * 60);
-              const p1 = polar(50, 50, 41, a);
-              const p2 = polar(50, 50, 44, a);
-              return <line key={h} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="rgba(255,255,255,0.25)" strokeWidth="0.4" />;
-            })}
-
-            {/* Outer time labels — corrected clock positions */}
-            <text x="50" y="11" textAnchor="middle" fontSize="3.8" fill="rgba(255,255,255,0.55)">00</text>
-            <text x="91" y="51.5" textAnchor="end" fontSize="3.8" fill="rgba(255,255,255,0.55)">06</text>
-            <text x="50" y="93" textAnchor="middle" fontSize="3.8" fill="rgba(255,255,255,0.55)">12</text>
-            <text x="9" y="51.5" textAnchor="start" fontSize="3.8" fill="rgba(255,255,255,0.55)">18</text>
-
-            {/* Current time edge marker */}
-            <line
-              x1={markerInner.x} y1={markerInner.y}
-              x2={markerOuter.x} y2={markerOuter.y}
-              stroke="#E4FF00"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              style={{ filter: 'drop-shadow(0 0 1.4px rgba(228,255,0,0.85))' }}
-            />
-          </svg>
-          {/* Center: dot-matrix percentage — cyan */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <div style={{ width: 46 }}>
-              <DotMatrixText text={String(activityPct)} dot={2.4} gap={0.85} color="#2eb5b7" glow={alertMode === 'active'} />
-            </div>
-            <div className="text-[7.5px] tracking-[0.18em] -mt-0.5" style={{ color: 'rgba(255,255,255,0.7)' }}>% ПРОЗОРЕЦ</div>
-          </div>
-        </div>
-
-        {/* Sun + Moon stacked compact */}
-        <div className="grid grid-rows-2 gap-1.5">
-          <div className="rounded-lg border border-orange-400/25 bg-orange-400/[0.05] p-2">
-            <div className="flex items-center gap-1.5 mb-1">
-              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#FF8C42" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-              </svg>
-              <span className="text-[8px] tracking-[0.18em] uppercase" style={{ color: 'rgba(255,140,66,0.8)' }}>СЛЪНЦЕ</span>
-            </div>
-            <div className="space-y-0.5 text-[10px]">
-              <div className="flex items-center gap-1">
-                <SunRiseIcon color="#FF8C42" />
-                <span className="opacity-60">изгрев</span>
-                <span className="ml-auto font-display tabular-nums font-semibold" style={{ color: '#FF8C42' }}>{weather.sunrise || '--:--'}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <SunSetIcon color="#FF8C42" />
-                <span className="opacity-60">залез</span>
-                <span className="ml-auto font-display tabular-nums font-semibold" style={{ color: '#FF8C42' }}>{weather.sunset || '--:--'}</span>
-              </div>
-            </div>
-          </div>
-          <div className="rounded-lg border border-primary/25 bg-primary/[0.05] p-2">
-            <div className="flex items-center gap-1.5 mb-1">
-              <MoonPhaseDot phase={moonPhase} size={11} />
-              <span className="text-[8px] tracking-[0.18em] uppercase" style={{ color: 'rgba(46,181,183,0.8)' }}>ЛУНА</span>
-            </div>
-            <div className="space-y-0.5 text-[10px]">
-              <div className="flex items-center gap-1">
-                <MoonRiseIcon color="#2eb5b7" />
-                <span className="opacity-60">изгрев</span>
-                <span className="ml-auto font-display tabular-nums font-semibold" style={{ color: '#2eb5b7' }}>{weather.moonrise || '--:--'}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <MoonSetIcon color="#2eb5b7" />
-                <span className="opacity-60">залез</span>
-                <span className="ml-auto font-display tabular-nums font-semibold" style={{ color: '#2eb5b7' }}>{weather.moonset || '--:--'}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Status badge — active gets strong neon */}
-      <div className="flex items-center justify-between gap-2 flex-wrap">
-        {active ? (
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full animate-pulse"
-            style={{
-              background: 'rgba(46,181,183,0.20)',
-              border: '2px solid #2eb5b7',
-              boxShadow: '0 0 20px rgba(46,181,183,0.5), inset 0 0 10px rgba(46,181,183,0.2)',
-            }}
-          >
-            <span className="relative flex w-2 h-2">
-              <span className="absolute inline-flex h-full w-full rounded-full opacity-70 animate-ping" style={{ background: '#2eb5b7' }} />
-              <span className="relative inline-flex rounded-full w-2 h-2" style={{ background: '#2eb5b7' }} />
-            </span>
-            <span className="text-[11px] font-medium" style={{ color: '#2eb5b7' }}>
-              Активен прозорец: {active.type === 'major' ? 'главен пик' : 'малък пик'}
-            </span>
-            <span className="text-[10px] tabular-nums opacity-85" style={{ color: '#E4EEF5' }}>· остават {fmt(active.remaining)}</span>
-          </div>
-        ) : (
-          <div
-            className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full"
-            style={{
-              background: 'rgba(255,255,255,0.04)',
-              border: `1px solid ${alertMode === 'soon' ? 'rgba(228,255,0,0.55)' : 'rgba(255,255,255,0.12)'}`,
-              animation: alertMode === 'soon' ? 'pulse-soft 2s ease-in-out infinite' : undefined,
-            }}
-          >
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent, boxShadow: `0 0 6px ${accent}` }} />
-            <span className="text-[10.5px] font-medium tracking-wide" style={{ color: '#E4EEF5' }}>{verdict}</span>
-            {status && <span className="text-[9.5px] tabular-nums opacity-65" style={{ color: '#9FB4C7' }}>· {status}</span>}
-          </div>
-        )}
-        <span className="text-[8.5px] tracking-[0.2em] opacity-60" style={{ color: accent }}>{dayQuality}</span>
-      </div>
-
-      {/* Unified interpretation lines — citron "|" prefix */}
-      <div className="rounded-lg bg-white/[0.02] border border-white/5 px-2.5 py-2 space-y-1.5">
-        {!active && next && (
-          <div className="flex items-start gap-2 text-[11px] leading-snug">
-            <span className="font-bold" style={{ color: '#E4FF00' }}>|</span>
-            <span style={{ color: 'rgba(220,232,242,0.85)' }}>
-              Пикът наближава след {fmt(next.diff)}
-              <span className="opacity-60"> · {next.type === 'major' ? 'главен' : 'малък'}</span>
-              {nextEvent && <span className="opacity-60"> · {nextEvent.short}</span>}
-            </span>
-          </div>
-        )}
-        {active && activeEvent && (
-          <div className="flex items-start gap-2 text-[11px] leading-snug">
-            <span className="font-bold" style={{ color: '#E4FF00' }}>|</span>
-            <span style={{ color: 'rgba(220,232,242,0.85)' }}>
-              {activeEvent.short} · остават {fmt(active.remaining)}
-            </span>
-          </div>
-        )}
-        <div className="flex items-start gap-2 text-[11px] leading-snug">
-          <span className="font-bold" style={{ color: '#E4FF00' }}>|</span>
-          <span style={{ color: 'rgba(220,232,242,0.78)', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' }}>
-            {interpretation}
-          </span>
-        </div>
-      </div>
+                {/* Status */}
+                <td className="px-2 py-1.5 text-right">
+                  {isActive ? (
+                    <div className="flex items-center justify-end gap-1">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#2eb5b7] animate-pulse" />
+                      <span className="text-[9px] font-bold text-[#2eb5b7] uppercase">Активен</span>
+                    </div>
+                  ) : (
+                    <span className="text-[9px] text-white/50">—</span>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 };
@@ -518,9 +183,9 @@ const Index = () => {
       <div className="fixed inset-0 bg-gradient-to-b from-ocean/40 via-background to-background pointer-events-none" />
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,hsl(190_70%_20%/0.3)_0%,transparent_60%)] pointer-events-none" />
 
-      <div className="relative z-10 max-w-md mx-auto px-4 pb-8">
+      <div className="relative z-10 max-w-md mx-auto px-3 pb-6">
         {/* Header */}
-        <header className="pt-4 pb-1 text-center">
+        <header className="pt-3 pb-0.5 text-center">
           <h1
             className="font-display text-3xl font-medium tracking-wide flex items-center justify-center gap-1"
             style={{ color: '#E2E8F0', animation: 'title-glow 4s ease-in-out infinite' }}
@@ -594,7 +259,7 @@ const Index = () => {
         </header>
 
         {/* Moon Phase Hero */}
-        <section className="flex flex-col items-center mt-4 mb-4">
+        <section className="flex flex-col items-center mt-2 mb-3">
           <div
             className="text-8xl leading-none select-none"
             style={{
@@ -605,7 +270,7 @@ const Index = () => {
           >
             {moon.emoji}
           </div>
-          <h2 className="font-display text-xl font-semibold mt-4" style={{ color: '#E2E8F0' }}>
+          <h2 className="font-display text-xl font-semibold mt-2" style={{ color: '#E2E8F0' }}>
             {moon.phaseNameBg}
           </h2>
           <p className="text-sm font-medium mt-1" style={{ color: '#2eb5b7' }}>
@@ -646,7 +311,7 @@ const Index = () => {
           }
           return (
             <section
-              className="rounded-2xl backdrop-blur-md p-4 mb-3"
+              className="rounded-2xl backdrop-blur-md p-3 mb-2"
               style={{
                 background: glow
                   ? 'linear-gradient(135deg, rgba(46,181,183,0.08), rgba(46,181,183,0.02))'
@@ -658,12 +323,12 @@ const Index = () => {
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <div
-                    className="font-display text-lg font-medium tracking-tight leading-none"
+                    className="font-display text-base font-medium tracking-tight leading-none"
                     style={{ color }}
                   >
                     {verdict}
                   </div>
-                  <div className="text-[12px] mt-1.5 leading-snug" style={{ color: 'rgba(234,247,255,0.65)' }}>
+                  <div className="text-[11px] mt-1 leading-snug" style={{ color: 'rgba(234,247,255,0.65)' }}>
                     {context}
                   </div>
                 </div>
@@ -674,7 +339,7 @@ const Index = () => {
                   </div>
                 </div>
               </div>
-              <p className="text-[11px] mt-3 pt-3 border-t border-white/5 leading-relaxed" style={{ color: 'rgba(234,247,255,0.5)' }}>
+              <p className="text-[11px] mt-2 pt-2 border-t border-white/5 leading-relaxed" style={{ color: 'rgba(234,247,255,0.5)' }}>
                 {stripEmojis(moon.fishingTip)}
               </p>
             </section>
@@ -683,11 +348,11 @@ const Index = () => {
 
         {/* Smart Weather Tips (only when weather is loaded) */}
         {tips && (
-          <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
-            <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+          <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2">
+            <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
               <svg
-                width="18"
-                height="18"
+                width="14"
+                height="14"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="#E4FF00"
@@ -695,7 +360,7 @@ const Index = () => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 aria-hidden="true"
-                style={{ 
+                style={{
                   transform: 'translateY(0.5px)',
                   opacity: 0.85
                 }}
@@ -706,11 +371,11 @@ const Index = () => {
               </svg>
               Анализ
             </h3>
-            <div className="space-y-3">
+            <div className="space-y-1.5">
               {fishingScore.isOverride && fishingScore.overrideReason && (
-                <div className="flex gap-3">
-                  <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF5350" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <div className="flex gap-2">
+                  <div className="w-4 h-4 mt-0.5 shrink-0 flex items-center justify-center">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF5350" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
                       <path d="M12 9v4" />
                       <path d="M12 17h.01" />
@@ -722,23 +387,23 @@ const Index = () => {
                 </div>
               )}
               
-              <div className="flex gap-3">
-                <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                  <Cloud className="w-4 h-4" style={{ color: 'rgba(234,247,255,0.45)' }} strokeWidth={1.5} />
+              <div className="flex gap-2">
+                <div className="w-4 h-4 mt-0.5 shrink-0 flex items-center justify-center">
+                  <Cloud className="w-3.5 h-3.5 text-[#2eb5b7]" strokeWidth={1.5} />
                 </div>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{tips.weatherTip}</p>
+                <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{tips.weatherTip}</p>
               </div>
 
-              <div className="flex gap-3">
-                <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                  <Wind className="w-4 h-4" style={{ color: 'rgba(234,247,255,0.45)' }} strokeWidth={1.5} />
+              <div className="flex gap-2">
+                <div className="w-4 h-4 mt-0.5 shrink-0 flex items-center justify-center">
+                  <Wind className="w-3.5 h-3.5 text-[#2eb5b7]" strokeWidth={1.5} />
                 </div>
-                <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{tips.windTip}</p>
+                <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{tips.windTip}</p>
               </div>
 
-              <div className="flex gap-3">
-                <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={solunarContext.isInPeak ? '#2eb5b7' : 'rgba(234,247,255,0.45)'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <div className="flex gap-2">
+                <div className="w-4 h-4 mt-0.5 shrink-0 flex items-center justify-center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
                   </svg>
@@ -758,11 +423,11 @@ const Index = () => {
         )}
 
         {/* Fishing Style Tip */}
-        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
-          <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2">
+          <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg
-              width="18"
-              height="18"
+              width="14"
+              height="14"
               viewBox="0 0 48 48"
               fill="none"
               stroke="#E4FF00"
@@ -770,7 +435,7 @@ const Index = () => {
               strokeLinecap="round"
               strokeLinejoin="round"
               aria-hidden="true"
-              style={{ 
+              style={{
                 transform: 'translateY(0.5px)',
                 opacity: 0.85
               }}
@@ -784,19 +449,19 @@ const Index = () => {
             </svg>
             Съвети за стил
           </h3>
-          <div className="flex gap-3">
-            <div className="w-5 h-5 mt-0.5 shrink-0 flex items-center justify-center">
-              <Anchor className="w-4 h-4" style={{ color: 'rgba(234,247,255,0.45)' }} strokeWidth={1.5} />
+          <div className="flex gap-2">
+            <div className="w-4 h-4 mt-0.5 shrink-0 flex items-center justify-center">
+              <Anchor className="w-3.5 h-3.5 text-[#2eb5b7]" strokeWidth={1.5} />
             </div>
-            <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>
+            <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>
               {tips ? tips.fishingStyleTip : stripEmojis(moon.fishingStyleTip)}
             </p>
           </div>
         </section>
 
         {/* Weather Widget — Bento Grid */}
-        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
-          <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2">
+          <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ opacity: 0.85 }}>
               <circle cx="12" cy="12" r="4" />
               <path d="M12 2v2" /><path d="M12 20v2" />
@@ -828,10 +493,10 @@ const Index = () => {
               dot = '#FF8C42';
             }
             return (
-              <div className="mb-3 flex items-start gap-2.5">
-                <span className="mt-1.5 inline-block w-1.5 h-1.5 rounded-full shrink-0" style={{ background: dot, boxShadow: `0 0 8px ${dot}` }} />
+              <div className="mb-2 flex items-start gap-2">
+                <span className="mt-1 inline-block w-1.5 h-1.5 rounded-full shrink-0" style={{ background: dot, boxShadow: `0 0 6px ${dot}` }} />
                 <div className="min-w-0">
-                  <div className="text-[15px] font-semibold leading-tight" style={{ color: '#EAF7FF' }}>{title}</div>
+                  <div className="text-[13px] font-semibold leading-tight" style={{ color: '#EAF7FF' }}>{title}</div>
                   <div className="text-[11px] mt-0.5 leading-snug" style={{ color: 'rgba(127,147,168,0.95)' }}>→ {effect}</div>
                 </div>
               </div>
@@ -843,22 +508,22 @@ const Index = () => {
               <span className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Зареждане на времето...</span>
             </div>
           ) : (
-            <div className="grid grid-cols-3 gap-1.5">
+            <div className="grid grid-cols-3 gap-1">
               {/* TEMP */}
-              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center">
-                <ThermometerSun className="w-4 h-4 mx-auto mb-0.5" style={{ color: 'rgba(234,247,255,0.5)' }} />
-                <div className="text-base font-bold leading-none text-white">{weather ? `${weather.temperature}°` : '—'}</div>
-                <div className="text-[8px] mt-0.5 opacity-50">ТЕМП.</div>
+              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
+                <ThermometerSun className="w-3.5 h-3.5 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <div className="text-sm font-bold leading-none text-white">{weather ? `${weather.temperature}°` : '—'}</div>
+                <div className="text-[7px] mt-0.5 opacity-50">ТЕМП.</div>
               </div>
               {/* WIND */}
-              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center">
-                <Wind className="w-4 h-4 mx-auto mb-0.5" style={{ color: 'rgba(234,247,255,0.5)' }} />
-                <div className="text-base font-bold leading-none text-white">{weather ? weather.windSpeed : '—'}</div>
-                <div className="text-[8px] mt-0.5 opacity-50">КМ/Ч</div>
+              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
+                <Wind className="w-3.5 h-3.5 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <div className="text-sm font-bold leading-none text-white">{weather ? weather.windSpeed : '—'}</div>
+                <div className="text-[7px] mt-0.5 opacity-50">КМ/Ч</div>
               </div>
-              {/* PRESSURE w/ sparkline (cyan kept — active trend data) */}
-              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center">
-                <Gauge className="w-4 h-4 mx-auto mb-0.5" style={{ color: 'rgba(234,247,255,0.5)' }} />
+              {/* PRESSURE w/ sparkline */}
+              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
+                <Gauge className="w-3.5 h-3.5 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
                 {weather && weather.pressureHistory.length > 1 ? (() => {
                   const values = weather.pressureHistory.map(h => h.value);
                   const min = Math.min(...values);
@@ -870,32 +535,31 @@ const Index = () => {
                     const y = h - ((v - min) / range) * h;
                     return `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`;
                   }).join(' ');
-                  const trendColor = weather.pressureTrend === 'stable' ? 'rgba(234,247,255,0.55)' : '#2eb5b7';
                   return (
                     <svg viewBox="0 0 40 8" className="w-full h-2 mb-0.5">
-                      <path d={d} fill="none" stroke={trendColor} strokeWidth="1" />
+                      <path d={d} fill="none" stroke="#2eb5b7" strokeWidth="1" />
                     </svg>
                   );
                 })() : <div className="h-2 mb-0.5" />}
-                <div className="text-sm font-bold leading-none text-white">{weather ? weather.pressure : '—'}</div>
-                <div className="text-[8px] mt-0.5 opacity-50">
+                <div className="text-xs font-bold leading-none text-white">{weather ? weather.pressure : '—'}</div>
+                <div className="text-[7px] mt-0.5 opacity-50">
                   {weather ? (weather.pressureTrend === 'rising' ? '↗ хПа' : weather.pressureTrend === 'falling' ? '↘ хПа' : '→ хПа') : 'хПа'}
                 </div>
               </div>
               {/* HUMIDITY */}
-              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center">
-                <Droplets className="w-4 h-4 mx-auto mb-0.5" style={{ color: 'rgba(234,247,255,0.5)' }} />
-                <div className="text-base font-bold leading-none text-white">{weather ? `${weather.humidity}%` : '—'}</div>
-                <div className="text-[8px] mt-0.5 opacity-50">ВЛАГА</div>
+              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
+                <Droplets className="w-3.5 h-3.5 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <div className="text-sm font-bold leading-none text-white">{weather ? `${weather.humidity}%` : '—'}</div>
+                <div className="text-[7px] mt-0.5 opacity-50">ВЛАГА</div>
               </div>
               {/* ALTITUDE */}
-              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center">
-                <Mountain className="w-4 h-4 mx-auto mb-0.5" style={{ color: 'rgba(234,247,255,0.5)' }} />
-                <div className="text-base font-bold leading-none text-white">{weather ? Math.round(weather.altitude) : '—'}</div>
-                <div className="text-[8px] mt-0.5 opacity-50">М. Н.В.</div>
+              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
+                <Mountain className="w-3.5 h-3.5 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <div className="text-sm font-bold leading-none text-white">{weather ? Math.round(weather.altitude) : '—'}</div>
+                <div className="text-[7px] mt-0.5 opacity-50">М. Н.В.</div>
               </div>
               {/* WEATHER ICON */}
-              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-2 text-center flex flex-col justify-center">
+              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center flex flex-col justify-center">
                 <span className="text-xl leading-none">{weather ? weather.weatherIcon : '—'}</span>
                 <div className="text-[8px] mt-1 opacity-50 leading-tight whitespace-nowrap overflow-hidden text-ellipsis" title={weather?.weatherLabel}>
                   {weather?.weatherLabel ?? '...'}
@@ -906,13 +570,65 @@ const Index = () => {
         </section>
 
         {/* Solunar Activity Section — Compact Timeline */}
-        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
-          <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-2" style={{ color: '#94A3B8' }}>
-            <MoonPhaseDot phase={moon.phase} size={20} />
+        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2">
+          <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#E4FF00"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              style={{
+                transform: 'translateY(0.5px)',
+                opacity: 0.85
+              }}
+            >
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+            </svg>
             Солунарна активност
           </h3>
           {weather && weather.solunarPeaks ? (
-            <SolunarSection weather={weather} moonPhase={moon.phase} />
+            <>
+              {(() => {
+                const parse = (s: string) => { if (!s || s === '--:--') return -1; const [h,m]=s.split(':').map(Number); return h*60+m; };
+                const nowMin = new Date().getHours()*60 + new Date().getMinutes();
+                const peaks = [...weather.solunarPeaks].sort((a:any,b:any)=>parse(a.start)-parse(b.start));
+                let active: any = null;
+                for (const p of peaks) {
+                  const s=parse(p.start), e=parse(p.end);
+                  if (s<0||e<0) continue;
+                  const inR = s<=e ? (nowMin>=s && nowMin<=e) : (nowMin>=s || nowMin<=e);
+                  if (inR) { active = { ...p, remaining: (e>nowMin?e-nowMin:1440-nowMin+e) }; break; }
+                }
+                let next: any = null;
+                if (!active) {
+                  for (const p of peaks) {
+                    const s=parse(p.start);
+                    if (s>nowMin) { next = { ...p, diff: s-nowMin }; break; }
+                  }
+                  if (!next && peaks.length) { const s=parse(peaks[0].start); next = { ...peaks[0], diff: 1440-nowMin+s }; }
+                }
+                const verdict = active ? 'Активен прозорец' : (next && next.diff <= 60 ? 'Следващ пик скоро' : 'Стабилни условия');
+                const subtitle = active
+                  ? `${active.type === 'major' ? 'Главен' : 'Малък'} пик · още ${active.remaining}мин`
+                  : next ? `Следващ ${next.type === 'major' ? 'главен' : 'малък'} пик след ${Math.floor(next.diff/60)}ч ${next.diff%60}м` : '';
+                const color = active ? '#2eb5b7' : (next && next.diff <= 60 ? '#E4FF00' : '#7F93A8');
+                return (
+                  <div className="mb-2">
+                    <div className="font-display text-base font-medium tracking-tight leading-none"
+                      style={{ color }}>
+                      {verdict}
+                    </div>
+                    <div className="text-[10px] mt-1" style={{ color: 'rgba(127,147,168,0.85)' }}>{subtitle}</div>
+                  </div>
+                );
+              })()}
+              <SolunarTimeline weather={weather} />
+            </>
           ) : (
             <div className="flex items-center justify-center gap-2 py-4">
               <Loader2 className="w-4 h-4 animate-spin text-primary" />
@@ -922,11 +638,11 @@ const Index = () => {
             </div>
           )}
         </section>
-        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-4 mb-3">
-          <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2">
+          <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg
-              width="18"
-              height="18"
+              width="14"
+              height="14"
               viewBox="0 0 48 48"
               fill="none"
               stroke="#E4FF00"
@@ -934,7 +650,7 @@ const Index = () => {
               strokeLinecap="round"
               strokeLinejoin="round"
               aria-hidden="true"
-              style={{ 
+              style={{
                 transform: 'translateY(0.5px)',
                 opacity: 0.85
               }}
@@ -951,20 +667,20 @@ const Index = () => {
           </h3>
 
           {/* Baits */}
-          <div className="mb-3">
-            <h4 className="text-xs font-medium text-[#2eb5b7] uppercase tracking-wider mb-3 flex items-center gap-1">
-              <Fish className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', opacity: 0.85 }} />
+          <div className="mb-2">
+            <h4 className="text-[10px] font-medium text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
+              <Fish className="w-[12px] h-[12px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', opacity: 0.85 }} />
               Стръв
             </h4>
-            <div className="grid grid-cols-2 gap-1.5">
+            <div className="grid grid-cols-2 gap-1">
               {(tips?.baits ?? moon.baits).map((bait) => (
                 <div
                   key={bait.name}
-                  className="flex items-center gap-2 rounded-lg border border-white/5 bg-white/[0.03] px-2.5 py-2 min-w-0"
+                  className="flex items-center gap-1.5 rounded-lg border border-border bg-secondary/30 px-2 py-1.5 min-w-0"
                 >
-                  <AdviceIcon name={bait.name} size={28} />
+                  <AdviceIcon name={bait.name} size={24} />
                   <span
-                    className="text-[12px] font-medium leading-tight whitespace-nowrap overflow-hidden text-ellipsis min-w-0 flex-1"
+                    className="text-[11px] font-medium leading-tight whitespace-nowrap overflow-hidden text-ellipsis min-w-0 flex-1"
                     title={bait.name}
                     style={{ color: 'rgba(255,255,255,0.85)' }}
                   >
@@ -977,19 +693,19 @@ const Index = () => {
 
           {/* Tackle */}
           <div>
-            <h4 className="text-xs font-medium text-[#2eb5b7] uppercase tracking-wider mb-3 flex items-center gap-1">
-              <Anchor className="w-[14px] h-[14px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', opacity: 0.85 }} />
+            <h4 className="text-[10px] font-medium text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
+              <Anchor className="w-[12px] h-[12px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', opacity: 0.85 }} />
               Такъми
             </h4>
-            <div className="grid grid-cols-2 gap-1.5">
+            <div className="grid grid-cols-2 gap-1">
               {(tips?.tackle ?? moon.tackle).map((item) => (
                 <div
                   key={item.name}
-                  className="flex items-center gap-2 rounded-lg border border-white/5 bg-white/[0.03] px-2.5 py-2 min-w-0"
+                  className="flex items-center gap-1.5 rounded-lg border border-border bg-secondary/30 px-2 py-1.5 min-w-0"
                 >
-                  <AdviceIcon name={item.name} size={28} />
+                  <AdviceIcon name={item.name} size={24} />
                   <span
-                    className="text-[12px] font-medium leading-tight whitespace-nowrap overflow-hidden text-ellipsis min-w-0 flex-1"
+                    className="text-[11px] font-medium leading-tight whitespace-nowrap overflow-hidden text-ellipsis min-w-0 flex-1"
                     title={item.name}
                     style={{ color: 'rgba(255,255,255,0.85)' }}
                   >
@@ -1013,7 +729,7 @@ const Index = () => {
           solunarContext={solunarContext}
         />
 
-        <footer className="text-center mt-8 space-y-1">
+        <footer className="text-center mt-4 space-y-0.5">
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Наслука!</p>
           {weather && (
             <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.8)' }}>

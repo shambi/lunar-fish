@@ -125,12 +125,12 @@ export function ForecastCards({ weather }: { weather: WeatherData | null }) {
   const bestIdx = days[0].finalScore >= days[1].finalScore ? 0 : 1;
 
   return (
-    <section className="mb-4">
-      <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2 px-1" style={{ color: '#94A3B8' }}>
-        <Cloud className="w-[18px] h-[18px]" strokeWidth={1.5} style={{ stroke: '#E4FF00', color: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
-        ПРОГНОЗА ЗА СЛЕДВАЩИТЕ ДНИ
+    <section className="mb-2">
+      <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5 px-1" style={{ color: '#94A3B8' }}>
+        <Cloud className="w-[14px] h-[14px]" strokeWidth={1.5} style={{ stroke: '#E4FF00', color: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
+        Прогноза
       </h3>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         {days.map((day, idx) => {
           const isBest = idx === bestIdx && days[0].finalScore !== days[1].finalScore;
           const { label: scoreLabel, color: scoreColor } = calculateFishingScore({
@@ -149,7 +149,7 @@ export function ForecastCards({ weather }: { weather: WeatherData | null }) {
           return (
             <div
               key={day.label}
-              className={`rounded-lg border p-3 bg-secondary/30 backdrop-blur-md flex flex-col items-center gap-2 transition-all ${
+              className={`rounded-lg border p-2 bg-secondary/30 backdrop-blur-md flex flex-col items-center gap-1.5 transition-all ${
                 isBest
                   ? 'border-primary shadow-[0_0_12px_hsl(var(--glow)/0.3)]'
                   : 'border-border opacity-80'

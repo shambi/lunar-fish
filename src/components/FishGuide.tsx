@@ -60,11 +60,11 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
   }, [selectedFish, moon, weather, terrain, solunarContext]);
 
   return (
-    <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-5 mb-4">
-      <h3 className="font-display text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2" style={{ color: '#94A3B8' }}>
+    <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-2">
+      <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
         <svg
-          width="18"
-          height="18"
+          width="14"
+          height="14"
           viewBox="0 0 48 48"
           fill="none"
           stroke="#E4FF00"
@@ -72,7 +72,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           strokeLinecap="round"
           strokeLinejoin="round"
           aria-hidden="true"
-          style={{ 
+          style={{
             transform: 'translateY(0.5px)',
             filter: 'drop-shadow(0 0 6px #E4FF00)'
           }}
@@ -81,14 +81,14 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           <path d="M36 24 L44 16 M36 24 L44 32" />
           <circle cx="12" cy="22" r="1.5" fill="#E4FF00" />
         </svg>
-        РИБО ГИД
+        Рибо гид
       </h3>
 
       {/* Terrain toggle */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-1.5 mb-2">
         <button
           onClick={() => onTerrainChange('lake')}
-          className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
+          className={`flex-1 rounded-lg border px-2 py-1.5 text-xs font-medium transition-all ${
             terrain === 'lake'
               ? 'border-primary bg-primary/20 text-primary'
               : 'border-border bg-secondary/30 hover:bg-secondary/50'
@@ -99,7 +99,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
         </button>
         <button
           onClick={() => onTerrainChange('river')}
-          className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
+          className={`flex-1 rounded-lg border px-2 py-1.5 text-xs font-medium transition-all ${
             terrain === 'river'
               ? 'border-primary bg-primary/20 text-primary'
               : 'border-border bg-secondary/30 hover:bg-secondary/50'
@@ -111,7 +111,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
       </div>
 
       {/* Fish grid */}
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-1.5">
         {scoredFish.map((fish) => {
           const isGlow = fish.stars >= 4;
           const isDimmed = fish.stars <= 2;
@@ -120,7 +120,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
             <button
               key={fish.name}
               onClick={() => setSelectedFish(fish)}
-              className={`relative flex flex-col items-center gap-1 rounded-lg border p-3 transition-all hover:scale-[1.03] active:scale-[0.98] ${
+              className={`relative flex flex-col items-center gap-0.5 rounded-lg border p-2 transition-all hover:scale-[1.03] active:scale-[0.98] ${
                 isGlow
                   ? 'border-primary bg-primary/10 shadow-[0_0_12px_hsl(var(--glow)/0.3)]'
                   : isDimmed
@@ -149,10 +149,10 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 </div>
               )}
               {FISH_ICON_MAP[fish.name]
-                ? FISH_ICON_MAP[fish.name]({ size: 40, strokeWidth: 2 })
-                : <span className="text-2xl">{fish.emoji}</span>
+                ? FISH_ICON_MAP[fish.name]({ size: 32, strokeWidth: 2 })
+                : <span className="text-xl">{fish.emoji}</span>
               }
-              <span className="text-xs font-medium text-center leading-tight" style={{ color: '#CBD5E1' }}>
+              <span className="text-[10px] font-medium text-center leading-tight" style={{ color: '#CBD5E1' }}>
                 {fish.name}
               </span>
             </button>
@@ -160,7 +160,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
         })}
       </div>
 
-      <p className="text-[10px] text-center mt-3" style={{ color: 'rgba(255,255,255,0.8)' }}>
+      <p className="text-[9px] text-center mt-2" style={{ color: 'rgba(255,255,255,0.8)' }}>
         Натиснете риба за подробна информация • Изчислено според текущите условия
       </p>
 
@@ -203,14 +203,14 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 </DialogDescription>
               </DialogHeader>
 
-              <ScrollArea className="h-[calc(90vh-280px)] pr-4">
-                <div className="space-y-4 py-2">
+              <ScrollArea className="h-[calc(90vh-240px)] pr-3">
+                <div className="space-y-3 py-1">
                   {/* Daily Advice */}
                   {advice && (
                     <>
                       <div>
-                        <h4 className="text-sm font-bold text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <h4 className="text-xs font-bold text-[#2eb5b7] uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                             <circle cx="12" cy="12" r="10" />
                             <polyline points="12 6 12 12 16 14" />
                           </svg>
@@ -223,8 +223,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       {advice.mistake && (
                         <>
                           <div>
-                            <h4 className="text-sm font-bold uppercase tracking-wider mb-2 flex items-center gap-1" style={{ color: '#FFA726' }}>
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFA726" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <h4 className="text-xs font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1" style={{ color: '#FFA726' }}>
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFA726" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
                                 <path d="M12 9v4" />
                                 <path d="M12 17h.01" />
@@ -241,8 +241,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                   {/* Groundbait & Bait */}
                   <div>
-                    <h4 className="text-sm font-bold text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
-                      <svg width="14" height="14" viewBox="0 0 48 48" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <h4 className="text-xs font-bold text-[#2eb5b7] uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                      <svg width="12" height="12" viewBox="0 0 48 48" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         <ellipse cx="22" cy="24" rx="14" ry="10" />
                         <path d="M36 24 L44 16 M36 24 L44 32" />
                         <circle cx="12" cy="22" r="1.5" fill="#E4FF00" />
@@ -255,8 +255,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                   {/* Line */}
                   <div>
-                    <h4 className="text-sm font-bold text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <h4 className="text-xs font-bold text-[#2eb5b7] uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M2 12h20" />
                         <path d="M6 8h12" />
                         <path d="M10 4h4" />
@@ -269,8 +269,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   {/* Lures (predators only) */}
                   {modalData.lureTip && (
                     <div>
-                      <h4 className="text-sm font-bold text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <h4 className="text-xs font-bold text-[#2eb5b7] uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                         </svg>
                         Воблери & Корди
@@ -281,8 +281,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                   {/* Hooks & Tackle */}
                   <div>
-                    <h4 className="text-sm font-bold text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <h4 className="text-xs font-bold text-[#2eb5b7] uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
                       </svg>
                       Такъми & Куки
@@ -294,15 +294,15 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   {/* Eco warning */}
                   <div className="rounded-lg bg-secondary/30 transition-all duration-300"
                     style={{
-                      padding: '12px 16px',
-                      border: '2px solid #E4FF00',
-                      boxShadow: '0 0 10px rgba(228,255,0,0.2)',
+                      padding: '8px 12px',
+                      border: '1.5px solid #E4FF00',
+                      boxShadow: '0 0 8px rgba(228,255,0,0.15)',
                     }}>
-                    <h4 className="text-[14px] font-bold text-[#2eb5b7] uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                    <h4 className="text-[12px] font-bold text-[#2eb5b7] uppercase tracking-wider mb-1 flex items-center gap-1">
                       Еко-съвет
                     </h4>
-                    <p className="whitespace-pre-line text-[13px]" style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.4' }}>{modalData.ecoWarning}</p>
-                    <p className="text-[11px] opacity-70 mt-1.5" style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.3' }}>{modalData.ecoFooter}</p>
+                    <p className="whitespace-pre-line text-[12px]" style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.4' }}>{modalData.ecoWarning}</p>
+                    <p className="text-[10px] opacity-70 mt-1" style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.3' }}>{modalData.ecoFooter}</p>
                   </div>
 
                   <p className="text-[10px] text-center pt-2" style={{ color: 'rgba(255,255,255,0.8)' }}>
