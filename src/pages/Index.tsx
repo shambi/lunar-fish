@@ -186,64 +186,7 @@ const Index = () => {
       <div className="relative z-10 max-w-md mx-auto px-3 pb-6">
         {/* Header */}
         <header className="pt-3 pb-0.5 text-center">
-          {(() => {
-            const C = '#2eb5b7';
-            const s = 3;
-            const r = 1.2;
-            const dots: JSX.Element[] = [];
-            const plot = (pattern: string[], ox: number, oy: number) => {
-              pattern.forEach((row, y) => {
-                [...row].forEach((ch, x) => {
-                  if (ch === '#') {
-                    dots.push(
-                      <circle
-                        key={`d-${ox}-${oy}-${x}-${y}`}
-                        cx={(ox + x) * s}
-                        cy={(oy + y) * s}
-                        r={r}
-                        fill={C}
-                      />
-                    );
-                  }
-                });
-              });
-            };
-            // Fish (9 cols × 5 rows)
-            plot(
-              [
-                '...####..',
-                '.#.#...#.',
-                '####..#..',
-                '.#.#...#.',
-                '...####..',
-              ],
-              6,
-              0
-            );
-            // "Ribo" letters (7 rows tall)
-            const R = ['####.', '#...#', '#...#', '####.', '#.#..', '#..#.', '#...#'];
-            const I = ['.#.', '...', '.#.', '.#.', '.#.', '.#.', '.#.'];
-            const B = ['#....', '#....', '####.', '#...#', '#...#', '#...#', '####.'];
-            const O = ['.....', '.....', '.###.', '#...#', '#...#', '#...#', '.###.'];
-            let cx = 1;
-            ([R, I, B, O] as string[][]).forEach((L) => {
-              plot(L, cx, 8);
-              cx += L[0].length + 1;
-            });
-            return (
-              <svg
-                width="80"
-                viewBox="0 0 70 48"
-                fill="none"
-                aria-label="РИБО"
-                role="img"
-                className="mx-auto"
-                style={{ animation: 'title-glow 4s ease-in-out infinite' }}
-              >
-                {dots}
-              </svg>
-            );
-          })()}
+          <img src="/ribo-logo.svg" alt="РИБО" className="h-14 w-auto mx-auto block" />
 
 
           <p className="text-sm mt-1 capitalize" style={{ color: '#94A3B8' }}>{today}</p>
