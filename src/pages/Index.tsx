@@ -186,31 +186,13 @@ const Index = () => {
       <div className="relative z-10 max-w-md mx-auto px-3 pb-6">
         {/* Header */}
         <header className="pt-3 pb-0.5 text-center">
-          <h1
-            className="font-display text-3xl font-medium tracking-wide flex items-center justify-center gap-1"
-            style={{ color: '#E2E8F0', animation: 'title-glow 4s ease-in-out infinite' }}
-          >
-            РИБО
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 48 48"
-              fill="none"
-              stroke="#2eb5b7"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-              style={{ 
-                transform: 'translateY(0.5px)',
-                filter: 'drop-shadow(0 0 6px #2eb5b7)'
-              }}
-            >
-              <ellipse cx="22" cy="24" rx="14" ry="10" />
-              <path d="M36 24 L44 16 M36 24 L44 32" />
-              <circle cx="12" cy="22" r="1.5" fill="#2eb5b7" />
-            </svg>
-          </h1>
+          <img
+            src="/logo-new.png"
+            alt="РИБО"
+            className="h-14 w-auto mx-auto"
+            style={{ animation: 'title-glow 4s ease-in-out infinite' }}
+          />
+
           <p className="text-sm mt-1 capitalize" style={{ color: '#94A3B8' }}>{today}</p>
           <div className="flex items-center justify-center gap-1 mt-1 text-xs" style={{ color: '#94A3B8' }}>
             {loading ? (
