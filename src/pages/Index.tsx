@@ -186,7 +186,7 @@ const Index = () => {
       <div className="relative z-10 max-w-md mx-auto px-3 pb-6">
         {/* Header */}
         <header className="pt-3 pb-0.5 text-center">
-          <img src="/ribo-logo.svg" alt="РИБО" className="h-14 w-auto mx-auto block" />
+          <img src="/ribo-logo.svg" alt="РИБО" className="h-20 w-auto mx-auto block" />
 
 
           <p className="text-sm mt-1 capitalize" style={{ color: '#94A3B8' }}>{today}</p>
