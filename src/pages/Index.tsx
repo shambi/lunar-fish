@@ -299,10 +299,10 @@ const Index = () => {
               <div className="flex items-center justify-between">
                 <div className="flex gap-1">
                   {fishIcons.map((icon, i) => (
-                    <div key={i} className="w-7 h-7 flex items-center justify-center">{icon}</div>
+                    <div key={i} className="w-9 h-9 flex items-center justify-center">{icon}</div>
                   ))}
                 </div>
-                <div className="text-4xl font-bold" style={{ color }}>
+                <div className="text-2xl font-bold" style={{ color }}>
                   {fishingScore.label}
                 </div>
               </div>
