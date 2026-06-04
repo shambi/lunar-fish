@@ -260,65 +260,54 @@ const Index = () => {
         {(() => {
           const score = fishingScore.score;
           const inPeak = solunarContext.isInPeak;
-          let verdict = 'Слаба активност';
-          let context = 'Условията са слаби';
           let glow = false;
-          let color = '#7F93A8';
+          let color = fishingScore.color;
           if (fishingScore.isOverride) {
-            verdict = 'Не ловувай';
-            context = stripEmojis(fishingScore.overrideReason || 'Опасни условия');
             color = '#FF8C42';
-          } else if (inPeak) {
-            verdict = 'Активен прозорец';
-            context = solunarContext.peakType === 'major' ? 'Главен солунарен пик' : 'Малък солунарен пик';
+          } else if (inPeak || score >= 4) {
             glow = true;
             color = '#2eb5b7';
-          } else if (score >= 4) {
-            verdict = 'Активен прозорец';
-            context = 'Рибата е будна';
-            glow = true;
-            color = '#2eb5b7';
-          } else if (score >= 3) {
-            verdict = 'Следващ пик скоро';
-            context = 'Подготви точката';
-            color = '#E4FF00';
-          } else if (score >= 2) {
-            verdict = 'Стабилни условия';
-            context = 'Активността е слаба';
-            color = '#E4FF00';
           }
+
+          const windSpeed = weather?.windSpeed ?? 0;
+          const pressureTrend = weather?.pressureTrend ?? 'stable';
+          const weatherCode = weather?.weatherCode ?? 1;
+          const temperature = weather?.temperature ?? 15;
+          const hour = currentHour;
+
+          const getScoreReason = (): string => {
+            if (fishingScore.isOverride) return stripEmojis(fishingScore.overrideReason || 'Опасни условия');
+            if (windSpeed > 25) return 'Силен вятър намалява активността';
+            if (pressureTrend === 'rising' && weatherCode <= 2) return 'Стабилно налягане и ясно небе';
+            if (pressureTrend === 'falling') return 'Падащо налягане — рибата е пасивна';
+            if (temperature > 26 && hour >= 10 && hour <= 16) return 'Горещо — търси сенчести участъци';
+            if (pressureTrend === 'stable' && windSpeed < 15) return 'Тихо и стабилно — добри условия';
+            return 'Средни условия за риболов';
+          };
+
           return (
             <section
-              className="rounded-2xl backdrop-blur-md p-3 mb-2"
+              className="rounded-2xl backdrop-blur-md p-5 mb-2"
               style={{
                 background: glow
                   ? 'linear-gradient(135deg, rgba(46,181,183,0.08), rgba(46,181,183,0.02))'
                   : 'rgba(255,255,255,0.03)',
                 border: `1px solid ${glow ? 'rgba(46,181,183,0.35)' : 'rgba(255,255,255,0.06)'}`,
-                boxShadow: glow ? '0 0 16px rgba(46,181,183,0.12)' : 'none',
+                boxShadow: glow ? '0 0 32px rgba(46,181,183,0.25)' : 'none',
               }}
             >
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <div
-                    className="font-display text-base font-medium tracking-tight leading-none"
-                    style={{ color }}
-                  >
-                    {verdict}
-                  </div>
-                  <div className="text-[11px] mt-1 leading-snug" style={{ color: 'rgba(234,247,255,0.65)' }}>
-                    {context}
-                  </div>
+              <div className="flex items-center justify-between">
+                <div className="flex gap-1">
+                  {fishIcons.map((icon, i) => (
+                    <div key={i} className="w-7 h-7 flex items-center justify-center">{icon}</div>
+                  ))}
                 </div>
-                <div className="flex flex-col items-end shrink-0">
-                  <div className="flex gap-0.5">{fishIcons}</div>
-                  <div className="text-[9px] mt-1 uppercase tracking-wider" style={{ color: 'rgba(127,147,168,0.8)' }}>
-                    {fishingScore.label}
-                  </div>
+                <div className="text-4xl font-bold" style={{ color }}>
+                  {fishingScore.label}
                 </div>
               </div>
-              <p className="text-[11px] mt-2 pt-2 border-t border-white/5 leading-relaxed" style={{ color: 'rgba(234,247,255,0.5)' }}>
-                {stripEmojis(moon.fishingTip)}
+              <p className="text-sm mt-3 leading-relaxed" style={{ color: 'rgba(234,247,255,0.65)' }}>
+                {getScoreReason()}
               </p>
             </section>
           );
