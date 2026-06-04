@@ -301,6 +301,19 @@ const Index = () => {
                   {fishIcons.map((icon, i) => (
                     <div key={i} className="w-9 h-9 flex items-center justify-center">{icon}</div>
                   ))}
+                  {score === 5 && (
+                    <div
+                      key="bonus"
+                      className="w-9 h-9 flex items-center justify-center"
+                      style={{
+                        color: '#E4FF00',
+                        filter: 'drop-shadow(0 0 6px #E4FF00)',
+                        animation: 'pulse-citron-bonus 2s ease-in-out infinite',
+                      }}
+                    >
+                      <PerchIcon size={24} strokeWidth={2} />
+                    </div>
+                  )}
                 </div>
                 <div className="text-2xl font-bold" style={{ color }}>
                   {fishingScore.label}
