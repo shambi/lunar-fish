@@ -276,6 +276,7 @@ const Index = () => {
           const hour = currentHour;
 
           const getScoreReason = (): string => {
+            if (solunarContext.isInPeak) return 'Солунарен пик сега — оптимален момент';
             if (fishingScore.isOverride) return stripEmojis(fishingScore.overrideReason || 'Опасни условия');
             if (windSpeed > 25) return 'Силен вятър намалява активността';
             if (pressureTrend === 'rising' && weatherCode <= 2) return 'Стабилно налягане и ясно небе';
