@@ -326,118 +326,229 @@ const Index = () => {
           );
         })()}
 
-        {/* Smart Weather Tips (only when weather is loaded) */}
+        {/* УСЛОВИЯ ДНЕС — Premium redesign */}
         {tips && (
-          <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2">
-            <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#E4FF00"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-                style={{
-                  transform: 'translateY(0.5px)',
-                  opacity: 0.85
-                }}
-              >
-                <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
-                <path d="M9 18h6" />
-                <path d="M10 22h4" />
-              </svg>
-              Анализ
-            </h3>
-            <div className="space-y-1.5">
-              {fishingScore.isOverride && fishingScore.overrideReason && (
-                <div className="flex gap-2">
-                  <div className="w-4 h-4 mt-0.5 shrink-0 flex items-center justify-center">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF5350" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-                      <path d="M12 9v4" />
-                      <path d="M12 17h.01" />
-                    </svg>
-                  </div>
-                  <p className="text-sm font-bold leading-relaxed" style={{ color: '#EF5350' }}>
-                    {stripEmojis(fishingScore.overrideReason)}
-                  </p>
-                </div>
-              )}
-              
-              <div className="flex gap-2">
-                <div className="w-4 h-4 mt-0.5 shrink-0 flex items-center justify-center">
-                  <Cloud className="w-3.5 h-3.5 text-[#2eb5b7]" strokeWidth={1.5} />
-                </div>
-                <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{tips.weatherTip}</p>
-              </div>
+          <section
+            style={{
+              background: '#1b2121',
+              border: '1px solid #3d4949',
+              borderRadius: '20px',
+              padding: '16px',
+              marginBottom: '10px',
+            }}
+          >
+            <div style={{
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '11px',
+              fontWeight: 600,
+              letterSpacing: '0.05em',
+              textTransform: 'uppercase',
+              color: '#869393',
+              marginBottom: '14px',
+            }}>
+              Условия днес
+            </div>
 
-              <div className="flex gap-2">
-                <div className="w-4 h-4 mt-0.5 shrink-0 flex items-center justify-center">
-                  <Wind className="w-3.5 h-3.5 text-[#2eb5b7]" strokeWidth={1.5} />
-                </div>
-                <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>{tips.windTip}</p>
-              </div>
-
-              <div className="flex gap-2">
-                <div className="w-4 h-4 mt-0.5 shrink-0 flex items-center justify-center">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
+            {fishingScore.isOverride && fishingScore.overrideReason && (
+              <div style={{
+                background: 'rgba(147,0,10,0.15)',
+                border: '1px solid rgba(255,180,171,0.25)',
+                borderRadius: '12px',
+                padding: '12px',
+                marginBottom: '12px',
+                display: 'flex',
+                gap: '10px',
+                alignItems: 'flex-start',
+              }}>
+                <div style={{
+                  width: '32px', height: '32px', borderRadius: '8px',
+                  background: 'rgba(147,0,10,0.3)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0,
+                }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="#ffb4ab" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                    <path d="M12 9v4"/><path d="M12 17h.01"/>
                   </svg>
                 </div>
-                <p className="text-sm font-medium leading-relaxed" style={{
-                  color: solunarContext.isInPeak && solunarContext.peakType === 'major'
-                    ? '#2eb5b7'
-                    : solunarContext.isInPeak && solunarContext.peakType === 'minor'
-                    ? 'rgba(46,181,183,0.6)'
-                    : 'rgba(255, 255, 255, 0.8)'
-                }}>
-                  {tips.timingTip}
-                </p>
+                <div>
+                  <div style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.05em',
+                    textTransform: 'uppercase', color: '#ffb4ab', marginBottom: '4px' }}>
+                    Внимание
+                  </div>
+                  <div style={{ fontSize: '14px', lineHeight: 1.5, color: 'rgba(255,180,171,0.9)' }}>
+                    {stripEmojis(fishingScore.overrideReason)}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* РЕД 1 — Времето */}
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start',
+              paddingBottom: '12px', borderBottom: '1px solid #252b2b' }}>
+              <div style={{
+                width: '32px', height: '32px', borderRadius: '8px',
+                background: 'rgba(46,181,183,0.08)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                </svg>
+              </div>
+              <div style={{ fontSize: '14px', lineHeight: 1.55, color: 'rgba(222,228,227,0.85)' }}>
+                {tips.weatherTip}
               </div>
             </div>
+
+            {/* РЕД 2 — Вятър */}
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start',
+              paddingTop: '12px', paddingBottom: '12px', borderBottom: '1px solid #252b2b' }}>
+              <div style={{
+                width: '32px', height: '32px', borderRadius: '8px',
+                background: 'rgba(46,181,183,0.08)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/>
+                  <path d="M9.6 4.6A2 2 0 1 1 11 8H2"/>
+                  <path d="M12.6 19.4A2 2 0 1 0 14 16H2"/>
+                </svg>
+              </div>
+              <div style={{ fontSize: '14px', lineHeight: 1.55, color: 'rgba(222,228,227,0.85)' }}>
+                {tips.windTip}
+              </div>
+            </div>
+
+            {/* РЕД 3 — Стил на риболов */}
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start',
+              paddingTop: '12px', paddingBottom: '12px', borderBottom: '1px solid #252b2b' }}>
+              <div style={{
+                width: '32px', height: '32px', borderRadius: '8px',
+                background: 'rgba(46,181,183,0.06)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 16.98h-5.99c-1.1 0-1.95.68-2.23 1.61A3 3 0 0 1 3 17c.01-.98.33-2.36 1.34-3.07.75-.52 1.2-1.37 1.2-2.29V8a6 6 0 0 1 10.56-3.88"/>
+                  <path d="m15 9 3 3-3 3"/>
+                </svg>
+              </div>
+              <div style={{ fontSize: '14px', lineHeight: 1.55, color: 'rgba(46,181,183,0.75)' }}>
+                {tips.fishingStyleTip}
+              </div>
+            </div>
+
+            {/* РЕД 4 — Светлина */}
+            {(() => {
+              const hour = new Date().getHours();
+              const isCloudy = weather.weatherCode >= 2;
+              const isNight = hour < 5 || hour >= 21;
+              const isDawn = (hour >= 5 && hour < 7) || (hour >= 19 && hour < 21);
+
+              let lightLabel = 'Добра';
+              let lightDetail = 'Нормална видимост.';
+
+              if (isNight) {
+                lightLabel = moon.illumination > 60 ? 'Лунна' : 'Тъмна';
+                lightDetail = moon.illumination > 60
+                  ? 'Ярка луна — хищниците търсят сенките.'
+                  : 'Тъмна нощ — хищниците ловуват смело.';
+              } else if (isDawn) {
+                lightLabel = 'Здрач';
+                lightDetail = 'Преходна светлина — рибата е активна.';
+              } else if (isCloudy) {
+                lightLabel = 'Ниска';
+                lightDetail = 'Облачно — рибата излиза от укрития.';
+              }
+
+              return (
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center',
+                  paddingTop: '12px', paddingBottom: '12px', borderBottom: '1px solid #252b2b' }}>
+                  <div style={{
+                    width: '32px', height: '32px', borderRadius: '8px',
+                    background: 'rgba(46,181,183,0.06)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="4"/>
+                      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                    </svg>
+                  </div>
+                  <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ fontSize: '14px', color: 'rgba(222,228,227,0.55)' }}>Светлина</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+                      <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '13px',
+                        fontWeight: 500, color: '#2eb5b7' }}>
+                        {lightLabel}
+                      </div>
+                      <div style={{ fontSize: '11px', color: '#869393', textAlign: 'right', maxWidth: '150px' }}>
+                        {lightDetail}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* РЕД 5 — Търси рибата */}
+            {(() => {
+              const hour = new Date().getHours();
+              const isHot = weather.temperature > 24;
+              const isCold = weather.temperature < 8;
+              const isActive = (hour >= 5 && hour < 10) || (hour >= 17 && hour < 21);
+
+              let zoneLabel = 'Средна';
+              let zoneDetail = terrain === 'river'
+                ? 'Търси бавни участъци и ями.'
+                : 'Средни дълбочини и край на водоема.';
+
+              if (isCold) {
+                zoneLabel = 'Дъното';
+                zoneDetail = 'Студено — рибата търси топлите слоеве.';
+              } else if (isHot && !isActive) {
+                zoneLabel = 'Дъното';
+                zoneDetail = 'Горещо — рибата е в хладните дълбини.';
+              } else if (isActive) {
+                zoneLabel = 'Повърхност';
+                zoneDetail = terrain === 'river'
+                  ? 'Активна зона край брега и вливащи се притоци.'
+                  : 'Плитчините при изгрев и залез.';
+              }
+
+              return (
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center', paddingTop: '12px' }}>
+                  <div style={{
+                    width: '32px', height: '32px', borderRadius: '8px',
+                    background: 'rgba(46,181,183,0.06)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                  }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                      stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M2 8h20M2 12h20M2 16h20" opacity="0.35"/>
+                      <circle cx="12" cy="14" r="2" fill="rgba(46,181,183,0.25)" stroke="#2eb5b7" strokeWidth="1"/>
+                    </svg>
+                  </div>
+                  <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ fontSize: '14px', color: 'rgba(222,228,227,0.55)' }}>Търси рибата</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+                      <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '13px',
+                        fontWeight: 500, color: '#2eb5b7' }}>
+                        {zoneLabel}
+                      </div>
+                      <div style={{ fontSize: '11px', color: '#869393', textAlign: 'right', maxWidth: '150px' }}>
+                        {zoneDetail}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
           </section>
         )}
-
-        {/* Fishing Style Tip */}
-        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2">
-          <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 48 48"
-              fill="none"
-              stroke="#E4FF00"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-              style={{
-                transform: 'translateY(0.5px)',
-                opacity: 0.85
-              }}
-            >
-              <ellipse cx="22" cy="24" rx="16" ry="5" />
-              <path d="M38 24 L46 17 M38 24 L46 31" />
-              <path d="M20 19 Q22 15 24 19" />
-              <path d="M24 29 Q26 33 28 29" />
-              <circle cx="9" cy="23" r="1.5" fill="#E4FF00" />
-              <path d="M10 24 L36 24" opacity="0.2" />
-            </svg>
-            Съвети за стил
-          </h3>
-          <div className="flex gap-2">
-            <div className="w-4 h-4 mt-0.5 shrink-0 flex items-center justify-center">
-              <Anchor className="w-3.5 h-3.5 text-[#2eb5b7]" strokeWidth={1.5} />
-            </div>
-            <p className="text-[13px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.8)' }}>
-              {tips ? tips.fishingStyleTip : stripEmojis(moon.fishingStyleTip)}
-            </p>
-          </div>
-        </section>
 
         {/* Weather Widget — Bento Grid */}
         <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2">
@@ -617,84 +728,6 @@ const Index = () => {
               </span>
             </div>
           )}
-        </section>
-        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2">
-          <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 48 48"
-              fill="none"
-              stroke="#E4FF00"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-              style={{
-                transform: 'translateY(0.5px)',
-                opacity: 0.85
-              }}
-            >
-              <path d="M2 24 L6 21 Q14 18 28 18 Q38 18 40 22 L42 24 L40 26 Q38 30 28 30 Q14 30 6 27Z" />
-              <path d="M2 24 L6 23 M2 24 L6 25" />
-              <path d="M42 24 L48 15 M42 24 L48 33" />
-              <path d="M32 18 Q35 12 38 18" />
-              <path d="M32 30 Q35 36 38 30" />
-              <circle cx="8" cy="23" r="1.5" fill="#E4FF00" />
-              <path d="M2 24 L10 25" opacity="0.3" />
-            </svg>
-            Съвети
-          </h3>
-
-          {/* Baits */}
-          <div className="mb-2">
-            <h4 className="text-[10px] font-medium text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
-              <Fish className="w-[12px] h-[12px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', opacity: 0.85 }} />
-              Стръв
-            </h4>
-            <div className="grid grid-cols-2 gap-1">
-              {(tips?.baits ?? moon.baits).map((bait) => (
-                <div
-                  key={bait.name}
-                  className="flex items-center gap-1.5 rounded-lg border border-border bg-secondary/30 px-2 py-1.5 min-w-0"
-                >
-                  <AdviceIcon name={bait.name} size={24} />
-                  <span
-                    className="text-[11px] font-medium leading-tight whitespace-nowrap overflow-hidden text-ellipsis min-w-0 flex-1"
-                    title={bait.name}
-                    style={{ color: 'rgba(255,255,255,0.85)' }}
-                  >
-                    {bait.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Tackle */}
-          <div>
-            <h4 className="text-[10px] font-medium text-[#2eb5b7] uppercase tracking-wider mb-2 flex items-center gap-1">
-              <Anchor className="w-[12px] h-[12px]" strokeWidth={2} style={{ stroke: '#E4FF00', transform: 'translateY(0.5px)', opacity: 0.85 }} />
-              Такъми
-            </h4>
-            <div className="grid grid-cols-2 gap-1">
-              {(tips?.tackle ?? moon.tackle).map((item) => (
-                <div
-                  key={item.name}
-                  className="flex items-center gap-1.5 rounded-lg border border-border bg-secondary/30 px-2 py-1.5 min-w-0"
-                >
-                  <AdviceIcon name={item.name} size={24} />
-                  <span
-                    className="text-[11px] font-medium leading-tight whitespace-nowrap overflow-hidden text-ellipsis min-w-0 flex-1"
-                    title={item.name}
-                    style={{ color: 'rgba(255,255,255,0.85)' }}
-                  >
-                    {item.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
         </section>
 
         {/* Multi-day Forecast */}
