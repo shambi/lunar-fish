@@ -307,7 +307,6 @@ const Index = () => {
                       className="w-9 h-9 flex items-center justify-center"
                       style={{
                         color: '#E4FF00',
-                        filter: 'drop-shadow(0 0 3px #E4FF00) drop-shadow(0 0 1px #E4FF00)',
                         animation: 'pulse-citron-bonus 2s ease-in-out infinite',
                       }}
                     >
