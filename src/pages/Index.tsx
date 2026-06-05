@@ -276,6 +276,7 @@ const Index = () => {
           const hour = currentHour;
 
           const getScoreReason = (): string => {
+            if (solunarContext.isInPeak) return 'Солунарен пик сега — оптимален момент';
             if (fishingScore.isOverride) return stripEmojis(fishingScore.overrideReason || 'Опасни условия');
             if (windSpeed > 25) return 'Силен вятър намалява активността';
             if (pressureTrend === 'rising' && weatherCode <= 2) return 'Стабилно налягане и ясно небе';
@@ -329,8 +330,8 @@ const Index = () => {
         {tips && (
           <section
             style={{
-              background: '#1b2121',
-              border: '1px solid #3d4949',
+              background: 'rgba(255,255,255,0.03)',
+              border: '0.5px solid rgba(255,255,255,0.07)',
               borderRadius: '20px',
               padding: '16px',
               marginBottom: '10px',
