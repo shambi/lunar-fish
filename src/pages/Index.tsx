@@ -362,8 +362,7 @@ const Index = () => {
                 alignItems: 'flex-start',
               }}>
                 <div style={{
-                  width: '32px', height: '32px', borderRadius: '8px',
-                  background: 'rgba(147,0,10,0.3)',
+                  width: '32px', height: '32px',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   flexShrink: 0,
                 }}>
@@ -389,12 +388,11 @@ const Index = () => {
             <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start',
               paddingBottom: '12px', borderBottom: '1px solid #252b2b' }}>
               <div style={{
-                width: '32px', height: '32px', borderRadius: '8px',
-                background: 'rgba(46,181,183,0.08)',
+                width: '32px', height: '32px',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                  stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                  stroke="#5cd8da" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
                 </svg>
               </div>
@@ -407,12 +405,11 @@ const Index = () => {
             <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start',
               paddingTop: '12px', paddingBottom: '12px', borderBottom: '1px solid #252b2b' }}>
               <div style={{
-                width: '32px', height: '32px', borderRadius: '8px',
-                background: 'rgba(46,181,183,0.08)',
+                width: '32px', height: '32px',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                  stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                  stroke="#5cd8da" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/>
                   <path d="M9.6 4.6A2 2 0 1 1 11 8H2"/>
                   <path d="M12.6 19.4A2 2 0 1 0 14 16H2"/>
@@ -427,12 +424,11 @@ const Index = () => {
             <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start',
               paddingTop: '12px', paddingBottom: '12px', borderBottom: '1px solid #252b2b' }}>
               <div style={{
-                width: '32px', height: '32px', borderRadius: '8px',
-                background: 'rgba(46,181,183,0.06)',
+                width: '32px', height: '32px',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                  stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                  stroke="#5cd8da" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 16.98h-5.99c-1.1 0-1.95.68-2.23 1.61A3 3 0 0 1 3 17c.01-.98.33-2.36 1.34-3.07.75-.52 1.2-1.37 1.2-2.29V8a6 6 0 0 1 10.56-3.88"/>
                   <path d="m15 9 3 3-3 3"/>
                 </svg>
@@ -469,12 +465,11 @@ const Index = () => {
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center',
                   paddingTop: '12px', paddingBottom: '12px', borderBottom: '1px solid #252b2b' }}>
                   <div style={{
-                    width: '32px', height: '32px', borderRadius: '8px',
-                    background: 'rgba(46,181,183,0.06)',
+                    width: '32px', height: '32px',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                      stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                      stroke="#5cd8da" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="12" cy="12" r="4"/>
                       <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
                     </svg>
@@ -523,14 +518,13 @@ const Index = () => {
               return (
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center', paddingTop: '12px' }}>
                   <div style={{
-                    width: '32px', height: '32px', borderRadius: '8px',
-                    background: 'rgba(46,181,183,0.06)',
+                    width: '32px', height: '32px',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                      stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                      stroke="#5cd8da" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M2 8h20M2 12h20M2 16h20" opacity="0.35"/>
-                      <circle cx="12" cy="14" r="2" fill="rgba(46,181,183,0.25)" stroke="#2eb5b7" strokeWidth="1"/>
+                      <circle cx="12" cy="14" r="2" fill="rgba(92,216,218,0.25)" stroke="#5cd8da" strokeWidth="1"/>
                     </svg>
                   </div>
                   <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
