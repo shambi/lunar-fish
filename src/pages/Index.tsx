@@ -609,7 +609,7 @@ const Index = () => {
               </div>
               {/* PRESSURE w/ sparkline */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
-                <Gauge className="w-3.5 h-3.5 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <Gauge strokeWidth={1} className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
                 {weather && weather.pressureHistory.length > 1 ? (() => {
                   const values = weather.pressureHistory.map(h => h.value);
                   const min = Math.min(...values);
