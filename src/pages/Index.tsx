@@ -634,7 +634,7 @@ const Index = () => {
               </div>
               {/* HUMIDITY */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
-                <Droplets className="w-3.5 h-3.5 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <Droplets strokeWidth={1} className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
                 <div className="text-sm font-bold leading-none text-white">{weather ? `${weather.humidity}%` : '—'}</div>
                 <div className="text-[7px] mt-0.5 opacity-50">ВЛАГА</div>
               </div>
