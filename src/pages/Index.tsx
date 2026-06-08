@@ -623,7 +623,7 @@ const Index = () => {
                   }).join(' ');
                   return (
                     <svg viewBox="0 0 40 8" className="w-full h-2 mb-0.5">
-                      <path d={d} fill="none" stroke="#2eb5b7" strokeWidth="1" />
+                      <path d={d} fill="none" stroke="#C8E63C" strokeWidth="1" />
                     </svg>
                   );
                 })() : <div className="h-2 mb-0.5" />}
