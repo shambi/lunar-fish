@@ -582,7 +582,7 @@ const Index = () => {
               <div className="mb-2 flex items-start gap-2">
                 <span className="mt-1 inline-block w-1.5 h-1.5 rounded-full shrink-0" style={{ background: dot, boxShadow: `0 0 6px ${dot}` }} />
                 <div className="min-w-0">
-                  <div className="text-[13px] font-semibold leading-tight" style={{ color: '#EAF7FF' }}>{title}</div>
+                  <div className="text-[12px] font-medium leading-tight" style={{ color: '#EAF7FF' }}>{title}</div>
                   <div className="text-[11px] mt-0.5 leading-snug" style={{ color: 'rgba(127,147,168,0.95)' }}>→ {effect}</div>
                 </div>
               </div>
