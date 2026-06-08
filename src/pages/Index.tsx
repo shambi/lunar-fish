@@ -628,7 +628,7 @@ const Index = () => {
                   );
                 })() : <div className="h-2 mb-0.5" />}
                 <div className="text-xs font-bold leading-none text-white">{weather ? weather.pressure : '—'}</div>
-                <div className="text-[7px] mt-0.5 opacity-50">
+                <div className="text-[7px] mt-0.5" style={{ color: '#C8E63C' }}>
                   {weather ? (weather.pressureTrend === 'rising' ? '↗ хПа' : weather.pressureTrend === 'falling' ? '↘ хПа' : '→ хПа') : 'хПа'}
                 </div>
               </div>
