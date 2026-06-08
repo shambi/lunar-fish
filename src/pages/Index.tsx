@@ -547,7 +547,7 @@ const Index = () => {
 
         {/* Weather Widget — Bento Grid */}
         <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2">
-          <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+          <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ opacity: 0.85 }}>
               <circle cx="12" cy="12" r="4" />
               <path d="M12 2v2" /><path d="M12 20v2" />
@@ -582,7 +582,7 @@ const Index = () => {
               <div className="mb-2 flex items-start gap-2">
                 <span className="mt-1 inline-block w-1.5 h-1.5 rounded-full shrink-0" style={{ background: dot, boxShadow: `0 0 6px ${dot}` }} />
                 <div className="min-w-0">
-                  <div className="text-[13px] font-semibold leading-tight" style={{ color: '#EAF7FF' }}>{title}</div>
+                  <div className="text-[12px] font-medium leading-tight" style={{ color: '#EAF7FF' }}>{title}</div>
                   <div className="text-[11px] mt-0.5 leading-snug" style={{ color: 'rgba(127,147,168,0.95)' }}>→ {effect}</div>
                 </div>
               </div>
@@ -597,19 +597,19 @@ const Index = () => {
             <div className="grid grid-cols-3 gap-1">
               {/* TEMP */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
-                <ThermometerSun className="w-3.5 h-3.5 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <ThermometerSun strokeWidth={1} className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
                 <div className="text-sm font-bold leading-none text-white">{weather ? `${weather.temperature}°` : '—'}</div>
                 <div className="text-[7px] mt-0.5 opacity-50">ТЕМП.</div>
               </div>
               {/* WIND */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
-                <Wind className="w-3.5 h-3.5 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <Wind strokeWidth={1} className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
                 <div className="text-sm font-bold leading-none text-white">{weather ? weather.windSpeed : '—'}</div>
                 <div className="text-[7px] mt-0.5 opacity-50">КМ/Ч</div>
               </div>
               {/* PRESSURE w/ sparkline */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
-                <Gauge className="w-3.5 h-3.5 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <Gauge strokeWidth={1} className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
                 {weather && weather.pressureHistory.length > 1 ? (() => {
                   const values = weather.pressureHistory.map(h => h.value);
                   const min = Math.min(...values);
@@ -623,24 +623,24 @@ const Index = () => {
                   }).join(' ');
                   return (
                     <svg viewBox="0 0 40 8" className="w-full h-2 mb-0.5">
-                      <path d={d} fill="none" stroke="#2eb5b7" strokeWidth="1" />
+                      <path d={d} fill="none" stroke="#C8E63C" strokeWidth="1" />
                     </svg>
                   );
                 })() : <div className="h-2 mb-0.5" />}
                 <div className="text-xs font-bold leading-none text-white">{weather ? weather.pressure : '—'}</div>
-                <div className="text-[7px] mt-0.5 opacity-50">
+                <div className="text-[7px] mt-0.5" style={{ color: '#C8E63C' }}>
                   {weather ? (weather.pressureTrend === 'rising' ? '↗ хПа' : weather.pressureTrend === 'falling' ? '↘ хПа' : '→ хПа') : 'хПа'}
                 </div>
               </div>
               {/* HUMIDITY */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
-                <Droplets className="w-3.5 h-3.5 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <Droplets strokeWidth={1} className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
                 <div className="text-sm font-bold leading-none text-white">{weather ? `${weather.humidity}%` : '—'}</div>
                 <div className="text-[7px] mt-0.5 opacity-50">ВЛАГА</div>
               </div>
               {/* ALTITUDE */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
-                <Mountain className="w-3.5 h-3.5 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                <Mountain strokeWidth={1} className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
                 <div className="text-sm font-bold leading-none text-white">{weather ? Math.round(weather.altitude) : '—'}</div>
                 <div className="text-[7px] mt-0.5 opacity-50">М. Н.В.</div>
               </div>
