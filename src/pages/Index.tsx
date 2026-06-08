@@ -276,6 +276,7 @@ const Index = () => {
           const hour = currentHour;
 
           const getScoreReason = (): string => {
+            if (fishingScore.score >= 5) return 'Отличен ден за риболов — всички фактори са благоприятни';
             if (solunarContext.isInPeak) return 'Солунарен пик сега — оптимален момент';
             if (fishingScore.isOverride) return stripEmojis(fishingScore.overrideReason || 'Опасни условия');
             if (windSpeed > 25) return 'Силен вятър намалява активността';
@@ -308,7 +309,7 @@ const Index = () => {
                       className="w-9 h-9 flex items-center justify-center"
                       style={{
                         color: '#E4FF00',
-                        animation: 'pulse-citron-bonus 2s ease-in-out infinite',
+                        animation: 'pulse 2s ease-in-out infinite',
                       }}
                     >
                       <PerchIcon size={24} strokeWidth={2} />
