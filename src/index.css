@@ -157,11 +157,11 @@
 @keyframes pulse-glow-citron {
   0%, 100% { 
     opacity: 0.85;
-    filter: drop-shadow(0 0 2px #E4FF00);
+    filter: drop-shadow(0 0 2px #C8E63C);
   }
   50% { 
     opacity: 1;
-    filter: drop-shadow(0 0 6px #E4FF00) drop-shadow(0 0 3px #E4FF00);
+    filter: drop-shadow(0 0 6px #C8E63C) drop-shadow(0 0 3px #C8E63C);
   }
 }
 

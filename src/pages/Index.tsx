@@ -308,7 +308,7 @@ const Index = () => {
                       key="bonus"
                       className="w-9 h-9 flex items-center justify-center"
                       style={{
-                        color: '#E4FF00',
+                        color: '#C8E63C',
                         animation: 'pulse 2s ease-in-out infinite',
                       }}
                     >
@@ -548,7 +548,7 @@ const Index = () => {
         {/* Weather Widget — Bento Grid */}
         <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2">
           <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ opacity: 0.85 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ opacity: 0.85 }}>
               <circle cx="12" cy="12" r="4" />
               <path d="M12 2v2" /><path d="M12 20v2" />
               <path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" />
@@ -571,7 +571,7 @@ const Index = () => {
             } else if (trend === 'falling') {
               title = 'Падащо налягане';
               effect = 'Очаквай агресивни удари преди фронта';
-              dot = '#E4FF00';
+              dot = '#C8E63C';
             }
             if (wind > 25) {
               title = 'Силен вятър';
@@ -663,7 +663,7 @@ const Index = () => {
               height="14"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#E4FF00"
+              stroke="#C8E63C"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -702,7 +702,7 @@ const Index = () => {
                 const subtitle = active
                   ? `${active.type === 'major' ? 'Главен' : 'Малък'} пик · още ${active.remaining}мин`
                   : next ? `Следващ ${next.type === 'major' ? 'главен' : 'малък'} пик след ${Math.floor(next.diff/60)}ч ${next.diff%60}м` : '';
-                const color = active ? '#2eb5b7' : (next && next.diff <= 60 ? '#E4FF00' : '#7F93A8');
+                const color = active ? '#2eb5b7' : (next && next.diff <= 60 ? '#C8E63C' : '#7F93A8');
                 return (
                   <div className="mb-2">
                     <div className="font-display text-base font-medium tracking-tight leading-none"
