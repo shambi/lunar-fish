@@ -316,7 +316,7 @@ const Index = () => {
                     </div>
                   )}
                 </div>
-                <div className="text-2xl font-bold" style={{ color }}>
+                <div className="text-lg font-bold" style={{ color }}>
                   {fishingScore.label}
                 </div>
               </div>
@@ -338,7 +338,7 @@ const Index = () => {
               marginBottom: '10px',
             }}
           >
-            <div style={{
+            <div className="flex items-center gap-1.5" style={{
               fontFamily: 'Inter, sans-serif',
               fontSize: '11px',
               fontWeight: 600,
@@ -347,6 +347,7 @@ const Index = () => {
               color: '#869393',
               marginBottom: '14px',
             }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20M2 6h20M2 18h20"/></svg>
               Условия днес
             </div>
 
@@ -428,12 +429,11 @@ const Index = () => {
                 display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
               }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                  stroke="#5cd8da" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 16.98h-5.99c-1.1 0-1.95.68-2.23 1.61A3 3 0 0 1 3 17c.01-.98.33-2.36 1.34-3.07.75-.52 1.2-1.37 1.2-2.29V8a6 6 0 0 1 10.56-3.88"/>
-                  <path d="m15 9 3 3-3 3"/>
+                  stroke="#5cd8da" strokeWidth="1" strokeLinecap="round">
+                  <circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/>
                 </svg>
               </div>
-              <div style={{ fontSize: '14px', lineHeight: 1.55, color: 'rgba(46,181,183,0.75)' }}>
+              <div style={{ fontSize: '14px', lineHeight: 1.55, color: '#5cd8da' }}>
                 {tips.fishingStyleTip}
               </div>
             </div>
@@ -475,10 +475,10 @@ const Index = () => {
                     </svg>
                   </div>
                   <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ fontSize: '14px', color: 'rgba(222,228,227,0.55)' }}>Светлина</div>
+                  <div style={{ fontSize: '14px', color: 'rgba(222,228,227,0.75)' }}>Светлина</div>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
                       <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '13px',
-                        fontWeight: 500, color: '#2eb5b7' }}>
+                        fontWeight: 500, color: '#C8E63C' }}>
                         {lightLabel}
                       </div>
                       <div style={{ fontSize: '11px', color: '#869393', textAlign: 'right', maxWidth: '150px' }}>
@@ -528,10 +528,10 @@ const Index = () => {
                     </svg>
                   </div>
                   <div style={{ flex: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
-                    <div style={{ fontSize: '14px', color: 'rgba(222,228,227,0.55)' }}>Търси рибата</div>
+                  <div style={{ fontSize: '14px', color: 'rgba(222,228,227,0.75)' }}>Търси рибата</div>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
                       <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '13px',
-                        fontWeight: 500, color: '#2eb5b7' }}>
+                        fontWeight: 500, color: '#C8E63C' }}>
                         {zoneLabel}
                       </div>
                       <div style={{ fontSize: '11px', color: '#869393', textAlign: 'right', maxWidth: '150px' }}>
