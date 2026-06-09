@@ -9,8 +9,9 @@ import { ForecastCards } from '@/components/ForecastCards';
 import { PerchIcon, CarpIcon, PikeIcon, BreamIcon, CatfishIcon } from '@/components/FishIcons';
 import { AdviceIcon } from '@/components/AdviceIcon';
 
-const SolunarTimeline = ({ weather }: { weather: any }) => {
+const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
   const [now, setNow] = useState(() => new Date());
+  const [openMoon, setOpenMoon] = useState(false);
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 30000);
     return () => clearInterval(t);
@@ -21,68 +22,245 @@ const SolunarTimeline = ({ weather }: { weather: any }) => {
     const [h, m] = s.split(':').map(Number);
     return h * 60 + m;
   };
-
-  const currentMin = now.getHours() * 60 + now.getMinutes();
-  const isInRange = (start: string, end: string) => {
-    const s = parseTime(start), e = parseTime(end);
-    if (s < 0 || e < 0) return false;
-    return s <= e ? (currentMin >= s && currentMin <= e) : (currentMin >= s || currentMin <= e);
+  const timeToDeg = (h: number, m: number) => ((h * 60 + m) / 1440) * 360;
+  const arcPath = (cx: number, cy: number, r: number, startDeg: number, endDeg: number) => {
+    const sr = (startDeg * Math.PI) / 180;
+    const er = (endDeg * Math.PI) / 180;
+    const x1 = cx + r * Math.sin(sr);
+    const y1 = cy - r * Math.cos(sr);
+    const x2 = cx + r * Math.sin(er);
+    const y2 = cy - r * Math.cos(er);
+    const largeArc = endDeg - startDeg > 180 ? 1 : 0;
+    return `M ${x1},${y1} A ${r},${r} 0 ${largeArc},1 ${x2},${y2}`;
   };
 
   const peaks = [...(weather.solunarPeaks || [])].sort(
     (a: any, b: any) => parseTime(a.start) - parseTime(b.start)
   );
+  const currentMin = now.getHours() * 60 + now.getMinutes();
+
+  let active: any = null;
+  for (const p of peaks) {
+    const s = parseTime(p.start), e = parseTime(p.end);
+    if (s < 0 || e < 0) continue;
+    if (currentMin >= s && currentMin <= e) {
+      active = { ...p, remaining: e - currentMin };
+      break;
+    }
+  }
+  let next: any = null;
+  if (!active) {
+    for (const p of peaks) {
+      const s = parseTime(p.start);
+      if (s > currentMin) { next = { ...p, diff: s - currentMin }; break; }
+    }
+  }
+
+  const verdict = active ? 'Активен прозорец' : (next && next.diff <= 60 ? 'Следващ пик скоро' : 'Стабилни условия');
+  const verdictColor = active ? '#2eb5b7' : (next && next.diff <= 60 ? '#C8E63C' : '#7F93A8');
+  const subtitle = active
+    ? `Още ${active.remaining}мин`
+    : next ? `След ${Math.floor(next.diff / 60)}ч ${next.diff % 60}м` : '';
+
+  const handDeg = timeToDeg(now.getHours(), now.getMinutes());
+  const handRad = (handDeg * Math.PI) / 180;
+  const handX2 = 105 + 64 * Math.sin(handRad);
+  const handY2 = 105 - 64 * Math.cos(handRad);
+  const moonTipX = 105 + 68 * Math.sin(handRad);
+  const moonTipY = 105 - 68 * Math.cos(handRad);
+
+  const fullMoonName = (month: number) => {
+    const names: Record<number, string> = {
+      1: 'Вълча', 2: 'Снежна', 3: 'Червена', 4: 'Розова', 5: 'Цветна', 6: 'Ягодова',
+      7: 'Еленска', 8: 'Осетрова', 9: 'Жътварска', 10: 'Ловна', 11: 'Боброва', 12: 'Студена'
+    };
+    return `${names[month]} луна`;
+  };
+  const monthNamesBg = ['януари','февруари','март','април','май','юни','юли','август','септември','октомври','ноември','декември'];
+  const currentMonth = now.getMonth();
+  const monthNameBg = monthNamesBg[currentMonth];
+  const year = now.getFullYear();
+  const fmName = fullMoonName(currentMonth + 1);
+
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  const nowHHMM = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+  const ticks = [];
+  for (let h = 0; h < 24; h++) {
+    const deg = (h / 24) * 360;
+    const rad = (deg * Math.PI) / 180;
+    const isMajor = h % 6 === 0;
+    const rOuter = 93;
+    const rInner = isMajor ? 83 : 90;
+    const x1 = 105 + rOuter * Math.sin(rad);
+    const y1 = 105 - rOuter * Math.cos(rad);
+    const x2 = 105 + rInner * Math.sin(rad);
+    const y2 = 105 - rInner * Math.cos(rad);
+    ticks.push(
+      <line key={h} x1={x1} y1={y1} x2={x2} y2={y2}
+        stroke={isMajor ? 'rgba(134,147,147,0.4)' : 'rgba(134,147,147,0.12)'}
+        strokeWidth="1" />
+    );
+  }
+
+  const centerLabel = active
+    ? <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.12em', color: '#C8E63C', marginTop: '2px' }}>ЗАХРАНИ</div>
+    : (next && next.diff <= 45)
+      ? <div style={{ fontSize: '9px', color: '#C8E63C', marginTop: '2px' }}>ПИК СЛЕД {next.diff}М</div>
+      : null;
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-left">
-        <tbody>
-          {peaks.map((peak: any, idx: number) => {
-            const isActive = isInRange(peak.start, peak.end);
-            const isMajor = peak.type === 'major';
+    <section style={{
+      background: 'rgba(255,255,255,0.03)',
+      border: '0.5px solid rgba(46,181,183,0.25)',
+      borderRadius: '20px',
+      padding: '16px',
+      marginBottom: '10px',
+    }}>
+      <div className="flex items-center gap-1.5 mb-2">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#869393" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+        </svg>
+        <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393' }}>
+          Солунарна активност
+        </span>
+      </div>
 
-            return (
-              <tr
-                key={idx}
-                className={`border-b border-white/5 transition-colors ${
-                  isActive
-                    ? 'bg-[#2eb5b7]/8'
-                    : 'hover:bg-white/3'
-                }`}
-              >
-                {/* Time */}
-                <td className="px-2 py-1.5 whitespace-nowrap">
-                  <div className="text-xs font-semibold text-white">
-                    {peak.start} — {peak.end}
-                  </div>
-                </td>
+      <div style={{ marginBottom: '8px' }}>
+        <div style={{ fontSize: '17px', fontWeight: 600, color: verdictColor, lineHeight: 1.2 }}>{verdict}</div>
+        {subtitle && (
+          <div style={{ fontSize: '11px', fontFamily: 'monospace', color: '#869393', marginTop: '2px' }}>{subtitle}</div>
+        )}
+      </div>
 
-                {/* Type */}
-                <td className="px-2 py-1.5">
-                  <div className={`text-[10px] font-bold uppercase tracking-wider inline-block ${
-                    isMajor ? 'text-[#2eb5b7]' : 'text-[#94A3B8]'
-                  }`}>
-                    {isMajor ? '★ Главен' : 'Малък'}
-                  </div>
-                </td>
+      <div style={{ position: 'relative', width: '210px', height: '210px', margin: '0 auto' }}>
+        <svg width="210" height="210" viewBox="0 0 210 210">
+          <circle cx="105" cy="105" r="88" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+          <circle cx="105" cy="105" r="78" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
 
-                {/* Status */}
-                <td className="px-2 py-1.5 text-right">
-                  {isActive ? (
-                    <div className="flex items-center justify-end gap-1">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#2eb5b7] animate-pulse" />
-                      <span className="text-[9px] font-bold text-[#2eb5b7] uppercase">Активен</span>
-                    </div>
-                  ) : (
-                    <span className="text-[9px] text-white/50">—</span>
-                  )}
-                </td>
-              </tr>
-            );
+          {peaks.map((p: any, i: number) => {
+            const s = parseTime(p.start), e = parseTime(p.end);
+            if (s < 0 || e < 0 || p.type === 'major') return null;
+            const sd = (s / 1440) * 360, ed = (e / 1440) * 360;
+            return <path key={`mn${i}`} d={arcPath(105, 105, 78, sd, ed)} fill="none" stroke="#2eb5b7" strokeWidth="3" strokeLinecap="round" opacity="0.6" />;
           })}
-        </tbody>
-      </table>
-    </div>
+          {peaks.map((p: any, i: number) => {
+            const s = parseTime(p.start), e = parseTime(p.end);
+            if (s < 0 || e < 0 || p.type !== 'major') return null;
+            const sd = (s / 1440) * 360, ed = (e / 1440) * 360;
+            return <path key={`mj${i}`} d={arcPath(105, 105, 88, sd, ed)} fill="none" stroke="#C8E63C" strokeWidth="6" strokeLinecap="round" opacity="0.85" />;
+          })}
+
+          {ticks}
+
+          <text x="105" y="10" textAnchor="middle" dominantBaseline="middle" fontSize="9" fill="rgba(134,147,147,0.55)" fontFamily="monospace">00</text>
+          <text x="203" y="109" textAnchor="middle" dominantBaseline="middle" fontSize="9" fill="rgba(134,147,147,0.55)" fontFamily="monospace">06</text>
+          <text x="105" y="206" textAnchor="middle" dominantBaseline="middle" fontSize="9" fill="rgba(134,147,147,0.55)" fontFamily="monospace">12</text>
+          <text x="7" y="109" textAnchor="middle" dominantBaseline="middle" fontSize="9" fill="rgba(134,147,147,0.55)" fontFamily="monospace">18</text>
+
+          <line x1="105" y1="105" x2={handX2} y2={handY2} stroke="rgba(222,228,227,0.7)" strokeWidth="1" strokeLinecap="round" />
+          <text x={moonTipX} y={moonTipY} textAnchor="middle" dominantBaseline="middle" fontSize="12">{moon.emoji}</text>
+
+          <circle cx="105" cy="105" r="3" fill="#2eb5b7" />
+          <circle cx="105" cy="105" r="1.5" fill="#0B0F1A" />
+        </svg>
+        <div style={{
+          position: 'absolute',
+          top: '50%', left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '100px',
+          textAlign: 'center',
+          pointerEvents: 'none',
+        }}>
+          <div style={{ fontFamily: 'monospace', fontSize: '26px', color: '#dee4e3', lineHeight: 1 }}>{nowHHMM}</div>
+          {centerLabel}
+        </div>
+      </div>
+
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '16px',
+        borderTop: '0.5px solid rgba(255,255,255,0.05)',
+        paddingTop: '10px',
+        marginTop: '10px',
+      }}>
+        <div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eb8c59" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '6px' }}>
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </svg>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
+            <span style={{ fontSize: '9px', color: '#869393' }}>ИЗГРЕВ</span>
+            <span style={{ fontSize: '16px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.sunrise}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <span style={{ fontSize: '9px', color: '#869393' }}>ЗАЛЕЗ</span>
+            <span style={{ fontSize: '16px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.sunset}</span>
+          </div>
+        </div>
+        <div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5cd8da" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '6px', opacity: 1 }}>
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
+            <span style={{ fontSize: '9px', color: '#869393' }}>ИЗГРЕВ</span>
+            <span style={{ fontSize: '16px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.moonrise}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <span style={{ fontSize: '9px', color: '#869393' }}>ЗАЛЕЗ</span>
+            <span style={{ fontSize: '16px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.moonset}</span>
+          </div>
+        </div>
+      </div>
+
+      {moon.illumination > 95 && (
+        <>
+          <div
+            onClick={() => setOpenMoon(o => !o)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '10px',
+              padding: '9px 12px',
+              background: 'rgba(46,181,183,0.05)',
+              border: '0.5px solid rgba(46,181,183,0.18)',
+              borderRadius: '10px',
+              cursor: 'pointer',
+              marginTop: '10px',
+            }}
+          >
+            <span style={{ fontSize: '18px' }}>{moon.emoji}</span>
+            <span style={{ flex: 1, fontSize: '12px', color: 'rgba(222,228,227,0.85)' }}>
+              {fmName} · {monthNameBg} {year}
+            </span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#869393" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+              style={{ transform: openMoon ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          {openMoon && (
+            <div style={{
+              fontSize: '12px',
+              color: 'rgba(222,228,227,0.65)',
+              lineHeight: 1.65,
+              padding: '10px',
+              borderRadius: '10px',
+              border: '0.5px solid rgba(255,255,255,0.06)',
+              marginTop: '6px',
+            }}>
+              <div style={{ marginBottom: '8px' }}>
+                {moon.emoji} <strong>Защо „{fmName}"?</strong> Народното название идва от древни наблюдения на природата през този месец. Всяко пълнолуние носи името на сезонното явление, което го характеризира. Имената са запазени от поколения наблюдатели на луната.
+              </div>
+              <div style={{ marginBottom: '8px' }}>
+                🎣 <strong>За риболова:</strong> Пълнолунието активира нощното хранене на хищниците. Часовете след залез са особено продуктивни.
+              </div>
+              <div>
+                ⚠️ <strong>Внимавай:</strong> При пълнолуние денем рибата може да е по-пасивна. Разчитай на солунарните пикове.
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </section>
   );
 };
 
