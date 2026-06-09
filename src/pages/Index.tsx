@@ -833,75 +833,25 @@ const Index = () => {
           )}
         </section>
 
-        {/* Solunar Activity Section — Compact Timeline */}
-        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2">
-          <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#C8E63C"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-              style={{
-                transform: 'translateY(0.5px)',
-                opacity: 0.85
-              }}
-            >
-              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-            </svg>
-            Солунарна активност
-          </h3>
-          {weather && weather.solunarPeaks ? (
-            <>
-              {(() => {
-                const parse = (s: string) => { if (!s || s === '--:--') return -1; const [h,m]=s.split(':').map(Number); return h*60+m; };
-                const nowMin = new Date().getHours()*60 + new Date().getMinutes();
-                const peaks = [...weather.solunarPeaks].sort((a:any,b:any)=>parse(a.start)-parse(b.start));
-                let active: any = null;
-                for (const p of peaks) {
-                  const s=parse(p.start), e=parse(p.end);
-                  if (s<0||e<0) continue;
-                  const inR = s<=e ? (nowMin>=s && nowMin<=e) : (nowMin>=s || nowMin<=e);
-                  if (inR) { active = { ...p, remaining: (e>nowMin?e-nowMin:1440-nowMin+e) }; break; }
-                }
-                let next: any = null;
-                if (!active) {
-                  for (const p of peaks) {
-                    const s=parse(p.start);
-                    if (s>nowMin) { next = { ...p, diff: s-nowMin }; break; }
-                  }
-                  if (!next && peaks.length) { const s=parse(peaks[0].start); next = { ...peaks[0], diff: 1440-nowMin+s }; }
-                }
-                const verdict = active ? 'Активен прозорец' : (next && next.diff <= 60 ? 'Следващ пик скоро' : 'Стабилни условия');
-                const subtitle = active
-                  ? `${active.type === 'major' ? 'Главен' : 'Малък'} пик · още ${active.remaining}мин`
-                  : next ? `Следващ ${next.type === 'major' ? 'главен' : 'малък'} пик след ${Math.floor(next.diff/60)}ч ${next.diff%60}м` : '';
-                const color = active ? '#2eb5b7' : (next && next.diff <= 60 ? '#C8E63C' : '#7F93A8');
-                return (
-                  <div className="mb-2">
-                    <div className="font-display text-base font-medium tracking-tight leading-none"
-                      style={{ color }}>
-                      {verdict}
-                    </div>
-                    <div className="text-[10px] mt-1" style={{ color: 'rgba(127,147,168,0.85)' }}>{subtitle}</div>
-                  </div>
-                );
-              })()}
-              <SolunarTimeline weather={weather} />
-            </>
-          ) : (
+        {/* Solunar Activity Section */}
+        {weather && weather.solunarPeaks ? (
+          <SolunarDial weather={weather} moon={moon} />
+        ) : (
+          <section style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '0.5px solid rgba(46,181,183,0.25)',
+            borderRadius: '20px',
+            padding: '16px',
+            marginBottom: '10px',
+          }}>
             <div className="flex items-center justify-center gap-2 py-4">
               <Loader2 className="w-4 h-4 animate-spin text-primary" />
               <span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
                 Зареждане...
               </span>
             </div>
-          )}
-        </section>
+          </section>
+        )}
 
         {/* Multi-day Forecast */}
         <ForecastCards weather={weather} />
