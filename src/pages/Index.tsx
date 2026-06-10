@@ -133,6 +133,23 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           <circle cx="105" cy="105" r="88" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
           <circle cx="105" cy="105" r="78" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
 
+          {/* Day/Night semicircles */}
+          <path d="M 105,17 A 88,88 0 0,1 105,193" fill="rgba(235,140,89,0.05)" />
+          <path d="M 105,193 A 88,88 0 0,1 105,17" fill="rgba(46,181,183,0.03)" />
+          {/* Sun icon at 06 */}
+          <g transform="translate(163,100)">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#eb8c59" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" x="0" y="0">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+            </svg>
+          </g>
+          {/* Moon icon at 18 */}
+          <g transform="translate(37,100)">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" x="0" y="0">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </g>
+
           {peaks.map((p: any, i: number) => {
             const s = parseTime(p.start), e = parseTime(p.end);
             if (s < 0 || e < 0 || p.type === 'major') return null;
@@ -147,15 +164,21 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           })}
           {peaks.map((p: any, i: number) => {
             const s = parseTime(p.start), e = parseTime(p.end);
-            if (s < 0 || e < 0 || p.type !== 'major') return null;
+            if (s < 0 || e < 0) return null;
             const sd = (s / 1440) * 360, ed = (e / 1440) * 360;
             const midDeg = (sd + ed) / 2;
-            const bx = 105 + 100 * Math.sin((midDeg * Math.PI) / 180);
-            const by = 105 - 100 * Math.cos((midDeg * Math.PI) / 180);
+            const bx = 105 + 102 * Math.sin((midDeg * Math.PI) / 180);
+            const by = 105 - 102 * Math.cos((midDeg * Math.PI) / 180);
+            const isMajor = p.type === 'major';
+            const label = isMajor
+              ? (p.label?.includes('зенит') ? 'ЗЕНИТ' : 'НАДИР')
+              : (p.label?.includes('Изгрев') ? 'ИЗГРЕВ' : 'ЗАЛЕЗ');
+            const fill = isMajor ? 'rgba(200,230,60,0.12)' : 'rgba(46,181,183,0.10)';
+            const stroke = isMajor ? '#C8E63C' : '#2eb5b7';
             return (
-              <g key={`mjb${i}`}>
-                <rect x={bx - 22} y={by - 8} width="44" height="16" rx="8" fill="rgba(200,230,60,0.15)" stroke="#C8E63C" strokeWidth="0.5" />
-                <text x={bx} y={by} textAnchor="middle" dominantBaseline="middle" fontSize="7" fill="#C8E63C" fontWeight="600" letterSpacing="0.05em">ГЛАВЕН ПИК</text>
+              <g key={`pb${i}`}>
+                <rect x={bx - 20} y={by - 7} width="40" height="14" rx="7" fill={fill} stroke={stroke} strokeWidth="0.5" />
+                <text x={bx} y={by} textAnchor="middle" dominantBaseline="middle" fontSize="6.5" fontWeight="600" letterSpacing="0.04em" fill={stroke}>{label}</text>
               </g>
             );
           })}
@@ -188,36 +211,36 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        gap: '16px',
+        gap: '10px',
         borderTop: '0.5px solid rgba(255,255,255,0.05)',
         paddingTop: '10px',
         marginTop: '10px',
       }}>
         <div>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#eb8c59" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '6px' }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '6px' }}>
             <circle cx="12" cy="12" r="4" />
             <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
           </svg>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1px' }}>
             <span style={{ fontSize: '9px', color: '#869393' }}>ИЗГРЕВ</span>
-            <span style={{ fontSize: '13px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.sunrise}</span>
+            <span className="text-sm font-bold leading-none text-white">{weather.sunrise}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
             <span style={{ fontSize: '9px', color: '#869393' }}>ЗАЛЕЗ</span>
-            <span style={{ fontSize: '13px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.sunset}</span>
+            <span className="text-sm font-bold leading-none text-white">{weather.sunset}</span>
           </div>
         </div>
         <div>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '6px', opacity: 1 }}>
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
           </svg>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1px' }}>
             <span style={{ fontSize: '9px', color: '#869393' }}>ИЗГРЕВ</span>
-            <span style={{ fontSize: '13px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.moonrise}</span>
+            <span className="text-sm font-bold leading-none text-white">{weather.moonrise}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
             <span style={{ fontSize: '9px', color: '#869393' }}>ЗАЛЕЗ</span>
-            <span style={{ fontSize: '13px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.moonset}</span>
+            <span className="text-sm font-bold leading-none text-white">{weather.moonset}</span>
           </div>
         </div>
       </div>
