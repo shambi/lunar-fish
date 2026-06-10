@@ -59,8 +59,10 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
   const verdict = active ? 'Активен прозорец' : (next && next.diff <= 60 ? 'Следващ пик скоро' : 'Стабилни условия');
   const verdictColor = active ? '#2eb5b7' : (next && next.diff <= 60 ? '#C8E63C' : '#7F93A8');
   const subtitle = active
-    ? `Още ${active.remaining}мин`
-    : next ? `След ${Math.floor(next.diff / 60)}ч ${next.diff % 60}м` : '';
+    ? `Още ${active.remaining}м`
+    : next
+      ? `След ${next.diff < 60 ? next.diff + 'м' : Math.floor(next.diff / 60) + 'ч ' + (next.diff % 60) + 'м'}`
+      : '';
 
   const handDeg = timeToDeg(now.getHours(), now.getMinutes());
   const handRad = (handDeg * Math.PI) / 180;
@@ -103,11 +105,6 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
     );
   }
 
-  const centerLabel = active
-    ? <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.12em', color: '#C8E63C', marginTop: '2px' }}>ЗАХРАНИ</div>
-    : (next && next.diff <= 45)
-      ? <div style={{ fontSize: '9px', color: '#C8E63C', marginTop: '2px' }}>ПИК СЛЕД {next.diff}М</div>
-      : null;
 
   return (
     <section style={{
@@ -117,13 +114,11 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
       padding: '16px',
       marginBottom: '10px',
     }}>
-      <div className="flex items-center gap-1.5 mb-2">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#869393" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+      <div className="font-display text-[10px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
         </svg>
-        <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393' }}>
-          Солунарна активност
-        </span>
+        Солунарна активност
       </div>
 
       <div style={{ marginBottom: '8px' }}>
@@ -150,6 +145,20 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
             const sd = (s / 1440) * 360, ed = (e / 1440) * 360;
             return <path key={`mj${i}`} d={arcPath(105, 105, 88, sd, ed)} fill="none" stroke="#C8E63C" strokeWidth="6" strokeLinecap="round" opacity="0.85" />;
           })}
+          {peaks.map((p: any, i: number) => {
+            const s = parseTime(p.start), e = parseTime(p.end);
+            if (s < 0 || e < 0 || p.type !== 'major') return null;
+            const sd = (s / 1440) * 360, ed = (e / 1440) * 360;
+            const midDeg = (sd + ed) / 2;
+            const bx = 105 + 100 * Math.sin((midDeg * Math.PI) / 180);
+            const by = 105 - 100 * Math.cos((midDeg * Math.PI) / 180);
+            return (
+              <g key={`mjb${i}`}>
+                <rect x={bx - 22} y={by - 8} width="44" height="16" rx="8" fill="rgba(200,230,60,0.15)" stroke="#C8E63C" strokeWidth="0.5" />
+                <text x={bx} y={by} textAnchor="middle" dominantBaseline="middle" fontSize="7" fill="#C8E63C" fontWeight="600" letterSpacing="0.05em">ГЛАВЕН ПИК</text>
+              </g>
+            );
+          })}
 
           {ticks}
 
@@ -173,7 +182,6 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           pointerEvents: 'none',
         }}>
           <div style={{ fontFamily: 'monospace', fontSize: '26px', color: '#dee4e3', lineHeight: 1 }}>{nowHHMM}</div>
-          {centerLabel}
         </div>
       </div>
 
@@ -192,24 +200,24 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           </svg>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
             <span style={{ fontSize: '9px', color: '#869393' }}>ИЗГРЕВ</span>
-            <span style={{ fontSize: '16px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.sunrise}</span>
+            <span style={{ fontSize: '13px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.sunrise}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
             <span style={{ fontSize: '9px', color: '#869393' }}>ЗАЛЕЗ</span>
-            <span style={{ fontSize: '16px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.sunset}</span>
+            <span style={{ fontSize: '13px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.sunset}</span>
           </div>
         </div>
         <div>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5cd8da" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '6px', opacity: 1 }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '6px', opacity: 1 }}>
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
           </svg>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
             <span style={{ fontSize: '9px', color: '#869393' }}>ИЗГРЕВ</span>
-            <span style={{ fontSize: '16px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.moonrise}</span>
+            <span style={{ fontSize: '13px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.moonrise}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
             <span style={{ fontSize: '9px', color: '#869393' }}>ЗАЛЕЗ</span>
-            <span style={{ fontSize: '16px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.moonset}</span>
+            <span style={{ fontSize: '13px', fontFamily: 'monospace', fontWeight: 500, color: '#dee4e3' }}>{weather.moonset}</span>
           </div>
         </div>
       </div>
