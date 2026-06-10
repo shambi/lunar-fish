@@ -236,26 +236,26 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
             <circle cx="12" cy="12" r="4" />
             <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
           </svg>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
             <span style={{ fontSize: '9px', color: '#869393' }}>ИЗГРЕВ</span>
-            <span className="text-sm font-bold leading-none text-white">{weather.sunrise}</span>
+            <span style={{ fontSize: '13px', fontWeight: 400, color: '#fff', lineHeight: 1 }}>{weather.sunrise}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
             <span style={{ fontSize: '9px', color: '#869393' }}>ЗАЛЕЗ</span>
-            <span className="text-sm font-bold leading-none text-white">{weather.sunset}</span>
+            <span style={{ fontSize: '13px', fontWeight: 400, color: '#fff', lineHeight: 1 }}>{weather.sunset}</span>
           </div>
         </div>
         <div>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '6px', opacity: 1 }}>
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
           </svg>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
             <span style={{ fontSize: '9px', color: '#869393' }}>ИЗГРЕВ</span>
-            <span className="text-sm font-bold leading-none text-white">{weather.moonrise}</span>
+            <span style={{ fontSize: '13px', fontWeight: 400, color: '#fff', lineHeight: 1 }}>{weather.moonrise}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
             <span style={{ fontSize: '9px', color: '#869393' }}>ЗАЛЕЗ</span>
-            <span className="text-sm font-bold leading-none text-white">{weather.moonset}</span>
+            <span style={{ fontSize: '13px', fontWeight: 400, color: '#fff', lineHeight: 1 }}>{weather.moonset}</span>
           </div>
         </div>
       </div>
