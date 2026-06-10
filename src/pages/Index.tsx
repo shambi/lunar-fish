@@ -137,15 +137,15 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           <path d="M 105,17 A 88,88 0 0,1 105,193" fill="rgba(235,140,89,0.05)" />
           <path d="M 105,193 A 88,88 0 0,1 105,17" fill="rgba(46,181,183,0.03)" />
           {/* Sun icon at 06 */}
-          <g transform="translate(163,100)">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#eb8c59" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" x="0" y="0">
+          <g transform="translate(161.5,98.5)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" x="0" y="0">
               <circle cx="12" cy="12" r="4" />
               <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
             </svg>
           </g>
           {/* Moon icon at 18 */}
-          <g transform="translate(37,100)">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" x="0" y="0">
+          <g transform="translate(35.5,98.5)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" x="0" y="0">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
           </g>
