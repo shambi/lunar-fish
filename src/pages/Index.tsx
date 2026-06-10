@@ -162,26 +162,41 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
             const sd = (s / 1440) * 360, ed = (e / 1440) * 360;
             return <path key={`mj${i}`} d={arcPath(105, 105, 88, sd, ed)} fill="none" stroke="#C8E63C" strokeWidth="6" strokeLinecap="round" opacity="0.85" />;
           })}
-          {peaks.map((p: any, i: number) => {
-            const s = parseTime(p.start), e = parseTime(p.end);
-            if (s < 0 || e < 0) return null;
-            const sd = (s / 1440) * 360, ed = (e / 1440) * 360;
-            const midDeg = (sd + ed) / 2;
-            const bx = 105 + 102 * Math.sin((midDeg * Math.PI) / 180);
-            const by = 105 - 102 * Math.cos((midDeg * Math.PI) / 180);
-            const isMajor = p.type === 'major';
-            const label = isMajor
-              ? (p.label?.includes('зенит') ? 'ЗЕНИТ' : 'НАДИР')
-              : (p.label?.includes('Изгрев') ? 'ИЗГРЕВ' : 'ЗАЛЕЗ');
-            const fill = isMajor ? 'rgba(200,230,60,0.12)' : 'rgba(46,181,183,0.10)';
-            const stroke = isMajor ? '#C8E63C' : '#2eb5b7';
-            return (
-              <g key={`pb${i}`}>
-                <rect x={bx - 20} y={by - 7} width="40" height="14" rx="7" fill={fill} stroke={stroke} strokeWidth="0.5" />
-                <text x={bx} y={by} textAnchor="middle" dominantBaseline="middle" fontSize="6.5" fontWeight="600" letterSpacing="0.04em" fill={stroke}>{label}</text>
-              </g>
-            );
-          })}
+          {(() => {
+            const majorPositions: { bx: number; by: number }[] = [];
+            return peaks.map((p: any, i: number) => {
+              const s = parseTime(p.start), e = parseTime(p.end);
+              if (s < 0 || e < 0) return null;
+              const sd = (s / 1440) * 360, ed = (e / 1440) * 360;
+              const midDeg = (sd + ed) / 2;
+              const isMajor = p.type === 'major';
+              if (isMajor) {
+                let bx = 105 + 108 * Math.sin((midDeg * Math.PI) / 180);
+                let by = 105 - 108 * Math.cos((midDeg * Math.PI) / 180);
+                for (const pos of majorPositions) {
+                  const dx = bx - pos.bx, dy = by - pos.by;
+                  if (Math.sqrt(dx * dx + dy * dy) < 25) by += 18;
+                }
+                majorPositions.push({ bx, by });
+                const label = p.label?.includes('зенит') ? '🌙 ЗЕНИТ' : '🌙 НАДИР';
+                return (
+                  <g key={`pb${i}`}>
+                    <rect x={bx - 26} y={by - 7} width="52" height="14" rx="7" fill="rgba(200,230,60,0.12)" stroke="#C8E63C" strokeWidth="0.5" />
+                    <text x={bx} y={by} textAnchor="middle" dominantBaseline="middle" fontSize="6.5" fontWeight="600" letterSpacing="0.04em" fill="#C8E63C">{label}</text>
+                  </g>
+                );
+              }
+              const bx = 105 + 108 * Math.sin((midDeg * Math.PI) / 180);
+              const by = 105 - 108 * Math.cos((midDeg * Math.PI) / 180);
+              const isRise = p.label?.includes('Изгрев');
+              const d = isRise ? "M5 9V1M1 5l4-4 4 4" : "M5 1v8M1 5l4 4 4-4";
+              return (
+                <g key={`pb${i}`} transform={`translate(${bx - 5},${by - 5})`}>
+                  <path d={d} stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" fill="none" />
+                </g>
+              );
+            });
+          })()}
 
           {ticks}
 
