@@ -15,6 +15,8 @@ export interface FishSpecies {
   habitat: Habitat;
   isPredator: boolean;
   gender: 'm' | 'f';
+  fishType?: string;
+  character?: string;
   baseData: FishBaseData;
   spawnMonths: number[];
   spawnWarning?: string;
@@ -49,6 +51,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: false,
     gender: 'm',
+    fishType: 'Дънна риба · Всеядна',
+    character: 'Умна и предпазлива. Учи се бързо от грешки — ако веднъж е засечена и пусната, избягва същата стръв с дни.',
     baseData: {
       groundbait: 'Сладка захранка с царевица и пеле',
       bait: 'Бойли, царевица, червеи',
@@ -70,6 +74,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'lake',
     isPredator: false,
     gender: 'm',
+    fishType: 'Тревопасна риба',
+    character: 'Спокоен и методичен. Пасе бавно по повърхността — изисква търпение и тиха презентация.',
     baseData: {
       groundbait: 'Растителна захранка с трева',
       bait: 'Тръстика, царевица, краставица, хляб',
@@ -91,6 +97,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'lake',
     isPredator: false,
     gender: 'm',
+    fishType: 'Планктоноядна риба',
+    character: 'Стаден и шумен. Скача при стрес — трудно се хваща на класически монтажи, реагира на вибрации.',
     hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Технопланктон, фитопланктон смес',
@@ -113,6 +121,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: true,
     gender: 'm',
+    fishType: 'Дънна хищница',
+    character: 'Самотник и нощен ловец. Търпелив до краен предел — атакува само когато е сигурен в улова.',
     baseData: {
       groundbait: 'Кървава захранка, рибно брашно',
       bait: 'Жива риба, черен дроб, пиявици',
@@ -135,6 +145,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: true,
     gender: 'f',
+    fishType: 'Засадна хищница',
+    character: 'Студенокръвна и пресметлива. Лови от засада — стои неподвижна с часове и удря светкавично.',
     baseData: {
       groundbait: '',
       bait: 'Жива рибка, мъртва рибка',
@@ -157,6 +169,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'lake',
     isPredator: false,
     gender: 'f',
+    fishType: 'Издръжлива бяла риба',
+    character: 'Капризна и непредвидима. Издържа в условия, при които другите риби загиват — мръсна вода, ниски нива на кислород.',
     baseData: {
       groundbait: 'Лека сладка захранка, трохи',
       bait: 'Червеи, ларви, хляб, тесто',
@@ -178,6 +192,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: false,
     gender: 'm',
+    fishType: 'Стадна повърхностна риба',
+    character: 'Неспокоен стадник. Движи се на ята близо до повърхността — издава позицията си с пляскане по водата.',
     baseData: {
       groundbait: 'Ситна захранка с конопено семе и трохи — малки порции',
       bait: 'Опариш, малък червей, тесто, хляб',
@@ -199,6 +215,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: true,
     gender: 'f',
+    fishType: 'Планинска хищна риба',
+    character: 'Взискателна и деликатна. Реагира само на естествена презентация — фалшивата стръв я отблъсква.',
     baseData: {
       groundbait: '',
       bait: 'Червеи, ларви, икра',
@@ -217,6 +235,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'river',
     isPredator: false,
     gender: 'm',
+    fishType: 'Крайбрежна речна риба',
+    character: 'Бърз и предпазлив. Движи се на ята в устията на реките — реагира на най-малкото смущение.',
     baseData: {
       groundbait: 'Хлебна захранка, варено жито',
       bait: 'Хляб, тесто, червеи, водорасли',
@@ -234,6 +254,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'river',
     isPredator: true,
     gender: 'm',
+    fishType: 'Речна дънна риба',
+    character: 'Силен и упорит. Обича бързото течение и чистата вода — индикатор за здрава река.',
     baseData: {
       groundbait: 'Каменна захранка, тежка смес',
       bait: 'Червеи, ларви, рачета',
@@ -252,6 +274,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'lake',
     isPredator: false,
     gender: 'm',
+    fishType: 'Дънна риба',
+    character: 'Нощен и скрит. Рови в тинята за храна — рядко излиза в открита вода, обича гъста растителност.',
     hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Сладка захранка с ванилия',
@@ -275,6 +299,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: true,
     gender: 'm',
+    fishType: 'Стадна хищница',
+    character: 'Агресивен в глутницата. Ловува колективно — при активно хранене атакува всичко което се движи.',
     baseData: {
       groundbait: 'Малки живи рибки, червеи',
       bait: 'Малки воблери, туистери, живец',
@@ -297,6 +323,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: false,
     gender: 'f',
+    fishType: 'Дълбочинна бяла риба',
+    character: 'Предпазлива и методична. Храни се на дъното под ъгъл — характерното повдигане на поплавъка издава хапката.',
     baseData: {
       groundbait: 'Фидер микс с трохи и червеи',
       bait: 'Червеи, опариш, царевица, тесто',
@@ -318,6 +346,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: false,
     gender: 'f',
+    fishType: 'Повърхностна бяла риба',
+    character: 'Активна и любопитна. Пасе по повърхността сутрин и вечер — трудна за изненада на тих водоем.',
     baseData: {
       groundbait: 'Ситна захранка с конопено семе',
       bait: 'Опариш, червей, малка царевица, тесто',
@@ -339,6 +369,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'lake',
     isPredator: false,
     gender: 'f',
+    fishType: 'Стадна повърхностна риба',
+    character: 'Бърза и игрива. Движи се в средни слоеве и повърхността — активна при слънце и топла вода.',
     hideOnTerrain: 'river',
     baseData: {
       groundbait: 'Ситна повърхностна захранка',
@@ -362,6 +394,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: false,
     gender: 'f',
+    fishType: 'Речна дънна риба',
+    character: 'Силна и борбена. Обича бързото течение — живее на дъното зад камъни и корени.',
     baseData: {
       groundbait: 'Тежка дънна захранка, пелети',
       bait: 'Бойли, пелети, червеи, скариди',
@@ -383,6 +417,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: true,
     gender: 'f',
+    fishType: 'Отглеждана хищна риба',
+    character: 'По-агресивна от речната пъстърва. Бързо реагира на изкуствени примамки — характерна за платен риболов.',
     subtitle: 'Среща се в планински реки и стопански язовири за платен риболов. Не се размножава естествено в България.',
     baseData: {
       groundbait: '',
@@ -401,6 +437,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: true,
     gender: 'm',
+    fishType: 'Стадна хищница',
+    character: 'Смел и опортюнист. По-малко предпазлив от костура — яде почти всичко при активна фаза.',
     baseData: {
       groundbait: 'Не се захранва',
       bait: 'Малки червеи, личинки',
@@ -423,6 +461,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: true,
     gender: 'f',
+    fishType: 'Речна хищница',
+    character: 'Бърза и агресивна. Атакува от засада в бързото течение — удря с цялото тяло.',
     baseData: {
       groundbait: 'Не се захранва',
       bait: 'Живец (уклей, бабушка до 10см), мъртва рибка',
@@ -445,6 +485,8 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'river',
     isPredator: true,
     gender: 'm',
+    fishType: 'Стадна повърхностна риба',
+    character: 'Активен и любопитен. Храни се близо до повърхността — лесно се забелязва по пръските при хранене.',
     hideOnTerrain: 'lake',
     subtitle: 'Среща се в р. Дунав и долните течения на Марица, Тунджа и Арда.',
     baseData: {
