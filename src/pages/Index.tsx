@@ -315,6 +315,17 @@ const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
   const { weather, loading, error, locationDenied } = useWeather();
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
+  const [showInstallBtn, setShowInstallBtn] = useState(false);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      e.preventDefault();
+      (window as any)._installPrompt = e;
+      setShowInstallBtn(true);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
 
   const today = new Date().toLocaleDateString('bg-BG', {
     weekday: 'long',
@@ -913,6 +924,31 @@ const Index = () => {
 
         <footer className="text-center mt-4 space-y-0.5">
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Наслука!</p>
+          {showInstallBtn && (
+            <button
+              onClick={() => {
+                const p = (window as any)._installPrompt;
+                if (p) { p.prompt(); setShowInstallBtn(false); }
+              }}
+              style={{
+                marginTop: '8px',
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                border: '0.5px solid rgba(46,181,183,0.4)',
+                background: 'rgba(46,181,183,0.06)',
+                color: '#2eb5b7',
+                fontSize: '14px',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              title="Добави към началния екран"
+            >
+              ↓
+            </button>
+          )}
           {weather && (
             <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.8)' }}>
               Данните са базирани на текущата ви локация • <span className="text-white">Open-Meteo API</span>
