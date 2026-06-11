@@ -6,12 +6,7 @@ import type { WeatherData } from '@/hooks/use-weather';
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
 } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { FISH_ICON_MAP } from '@/components/FishIcons';
 
 interface FishGuideProps {
@@ -169,147 +164,136 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
         <DialogContent className="max-w-sm bg-card border-border transition-all duration-300 ease-out">
           {selectedFish && modalData && (
             <>
-              <DialogHeader>
-                  <DialogTitle className="font-display flex items-center gap-2" style={{ color: '#E2E8F0' }}>
-                    {FISH_ICON_MAP[selectedFish.name]
-                      ? FISH_ICON_MAP[selectedFish.name]({ size: 40, strokeWidth: 2 })
-                      : <span className="text-3xl">{selectedFish.emoji}</span>
-                    }
+              {/* Тип риба */}
+              <p style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393', marginBottom: '4px' }}>
+                {selectedFish.fishType ?? 'Сладководна риба'}
+              </p>
+
+              {/* Риба + Име */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+                {FISH_ICON_MAP[selectedFish.name]
+                  ? FISH_ICON_MAP[selectedFish.name]({ size: 44, strokeWidth: 1.5 })
+                  : <span style={{ fontSize: '2.5rem' }}>{selectedFish.emoji}</span>
+                }
+                <h2 style={{ fontSize: '22px', fontWeight: 600, color: '#dee4e3', lineHeight: 1 }}>
                   {selectedFish.name}
-                  {selectedFish.isRecommended && (
-                    <div className="bg-primary text-primary-foreground text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
-                      <svg
-                        width="12"
-                        height="12"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#E4FF00"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="animate-pulse-glow-citron"
-                      >
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                      </svg>
-                      <span>Препоръчано днес</span>
+                </h2>
+              </div>
+
+              {/* Латинско + характер */}
+              {selectedFish.subtitle && (
+                <p style={{ fontSize: '11px', fontStyle: 'italic', color: '#869393', marginBottom: '2px' }}>
+                  {selectedFish.subtitle}
+                </p>
+              )}
+              {selectedFish.character && (
+                <p style={{ fontSize: '12px', color: 'rgba(222,228,227,0.65)', lineHeight: 1.5, marginBottom: '12px' }}>
+                  {selectedFish.character}
+                </p>
+              )}
+
+              {/* Score кръг + Badge */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
+                <div style={{ position: 'relative', width: '52px', height: '52px', flexShrink: 0 }}>
+                  <svg width="52" height="52" viewBox="0 0 52 52" style={{ position: 'absolute', top: 0, left: 0 }}>
+                    <circle cx="26" cy="26" r="21" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="2"/>
+                    <circle cx="26" cy="26" r="21" fill="none" stroke="#2eb5b7" strokeWidth="2"
+                      strokeDasharray={`${(selectedFish.score / 100) * 131.9} 131.9`}
+                      strokeLinecap="round"
+                      transform="rotate(-90 26 26)"/>
+                  </svg>
+                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', textAlign: 'center' }}>
+                    <div style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 600, color: '#dee4e3', lineHeight: 1 }}>
+                      {selectedFish.score}
                     </div>
-                  )}
-                </DialogTitle>
-                {selectedFish.subtitle && (
-                  <p className="text-xs italic" style={{ color: 'rgba(255,255,255,0.8)' }}>{selectedFish.subtitle}</p>
-                )}
-                <DialogDescription className="text-xs" style={{ color: '#94A3B8' }}>
-                  Резултат: {selectedFish.score}/100 • {selectedFish.habitat === 'river' ? 'Река' : selectedFish.habitat === 'lake' ? 'Водоем' : 'Река & Водоем'}
-                </DialogDescription>
-              </DialogHeader>
-
-              <ScrollArea className="h-[calc(90vh-240px)] pr-3">
-                <div className="space-y-3 py-1">
-                  {/* Daily Advice */}
-                  {advice && (
-                    <>
-                      <div>
-                        <h4 className="text-xs font-bold text-[#2eb5b7] uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="12" cy="12" r="10" />
-                            <polyline points="12 6 12 12 16 14" />
-                          </svg>
-                          Съвет за днес
-                        </h4>
-                        <p className="leading-[1.7] whitespace-pre-line" style={{ color: 'rgba(255,255,255,0.8)' }}>{advice.tip}</p>
-                      </div>
-                      <div className="border-t border-border" />
-
-                      {advice.mistake && (
-                        <>
-                          <div>
-                            <h4 className="text-xs font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1" style={{ color: '#FFA726' }}>
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFA726" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-                                <path d="M12 9v4" />
-                                <path d="M12 17h.01" />
-                              </svg>
-                              Честа грешка днес
-                            </h4>
-                            <p className="leading-[1.7]" style={{ color: 'rgba(255,255,255,0.8)' }}>{advice.mistake}</p>
-                          </div>
-                          <div className="border-t border-border" />
-                        </>
-                      )}
-                    </>
-                  )}
-
-                  {/* Groundbait & Bait */}
-                  <div>
-                    <h4 className="text-xs font-bold text-[#2eb5b7] uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                      <svg width="12" height="12" viewBox="0 0 48 48" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <ellipse cx="22" cy="24" rx="14" ry="10" />
-                        <path d="M36 24 L44 16 M36 24 L44 32" />
-                        <circle cx="12" cy="22" r="1.5" fill="#E4FF00" />
-                      </svg>
-                      Захранка & Стръв
-                    </h4>
-                    <p className="leading-[1.7]" style={{ color: '#FFFFFF' }}>{modalData.groundbaitTip}</p>
-                    <p className="leading-[1.7] mt-1" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.baitTip}</p>
-                  </div>
-
-                  {/* Line */}
-                  <div>
-                    <h4 className="text-xs font-bold text-[#2eb5b7] uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M2 12h20" />
-                        <path d="M6 8h12" />
-                        <path d="M10 4h4" />
-                      </svg>
-                      Влакно & Монофил
-                    </h4>
-                    <p className="leading-[1.7]" style={{ color: '#FFFFFF' }}>{modalData.lineDiameter}</p>
-                  </div>
-
-                  {/* Lures (predators only) */}
-                  {modalData.lureTip && (
-                    <div>
-                      <h4 className="text-xs font-bold text-[#2eb5b7] uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                        </svg>
-                        Воблери & Корди
-                      </h4>
-                      <p className="leading-[1.7]" style={{ color: '#FFFFFF' }}>{modalData.lureTip}</p>
+                    <div style={{ fontSize: '7px', letterSpacing: '0.06em', color: '#869393', textTransform: 'uppercase' }}>
+                      /100
                     </div>
-                  )}
-
-                  {/* Hooks & Tackle */}
-                  <div>
-                    <h4 className="text-xs font-bold text-[#2eb5b7] uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#E4FF00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-                      </svg>
-                      Такъми & Куки
-                    </h4>
-                    <p className="leading-[1.7]" style={{ color: '#FFFFFF' }}>{modalData.hookTip}</p>
-                    <p className="leading-[1.7] mt-1" style={{ color: 'rgba(255,255,255,0.8)' }}>{modalData.rigTip}</p>
                   </div>
-
-                  {/* Eco warning */}
-                  <div className="rounded-lg bg-secondary/30 transition-all duration-300"
-                    style={{
-                      padding: '8px 12px',
-                      border: '1.5px solid #E4FF00',
-                      boxShadow: '0 0 8px rgba(228,255,0,0.15)',
-                    }}>
-                    <h4 className="text-[12px] font-bold text-[#2eb5b7] uppercase tracking-wider mb-1 flex items-center gap-1">
-                      Еко-съвет
-                    </h4>
-                    <p className="whitespace-pre-line text-[12px]" style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.4' }}>{modalData.ecoWarning}</p>
-                    <p className="text-[10px] opacity-70 mt-1" style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.3' }}>{modalData.ecoFooter}</p>
-                  </div>
-
-                  <p className="text-[10px] text-center pt-2" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                    Данните са базирани на луната и прогнозата
-                  </p>
                 </div>
-              </ScrollArea>
+
+                {selectedFish.isRecommended && (
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 8px', border: '0.5px solid rgba(200,230,60,0.5)', borderRadius: '20px', background: 'rgba(200,230,60,0.06)' }}>
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="#C8E63C" stroke="none">
+                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.05em', color: '#C8E63C' }}>
+                      Препоръчано днес
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ height: '0.5px', background: '#1b2121', margin: '12px 0' }} />
+
+              {advice && (
+                <div style={{ marginBottom: '12px' }}>
+                  <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Съвет за днес
+                  </div>
+                  <p style={{ fontSize: '13px', lineHeight: 1.65, color: 'rgba(222,228,227,0.85)' }}>{advice.tip}</p>
+                </div>
+              )}
+
+              <div style={{ marginBottom: '12px' }}>
+                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393', marginBottom: '8px' }}>
+                  Такъми & Монтаж
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                  <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
+                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#869393', marginBottom: '4px' }}>Стръв & Захранка</div>
+                    <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>{modalData.groundbaitTip}<br/><span style={{ color: '#2eb5b7' }}>{modalData.baitTip}</span></div>
+                  </div>
+                  <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
+                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#869393', marginBottom: '4px' }}>Влакно</div>
+                    <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}><span style={{ color: '#2eb5b7' }}>{modalData.lineDiameter}</span></div>
+                  </div>
+                  <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
+                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#869393', marginBottom: '4px' }}>Куки</div>
+                    <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>{modalData.hookTip}</div>
+                  </div>
+                  <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
+                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#869393', marginBottom: '4px' }}>
+                      {modalData.lureTip ? 'Воблери' : 'Монтаж'}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>
+                      <span style={{ color: '#2eb5b7' }}>{modalData.lureTip ?? modalData.rigTip}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '12px' }}>
+                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                  Еко & Правила
+                </div>
+                <div style={{ background: '#1b2121', border: '0.5px solid rgba(200,230,60,0.2)', borderRadius: '12px', padding: '10px 12px' }}>
+                  <p style={{ fontSize: '12px', color: 'rgba(222,228,227,0.8)', lineHeight: 1.5, whiteSpace: 'pre-line', marginBottom: '8px' }}>
+                    {modalData.ecoWarning}
+                  </p>
+                  {modalData.ecoFooter && (
+                    <p style={{ fontSize: '11px', color: '#869393', lineHeight: 1.4 }}>{modalData.ecoFooter}</p>
+                  )}
+                  <button
+                    onClick={() => window.open('https://iara.government.bg', '_blank')}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', marginTop: '8px', padding: '7px', border: '0.5px solid #3d4949', borderRadius: '8px', background: 'transparent', fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: '#2eb5b7', cursor: 'pointer', textTransform: 'uppercase' }}>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.5" strokeLinecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    ИАРА Наредби
+                  </button>
+                </div>
+              </div>
+
+              {advice?.mistake && (
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', background: 'rgba(147,0,10,0.1)', border: '0.5px solid rgba(255,180,171,0.2)', borderRadius: '12px', padding: '10px 12px' }}>
+                  <div style={{ width: '24px', height: '24px', borderRadius: '6px', background: 'rgba(147,0,10,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '11px', fontWeight: 700, color: '#ffb4ab' }}>!</div>
+                  <div>
+                    <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,180,171,0.8)', textTransform: 'uppercase', marginBottom: '3px' }}>Честа грешка</div>
+                    <p style={{ fontSize: '12px', color: 'rgba(222,228,227,0.7)', lineHeight: 1.55 }}>{advice.mistake}</p>
+                  </div>
+                </div>
+              )}
             </>
           )}
         </DialogContent>
