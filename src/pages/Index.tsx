@@ -160,7 +160,18 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
             const s = parseTime(p.start), e = parseTime(p.end);
             if (s < 0 || e < 0 || p.type !== 'major') return null;
             const sd = (s / 1440) * 360, ed = (e / 1440) * 360;
-            return <path key={`mj${i}`} d={arcPath(105, 105, 88, sd, ed)} fill="none" stroke="#C8E63C" strokeWidth="6" strokeLinecap="round" opacity="0.85" />;
+            return (
+              <path 
+                key={`mj${i}`} 
+                d={arcPath(105, 105, 88, sd, ed)} 
+                fill="none" 
+                stroke="#C8E63C" 
+                strokeWidth="6" 
+                strokeLinecap="round" 
+                opacity="0.85"
+                style={{ filter: 'drop-shadow(0 0 4px rgba(200,230,60,0.8)) drop-shadow(0 0 8px rgba(200,230,60,0.4))' }}
+              />
+            );
           })}
           {(() => {
             const majorPositions: { bx: number; by: number }[] = [];
