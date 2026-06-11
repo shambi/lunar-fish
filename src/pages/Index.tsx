@@ -169,7 +169,11 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
                 strokeWidth="6" 
                 strokeLinecap="round" 
                 opacity="0.85"
-                style={{ filter: 'drop-shadow(0 0 4px rgba(200,230,60,0.8)) drop-shadow(0 0 8px rgba(200,230,60,0.4))' }}
+                style={{ 
+                  filter: solunarContext.isInPeak 
+                    ? 'drop-shadow(0 0 4px rgba(200,230,60,0.8)) drop-shadow(0 0 8px rgba(200,230,60,0.4))' 
+                    : 'none' 
+                }}
               />
             );
           })}
