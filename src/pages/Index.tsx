@@ -507,7 +507,11 @@ const Index = () => {
             if (pressureTrend === 'rising' && weatherCode <= 2) return 'Стабилно налягане и ясно небе';
             if (pressureTrend === 'falling') return 'Падащо налягане — рибата е пасивна';
             if (temperature > 26 && hour >= 10 && hour <= 16) return 'Горещо — търси сенчести участъци';
-            if (pressureTrend === 'stable' && windSpeed < 15) return 'Тихо и стабилно — добри условия';
+            if (pressureTrend === 'stable' && windSpeed < 15) {
+              if (fishingScore.score <= 2) return 'Слаба лунна фаза — рибата е пасивна';
+              if (fishingScore.score === 3) return 'Средни условия — луната не помага';
+              return 'Тихо и стабилно — добри условия';
+            }
             return 'Средни условия за риболов';
           };
 
