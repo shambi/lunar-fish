@@ -1,18 +1,19 @@
 {
   "name": "РИБО риболовен гид",
   "short_name": "РИБО",
+  "description": "Кълве ли днес? РИБО проверява луната, времето и налягането.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0B0F1A",
   "theme_color": "#0B0F1A",
   "icons": [
     {
-      "src": "/logo-new.png",
+      "src": "/2.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/logo-new.png",
+      "src": "/1.png",
       "sizes": "512x512",
       "type": "image/png"
     }
