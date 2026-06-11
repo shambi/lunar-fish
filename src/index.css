@@ -231,7 +231,7 @@
 
 .section-fade-in {
   animation: fadeInUp 0.5s ease-out forwards;
-  opacity: 0 !important;
+  opacity: 0;
 }
 .section-fade-in-1 { animation-delay: 0.1s; }
 .section-fade-in-2 { animation-delay: 0.25s; }
