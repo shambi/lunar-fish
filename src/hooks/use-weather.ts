@@ -25,12 +25,23 @@ function getLocation(): Promise<GeolocationPosition> {
 async function fetchLocationName(latitude: number, longitude: number): Promise<string> {
   try {
     const res = await fetchWithTimeout(
-      `${WEATHER_API_CONFIG.apis.geocoding}?lat=${latitude}&lon=${longitude}&format=json&accept-language=bg&zoom=10`,
+      `${WEATHER_API_CONFIG.apis.geocoding}?lat=${latitude}&lon=${longitude}&format=json&accept-language=bg&zoom=14`,
       WEATHER_API_CONFIG.timeouts.geocoding
     );
     if (!res.ok) return `${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`;
     const data = await res.json();
-    const city = data.address?.city || data.address?.town || data.address?.village || data.address?.municipality;
+    const city = data.address?.city 
+      || data.address?.town 
+      || data.address?.village 
+      || data.address?.hamlet
+      || data.address?.water
+      || data.address?.reservoir
+      || data.address?.leisure
+      || data.address?.natural
+      || data.address?.suburb
+      || data.address?.municipality
+      || data.address?.county
+      || data.address?.state_district;
     return city || `${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`;
   } catch {
     return `${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`;
