@@ -57,7 +57,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
   }
 
   const verdict = active ? 'Активен прозорец' : (next && next.diff <= 60 ? 'Следващ пик скоро' : 'Стабилни условия');
-  const verdictColor = active ? '#2eb5b7' : (next && next.diff <= 60 ? '#C8E63C' : '#7F93A8');
+  const verdictColor = active ? '#C8E63C' : (next && next.diff <= 60 ? '#C8E63C' : '#7F93A8');
   const subtitle = active
     ? `Още ${active.remaining}м`
     : next
