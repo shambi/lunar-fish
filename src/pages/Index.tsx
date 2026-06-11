@@ -461,7 +461,7 @@ const Index = () => {
         </header>
 
         {/* Moon Phase Hero */}
-        <section className="flex flex-col items-center mt-2 mb-3 section-fade-in section-fade-in-1">
+        <section className="flex flex-col items-center mt-2 mb-3">
           <div
             className="text-8xl leading-none select-none"
             style={{
@@ -512,8 +512,8 @@ const Index = () => {
           };
 
           return (
-              <section
-                className="rounded-2xl backdrop-blur-md p-5 mb-2 section-fade-in section-fade-in-2"
+            <section
+              className="rounded-2xl backdrop-blur-md p-5 mb-2"
               style={{
                 background: glow
                   ? 'linear-gradient(135deg, rgba(46,181,183,0.08), rgba(46,181,183,0.02))'
@@ -554,7 +554,6 @@ const Index = () => {
         {/* УСЛОВИЯ ДНЕС — Premium redesign */}
         {tips && (
           <section
-            className="section-fade-in section-fade-in-3"
             style={{
               background: 'rgba(255,255,255,0.03)',
               border: '0.5px solid rgba(255,255,255,0.07)',
@@ -771,7 +770,7 @@ const Index = () => {
         )}
 
         {/* Weather Widget — Bento Grid */}
-        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2 section-fade-in section-fade-in-4">
+        <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2">
           <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#94A3B8' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ opacity: 0.85 }}>
               <circle cx="12" cy="12" r="4" />
@@ -881,40 +880,36 @@ const Index = () => {
         </section>
 
         {/* Solunar Activity Section */}
-        <div className="section-fade-in section-fade-in-5">
-          {weather && weather.solunarPeaks ? (
-            <SolunarDial weather={weather} moon={moon} />
-          ) : (
-            <section style={{
-              background: 'rgba(255,255,255,0.03)',
-              border: '0.5px solid rgba(46,181,183,0.25)',
-              borderRadius: '20px',
-              padding: '16px',
-              marginBottom: '10px',
-            }}>
-              <div className="flex items-center justify-center gap-2 py-4">
-                <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                <span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                  Зареждане...
-                </span>
-              </div>
-            </section>
-          )}
-        </div>
+        {weather && weather.solunarPeaks ? (
+          <SolunarDial weather={weather} moon={moon} />
+        ) : (
+          <section style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '0.5px solid rgba(46,181,183,0.25)',
+            borderRadius: '20px',
+            padding: '16px',
+            marginBottom: '10px',
+          }}>
+            <div className="flex items-center justify-center gap-2 py-4">
+              <Loader2 className="w-4 h-4 animate-spin text-primary" />
+              <span className="text-[13px]" style={{ color: 'rgba(255,255,255,0.4)' }}>
+                Зареждане...
+              </span>
+            </div>
+          </section>
+        )}
 
         {/* Multi-day Forecast */}
         <ForecastCards weather={weather} />
 
         {/* Fish Guide */}
-        <div className="section-fade-in section-fade-in-6">
-          <FishGuide
-            moon={moon}
-            weather={weather}
-            terrain={terrain}
-            onTerrainChange={setTerrain}
-            solunarContext={solunarContext}
-          />
-        </div>
+        <FishGuide
+          moon={moon}
+          weather={weather}
+          terrain={terrain}
+          onTerrainChange={setTerrain}
+          solunarContext={solunarContext}
+        />
 
         <footer className="text-center mt-4 space-y-0.5">
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Наслука!</p>

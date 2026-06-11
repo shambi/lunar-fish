@@ -216,26 +216,3 @@
   box-shadow: 0 0 6px rgba(46, 181, 183, 0.9), 0 0 10px rgba(46, 181, 183, 0.7);
   pointer-events: none;
 }
-
-/* Fade-in анимация за секции */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.section-fade-in {
-  animation: fadeInUp 0.5s ease-out forwards;
-  opacity: 0;
-}
-.section-fade-in-1 { animation-delay: 0.1s; }
-.section-fade-in-2 { animation-delay: 0.25s; }
-.section-fade-in-3 { animation-delay: 0.4s; }
-.section-fade-in-4 { animation-delay: 0.55s; }
-.section-fade-in-5 { animation-delay: 0.7s; }
-.section-fade-in-6 { animation-delay: 0.85s; }
