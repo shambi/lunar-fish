@@ -500,18 +500,15 @@ const Index = () => {
           const hour = currentHour;
 
           const getScoreReason = (): string => {
-            if (fishingScore.score >= 5) return 'Отличен ден за риболов — всички фактори са благоприятни';
-            if (solunarContext.isInPeak) return 'Солунарен пик сега — оптимален момент';
             if (fishingScore.isOverride) return stripEmojis(fishingScore.overrideReason || 'Опасни условия');
             if (windSpeed > 25) return 'Силен вятър намалява активността';
-            if (pressureTrend === 'rising' && weatherCode <= 2) return 'Стабилно налягане и ясно небе';
+            if (fishingScore.score >= 5) return 'Отличен ден — всички фактори са благоприятни';
+            if (solunarContext.isInPeak) return 'Солунарен пик сега — оптимален момент';
             if (pressureTrend === 'falling') return 'Падащо налягане — рибата е пасивна';
             if (temperature > 26 && hour >= 10 && hour <= 16) return 'Горещо — търси сенчести участъци';
-            if (pressureTrend === 'stable' && windSpeed < 15) {
-              if (fishingScore.score <= 2) return 'Слаба лунна фаза — рибата е пасивна';
-              if (fishingScore.score === 3) return 'Средни условия — луната не помага';
-              return 'Тихо и стабилно — добри условия';
-            }
+            if (fishingScore.score <= 2) return 'Слаба лунна фаза — рибата е пасивна';
+            if (fishingScore.score === 3) return 'Лунната фаза ограничава активността';
+            if (fishingScore.score === 4) return 'Добри условия — луната подпомага';
             return 'Средни условия за риболов';
           };
 
