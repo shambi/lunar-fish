@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { getMoonData } from '@/lib/moon';
 import { getSmartFishingTips, getTimePeriod } from '@/lib/fishing-expert';
 import { calculateFishingScore } from '@/lib/fishing-score';
@@ -838,11 +838,97 @@ const Index = () => {
                 <div className="text-[7px] mt-0.5 opacity-50">ТЕМП.</div>
               </div>
               {/* WIND */}
-              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
-                <Wind strokeWidth={1} className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
-                <div className="text-sm font-bold leading-none text-white">{weather ? weather.windSpeed : '—'}</div>
-                <div className="text-[7px] mt-0.5 opacity-50">КМ/Ч</div>
-              </div>
+              {(() => {
+                const [showWindTip, setShowWindTip] = React.useState(false);
+                
+                const getWindDir = (deg: number): string => {
+                  const dirs = ['С', 'СИ', 'И', 'ЮИ', 'Ю', 'ЮЗ', 'З', 'СЗ'];
+                  return dirs[Math.round(deg / 45) % 8];
+                };
+                
+                const getWindDirFull = (deg: number): string => {
+                  const dirs = ['Север', 'Северо-Изток', 'Изток', 'Юго-Изток', 'Юг', 'Юго-Запад', 'Запад', 'Северо-Запад'];
+                  return dirs[Math.round(deg / 45) % 8];
+                };
+
+                const windDeg = weather?.windDirection ?? 0;
+                const toRad = (d: number) => (d - 90) * Math.PI / 180;
+                const ax = 18 + 12 * Math.cos(toRad(windDeg));
+                const ay = 18 + 12 * Math.sin(toRad(windDeg));
+                const tx = 18 + 8 * Math.cos(toRad(windDeg + 180));
+                const ty = 18 + 8 * Math.sin(toRad(windDeg + 180));
+
+                return (
+                  <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center" style={{ position: 'relative' }}>
+                    <div className="text-sm font-bold leading-none text-white">{weather ? weather.windSpeed : '—'}</div>
+                    <div className="text-[7px] mt-0.5 opacity-50">КМ/Ч</div>
+                    
+                    {/* Компас */}
+                    <div
+                      onClick={() => setShowWindTip(v => !v)}
+                      style={{ cursor: 'pointer', margin: '4px auto 0', display: 'inline-block' }}
+                    >
+                      <svg width="36" height="36" viewBox="0 0 36 36">
+                        <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="0.5"/>
+                        {/* Тик маркери */}
+                        {[0,90,180,270].map(d => {
+                          const r1 = 13, r2 = 15;
+                          const rad = (d - 90) * Math.PI / 180;
+                          return <line key={d}
+                            x1={18 + r1 * Math.cos(rad)} y1={18 + r1 * Math.sin(rad)}
+                            x2={18 + r2 * Math.cos(rad)} y2={18 + r2 * Math.sin(rad)}
+                            stroke="rgba(255,255,255,0.2)" strokeWidth="0.5"/>
+                        })}
+                        {/* N S E W */}
+                        <text x="18" y="6" textAnchor="middle" fontSize="4.5" fill="#2eb5b7" fontFamily="sans-serif" fontWeight="600">N</text>
+                        <text x="18" y="33.5" textAnchor="middle" fontSize="4.5" fill="rgba(255,255,255,0.25)" fontFamily="sans-serif">S</text>
+                        <text x="3.5" y="19.5" textAnchor="middle" fontSize="4.5" fill="rgba(255,255,255,0.25)" fontFamily="sans-serif">W</text>
+                        <text x="32.5" y="19.5" textAnchor="middle" fontSize="4.5" fill="rgba(255,255,255,0.25)" fontFamily="sans-serif">E</text>
+                        {/* Стрелка */}
+                        <line x1="18" y1="18" x2={ax} y2={ay} stroke="#2eb5b7" strokeWidth="1.5" strokeLinecap="round"/>
+                        <line x1="18" y1="18" x2={tx} y2={ty} stroke="rgba(255,255,255,0.15)" strokeWidth="1" strokeLinecap="round"/>
+                        <circle cx="18" cy="18" r="1.5" fill="#2eb5b7"/>
+                      </svg>
+                    </div>
+
+                    {/* Tooltip */}
+                    {showWindTip && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '105%',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        background: '#1b2121',
+                        border: '0.5px solid #3d4949',
+                        borderRadius: '10px',
+                        padding: '8px 12px',
+                        whiteSpace: 'nowrap',
+                        zIndex: 50,
+                        textAlign: 'left',
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
+                      }}>
+                        <div style={{ fontSize: '9px', color: '#869393', letterSpacing: '0.08em', marginBottom: '4px', textTransform: 'uppercase' }}>Посока на вятъра</div>
+                        <div style={{ fontSize: '12px', color: '#dee4e3', marginBottom: '4px' }}>
+                          <span style={{ color: '#2eb5b7', fontFamily: 'monospace' }}>{windDeg}°</span> — духа от {getWindDirFull(windDeg)}
+                        </div>
+                        <div style={{ fontSize: '10px', color: '#869393', lineHeight: 1.6 }}>
+                          0° = Север · 90° = Изток<br/>
+                          180° = Юг · 270° = Запад
+                        </div>
+                        {/* Стрелка надолу */}
+                        <div style={{
+                          position: 'absolute', bottom: '-5px', left: '50%',
+                          transform: 'translateX(-50%) rotate(45deg)',
+                          width: '8px', height: '8px',
+                          background: '#1b2121',
+                          borderRight: '0.5px solid #3d4949',
+                          borderBottom: '0.5px solid #3d4949'
+                        }}/>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
               {/* PRESSURE w/ sparkline */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
                 <Gauge strokeWidth={1} className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
