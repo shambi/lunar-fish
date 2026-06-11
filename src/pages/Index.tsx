@@ -137,14 +137,14 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           <path d="M 17,105 A 88,88 0 0,0 193,105" fill="rgba(235,140,89,0.05)" />
           <path d="M 17,105 A 88,88 0 0,1 193,105" fill="rgba(46,181,183,0.03)" />
           {/* Sun icon at 12 (долу) */}
-          <g transform="translate(98.5,195)">
+          <g transform="translate(98.5,163)">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" x="0" y="0">
               <circle cx="12" cy="12" r="4" />
               <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
             </svg>
           </g>
           {/* Moon icon at 00 (горе) */}
-          <g transform="translate(98.5,2)">
+          <g transform="translate(98.5,38)">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" x="0" y="0">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>
