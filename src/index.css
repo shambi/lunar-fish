@@ -218,12 +218,12 @@
 }
 
 @keyframes logo-pulse {
-  0%, 75%, 100% { 
-    filter: drop-shadow(0 0 0px rgba(46,181,183,0));
-    opacity: 0.9;
+  0%, 100% { 
+    filter: drop-shadow(0 0 2px rgba(46,181,183,0.1));
+    opacity: 0.85;
   }
-  85% { 
-    filter: drop-shadow(0 0 10px rgba(46,181,183,0.5)) drop-shadow(0 0 22px rgba(46,181,183,0.2));
+  50% { 
+    filter: drop-shadow(0 0 14px rgba(46,181,183,0.55)) drop-shadow(0 0 28px rgba(46,181,183,0.2));
     opacity: 1;
   }
 }
