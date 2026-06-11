@@ -260,7 +260,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
         </div>
       </div>
 
-      {moon.illumination > 95 && (
+      {moon.illumination > 70 && (
         <>
           <div
             onClick={() => setOpenMoon(o => !o)}
