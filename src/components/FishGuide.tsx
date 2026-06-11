@@ -181,9 +181,9 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               </div>
 
               {/* Латинско + характер */}
-              {selectedFish.subtitle && (
+              {selectedFish.latinName && (
                 <p style={{ fontSize: '11px', fontStyle: 'italic', color: '#869393', marginBottom: '2px' }}>
-                  {selectedFish.subtitle}
+                  {selectedFish.latinName}
                 </p>
               )}
               {selectedFish.character && (

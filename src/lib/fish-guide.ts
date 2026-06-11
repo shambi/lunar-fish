@@ -27,6 +27,7 @@ export interface FishSpecies {
   ecoGreen?: string;
   /** Subtitle shown in modal */
   subtitle?: string;
+  latinName?: string;
   /** Altitude-based ban periods (IARA regulations by elevation) */
   altitudeBans?: {
     low?: { start: string; end: string; maxAlt: number };        // до 500m на н.в.
@@ -51,6 +52,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: false,
     gender: 'm',
+    latinName: 'Cyprinus carpio',
     fishType: 'Дънна риба · Всеядна',
     character: 'Умна и предпазлива. Учи се бързо от грешки — ако веднъж е засечена и пусната, избягва същата стръв с дни.',
     baseData: {
@@ -74,6 +76,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'lake',
     isPredator: false,
     gender: 'm',
+    latinName: 'Ctenopharyngodon idella',
     fishType: 'Тревопасна риба',
     character: 'Спокоен и методичен. Пасе бавно по повърхността — изисква търпение и тиха презентация.',
     baseData: {
@@ -97,6 +100,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'lake',
     isPredator: false,
     gender: 'm',
+    latinName: 'Hypophthalmichthys molitrix',
     fishType: 'Планктоноядна риба',
     character: 'Стаден и шумен. Скача при стрес — трудно се хваща на класически монтажи, реагира на вибрации.',
     hideOnTerrain: 'river',
@@ -121,6 +125,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: true,
     gender: 'm',
+    latinName: 'Silurus glanis',
     fishType: 'Дънна хищница',
     character: 'Самотник и нощен ловец. Търпелив до краен предел — атакува само когато е сигурен в улова.',
     baseData: {
@@ -145,6 +150,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: true,
     gender: 'f',
+    latinName: 'Esox lucius',
     fishType: 'Засадна хищница',
     character: 'Студенокръвна и пресметлива. Лови от засада — стои неподвижна с часове и удря светкавично.',
     baseData: {
@@ -169,6 +175,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'lake',
     isPredator: false,
     gender: 'f',
+    latinName: 'Carassius carassius',
     fishType: 'Издръжлива бяла риба',
     character: 'Капризна и непредвидима. Издържа в условия, при които другите риби загиват — мръсна вода, ниски нива на кислород.',
     baseData: {
@@ -192,6 +199,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: false,
     gender: 'm',
+    latinName: 'Alburnus alburnus',
     fishType: 'Стадна повърхностна риба',
     character: 'Неспокоен стадник. Движи се на ята близо до повърхността — издава позицията си с пляскане по водата.',
     baseData: {
@@ -215,6 +223,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: true,
     gender: 'f',
+    latinName: 'Salmo trutta',
     fishType: 'Планинска хищна риба',
     character: 'Взискателна и деликатна. Реагира само на естествена презентация — фалшивата стръв я отблъсква.',
     baseData: {
@@ -235,6 +244,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'river',
     isPredator: false,
     gender: 'm',
+    latinName: 'Mugil cephalus',
     fishType: 'Крайбрежна речна риба',
     character: 'Бърз и предпазлив. Движи се на ята в устията на реките — реагира на най-малкото смущение.',
     baseData: {
@@ -254,6 +264,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'river',
     isPredator: true,
     gender: 'm',
+    latinName: 'Chondrostoma nasus',
     fishType: 'Речна дънна риба',
     character: 'Силен и упорит. Обича бързото течение и чистата вода — индикатор за здрава река.',
     baseData: {
@@ -274,6 +285,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'lake',
     isPredator: false,
     gender: 'm',
+    latinName: 'Tinca tinca',
     fishType: 'Дънна риба',
     character: 'Нощен и скрит. Рови в тинята за храна — рядко излиза в открита вода, обича гъста растителност.',
     hideOnTerrain: 'river',
@@ -299,6 +311,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: true,
     gender: 'm',
+    latinName: 'Perca fluviatilis',
     fishType: 'Стадна хищница',
     character: 'Агресивен в глутницата. Ловува колективно — при активно хранене атакува всичко което се движи.',
     baseData: {
@@ -323,6 +336,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: false,
     gender: 'f',
+    latinName: 'Abramis brama',
     fishType: 'Дълбочинна бяла риба',
     character: 'Предпазлива и методична. Храни се на дъното под ъгъл — характерното повдигане на поплавъка издава хапката.',
     baseData: {
@@ -346,6 +360,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: false,
     gender: 'f',
+    latinName: 'Carassius auratus gibelio',
     fishType: 'Повърхностна бяла риба',
     character: 'Активна и любопитна. Пасе по повърхността сутрин и вечер — трудна за изненада на тих водоем.',
     baseData: {
@@ -369,6 +384,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'lake',
     isPredator: false,
     gender: 'f',
+    latinName: 'Scardinius erythrophthalmus',
     fishType: 'Стадна повърхностна риба',
     character: 'Бърза и игрива. Движи се в средни слоеве и повърхността — активна при слънце и топла вода.',
     hideOnTerrain: 'river',
@@ -394,6 +410,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: false,
     gender: 'f',
+    latinName: 'Barbus barbus',
     fishType: 'Речна дънна риба',
     character: 'Силна и борбена. Обича бързото течение — живее на дъното зад камъни и корени.',
     baseData: {
@@ -417,6 +434,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: true,
     gender: 'f',
+    latinName: 'Oncorhynchus mykiss',
     fishType: 'Отглеждана хищна риба',
     character: 'По-агресивна от речната пъстърва. Бързо реагира на изкуствени примамки — характерна за платен риболов.',
     subtitle: 'Среща се в планински реки и стопански язовири за платен риболов. Не се размножава естествено в България.',
@@ -437,6 +455,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: true,
     gender: 'm',
+    latinName: 'Lepomis gibbosus',
     fishType: 'Стадна хищница',
     character: 'Смел и опортюнист. По-малко предпазлив от костура — яде почти всичко при активна фаза.',
     baseData: {
@@ -461,6 +480,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'both',
     isPredator: true,
     gender: 'f',
+    latinName: 'Sander lucioperca',
     fishType: 'Речна хищница',
     character: 'Бърза и агресивна. Атакува от засада в бързото течение — удря с цялото тяло.',
     baseData: {
@@ -485,6 +505,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     habitat: 'river',
     isPredator: true,
     gender: 'm',
+    latinName: 'Aspius aspius',
     fishType: 'Стадна повърхностна риба',
     character: 'Активен и любопитен. Храни се близо до повърхността — лесно се забелязва по пръските при хранене.',
     hideOnTerrain: 'lake',
