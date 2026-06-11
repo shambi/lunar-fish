@@ -218,20 +218,14 @@
 }
 
 @keyframes logo-pulse {
-  0%, 85%, 100% {
-    filter: drop-shadow(0 0 0px rgba(46,181,183,0));
-    opacity: 1;
+  0%, 100% { 
+    filter: drop-shadow(0 0 8px rgba(46,181,183,0.15)) drop-shadow(0 0 20px rgba(46,181,183,0.08));
   }
-  90% {
-    filter: drop-shadow(0 0 8px rgba(46,181,183,0.7)) drop-shadow(0 0 16px rgba(46,181,183,0.3));
-    opacity: 0.9;
-  }
-  95% {
-    filter: drop-shadow(0 0 4px rgba(46,181,183,0.4));
-    opacity: 1;
+  50% { 
+    filter: drop-shadow(0 0 12px rgba(46,181,183,0.25)) drop-shadow(0 0 30px rgba(46,181,183,0.12));
   }
 }
 
 .logo-breathing {
-  animation: logo-pulse 8s ease-in-out infinite;
+  animation: logo-pulse 4s ease-in-out infinite;
 }
