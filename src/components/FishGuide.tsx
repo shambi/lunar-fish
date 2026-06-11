@@ -193,7 +193,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               )}
 
               {/* Score кръг + Badge */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '0px' }}>
                 <div style={{ position: 'relative', width: '52px', height: '52px', flexShrink: 0 }}>
                   <svg width="52" height="52" viewBox="0 0 52 52" style={{ position: 'absolute', top: 0, left: 0 }}>
                     <circle cx="26" cy="26" r="21" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="2"/>
