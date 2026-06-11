@@ -859,7 +859,16 @@ const Index = () => {
                 const ty = 18 + 8 * Math.sin(toRad(windDeg + 180));
 
                 return (
-                  <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center" style={{ position: 'relative' }}>
+                  <div className="rounded-lg bg-white/[0.03] p-1.5 text-center" style={{
+                    position: 'relative',
+                    border: (() => {
+                      const wc = weather?.weatherCode ?? 0;
+                      if (wc === 96 || wc === 99) return '1px solid rgba(255,50,50,0.7)';
+                      if (wc === 95) return '1px solid rgba(255,140,0,0.7)';
+                      if (wc >= 51) return '1px solid rgba(255,200,0,0.6)';
+                      return '1px solid rgba(255,255,255,0.05)';
+                    })(),
+                  }}>
                     <div className="text-sm font-bold leading-none text-white">{weather ? weather.windSpeed : '—'}</div>
                     <div className="text-[7px] mt-0.5 opacity-50">КМ/Ч</div>
                     
