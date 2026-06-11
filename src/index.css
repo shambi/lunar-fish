@@ -216,3 +216,22 @@
   box-shadow: 0 0 6px rgba(46, 181, 183, 0.9), 0 0 10px rgba(46, 181, 183, 0.7);
   pointer-events: none;
 }
+
+@keyframes logo-pulse {
+  0%, 85%, 100% {
+    filter: drop-shadow(0 0 0px rgba(46,181,183,0));
+    opacity: 1;
+  }
+  90% {
+    filter: drop-shadow(0 0 8px rgba(46,181,183,0.7)) drop-shadow(0 0 16px rgba(46,181,183,0.3));
+    opacity: 0.9;
+  }
+  95% {
+    filter: drop-shadow(0 0 4px rgba(46,181,183,0.4));
+    opacity: 1;
+  }
+}
+
+.logo-breathing {
+  animation: logo-pulse 8s ease-in-out infinite;
+}
