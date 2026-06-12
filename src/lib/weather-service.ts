@@ -1,6 +1,8 @@
 import { getMoonTimes, getSolunarPeaks } from '@/lib/moon-times';
 import { WEATHER_API_CONFIG } from '@/config/weather-api';
 
+export type AlertLevel = 'none' | 'yellow' | 'orange' | 'red';
+
 export interface WeatherData {
   temperature: number;
   windSpeed: number;
@@ -25,6 +27,7 @@ export interface WeatherData {
   moonAntitransit: string;
   solunarPeaks: ReturnType<typeof getSolunarPeaks>;
   waterTemp: number;
+  meteoAlarmLevel: AlertLevel;
 }
 
 const WMO_CODES: Record<number, { label: string; icon: string }> = {
@@ -107,14 +110,6 @@ export async function reverseGeocode(lat: number, lon: number): Promise<string> 
 
     const data = await response.json();
 
-    // Priority order for Bulgarian locations:
-    // 1. City (град)
-    // 2. Town (малък град)
-    // 3. Village (село)
-    // 4. Municipality (община)
-    // 5. County/Region (област)
-    // 6. Fallback to coordinates
-
     const address = data.address;
 
     const placeName =
@@ -135,13 +130,33 @@ export async function reverseGeocode(lat: number, lon: number): Promise<string> 
       return placeName;
     }
 
-    // Last resort — format coordinates nicely
     return `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`;
 
   } catch (error) {
     console.warn('Reverse geocoding failed:', error);
-    // Return formatted coordinates as fallback
     return `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`;
+  }
+}
+
+export async function fetchMeteoAlarmLevel(): Promise<AlertLevel> {
+  try {
+    const res = await fetch('/api/meteoalarm');
+    if (!res.ok) return 'none';
+    const xml = await res.text();
+    const levelPriority: Record<AlertLevel, number> = { none: 0, yellow: 1, orange: 2, red: 3 };
+    let highest: AlertLevel = 'none';
+    const summaries = xml.matchAll(/<summary[^>]*>([\s\S]*?)<\/summary>/gi);
+    for (const match of summaries) {
+      const s = match[1].toLowerCase();
+      let found: AlertLevel = 'none';
+      if (s.includes('4; red') || s.includes('extreme')) found = 'red';
+      else if (s.includes('3; orange') || s.includes('severe')) found = 'orange';
+      else if (s.includes('2; yellow') || s.includes('moderate')) found = 'yellow';
+      if (levelPriority[found] > levelPriority[highest]) highest = found;
+    }
+    return highest;
+  } catch {
+    return 'none';
   }
 }
 
@@ -218,5 +233,6 @@ export async function fetchWeatherData(latitude: number, longitude: number, alti
     moonAntitransit: moonTimesData.antitransit ?? '--:--',
     solunarPeaks,
     waterTemp,
+    meteoAlarmLevel: 'none',
   };
 }
