@@ -328,19 +328,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
 const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
   const { weather, loading, error, locationDenied } = useWeather();
-  const getWeatherAlertLevel = (weatherCode: number, windSpeed: number): 'none' | 'yellow' | 'orange' | 'red' => {
-    if (weatherCode === 95 || weatherCode === 96 || weatherCode === 99) return 'red';
-    if (weatherCode === 65 || weatherCode === 75 || weatherCode === 82) return 'orange';
-    if (weatherCode === 63 || weatherCode === 73 || windSpeed > 40) return 'yellow';
-    return 'none';
-  };
-
-  const alertLevel = weather ? getWeatherAlertLevel(weather.weatherCode, weather.windSpeed) : 'none';
-  console.log('[ALERT DEBUG]', { 
-    alertLevel, 
-    weatherCode: weather?.weatherCode, 
-    windSpeed: weather?.windSpeed 
-  });
+  const alertLevel: 'none' | 'yellow' | 'orange' | 'red' = weather?.meteoAlarmLevel ?? 'none';
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
 
   const today = new Date().toLocaleDateString('bg-BG', {
