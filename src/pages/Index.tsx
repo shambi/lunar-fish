@@ -182,8 +182,8 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
               const midDeg = (sd + ed) / 2;
               const isMajor = p.type === 'major';
               if (isMajor) {
-                let bx = 105 + 108 * Math.sin((midDeg * Math.PI) / 180);
-                let by = 105 - 108 * Math.cos((midDeg * Math.PI) / 180);
+                let bx = 105 + 118 * Math.sin((midDeg * Math.PI) / 180);
+                let by = 105 - 118 * Math.cos((midDeg * Math.PI) / 180);
                 for (const pos of majorPositions) {
                   const dx = bx - pos.bx, dy = by - pos.by;
                   if (Math.sqrt(dx * dx + dy * dy) < 25) by += 18;
@@ -197,8 +197,8 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
                   </g>
                 );
               }
-              const bx = 105 + 108 * Math.sin((midDeg * Math.PI) / 180);
-              const by = 105 - 108 * Math.cos((midDeg * Math.PI) / 180);
+              const bx = 105 + 118 * Math.sin((midDeg * Math.PI) / 180);
+              const by = 105 - 118 * Math.cos((midDeg * Math.PI) / 180);
               const isRise = p.label?.includes('Изгрев');
               const d = isRise ? "M5 9V1M1 5l4-4 4 4" : "M5 1v8M1 5l4 4 4-4";
               return (
