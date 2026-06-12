@@ -336,6 +336,11 @@ const Index = () => {
   };
 
   const alertLevel = weather ? getWeatherAlertLevel(weather.weatherCode, weather.windSpeed) : 'none';
+  console.log('[ALERT DEBUG]', { 
+    alertLevel, 
+    weatherCode: weather?.weatherCode, 
+    windSpeed: weather?.windSpeed 
+  });
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
 
   const today = new Date().toLocaleDateString('bg-BG', {
