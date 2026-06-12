@@ -145,21 +145,19 @@ export async function fetchMeteoAlarmLevel(): Promise<AlertLevel> {
     const xml = await res.text();
     const levelPriority: Record<AlertLevel, number> = { none: 0, yellow: 1, orange: 2, red: 3 };
     let highest: AlertLevel = 'none';
-    const summaries = xml.matchAll(/<summary[^>]*>([\s\S]*?)<\/summary>/gi);
-    for (const match of summaries) {
-      const s = match[1].toLowerCase();
+    const severities = xml.matchAll(/<cap:severity>([\s\S]*?)<\/cap:severity>/gi);
+    for (const match of severities) {
+      const s = match[1].trim().toLowerCase();
       let found: AlertLevel = 'none';
-      if (s.includes('4; red') || s.includes('extreme')) found = 'red';
-      else if (s.includes('3; orange') || s.includes('severe')) found = 'orange';
-      else if (s.includes('2; yellow') || s.includes('moderate')) found = 'yellow';
+      if (s === 'extreme') found = 'red';
+      else if (s === 'severe') found = 'orange';
+      else if (s === 'moderate' || s === 'minor') found = 'yellow';
       if (levelPriority[found] > levelPriority[highest]) highest = found;
     }
     return highest;
   } catch {
     return 'none';
   }
-}
-
 export async function fetchWeatherData(latitude: number, longitude: number, altitude: number = 0, locationName?: string): Promise<WeatherData> {
   const res = await fetchWithTimeout(
     `${WEATHER_API_CONFIG.apis.weather}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset&past_days=1&forecast_days=1&timezone=auto`,
