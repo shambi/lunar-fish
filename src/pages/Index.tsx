@@ -8,7 +8,7 @@ import { FishGuide } from '@/components/FishGuide';
 import { ForecastCards } from '@/components/ForecastCards';
 import { PerchIcon, CarpIcon, PikeIcon, BreamIcon, CatfishIcon } from '@/components/FishIcons';
 import { AdviceIcon } from '@/components/AdviceIcon';
-
+import { WindCompass } from '@/components/WindCompass';
 const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
   const [now, setNow] = useState(() => new Date());
   const [openMoon, setOpenMoon] = useState(false);
@@ -842,10 +842,11 @@ const Index = () => {
                 <div className="text-[7px] mt-0.5 opacity-50">ТЕМП.</div>
               </div>
               {/* WIND */}
-              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
-                <Wind strokeWidth={1} className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
-                <div className="text-sm font-bold leading-none text-white">{weather ? weather.windSpeed : '—'}</div>
-                <div className="text-[7px] mt-0.5 opacity-50">КМ/Ч</div>
+             <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 flex items-center justify-center">
+                {weather
+                  ? <WindCompass degrees={weather.windDirection} speedKmh={weather.windSpeed} />
+                  : <div className="text-sm font-bold text-white">—</div>
+                }
               </div>
               {/* PRESSURE w/ sparkline */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
