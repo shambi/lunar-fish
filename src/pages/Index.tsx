@@ -9,9 +9,23 @@ import { ForecastCards } from '@/components/ForecastCards';
 import { PerchIcon, CarpIcon, PikeIcon, BreamIcon, CatfishIcon } from '@/components/FishIcons';
 import { AdviceIcon } from '@/components/AdviceIcon';
 
+const WIND_DIRECTIONS = [
+  'Север', 'Северо-североизток', 'Североизток', 'Изток-североизток',
+  'Изток', 'Изток-югоизток', 'Югоизток', 'Юг-югоизток',
+  'Юг', 'Юг-югозапад', 'Югозапад', 'Запад-югозапад',
+  'Запад', 'Запад-северозапад', 'Северозапад', 'Север-северозапад',
+];
+const WIND_ABBR = ['С', 'ССИ', 'СИ', 'ИСИ', 'И', 'ИЮИ', 'ЮИ', 'ЮЮИ', 'Ю', 'ЮЮЗ', 'ЮЗ', 'ЗЮЗ', 'З', 'ЗСЗ', 'СЗ', 'ССЗ'];
+
+function getWindCompass(deg: number) {
+  const idx = Math.round(deg / 22.5) % 16;
+  return { abbr: WIND_ABBR[idx], label: WIND_DIRECTIONS[idx] };
+}
+
 const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
   const [now, setNow] = useState(() => new Date());
   const [openMoon, setOpenMoon] = useState(false);
+  const [showWindTooltip, setShowWindTooltip] = useState(false);
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 30000);
     return () => clearInterval(t);
@@ -826,10 +840,31 @@ const Index = () => {
                 <div className="text-[7px] mt-0.5 opacity-50">ТЕМП.</div>
               </div>
               {/* WIND */}
-              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
-                <Wind strokeWidth={1} className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+              <div
+                className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center relative cursor-pointer"
+                onClick={() => weather && setShowWindTooltip(v => !v)}
+              >
+                {weather ? (
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 mx-auto mb-0.5" style={{ transform: `rotate(${weather.windDirection}deg)` }}>
+                    <path d="M12 2 L17 14 L12 11 L7 14 Z" fill="#2eb5b7" />
+                    <line x1="12" y1="11" x2="12" y2="22" stroke="#2eb5b7" strokeWidth="1.5" />
+                  </svg>
+                ) : (
+                  <Wind strokeWidth={1} className="w-4 h-4 mx-auto mb-0.5" style={{ color: '#2eb5b7' }} />
+                )}
                 <div className="text-sm font-bold leading-none text-white">{weather ? weather.windSpeed : '—'}</div>
                 <div className="text-[7px] mt-0.5 opacity-50">КМ/Ч</div>
+                {weather && showWindTooltip && (() => {
+                  const { abbr, label } = getWindCompass(weather.windDirection);
+                  return (
+                    <div
+                      className="absolute left-1/2 -translate-x-1/2 bottom-full mb-1 px-2 py-1 rounded-md text-[10px] whitespace-nowrap z-10"
+                      style={{ background: '#0f1415', border: '1px solid #3d4949', color: '#dee4e3' }}
+                    >
+                      {weather.windDirection}° · {abbr} / {label}
+                    </div>
+                  );
+                })()}
               </div>
               {/* PRESSURE w/ sparkline */}
               <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center">
