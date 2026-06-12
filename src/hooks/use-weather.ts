@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { fetchElevation, fetchWeatherData, reverseGeocode, getWeatherInfo, fetchWithTimeout, type WeatherData } from '@/lib/weather-service';
+import { fetchElevation, fetchWeatherData, reverseGeocode, getWeatherInfo, fetchWithTimeout, fetchMeteoAlarmLevel, type WeatherData, type AlertLevel } from '@/lib/weather-service';
 import { WEATHER_API_CONFIG } from '@/config/weather-api';
 export { getWeatherInfo, type WeatherData } from '@/lib/weather-service';
 
@@ -130,6 +130,7 @@ export function useWeather() {
         // Merge the data
         weatherData.altitude = altitude;
         weatherData.locationName = locationName;
+        weatherData.meteoAlarmLevel = await fetchMeteoAlarmLevel();
 
         setWeather(weatherData);
         setLocationDenied(false);
@@ -226,6 +227,7 @@ export function useWeather() {
 
         weatherData.altitude = altitude;
         weatherData.locationName = locationName;
+        weatherData.meteoAlarmLevel = await fetchMeteoAlarmLevel();
 
         // Update state silently (no loading indicator change)
         setWeather(weatherData);
@@ -253,4 +255,4 @@ export function useWeather() {
   }, []);
 
   return { weather, loading, error, locationDenied };
-}
+}      
