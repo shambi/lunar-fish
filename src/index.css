@@ -231,3 +231,16 @@
 .logo-breathing {
   animation: logo-pulse 12s ease-in-out infinite;
 }
+
+@keyframes pulse-alert-yellow {
+  0%, 100% { border-color: rgba(200, 230, 60, 0.3); }
+  50%       { border-color: rgba(200, 230, 60, 0.85); }
+}
+@keyframes pulse-alert-orange {
+  0%, 100% { border-color: rgba(255, 140, 66, 0.3); }
+  50%       { border-color: rgba(255, 140, 66, 0.9); }
+}
+@keyframes pulse-alert-red {
+  0%, 100% { border-color: rgba(220, 60, 60, 0.25); }
+  50%       { border-color: rgba(220, 60, 60, 0.95); }
+}

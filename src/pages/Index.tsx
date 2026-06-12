@@ -328,6 +328,14 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
 const Index = () => {
   const moon = useMemo(() => getMoonData(), []);
   const { weather, loading, error, locationDenied } = useWeather();
+  const getWeatherAlertLevel = (weatherCode: number, windSpeed: number): 'none' | 'yellow' | 'orange' | 'red' => {
+    if (weatherCode === 95 || weatherCode === 96 || weatherCode === 99) return 'red';
+    if (weatherCode === 65 || weatherCode === 75 || weatherCode === 82) return 'orange';
+    if (weatherCode === 63 || weatherCode === 73 || windSpeed > 40) return 'yellow';
+    return 'none';
+  };
+
+  const alertLevel = weather ? getWeatherAlertLevel(weather.weatherCode, weather.windSpeed) : 'none';
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
 
   const today = new Date().toLocaleDateString('bg-BG', {
@@ -884,7 +892,21 @@ const Index = () => {
                 <div className="text-[7px] mt-0.5 opacity-50">М. Н.В.</div>
               </div>
               {/* WEATHER ICON */}
-              <div className="rounded-lg bg-white/[0.03] border border-white/5 p-1.5 text-center flex flex-col justify-center">
+              <div
+                className="rounded-lg bg-white/[0.03] p-1.5 text-center flex flex-col justify-center"
+                style={alertLevel === 'none' ? {
+                  border: '0.5px solid rgba(255,255,255,0.07)'
+                } : alertLevel === 'yellow' ? {
+                  border: '0.5px solid rgba(200,230,60,0.6)',
+                  animation: 'pulse-alert-yellow 2.5s ease-in-out infinite'
+                } : alertLevel === 'orange' ? {
+                  border: '0.5px solid rgba(255,140,66,0.6)',
+                  animation: 'pulse-alert-orange 2.5s ease-in-out infinite'
+                } : {
+                  border: '0.5px solid rgba(220,60,60,0.6)',
+                  animation: 'pulse-alert-red 2s ease-in-out infinite'
+                }}
+              >
                 <span className="text-xl leading-none">{weather ? weather.weatherIcon : '—'}</span>
                 <div className="text-[8px] mt-1 opacity-50 leading-tight whitespace-nowrap overflow-hidden text-ellipsis" title={weather?.weatherLabel}>
                   {weather?.weatherLabel ?? '...'}
