@@ -178,8 +178,10 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
             return peaks.map((p: any, i: number) => {
               const s = parseTime(p.start), e = parseTime(p.end);
               if (s < 0 || e < 0) return null;
-              const sd = (s / 1440) * 360, ed = (e / 1440) * 360;
-              const midDeg = (sd + ed) / 2;
+              const sd = (s / 1440) * 360;
+              let ed = (e / 1440) * 360;
+              if (ed < sd) ed += 360; // wrap-around през полунощ
+              const midDeg = ((sd + ed) / 2) % 360;
               const isMajor = p.type === 'major';
               if (isMajor) {
                 let bx = 105 + 118 * Math.sin((midDeg * Math.PI) / 180);
