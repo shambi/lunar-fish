@@ -129,7 +129,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
       </div>
 
       <div style={{ position: 'relative', width: '210px', height: '210px', margin: '0 auto' }}>
-        <svg width="210" height="210" viewBox="0 0 210 210">
+        <svg width="210" height="210" viewBox="-15 -15 240 240">
           <circle cx="105" cy="105" r="88" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
           <circle cx="105" cy="105" r="78" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
 
