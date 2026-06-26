@@ -965,8 +965,9 @@ const Index = () => {
             );
             if (code === 2) return (
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                <circle cx="10" cy="10" r="3" /><path d="M10 3v1M10 16v1M3 10h1M16 10h1" />
-                <path d="M7 16h8a3 3 0 0 0 0-6H14a5 5 0 1 0-7 5.9" />
+                <circle cx="10" cy="9" r="3" />
+                <path d="M10 4v1M10 13v1M5 9H4M16 9h-1M6.76 6.76l-.7-.7M13.94 6.76l.7-.7" />
+                <path d="M7 16a4 4 0 0 1 7.87-1A3 3 0 1 1 17 22H7a4 4 0 0 1 0-8v2" />
               </svg>
             );
             if (code === 3) return (
