@@ -124,7 +124,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
       <div style={{ marginBottom: '8px' }}>
         <div style={{ fontSize: '17px', fontWeight: 600, color: verdictColor, lineHeight: 1.2 }}>{verdict}</div>
         {subtitle && (
-          <div style={{ fontSize: '11px', fontFamily: 'monospace', color: '#869393', marginTop: '2px' }}>{subtitle}</div>
+          <div style={{ fontSize: '11px', fontFamily: 'monospace', color: '#a8b4b4', marginTop: '2px' }}>{subtitle}</div>
         )}
       </div>
 
@@ -291,11 +291,11 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
             <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
           </svg>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
-            <span style={{ fontSize: '9px', color: '#869393' }}>ИЗГРЕВ</span>
+            <span style={{ fontSize: '9px', color: '#a8b4b4' }}>ИЗГРЕВ</span>
             <span style={{ fontSize: '13px', fontWeight: 400, color: '#fff', lineHeight: 1 }}>{weather.sunrise}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-            <span style={{ fontSize: '9px', color: '#869393' }}>ЗАЛЕЗ</span>
+            <span style={{ fontSize: '9px', color: '#a8b4b4' }}>ЗАЛЕЗ</span>
             <span style={{ fontSize: '13px', fontWeight: 400, color: '#fff', lineHeight: 1 }}>{weather.sunset}</span>
           </div>
         </div>
@@ -304,11 +304,11 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
           </svg>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
-            <span style={{ fontSize: '9px', color: '#869393' }}>ИЗГРЕВ</span>
+            <span style={{ fontSize: '9px', color: '#a8b4b4' }}>ИЗГРЕВ</span>
             <span style={{ fontSize: '13px', fontWeight: 400, color: '#fff', lineHeight: 1 }}>{weather.moonrise}</span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-            <span style={{ fontSize: '9px', color: '#869393' }}>ЗАЛЕЗ</span>
+            <span style={{ fontSize: '9px', color: '#a8b4b4' }}>ЗАЛЕЗ</span>
             <span style={{ fontSize: '13px', fontWeight: 400, color: '#fff', lineHeight: 1 }}>{weather.moonset}</span>
           </div>
         </div>
@@ -332,7 +332,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
             <span style={{ flex: 1, fontSize: '12px', color: 'rgba(222,228,227,0.85)' }}>
               {fmName} · {monthNameBg} {year}
             </span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#869393" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a8b4b4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
               style={{ transform: openMoon ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
               <polyline points="6 9 12 15 18 9" />
             </svg>
@@ -624,7 +624,7 @@ const Index = () => {
               fontWeight: 600,
               letterSpacing: '0.05em',
               textTransform: 'uppercase',
-              color: '#869393',
+              color: '#a8b4b4',
               marginBottom: '14px',
             }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20M2 6h20M2 18h20"/></svg>
@@ -761,7 +761,7 @@ const Index = () => {
                         fontWeight: 500, color: '#C8E63C' }}>
                         {lightLabel}
                       </div>
-                      <div style={{ fontSize: '11px', color: '#869393', textAlign: 'right', maxWidth: '150px' }}>
+                      <div style={{ fontSize: '11px', color: '#a8b4b4', textAlign: 'right', maxWidth: '150px' }}>
                         {lightDetail}
                       </div>
                     </div>
@@ -814,7 +814,7 @@ const Index = () => {
                         fontWeight: 500, color: '#C8E63C' }}>
                         {zoneLabel}
                       </div>
-                      <div style={{ fontSize: '11px', color: '#869393', textAlign: 'right', maxWidth: '150px' }}>
+                      <div style={{ fontSize: '11px', color: '#a8b4b4', textAlign: 'right', maxWidth: '150px' }}>
                         {zoneDetail}
                       </div>
                     </div>

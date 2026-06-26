@@ -165,7 +165,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           {selectedFish && modalData && (
             <>
               {/* Тип риба */}
-              <p style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393', marginBottom: '4px' }}>
+              <p style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>
                 {selectedFish.fishType ?? 'Сладководна риба'}
               </p>
 
@@ -182,7 +182,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
               {/* Латинско + характер */}
               {selectedFish.latinName && (
-                <p style={{ fontSize: '11px', fontStyle: 'italic', color: '#869393', marginBottom: '2px' }}>
+                <p style={{ fontSize: '11px', fontStyle: 'italic', color: '#a8b4b4', marginBottom: '2px' }}>
                   {selectedFish.latinName}
                 </p>
               )}
@@ -206,7 +206,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <div style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 600, color: '#dee4e3', lineHeight: 1 }}>
                       {selectedFish.score}
                     </div>
-                    <div style={{ fontSize: '7px', letterSpacing: '0.06em', color: '#869393', textTransform: 'uppercase' }}>
+                    <div style={{ fontSize: '7px', letterSpacing: '0.06em', color: '#a8b4b4', textTransform: 'uppercase' }}>
                       /100
                     </div>
                   </div>
@@ -228,7 +228,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
               {advice && (
                 <div style={{ marginBottom: '12px' }}>
-                  <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                  <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     Съвет за днес
                   </div>
@@ -237,24 +237,24 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               )}
 
               <div style={{ marginBottom: '12px' }}>
-                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393', marginBottom: '8px' }}>
+                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '8px' }}>
                   Такъми & Монтаж
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
                   <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
-                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#869393', marginBottom: '4px' }}>Стръв & Захранка</div>
+                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Стръв & Захранка</div>
                     <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>{modalData.groundbaitTip}<br/><span style={{ color: '#2eb5b7' }}>{modalData.baitTip}</span></div>
                   </div>
                   <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
-                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#869393', marginBottom: '4px' }}>Влакно</div>
+                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Влакно</div>
                     <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}><span style={{ color: '#2eb5b7' }}>{modalData.lineDiameter}</span></div>
                   </div>
                   <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
-                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#869393', marginBottom: '4px' }}>Куки</div>
+                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Куки</div>
                     <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>{modalData.hookTip}</div>
                   </div>
                   <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
-                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#869393', marginBottom: '4px' }}>
+                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>
                       {modalData.lureTip ? 'Воблери' : 'Монтаж'}
                     </div>
                     <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>
@@ -265,7 +265,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               </div>
 
               <div style={{ marginBottom: '12px' }}>
-                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
                   Еко & Правила
                 </div>
@@ -274,7 +274,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     {modalData.ecoWarning}
                   </p>
                   {modalData.ecoFooter && (
-                    <p style={{ fontSize: '11px', color: '#869393', lineHeight: 1.4 }}>{modalData.ecoFooter}</p>
+                    <p style={{ fontSize: '11px', color: '#a8b4b4', lineHeight: 1.4 }}>{modalData.ecoFooter}</p>
                   )}
                   <button
                     onClick={() => window.open('https://iara.government.bg', '_blank')}
