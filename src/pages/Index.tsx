@@ -208,8 +208,8 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
               return (
                 <g key={`pb${i}`} transform={`translate(${bx},${by})`}>
                   <path d={arrowD} stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-                  <g transform={`translate(-4.5, ${isRise ? 9 : -15})`}>
-                    <path d="M9 2A7 7 0 1 0 9 16 5 5 0 1 1 9 2Z" fill="#2eb5b7" transform="scale(0.7) translate(-1, -1)"/>
+                  <g transform="translate(0,13)">
+                    <path d="M3 0A3 3 0 1 1 -3 0A2 2 0 1 0 3 0Z" fill="#2eb5b7" />
                   </g>
                 </g>
               );
