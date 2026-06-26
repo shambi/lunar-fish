@@ -56,13 +56,15 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
     }
   }
 
-  const verdict = active ? 'Активен прозорец' : (next && next.diff <= 60 ? 'Следващ пик скоро' : 'Стабилни условия');
+  const verdict = active
+    ? (active.type === 'major' ? 'Голям солунарен пик' : 'Малък солунарен пик')
+    : (next && next.diff <= 60 ? 'Следващ пик скоро' : 'Стабилни условия');
   const verdictColor = active ? '#C8E63C' : (next && next.diff <= 60 ? '#C8E63C' : '#7F93A8');
   const subtitle = active
     ? `Още ${active.remaining}м`
     : next
-      ? `След ${next.diff < 60 ? next.diff + 'м' : Math.floor(next.diff / 60) + 'ч ' + (next.diff % 60) + 'м'}`
-      : '';
+      ? `До следващ пик: ${next.diff < 60 ? next.diff + 'м' : Math.floor(next.diff / 60) + 'ч ' + (next.diff % 60) + 'м'}`
+      : 'Няма предстоящи пикове';
 
   const handDeg = timeToDeg(now.getHours(), now.getMinutes());
   const handRad = (handDeg * Math.PI) / 180;
