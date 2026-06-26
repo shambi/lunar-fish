@@ -28,6 +28,7 @@ export interface WeatherData {
   solunarPeaks: ReturnType<typeof getSolunarPeaks>;
   waterTemp: number;
   meteoAlarmLevel: AlertLevel;
+  hourlyForecast: { hour: string; temp: number; code: number }[];
 }
 
 const WMO_CODES: Record<number, { label: string; icon: string }> = {
@@ -161,7 +162,7 @@ export async function fetchMeteoAlarmLevel(): Promise<AlertLevel> {
   }
 export async function fetchWeatherData(latitude: number, longitude: number, altitude: number = 0, locationName?: string): Promise<WeatherData> {
   const res = await fetchWithTimeout(
-    `${WEATHER_API_CONFIG.apis.weather}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure&daily=sunrise,sunset&past_days=1&forecast_days=1&timezone=auto`,
+    `${WEATHER_API_CONFIG.apis.weather}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure,temperature_2m,weather_code&daily=sunrise,sunset&past_days=1&forecast_days=1&timezone=auto`,
     WEATHER_API_CONFIG.timeouts.weather
   );
   if (!res.ok) throw new Error('API error');
@@ -171,6 +172,19 @@ export async function fetchWeatherData(latitude: number, longitude: number, alti
 
   const hourlyPressure: number[] = data.hourly?.surface_pressure ?? [];
   const hourlyTimes: string[] = data.hourly?.time ?? [];
+  const hourlyTemp: number[] = data.hourly?.temperature_2m ?? [];
+  const hourlyCode: number[] = data.hourly?.weather_code ?? [];
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const hourlyForecast: { hour: string; temp: number; code: number }[] = [];
+  for (let i = 0; i < hourlyTimes.length; i++) {
+    if (hourlyTimes[i]?.startsWith(todayStr)) {
+      hourlyForecast.push({
+        hour: String(new Date(hourlyTimes[i]).getHours()).padStart(2, '0'),
+        temp: Math.round(hourlyTemp[i] ?? 0),
+        code: hourlyCode[i] ?? 0,
+      });
+    }
+  }
   const now = new Date();
   const currentHourStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T${String(now.getHours()).padStart(2, '0')}:00`;
   let curIdx = hourlyTimes.findIndex(t => t >= currentHourStr);
@@ -233,5 +247,6 @@ export async function fetchWeatherData(latitude: number, longitude: number, alti
     solunarPeaks,
     waterTemp,
     meteoAlarmLevel: 'none',
+    hourlyForecast,
   };
 }
