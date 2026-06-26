@@ -76,15 +76,42 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
   const fullMoonName = (month: number) => {
     const names: Record<number, string> = {
       1: 'Вълча', 2: 'Снежна', 3: 'Червена', 4: 'Розова', 5: 'Цветна', 6: 'Ягодова',
-      7: 'Еленска', 8: 'Осетрова', 9: 'Жътварска', 10: 'Ловна', 11: 'Боброва', 12: 'Студена'
+      7: 'Еленска', 8: 'Осетрова', 9: 'Жътварска', 10: 'Ловна', 11: 'Боброва', 12: 'Студена',
+      13: 'Синя',
     };
-    return `${names[month]} луна`;
+    return `${names[month] ?? names[now.getMonth() + 1]} луна`;
   };
   const monthNamesBg = ['януари','февруари','март','април','май','юни','юли','август','септември','октомври','ноември','декември'];
   const currentMonth = now.getMonth();
   const monthNameBg = monthNamesBg[currentMonth];
   const year = now.getFullYear();
-  const fmName = fullMoonName(currentMonth + 1);
+  // Blue moon detection: two full moons in the same calendar month
+  const _SYNODIC = 29.53058867;
+  const _KNOWN_NEW = new Date('2000-01-06T18:14:00Z').getTime();
+  const _msPerDay = 86400000;
+  const _ageNow = ((now.getTime() - _KNOWN_NEW) / _msPerDay % _SYNODIC + _SYNODIC) % _SYNODIC;
+  const _daysToFull = (0.5 * _SYNODIC - _ageNow + _SYNODIC) % _SYNODIC;
+  const _nextFull = new Date(now.getTime() + _daysToFull * _msPerDay);
+  const _prevFull = new Date(_nextFull.getTime() - _SYNODIC * _msPerDay);
+  const isBlueMoon = _nextFull.getMonth() === _prevFull.getMonth() && _nextFull.getFullYear() === _prevFull.getFullYear();
+  const effectiveMonth = isBlueMoon ? 13 : currentMonth + 1;
+  const fmName = fullMoonName(effectiveMonth);
+  const moonFacts: Record<number, string> = {
+    1: 'Вълците виели най-силно в средата на зимата — студът и гладът ги карал да общуват по-активно.',
+    2: 'Февруари е най-снежният месец — реките замръзват, а рибата се крие дълбоко.',
+    3: 'При затопляне земята омеква и червеите излизат — първи сигнал за пролетна активност.',
+    4: 'Кръстена на дивия флокс — един от първите пролетни цветя в Северна Америка.',
+    5: 'Пикът на пролетта — природата е в пълен разцвет, хищниците се хранят активно.',
+    6: 'Времето за бране на диви ягоди. Лятното слънцестоене често съвпада с тази луна.',
+    7: 'Юли е когато рогата на елените достигат пълен размер. Сомът е най-активен.',
+    8: 'Кръстена на есетрата в Големите езера — ловели я именно по това пълнолуние.',
+    9: 'Най-близката луна до есенното равноденствие. Светлината й позволявала нощна жетва.',
+    10: 'Студът наближавал — хората ловували при лунна светлина за зимни запаси.',
+    11: 'Бобрите довършвали язовирите си преди замръзване — знак за наближаваща зима.',
+    12: 'Най-дългите нощи в годината. Луната описва висока дъга — компенсира ниското слънце.',
+    13: 'Синята луна се случва веднъж на ~32 месеца — второто пълнолуние в един календарен месец.',
+  };
+  const moonFact = moonFacts[effectiveMonth] ?? moonFacts[currentMonth + 1];
 
   const pad = (n: number) => n.toString().padStart(2, '0');
   const nowHHMM = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
@@ -330,7 +357,9 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
               marginTop: '10px',
             }}
           >
-            <span style={{ fontSize: '18px' }}>{moon.emoji}</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a8b4b4" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+            </svg>
             <span style={{ flex: 1, fontSize: '12px', color: 'rgba(222,228,227,0.85)' }}>
               {fmName} · {monthNameBg} {year}
             </span>
@@ -341,22 +370,16 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           </div>
           {openMoon && (
             <div style={{
-              fontSize: '12px',
-              color: 'rgba(222,228,227,0.65)',
-              lineHeight: 1.65,
               padding: '10px',
               borderRadius: '10px',
               border: '0.5px solid rgba(255,255,255,0.06)',
               marginTop: '6px',
             }}>
-              <div style={{ marginBottom: '8px' }}>
-                {moon.emoji} <strong>Защо „{fmName}"?</strong> Народното название идва от древни наблюдения на природата през този месец. Всяко пълнолуние носи името на сезонното явление, което го характеризира. Имената са запазени от поколения наблюдатели на луната.
-              </div>
-              <div style={{ marginBottom: '8px' }}>
-                🎣 <strong>За риболова:</strong> Пълнолунието активира нощното хранене на хищниците. Часовете след залез са особено продуктивни.
-              </div>
-              <div>
-                ⚠️ <strong>Внимавай:</strong> При пълнолуние денем рибата може да е по-пасивна. Разчитай на солунарните пикове.
+              <div style={{ borderTop: '1px solid #1b2121', paddingTop: '8px' }}>
+                <p style={{ fontSize: '13px', color: '#a8b4b4', margin: 0, lineHeight: 1.55 }}>{moonFact}</p>
+                {moon.phaseName === 'Full Moon' && (
+                  <p style={{ fontSize: '12px', color: '#869393', marginTop: '8px', marginBottom: 0, lineHeight: 1.5 }}>При пълнолуние рибата може да е по-пасивна денем. Разчитай на солунарните пикове.</p>
+                )}
               </div>
             </div>
           )}
