@@ -129,7 +129,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
       </div>
 
       <div style={{ position: 'relative', width: '210px', height: '210px', margin: '0 auto' }}>
-        <svg width="210" height="210" viewBox="-15 -28 240 253">
+        <svg width="210" height="210" viewBox="-15 -28 240 253" overflow="visible">
           <circle cx="105" cy="105" r="88" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
           <circle cx="105" cy="105" r="78" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
 
@@ -152,7 +152,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
 
           {peaks.map((p: any, i: number) => {
             const s = parseTime(p.start), e = parseTime(p.end);
-            if (s < 0 || e < 0 || p.type === 'major') return null;
+            if (s < 0 || e < 0 || p.type === 'major' || p.label?.includes('Период на активност')) return null;
             const sd = (s / 1440) * 360, ed = (e / 1440) * 360;
             return <path key={`mn${i}`} d={arcPath(105, 105, 78, sd, ed)} fill="none" stroke="#2eb5b7" strokeWidth="3" strokeLinecap="round" opacity="0.6" />;
           })}
@@ -200,16 +200,53 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
                   </g>
                 );
               }
+              if (p.label?.includes('Период на активност')) return null;
               const bx = 105 + 118 * Math.sin((midDeg * Math.PI) / 180);
               const by = 105 - 118 * Math.cos((midDeg * Math.PI) / 180);
               const isRise = p.label?.includes('Изгрев');
-              const d = isRise ? "M5 9V1M1 5l4-4 4 4" : "M5 1v8M1 5l4 4 4-4";
+              const arrowD = isRise ? "M0 5V-3M-3 1l3-4 3 4" : "M0 -3v8M-3 1l3 4 3-4";
               return (
-                <g key={`pb${i}`} transform={`translate(${bx - 5},${by - 5})`}>
-                  <path d={d} stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" fill="none" />
+                <g key={`pb${i}`} transform={`translate(${bx},${by})`}>
+                  <path d={arrowD} stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+                  <text x="0" y={isRise ? 14 : -10} textAnchor="middle" dominantBaseline="middle" fontSize="9" fill="#2eb5b7">☽</text>
                 </g>
               );
             });
+          })()}
+
+          {/* Sunrise arrow — citron, sun icon */}
+          {(() => {
+            const srMin = parseTime(weather.sunrise);
+            if (srMin < 0) return null;
+            const srDeg = (srMin / 1440) * 360;
+            const bx = 105 + 118 * Math.sin((srDeg * Math.PI) / 180);
+            const by = 105 - 118 * Math.cos((srDeg * Math.PI) / 180);
+            return (
+              <g transform={`translate(${bx},${by})`}>
+                <path d="M0 5V-3M-3 1l3-4 3 4" stroke="#C8E63C" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+                <g transform="translate(0,13)">
+                  <circle cx="0" cy="0" r="3" stroke="#C8E63C" strokeWidth="0.8" fill="none" />
+                  <path d="M0 -5v-2M0 5v2M-5 0h-2M5 0h2M-3.5 -3.5l-1.4-1.4M3.5 3.5l1.4 1.4M3.5 -3.5l1.4-1.4M-3.5 3.5l-1.4 1.4" stroke="#C8E63C" strokeWidth="0.6" strokeLinecap="round" />
+                </g>
+              </g>
+            );
+          })()}
+          {/* Sunset arrow — citron, sun icon */}
+          {(() => {
+            const ssMin = parseTime(weather.sunset);
+            if (ssMin < 0) return null;
+            const ssDeg = (ssMin / 1440) * 360;
+            const bx = 105 + 118 * Math.sin((ssDeg * Math.PI) / 180);
+            const by = 105 - 118 * Math.cos((ssDeg * Math.PI) / 180);
+            return (
+              <g transform={`translate(${bx},${by})`}>
+                <path d="M0 -3v8M-3 1l3 4 3-4" stroke="#C8E63C" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+                <g transform="translate(0,-13)">
+                  <circle cx="0" cy="0" r="3" stroke="#C8E63C" strokeWidth="0.8" fill="none" />
+                  <path d="M0 -5v-2M0 5v2M-5 0h-2M5 0h2M-3.5 -3.5l-1.4-1.4M3.5 3.5l1.4 1.4M3.5 -3.5l1.4-1.4M-3.5 3.5l-1.4 1.4" stroke="#C8E63C" strokeWidth="0.6" strokeLinecap="round" />
+                </g>
+              </g>
+            );
           })()}
 
           {ticks}
