@@ -957,13 +957,18 @@ const Index = () => {
 
         {/* Hourly forecast toggle + strip */}
         {weather && weather.hourlyForecast?.length > 0 && (() => {
-          const renderHourIcon = (code: number) => {
-            if (code === 0 || code === 1) return (
+          const renderHourIcon = (code: number, hour: number) => {
+            const isNight = hour >= 21 || hour <= 5;
+            if (code === 0 || code === 1) return isNight ? (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            ) : (
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
                 <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
               </svg>
             );
-            if (code === 2) return (
+            if (code === 2) return isNight ? (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/><path d="M7 16a4 4 0 0 1 7.87-1A3 3 0 1 1 17 22H7a4 4 0 0 1 0-8"/></svg>
+            ) : (
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
                 <circle cx="10" cy="9" r="3" />
                 <path d="M10 4v1M10 13v1M5 9H4M16 9h-1M6.76 6.76l-.7-.7M13.94 6.76l.7-.7" />
@@ -1015,7 +1020,7 @@ const Index = () => {
                   <div style={{ display: 'flex', gap: '4px', minWidth: 'max-content' }}>
                     {weather.hourlyForecast.map((h, i) => (
                       <div key={i} data-hour={parseInt(h.hour, 10)} style={{ minWidth: '44px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
-                        {renderHourIcon(h.code)}
+                        {renderHourIcon(h.code, parseInt(h.hour, 10))}
                         <span style={{ fontSize: '11px', fontWeight: 500, color: '#dee4e3', lineHeight: 1 }}>{h.temp}°</span>
                         <span style={{ fontSize: '10px', color: '#869393', lineHeight: 1 }}>{h.hour}:00</span>
                       </div>
