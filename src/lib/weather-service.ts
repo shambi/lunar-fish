@@ -174,6 +174,7 @@ export async function fetchWeatherData(latitude: number, longitude: number, alti
   const hourlyTimes: string[] = data.hourly?.time ?? [];
   const hourlyTemp: number[] = data.hourly?.temperature_2m ?? [];
   const hourlyCode: number[] = data.hourly?.weather_code ?? [];
+  const now = new Date();
   const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   const hourlyForecast: { hour: string; temp: number; code: number }[] = [];
   for (let i = 0; i < hourlyTimes.length; i++) {
@@ -185,7 +186,6 @@ export async function fetchWeatherData(latitude: number, longitude: number, alti
       });
     }
   }
-  const now = new Date();
   const currentHourStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T${String(now.getHours()).padStart(2, '0')}:00`;
   let curIdx = hourlyTimes.findIndex(t => t >= currentHourStr);
   if (curIdx === -1) curIdx = hourlyTimes.length - 1;
