@@ -126,8 +126,8 @@ export function ForecastCards({ weather }: { weather: WeatherData | null }) {
 
   return (
     <section className="mb-2">
-      <h3 className="font-display text-[10px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5 px-1" style={{ color: '#94A3B8' }}>
-        <Cloud className="w-[14px] h-[14px]" strokeWidth={1.5} style={{ stroke: '#E4FF00', color: '#E4FF00', transform: 'translateY(0.5px)', filter: 'drop-shadow(0 0 6px #E4FF00)' }} />
+      <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5 px-1" style={{ color: '#dee4e3' }}>
+        <Cloud className="w-[14px] h-[14px]" strokeWidth={1.5} style={{ stroke: '#C8E63C', color: '#C8E63C' }} />
         Прогноза
       </h3>
       <div className="grid grid-cols-2 gap-2">
