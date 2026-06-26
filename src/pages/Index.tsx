@@ -945,51 +945,40 @@ const Index = () => {
 
         {/* Hourly forecast toggle + strip */}
         {weather && weather.hourlyForecast?.length > 0 && (() => {
-          const peaks = weather.solunarPeaks ?? [];
-          const parseMin = (t: string) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
-          const peakForHour = (hourNum: number) => {
-            const hMin = hourNum * 60;
-            for (const p of peaks) {
-              const s = parseMin(p.start ?? ''), e = parseMin(p.end ?? '');
-              if (s >= 0 && e >= 0 && hMin >= s && hMin <= e) return p;
-            }
-            return null;
-          };
           const renderHourIcon = (code: number) => {
             if (code === 0 || code === 1) return (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
                 <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
               </svg>
             );
             if (code === 2) return (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" strokeLinecap="round">
-                <circle cx="10" cy="10" r="3" stroke="#C8E63C" strokeWidth="1.5" /><path d="M10 3v1M10 16v1M3 10h1M16 10h1" stroke="#C8E63C" strokeWidth="1.5" />
-                <path d="M7 16h8a3 3 0 0 0 0-6H14a5 5 0 1 0-7 5.9" stroke="#2eb5b7" strokeWidth="1.5" />
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
+                <circle cx="10" cy="10" r="3" /><path d="M10 3v1M10 16v1M3 10h1M16 10h1" />
+                <path d="M7 16h8a3 3 0 0 0 0-6H14a5 5 0 1 0-7 5.9" />
               </svg>
             );
             if (code === 3) return (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.5" strokeLinecap="round">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
                 <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z" />
               </svg>
             );
             if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.5" strokeLinecap="round">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
                 <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M8 19v1M8 14v1M12 21v1M12 16v1M16 19v1M16 14v1" />
               </svg>
             );
             if (code >= 71 && code <= 77) return (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5cd8da" strokeWidth="1.5" strokeLinecap="round">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
                 <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M8 15h.01M8 19h.01M12 17h.01M12 21h.01M16 15h.01M16 19h.01" />
               </svg>
             );
             if (code >= 95) return (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" strokeLinecap="round">
-                <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" stroke="#2eb5b7" strokeWidth="1.5" />
-                <path d="M13 11l-4 6h6l-4 6" stroke="#C8E63C" strokeWidth="1.5" strokeLinejoin="round" />
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
+                <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M13 11l-4 6h6l-4 6" />
               </svg>
             );
             return (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.5" strokeLinecap="round">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
                 <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z" />
               </svg>
             );
@@ -1009,31 +998,15 @@ const Index = () => {
                 </button>
               </div>
               {hourlyOpen && (
-                <div style={{ background: '#1b2121', borderTop: '1px solid #3d4949', borderRadius: '0 0 16px 16px', marginBottom: '8px', padding: '12px 16px', overflowX: 'auto', scrollbarWidth: 'none' }}>
+                <div style={{ padding: '8px 16px', overflowX: 'auto', scrollbarWidth: 'none', marginBottom: '8px' }}>
                   <div style={{ display: 'flex', gap: '4px', minWidth: 'max-content' }}>
-                    {weather.hourlyForecast.map((h, i) => {
-                      const hourNum = parseInt(h.hour, 10);
-                      const peak = peakForHour(hourNum);
-                      const isRise = peak?.label?.includes('Изгрев') || peak?.label?.includes('зенит');
-                      return (
-                        <div key={i} style={{ minWidth: '52px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
-                          {/* Peak indicator */}
-                          <div style={{ height: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            {peak && (
-                              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#C8E63C" strokeWidth="1.2" strokeLinecap="round">
-                                <path d={isRise ? "M5 9V1M1 5l4-4 4 4" : "M5 1v8M1 5l4 4 4-4"} />
-                              </svg>
-                            )}
-                          </div>
-                          {/* Weather icon */}
-                          {renderHourIcon(h.code)}
-                          {/* Temperature */}
-                          <span style={{ fontSize: '13px', fontWeight: 600, color: '#dee4e3', lineHeight: 1 }}>{h.temp}°</span>
-                          {/* Hour */}
-                          <span style={{ fontSize: '10px', color: '#869393', lineHeight: 1 }}>{h.hour}</span>
-                        </div>
-                      );
-                    })}
+                    {weather.hourlyForecast.map((h, i) => (
+                      <div key={i} style={{ minWidth: '44px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
+                        {renderHourIcon(h.code)}
+                        <span style={{ fontSize: '11px', fontWeight: 500, color: '#dee4e3', lineHeight: 1 }}>{h.temp}°</span>
+                        <span style={{ fontSize: '10px', color: '#869393', lineHeight: 1 }}>{h.hour}:00</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
