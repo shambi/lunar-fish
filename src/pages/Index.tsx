@@ -114,7 +114,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
       padding: '16px',
       marginBottom: '10px',
     }}>
-      <div className="font-display text-[11px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#dee4e3' }}>
+      <div className="font-display text-[11px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#869393' }}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
         </svg>
@@ -618,7 +618,7 @@ const Index = () => {
               marginBottom: '10px',
             }}
           >
-            <div className="font-display text-[11px] font-semibold uppercase tracking-wider flex items-center gap-1.5" style={{ color: '#dee4e3', marginBottom: '14px' }}>
+            <div className="font-display text-[11px] font-semibold uppercase tracking-wider flex items-center gap-1.5" style={{ color: '#869393', marginBottom: '14px' }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20M2 6h20M2 18h20"/></svg>
               Условия днес
             </div>
@@ -819,7 +819,7 @@ const Index = () => {
 
         {/* Weather Widget — Bento Grid */}
         <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2">
-          <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#dee4e3' }}>
+          <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#869393' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="4" />
               <path d="M12 2v2" /><path d="M12 20v2" />
