@@ -997,68 +997,78 @@ const Index = () => {
                 <div className="text-[7px] mt-0.5 opacity-50">М. Н.В.</div>
               </div>
               {/* WEATHER ICON */}
-              <button
-                onClick={() => { if (alertLevel !== 'none') setShowAlertTooltip(true); }}
-                className="rounded-lg bg-white/[0.03] p-1.5 text-center flex flex-col justify-center w-full"
-                style={{
-                  ...(alertLevel === 'none' ? {
-                    border: '0.5px solid rgba(255,255,255,0.07)'
-                  } : alertLevel === 'yellow' ? {
-                    border: '0.5px solid rgba(200,230,60,0.6)',
-                    animation: 'pulse-alert-yellow 2.5s ease-in-out infinite'
-                  } : alertLevel === 'orange' ? {
-                    border: '0.5px solid rgba(255,140,66,0.6)',
-                    animation: 'pulse-alert-orange 2.5s ease-in-out infinite'
-                  } : {
-                    border: '0.5px solid rgba(220,60,60,0.6)',
-                    animation: 'pulse-alert-red 2s ease-in-out infinite'
-                  }),
-                  background: 'rgba(255,255,255,0.03)',
-                  cursor: alertLevel !== 'none' ? 'pointer' : 'default',
-                }}
-              >
-                <span className="text-xl leading-none">{weather ? weather.weatherIcon : '—'}</span>
-                <div className="text-[8px] mt-1 opacity-50 leading-tight whitespace-nowrap overflow-hidden text-ellipsis" title={weather?.weatherLabel}>
-                  {weather?.weatherLabel ?? '...'}
-                </div>
-              </button>
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => { if (alertLevel !== 'none') setShowAlertTooltip(v => !v); }}
+                  className="rounded-lg bg-white/[0.03] p-1.5 text-center flex flex-col justify-center w-full"
+                  style={{
+                    ...(alertLevel === 'none' ? {
+                      border: '0.5px solid rgba(255,255,255,0.07)'
+                    } : alertLevel === 'yellow' ? {
+                      border: '0.5px solid rgba(200,230,60,0.6)',
+                      animation: 'pulse-alert-yellow 2.5s ease-in-out infinite'
+                    } : alertLevel === 'orange' ? {
+                      border: '0.5px solid rgba(255,140,66,0.6)',
+                      animation: 'pulse-alert-orange 2.5s ease-in-out infinite'
+                    } : {
+                      border: '0.5px solid rgba(220,60,60,0.6)',
+                      animation: 'pulse-alert-red 2s ease-in-out infinite'
+                    }),
+                    background: 'rgba(255,255,255,0.03)',
+                    cursor: alertLevel !== 'none' ? 'pointer' : 'default',
+                  }}
+                >
+                  <span className="text-xl leading-none">{weather ? weather.weatherIcon : '—'}</span>
+                  <div className="text-[8px] mt-1 opacity-50 leading-tight whitespace-nowrap overflow-hidden text-ellipsis" title={weather?.weatherLabel}>
+                    {weather?.weatherLabel ?? '...'}
+                  </div>
+                </button>
+                {showAlertTooltip && weather?.meteoAlarm && alertLevel !== 'none' && (() => {
+                  const eventMap: Record<string, string> = {
+                    'heat': 'опасно горещо', 'thunderstorm': 'гръмотевици', 'rain': 'обилни валежи',
+                    'wind': 'силен вятър', 'snow': 'снеговалеж', 'fog': 'гъста мъгла',
+                    'ice': 'заледяване', 'flood': 'наводнение', 'forest fire': 'горски пожари',
+                  };
+                  const rawEvent = weather.meteoAlarm.event;
+                  const eventBg = eventMap[rawEvent.toLowerCase()] ?? rawEvent.toLowerCase();
+                  const alarmColor = alertLevel === 'red' ? '#DC3C3C' : alertLevel === 'orange' ? '#FF8C42' : '#C8E63C';
+                  const borderColor = alertLevel === 'red' ? 'rgba(220,60,60,0.4)' : alertLevel === 'orange' ? 'rgba(255,140,66,0.4)' : 'rgba(200,230,60,0.4)';
+                  const alarmLabel = alertLevel === 'red' ? 'Червен код за ' : alertLevel === 'orange' ? 'Оранжев код за ' : 'Жълт код за ';
+                  const { expires } = weather.meteoAlarm;
+                  let expiresStr = '';
+                  if (expires) {
+                    const d = new Date(expires);
+                    const months = ['яну','фев','мар','апр','май','юни','юли','авг','сеп','окт','ное','дек'];
+                    expiresStr = `До ${d.getDate()} ${months[d.getMonth()]} · ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+                  }
+                  return (
+                    <div style={{
+                      position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%',
+                      transform: 'translateX(-50%)', width: '200px', zIndex: 100,
+                      background: '#0f1415', border: `1px solid ${borderColor}`,
+                      borderRadius: '10px', padding: '10px 12px',
+                    }}>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setShowAlertTooltip(false); }}
+                        style={{ position: 'absolute', top: '6px', right: '8px', background: 'none', border: 'none', color: '#3d4949', fontSize: '14px', cursor: 'pointer', lineHeight: 1 }}
+                      >×</button>
+                      <div style={{ fontSize: '11px', fontWeight: 600, color: alarmColor, background: `${alarmColor}1f`, border: `0.5px solid ${alarmColor}4d`, borderRadius: '20px', padding: '3px 8px', display: 'inline-block', marginBottom: '6px' }}>
+                        {alarmLabel}{eventBg}
+                      </div>
+                      {expiresStr && <div style={{ fontSize: '11px', color: '#869393' }}>{expiresStr}</div>}
+                      <div style={{
+                        position: 'absolute', bottom: '-6px', left: '50%', transform: 'translateX(-50%)',
+                        width: 0, height: 0,
+                        borderLeft: '6px solid transparent', borderRight: '6px solid transparent',
+                        borderTop: `6px solid ${borderColor}`,
+                      }} />
+                    </div>
+                  );
+                })()}
+              </div>
             </div>
           )}
         </section>
-
-        {/* MeteoAlarm tooltip modal */}
-        {showAlertTooltip && weather?.meteoAlarm && alertLevel !== 'none' && (() => {
-          const alarmColor = alertLevel === 'red' ? '#DC3C3C' : alertLevel === 'orange' ? '#FF8C42' : '#C8E63C';
-          const alarmLabel = alertLevel === 'red' ? 'Червен код' : alertLevel === 'orange' ? 'Оранжев код' : 'Жълт код';
-          const { event, expires, headline } = weather.meteoAlarm;
-          let expiresStr = '';
-          if (expires) {
-            const d = new Date(expires);
-            const months = ['януари','февруари','март','април','май','юни','юли','август','септември','октомври','ноември','декември'];
-            expiresStr = `До ${d.getDate()} ${months[d.getMonth()]} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-          }
-          return (
-            <div style={{
-              position: 'relative', zIndex: 50,
-              background: '#1b2121',
-              border: `1px solid ${alarmColor}`,
-              borderRadius: '12px',
-              padding: '16px',
-              marginBottom: '8px',
-            }}>
-              <button
-                onClick={() => setShowAlertTooltip(false)}
-                style={{ position: 'absolute', top: '10px', right: '12px', background: 'none', border: 'none', color: '#a8b4b4', fontSize: '16px', cursor: 'pointer', lineHeight: 1 }}
-              >×</button>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                <span style={{ fontSize: '11px', fontWeight: 600, color: alarmColor, background: `${alarmColor}22`, border: `1px solid ${alarmColor}55`, borderRadius: '20px', padding: '2px 10px', letterSpacing: '0.05em' }}>{alarmLabel}</span>
-              </div>
-              {event && <div style={{ fontSize: '13px', color: '#dee4e3', fontWeight: 500, marginBottom: '6px' }}>{event}</div>}
-              {headline && headline !== event && <div style={{ fontSize: '12px', color: '#a8b4b4', marginBottom: '6px', lineHeight: 1.5 }}>{headline}</div>}
-              {expiresStr && <div style={{ fontSize: '11px', color: '#869393' }}>{expiresStr}</div>}
-            </div>
-          );
-        })()}
 
         {/* Hourly forecast toggle + strip */}
         {weather && weather.hourlyForecast?.length > 0 && (() => {
