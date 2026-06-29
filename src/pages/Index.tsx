@@ -376,9 +376,9 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
               marginTop: '6px',
             }}>
               <div style={{ borderTop: '1px solid #1b2121', paddingTop: '8px' }}>
-                <p style={{ fontSize: '13px', color: '#a8b4b4', margin: 0, lineHeight: 1.55 }}>{moonFact}</p>
+                <p style={{ fontSize: '13px', color: '#a8b4b4', margin: 0, lineHeight: 1.5 }}>{moonFact}</p>
                 {moon.phaseName === 'Full Moon' && (
-                  <p style={{ fontSize: '12px', color: '#869393', marginTop: '8px', marginBottom: 0, lineHeight: 1.5 }}>При пълнолуние рибата може да е по-пасивна денем. Разчитай на солунарните пикове.</p>
+                  <p style={{ fontSize: '13px', color: '#a8b4b4', marginTop: '8px', marginBottom: 0, lineHeight: 1.5 }}>При пълнолуние рибата може да е по-пасивна денем. Разчитай на солунарните пикове.</p>
                 )}
               </div>
             </div>
