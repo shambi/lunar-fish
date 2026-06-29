@@ -307,7 +307,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 </div>
               </div>
 
-              <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: 10, padding: '14px 16px', marginBottom: 12 }}>
+              <div style={{ borderTop: '0.5px solid #3d4949', padding: '14px 0', marginBottom: 12 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
                   <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: '#869393' }}>Калкулатор за тегло</span>
@@ -316,10 +316,10 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 9, color: '#869393', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>Дължина</div>
-                    <div style={{ display: 'flex', alignItems: 'center', background: '#0B0F1A', border: '0.5px solid #3d4949', borderRadius: 7, padding: '7px 9px' }}>
-                      <input type="number" placeholder="см" value={calcLen}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <input type="number" placeholder="0" value={calcLen}
                         onChange={e => setCalcLen(e.target.value)}
-                        style={{ background: 'none', border: 'none', outline: 'none', color: '#dee4e3', fontSize: 16, fontWeight: 500, width: '100%', minWidth: 0 }} />
+                        style={{ background: 'transparent', border: 'none', borderBottom: '1px solid #3d4949', borderRadius: 0, outline: 'none', color: '#dee4e3', fontSize: 18, fontWeight: 500, width: '100%', minWidth: 0, padding: '4px 0' }} />
                       <span style={{ fontSize: 11, color: '#3d4949' }}>см</span>
                     </div>
                   </div>
@@ -328,10 +328,10 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 9, color: '#869393', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>Обиколка</div>
-                    <div style={{ display: 'flex', alignItems: 'center', background: '#0B0F1A', border: '0.5px solid #3d4949', borderRadius: 7, padding: '7px 9px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                       <input type="number" placeholder="незадълж." value={calcGirth}
                         onChange={e => setCalcGirth(e.target.value)}
-                        style={{ background: 'none', border: 'none', outline: 'none', color: '#dee4e3', fontSize: 16, fontWeight: 500, width: '100%', minWidth: 0 }} />
+                        style={{ background: 'transparent', border: 'none', borderBottom: '1px solid #3d4949', borderRadius: 0, outline: 'none', color: '#dee4e3', fontSize: 18, fontWeight: 500, width: '100%', minWidth: 0, padding: '4px 0' }} />
                       <span style={{ fontSize: 11, color: '#3d4949' }}>см</span>
                     </div>
                   </div>
@@ -340,11 +340,11 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                   <div style={{ minWidth: 70, textAlign: 'right', paddingBottom: 6 }}>
                     {calcLen ? (
-                      <span style={{ fontSize: 22, fontWeight: 700, color: '#C8E63C' }}>
+                      <span style={{ fontSize: 18, fontWeight: 700, color: '#C8E63C' }}>
                         {calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))}
                       </span>
                     ) : (
-                      <span style={{ fontSize: 20, color: '#3d4949' }}>—</span>
+                      <span style={{ fontSize: 18, color: '#3d4949' }}>—</span>
                     )}
                   </div>
                 </div>
@@ -360,7 +360,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                 {showFormulaInfo && (
                   <div style={{ fontSize: 11, color: '#869393', lineHeight: 1.5, marginTop: 8, paddingTop: 8, borderTop: '0.5px solid #3d4949' }}>
-                    <span style={{ color: '#2eb5b7', fontWeight: 500 }}>Милко Георгиев — шампион по сомарство.</span> Формулата е верифицирана за български водоеми. Обиколката се изчислява автоматично ако не е въведена.
+                    Формулата принадлежи на <span style={{ color: '#2eb5b7', fontWeight: 500 }}>Милко Георгиев</span> — легенда в българското сомарство. Проверена в практиката, с точност до ~85%.
                   </div>
                 )}
               </div>
