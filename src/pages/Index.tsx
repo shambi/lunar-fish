@@ -135,6 +135,44 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
   }
 
 
+  // Pre-compute arrow positions with collision detection
+  const _arrowR = 118, _arrowROut = 136;
+  const _toRad = (deg: number) => (deg * Math.PI) / 180;
+  const _posFromMin = (min: number, r: number) => ({
+    bx: 105 + r * Math.sin(_toRad((min / 1440) * 360)),
+    by: 105 - r * Math.cos(_toRad((min / 1440) * 360)),
+  });
+  const _dist = (a: {bx:number,by:number}, b: {bx:number,by:number}) =>
+    Math.sqrt((a.bx - b.bx) ** 2 + (a.by - b.by) ** 2);
+  // Collect ordered arrows: sunrise, sunset, moonrise, moonset (sun has priority)
+  type ArrowEntry = { key: string; min: number; rad: number };
+  const _arrowEntries: ArrowEntry[] = [];
+  const _srMin = parseTime(weather.sunrise);
+  const _ssMin = parseTime(weather.sunset);
+  if (_srMin >= 0) _arrowEntries.push({ key: 'sunrise', min: _srMin, rad: _toRad((_srMin / 1440) * 360) });
+  if (_ssMin >= 0) _arrowEntries.push({ key: 'sunset', min: _ssMin, rad: _toRad((_ssMin / 1440) * 360) });
+  for (const p of peaks) {
+    if (p.label?.includes('Период на активност') || p.type === 'major') continue;
+    const s = parseTime(p.start), e = parseTime(p.end);
+    if (s < 0 || e < 0) continue;
+    let sd = (s / 1440) * 360, ed = (e / 1440) * 360;
+    if (ed < sd) ed += 360;
+    const midDeg = ((sd + ed) / 2) % 360;
+    const midMin = (midDeg / 360) * 1440;
+    const key = p.label?.includes('Изгрев') ? 'moonrise' : 'moonset';
+    _arrowEntries.push({ key, min: midMin, rad: _toRad(midDeg) });
+  }
+  // Assign radii: earlier entries keep _arrowR, colliders get _arrowROut
+  const _arrowRadii: Record<string, number> = {};
+  const _placed: {bx:number,by:number}[] = [];
+  for (const entry of _arrowEntries) {
+    let r = _arrowR;
+    const candidate = _posFromMin(entry.min, r);
+    if (_placed.some(p => _dist(p, candidate) < 22)) r = _arrowROut;
+    _arrowRadii[entry.key] = r;
+    _placed.push(_posFromMin(entry.min, r));
+  }
+
   return (
     <section style={{
       background: 'rgba(255,255,255,0.03)',
@@ -230,8 +268,10 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
                 );
               }
               if (p.label?.includes('Период на активност')) return null;
-              const bx = 105 + 118 * Math.sin((midDeg * Math.PI) / 180);
-              const by = 105 - 118 * Math.cos((midDeg * Math.PI) / 180);
+              const _moonKey = p.label?.includes('Изгрев') ? 'moonrise' : 'moonset';
+              const _moonR = _arrowRadii[_moonKey] ?? 118;
+              const bx = 105 + _moonR * Math.sin((midDeg * Math.PI) / 180);
+              const by = 105 - _moonR * Math.cos((midDeg * Math.PI) / 180);
               const isRise = p.label?.includes('Изгрев');
               const arrowD = isRise ? "M0 5V-3M-3 1l3-4 3 4" : "M0 -3v8M-3 1l3 4 3-4";
               return (
@@ -251,8 +291,9 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
             const srMin = parseTime(weather.sunrise);
             if (srMin < 0) return null;
             const srDeg = (srMin / 1440) * 360;
-            const bx = 105 + 118 * Math.sin((srDeg * Math.PI) / 180);
-            const by = 105 - 118 * Math.cos((srDeg * Math.PI) / 180);
+            const _r = _arrowRadii['sunrise'] ?? 118;
+            const bx = 105 + _r * Math.sin((srDeg * Math.PI) / 180);
+            const by = 105 - _r * Math.cos((srDeg * Math.PI) / 180);
             return (
               <g transform={`translate(${bx},${by})`}>
                 <path d="M0 5V-3M-3 1l3-4 3 4" stroke="#C8E63C" strokeWidth="1.2" strokeLinecap="round" fill="none" />
@@ -268,8 +309,9 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
             const ssMin = parseTime(weather.sunset);
             if (ssMin < 0) return null;
             const ssDeg = (ssMin / 1440) * 360;
-            const bx = 105 + 118 * Math.sin((ssDeg * Math.PI) / 180);
-            const by = 105 - 118 * Math.cos((ssDeg * Math.PI) / 180);
+            const _r = _arrowRadii['sunset'] ?? 118;
+            const bx = 105 + _r * Math.sin((ssDeg * Math.PI) / 180);
+            const by = 105 - _r * Math.cos((ssDeg * Math.PI) / 180);
             return (
               <g transform={`translate(${bx},${by})`}>
                 <path d="M0 -3v8M-3 1l3 4 3-4" stroke="#C8E63C" strokeWidth="1.2" strokeLinecap="round" fill="none" />
