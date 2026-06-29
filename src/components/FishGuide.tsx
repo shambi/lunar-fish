@@ -313,13 +313,14 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: '#869393' }}>Калкулатор за тегло</span>
                 </div>
 
+                <style>{`input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}`}</style>
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 9, color: '#869393', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>Дължина</div>
+                    <div style={{ fontSize: 9, color: '#a8b4b4', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>Дължина</div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                       <input type="number" placeholder="0" value={calcLen}
                         onChange={e => setCalcLen(e.target.value)}
-                        style={{ background: 'transparent', border: 'none', borderBottom: '1px solid #3d4949', borderRadius: 0, outline: 'none', color: '#dee4e3', fontSize: 18, fontWeight: 500, width: '100%', minWidth: 0, padding: '4px 0' }} />
+                        style={{ background: 'transparent', border: 'none', borderBottom: '1px solid #a8b4b4', borderRadius: 0, outline: 'none', color: '#dee4e3', fontSize: 14, fontWeight: 500, width: '100%', minWidth: 0, padding: '4px 0', MozAppearance: 'textfield' } as React.CSSProperties} />
                       <span style={{ fontSize: 11, color: '#3d4949' }}>см</span>
                     </div>
                   </div>
@@ -327,11 +328,11 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   <span style={{ fontSize: 16, color: '#3d4949', paddingBottom: 8 }}>×</span>
 
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 9, color: '#869393', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>Обиколка</div>
+                    <div style={{ fontSize: 9, color: '#a8b4b4', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>Обиколка</div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <input type="number" placeholder="незадълж." value={calcGirth}
+                      <input type="number" placeholder="—" value={calcGirth}
                         onChange={e => setCalcGirth(e.target.value)}
-                        style={{ background: 'transparent', border: 'none', borderBottom: '1px solid #3d4949', borderRadius: 0, outline: 'none', color: '#dee4e3', fontSize: 18, fontWeight: 500, width: '100%', minWidth: 0, padding: '4px 0' }} />
+                        style={{ background: 'transparent', border: 'none', borderBottom: '1px solid #a8b4b4', borderRadius: 0, outline: 'none', color: '#dee4e3', fontSize: 14, fontWeight: 500, width: '100%', minWidth: 0, padding: '4px 0', MozAppearance: 'textfield' } as React.CSSProperties} />
                       <span style={{ fontSize: 11, color: '#3d4949' }}>см</span>
                     </div>
                   </div>
