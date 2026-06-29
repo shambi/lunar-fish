@@ -136,7 +136,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
 
 
   // Pre-compute arrow positions with collision detection
-  const _arrowR = 118, _arrowROut = 136;
+  const _arrowR = 118, _arrowROut = 142;
   const _toRad = (deg: number) => (deg * Math.PI) / 180;
   const _posFromMin = (min: number, r: number) => ({
     bx: 105 + r * Math.sin(_toRad((min / 1440) * 360)),
@@ -168,7 +168,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
   for (const entry of _arrowEntries) {
     let r = _arrowR;
     const candidate = _posFromMin(entry.min, r);
-    if (_placed.some(p => _dist(p, candidate) < 22)) r = _arrowROut;
+    if (_placed.some(p => _dist(p, candidate) < 32)) r = _arrowROut;
     _arrowRadii[entry.key] = r;
     _placed.push(_posFromMin(entry.min, r));
   }
