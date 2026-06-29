@@ -992,7 +992,10 @@ const Index = () => {
               </svg>
             );
             if (code === 2) return isNight ? (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/><path d="M7 16a4 4 0 0 1 7.87-1A3 3 0 1 1 17 22H7a4 4 0 0 1 0-8"/></svg>
+              <svg width="22" height="22" viewBox="0 0 26 26" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
+                <path d="M15 3a5 5 0 0 0 6 6 7 7 0 1 1-6-6Z" />
+                <path d="M4 18a4 4 0 0 1 7.87-1A2.5 2.5 0 1 1 13.5 22H4a4 4 0 0 1 0-8v1" />
+              </svg>
             ) : (
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
                 <circle cx="10" cy="9" r="3" />
