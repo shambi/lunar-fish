@@ -18,14 +18,20 @@ interface FishGuideProps {
 }
 
 function isInBanPeriod(start: string, end: string): boolean {
-  const now = new Date();
-  const [sd, sm] = start.split('.').map(Number);
-  const [ed, em] = end.split('.').map(Number);
-  const todayVal = (now.getMonth() + 1) * 100 + now.getDate();
-  const startVal = sm * 100 + sd;
-  const endVal = em * 100 + ed;
-  if (startVal <= endVal) return todayVal >= startVal && todayVal <= endVal;
-  return todayVal >= startVal || todayVal <= endVal;
+  const today = new Date();
+  const year = today.getFullYear();
+  const [startDay, startMonth] = start.split('.').map(Number);
+  const [endDay, endMonth] = end.split('.').map(Number);
+  let startDate = new Date(year, startMonth - 1, startDay);
+  let endDate = new Date(year, endMonth - 1, endDay);
+  if (endDate < startDate) {
+    endDate = new Date(year + 1, endMonth - 1, endDay);
+    if (today < startDate) {
+      startDate = new Date(year - 1, startMonth - 1, startDay);
+      endDate = new Date(year, endMonth - 1, endDay);
+    }
+  }
+  return today >= startDate && today <= endDate;
 }
 
 function calcWeight(fishName: string, L: number, G: number): string {
@@ -332,11 +338,10 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                 {/* Ban periods */}
                 {selectedFish.altitudeBans && (() => {
-                  const alt = weather?.altitude ?? 0;
-                  const zones: { key: 'low' | 'mid' | 'high'; label: string; minA: number; maxA: number }[] = [
-                    { key: 'low',  label: 'До 500м',      minA: 0,    maxA: 499 },
-                    { key: 'mid',  label: '500–1500м',    minA: 500,  maxA: 1499 },
-                    { key: 'high', label: 'Над 1500м',    minA: 1500, maxA: Infinity },
+                  const zones: { key: 'low' | 'mid' | 'high'; label: string }[] = [
+                    { key: 'low',  label: 'До 500м' },
+                    { key: 'mid',  label: '500–1500м' },
+                    { key: 'high', label: 'Над 1500м' },
                   ];
                   const activeZones = zones.filter(z => selectedFish.altitudeBans![z.key]);
                   if (activeZones.length === 0) return null;
@@ -346,20 +351,16 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                         {activeZones.map(z => {
                           const ban = selectedFish.altitudeBans![z.key]!;
-                          const isMyZone = alt >= z.minA && alt <= z.maxA;
                           const isBanned = isInBanPeriod(ban.start, ban.end);
                           return (
                             <div key={z.key} style={{
                               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                              padding: '4px 8px', borderRadius: 6,
-                              border: isMyZone ? '1px solid rgba(200,230,60,0.4)' : 'none',
-                              background: isMyZone ? 'rgba(200,230,60,0.04)' : 'transparent',
+                              padding: isBanned ? '4px 8px' : '2px 0',
+                              borderRadius: 6,
+                              border: isBanned ? '1px solid rgba(220,60,60,0.6)' : 'none',
                             }}>
-                              <span style={{ fontSize: 11, color: isMyZone ? '#dee4e3' : '#869393' }}>{z.label}</span>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                                <span style={{ fontSize: 11, color: isMyZone ? '#dee4e3' : '#869393' }}>{ban.start} – {ban.end}</span>
-                                {isBanned && <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#ff4444', flexShrink: 0 }} />}
-                              </div>
+                              <span style={{ fontSize: 11, color: '#869393' }}>{z.label}</span>
+                              <span style={{ fontSize: 11, color: isBanned ? '#DC3C3C' : '#869393' }}>{ban.start} – {ban.end}</span>
                             </div>
                           );
                         })}
