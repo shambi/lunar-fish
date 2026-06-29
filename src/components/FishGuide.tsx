@@ -59,18 +59,16 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
   const [selectedTechnique, setSelectedTechnique] = useState<string | null>(null);
 
   useEffect(() => {
-    setCalcLen('');
-    setCalcGirth('');
-    setShowFormulaInfo(false);
-    setSelectedTechnique(null);
-  }, [selectedFish]);
-
-  useEffect(() => {
     if (selectedFish) {
+      const techniques = selectedFish.techniques?.[terrain] ?? [];
+      setSelectedTechnique(techniques[0] ?? null);
+      setCalcLen('');
+      setCalcGirth('');
+      setShowFormulaInfo(false);
       const activeEl = document.activeElement as HTMLElement;
       if (activeEl) activeEl.blur();
     }
-  }, [selectedFish]);
+  }, [selectedFish, terrain]);
 
   const temp = weather?.temperature ?? 18;
   const wind = weather?.windSpeed ?? 5;
@@ -431,7 +429,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 9, color: '#a8b4b4', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>Дължина</div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <input type="number" placeholder="0" value={calcLen} autoFocus={false}
+                      <input type="number" placeholder="0" value={calcLen} autoFocus={false} tabIndex={-1}
                         onChange={e => setCalcLen(e.target.value)}
                         style={{ background: 'transparent', border: 'none', borderBottom: '1px solid #a8b4b4', borderRadius: 0, outline: 'none', color: '#dee4e3', fontSize: 14, fontWeight: 500, width: '100%', minWidth: 0, padding: '4px 0', MozAppearance: 'textfield' } as React.CSSProperties} />
                       <span style={{ fontSize: 11, color: '#3d4949' }}>см</span>
@@ -443,7 +441,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 9, color: '#a8b4b4', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>Обиколка</div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <input type="number" placeholder="—" value={calcGirth} autoFocus={false}
+                      <input type="number" placeholder="—" value={calcGirth} autoFocus={false} tabIndex={-1}
                         onChange={e => setCalcGirth(e.target.value)}
                         style={{ background: 'transparent', border: 'none', borderBottom: '1px solid #a8b4b4', borderRadius: 0, outline: 'none', color: '#dee4e3', fontSize: 14, fontWeight: 500, width: '100%', minWidth: 0, padding: '4px 0', MozAppearance: 'textfield' } as React.CSSProperties} />
                       <span style={{ fontSize: 11, color: '#3d4949' }}>см</span>
