@@ -667,7 +667,7 @@ const Index = () => {
                       key="bonus"
                       className="w-9 h-9 flex items-center justify-center"
                       style={{
-                        animation: `${swimAnimations[0]} 5s ease-in-out infinite, pulse 2s ease-in-out infinite`,
+                        animation: `${swimAnimations[0]} 5s ease-in-out infinite`,
                       }}
                     >
                       <PerchIcon size={24} strokeWidth={2} stroke="#C8E63C" fill="rgba(200,230,60,0.1)" />
