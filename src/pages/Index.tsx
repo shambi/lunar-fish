@@ -668,8 +668,8 @@ const Index = () => {
                       className="w-9 h-9 flex items-center justify-center"
                       style={{
                         color: '#C8E63C',
+                        fill: 'rgba(200,230,60,0.15)',
                         animation: 'pulse 2s ease-in-out infinite',
-                        filter: 'drop-shadow(0 0 4px rgba(200,230,60,0.6))',
                       }}
                     >
                       <PerchIcon size={24} strokeWidth={2} />
