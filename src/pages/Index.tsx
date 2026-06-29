@@ -1020,10 +1020,12 @@ const Index = () => {
                   <span className="text-xl leading-none">{weather ? (() => {
                     const code = weather.weatherCode;
                     if (code <= 1) {
-                      const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
-                      const srMin = parseTime(weather.sunrise);
-                      const ssMin = parseTime(weather.sunset);
-                      const isNight = srMin >= 0 && ssMin >= 0 ? (nowMin < srMin || nowMin >= ssMin) : (new Date().getHours() < 5 || new Date().getHours() >= 21);
+                      const now = new Date();
+                      const nowMin = now.getHours() * 60 + now.getMinutes();
+                      const toMin = (s: string) => { if (!s || s === '--:--') return -1; const [h, m] = s.split(':').map(Number); return h * 60 + m; };
+                      const srMin = toMin(weather.sunrise);
+                      const ssMin = toMin(weather.sunset);
+                      const isNight = srMin >= 0 && ssMin >= 0 ? (nowMin < srMin || nowMin >= ssMin) : (now.getHours() < 5 || now.getHours() >= 21);
                       if (isNight) return '🌙';
                     }
                     return weather.weatherIcon;
