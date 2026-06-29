@@ -529,7 +529,7 @@ const Index = () => {
       <div
         key={i}
         className="drop-shadow-[0_0_8px_hsl(var(--primary)/0.4)]"
-        style={{ animation: `${swimAnimations[i % 3]} ${7 + i * 1.2}s ease-in-out infinite` }}
+        style={{ animation: `${swimAnimations[i % 3]} ${5 + i * 0.8}s ease-in-out infinite` }}
       >
         <Icon size={24} className="text-primary" strokeWidth={2} />
       </div>
@@ -669,6 +669,7 @@ const Index = () => {
                       style={{
                         color: '#C8E63C',
                         animation: 'pulse 2s ease-in-out infinite',
+                        filter: 'drop-shadow(0 0 4px rgba(200,230,60,0.6))',
                       }}
                     >
                       <PerchIcon size={24} strokeWidth={2} />

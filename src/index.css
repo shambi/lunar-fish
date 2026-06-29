@@ -108,18 +108,21 @@
 }
 
 @keyframes fish-swim-1 {
-  0%, 100% { transform: translateX(0) translateY(0); }
-  50% { transform: translateX(3px) translateY(-2px); }
+  0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+  33%       { transform: translateX(6px) translateY(-4px) rotate(2deg); }
+  66%       { transform: translateX(2px) translateY(-6px) rotate(-1deg); }
 }
 
 @keyframes fish-swim-2 {
-  0%, 100% { transform: translateX(0) translateY(0); }
-  50% { transform: translateX(-2px) translateY(2px); }
+  0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+  33%       { transform: translateX(-5px) translateY(4px) rotate(-2deg); }
+  66%       { transform: translateX(-2px) translateY(6px) rotate(1deg); }
 }
 
 @keyframes fish-swim-3 {
-  0%, 100% { transform: translateX(0) translateY(0); }
-  50% { transform: translateX(2px) translateY(-3px); }
+  0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+  33%       { transform: translateX(5px) translateY(-5px) rotate(1deg); }
+  66%       { transform: translateX(-3px) translateY(3px) rotate(-2deg); }
 }
 
 @keyframes star-signal {
