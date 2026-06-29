@@ -56,11 +56,13 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
   const [calcLen, setCalcLen] = useState('');
   const [calcGirth, setCalcGirth] = useState('');
   const [showFormulaInfo, setShowFormulaInfo] = useState(false);
+  const [selectedTechnique, setSelectedTechnique] = useState<string | null>(null);
 
   useEffect(() => {
     setCalcLen('');
     setCalcGirth('');
     setShowFormulaInfo(false);
+    setSelectedTechnique(null);
   }, [selectedFish]);
 
   useEffect(() => {
@@ -282,6 +284,32 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 </div>
               )}
 
+              {/* Technique pill buttons */}
+              {(() => {
+                const techniques = selectedFish.techniques?.[terrain] ?? [];
+                if (techniques.length === 0) return null;
+                return (
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
+                    {techniques.map(t => (
+                      <button key={t}
+                        onClick={() => setSelectedTechnique(t === selectedTechnique ? null : t)}
+                        style={{
+                          padding: '5px 14px',
+                          borderRadius: 20,
+                          border: selectedTechnique === t ? '1px solid #2eb5b7' : '0.5px solid #3d4949',
+                          background: selectedTechnique === t ? 'rgba(46,181,183,0.1)' : 'transparent',
+                          color: selectedTechnique === t ? '#2eb5b7' : '#869393',
+                          fontSize: 12,
+                          fontWeight: 500,
+                          cursor: 'pointer',
+                        }}
+                      >{t}</button>
+                    ))}
+                  </div>
+                );
+              })()}
+
+              {/* TODO: filter baseData by selectedTechnique in next step */}
               <div style={{ marginBottom: '12px' }}>
                 <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '8px' }}>
                   Такъми & Монтаж

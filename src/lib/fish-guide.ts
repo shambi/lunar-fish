@@ -30,6 +30,11 @@ export interface FishSpecies {
   /** Subtitle shown in modal */
   subtitle?: string;
   latinName?: string;
+  /** Fishing techniques per terrain */
+  techniques?: {
+    lake: string[];
+    river: string[];
+  };
   /** Altitude-based ban periods (IARA regulations by elevation) */
   altitudeBans?: {
     low?: { start: string; end: string; maxAlt: number };        // до 500m на н.в.
@@ -66,6 +71,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     spawnMonths: [4, 5],
     minSize: 30,
+    techniques: { lake: ['Фидер', 'Поплавък'], river: ['Фидер', 'Поплавък'] },
     ecoRed: '⛔ Забранен: зависи от högde на н.в.',
     ecoGreen: '✅ Мин. размер: 30см',
     altitudeBans: {
@@ -91,6 +97,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     spawnMonths: [4, 5],
     minSize: 40,
+    techniques: { lake: ['Фидер', 'Поплавък'], river: ['Фидер', 'Поплавък'] },
     ecoRed: '⛔ Забранен: зависи от території',
     ecoGreen: '✅ Мин. размер: 40см',
     altitudeBans: {
@@ -142,6 +149,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     spawnMonths: [4, 5],
     minSize: 65,
+    techniques: { lake: ['Спининг', 'Кльонк'], river: ['Спининг', 'Кльонк'] },
     ecoRed: '⛔ Забранен: зависи от h',
     ecoGreen: '✅ Мин. размер: 65см',
     altitudeBans: {
@@ -168,6 +176,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     spawnMonths: [2, 3, 4],
     minSize: 35,
+    techniques: { lake: ['Спининг'], river: ['Спининг'] },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 35см',
     altitudeBans: {
@@ -193,6 +202,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     spawnMonths: [4, 5],
     minSize: 15,
+    techniques: { lake: ['Поплавък', 'Фидер'], river: ['Поплавък'] },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 15см',
     altitudeBans: {
@@ -243,6 +253,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     spawnMonths: [10, 11, 12, 1],
     minSize: 23,
+    techniques: { lake: ['Спининг', 'Поплавък'], river: ['Спининг', 'Муха'] },
     ecoRed: '⛔ Забранен: 01.10 – 31.01',
     ecoGreen: '✅ Мин. размер: 23см',
     altitudeBans: {
@@ -310,6 +321,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     spawnMonths: [4, 5],
     minSize: 20,
+    techniques: { lake: ['Поплавък', 'Фидер'], river: ['Поплавък'] },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 20см',
     altitudeBans: {
@@ -337,6 +349,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     spawnMonths: [4, 5],
     minSize: 12,
+    techniques: { lake: ['Спининг', 'Поплавък'], river: ['Спининг', 'Поплавък'] },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 12см',
     altitudeBans: {
@@ -362,6 +375,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     spawnMonths: [4, 5],
     minSize: 20,
+    techniques: { lake: ['Фидер', 'Поплавък'], river: ['Фидер', 'Поплавък'] },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 20см',
     altitudeBans: {
@@ -413,6 +427,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     spawnMonths: [4, 5],
     minSize: 12,
+    techniques: { lake: ['Поплавък'], river: ['Поплавък'] },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 12см',
     altitudeBans: {
@@ -438,6 +453,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     spawnMonths: [4, 5],
     minSize: 25,
+    techniques: { lake: [], river: ['Поплавък', 'Муха', 'Фидер'] },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 25см',
     altitudeBans: {
@@ -511,6 +527,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     spawnMonths: [3, 4, 5],
     minSize: 45,
+    techniques: { lake: ['Спининг'], river: ['Спининг'] },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 45см',
     altitudeBans: {
