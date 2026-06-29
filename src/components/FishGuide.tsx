@@ -23,6 +23,22 @@ function degreesToCardinal(deg: number): string {
   return dirs[Math.round(deg / 45) % 8];
 }
 
+const translateAlert = (event: string | null): string => {
+  if (!event) return '';
+  const map: Record<string, string> = {
+    'Heat': 'Жега',
+    'Thunderstorms': 'Гръмотевици',
+    'Rain': 'Дъжд',
+    'Wind': 'Силен вятър',
+    'Snow': 'Сняг',
+    'Fog': 'Мъгла',
+    'Flood': 'Наводнение',
+    'Forest fire': 'Горски пожар',
+    'Coastal event': 'Крайбрежно събитие',
+  };
+  return map[event] ?? event;
+};
+
 function isInBanPeriod(start: string, end: string): boolean {
   const today = new Date();
   const year = today.getFullYear();
@@ -354,7 +370,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     {meteoAlert?.level && (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(255,140,66,0.08)', border: '0.5px solid rgba(255,140,66,0.3)', borderRadius: 8, padding: '6px 10px', marginBottom: 8, fontSize: 11, color: '#FF8C42' }}>
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FF8C42" strokeWidth="2" strokeLinecap="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                        {meteoAlert.level === 'red' ? 'Червен' : meteoAlert.level === 'orange' ? 'Оранжев' : 'Жълт'} код{meteoAlert.event ? ` · ${meteoAlert.event}` : ''}
+                        {meteoAlert.level === 'red' ? 'Червен' : meteoAlert.level === 'orange' ? 'Оранжев' : 'Жълт'} код{meteoAlert.event ? ` · ${translateAlert(meteoAlert.event)}` : ''}
                       </div>
                     )}
                     <p style={{ fontSize: 14, lineHeight: 1.65, color: '#dee4e3' }}>{aiAdvice}</p>
