@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { getScoredFish, getFishModalData, type ScoredFish } from '@/lib/fish-guide';
 import { getDailyAdvice } from '@/lib/fish-advice';
 import type { MoonData } from '@/lib/moon';
@@ -15,6 +15,12 @@ interface FishGuideProps {
   terrain: 'river' | 'lake';
   onTerrainChange: (terrain: 'river' | 'lake') => void;
   solunarContext?: { isInPeak: boolean; peakType: 'major' | 'minor' | null };
+  meteoAlert?: { level: 'yellow' | 'orange' | 'red' | null; event: string | null };
+}
+
+function degreesToCardinal(deg: number): string {
+  const dirs = ['С', 'СИ', 'И', 'ЮИ', 'Ю', 'ЮЗ', 'З', 'СЗ'];
+  return dirs[Math.round(deg / 45) % 8];
 }
 
 function isInBanPeriod(start: string, end: string): boolean {
@@ -51,12 +57,15 @@ function calcWeight(fishName: string, L: number, G: number): string {
   return '~' + Math.round(kg * 1000) + ' г';
 }
 
-export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarContext }: FishGuideProps) {
+export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarContext, meteoAlert }: FishGuideProps) {
   const [selectedFish, setSelectedFish] = useState<ScoredFish | null>(null);
   const [calcLen, setCalcLen] = useState('');
   const [calcGirth, setCalcGirth] = useState('');
   const [showFormulaInfo, setShowFormulaInfo] = useState(false);
   const [selectedTechnique, setSelectedTechnique] = useState<string | null>(null);
+  const [aiAdvice, setAiAdvice] = useState<string | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const aiAdviceCache = useRef<Record<string, string>>({});
 
   useEffect(() => {
     if (selectedFish) {
@@ -69,6 +78,50 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
       if (activeEl) activeEl.blur();
     }
   }, [selectedFish, terrain]);
+
+  useEffect(() => {
+    if (!selectedFish) return;
+    const cacheKey = `${selectedFish.name}-${selectedTechnique ?? ''}-${terrain}`;
+    if (aiAdviceCache.current[cacheKey]) {
+      setAiAdvice(aiAdviceCache.current[cacheKey]);
+      setAiLoading(false);
+      return;
+    }
+    setAiAdvice(null);
+    setAiLoading(true);
+    fetch('/api/fishing-advice', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fish: selectedFish.name,
+        fishBehavior: selectedFish.character ?? '',
+        technique: selectedTechnique ?? '',
+        terrain,
+        month: new Date().getMonth() + 1,
+        hour: new Date().getHours(),
+        temperature: weather?.temperature ?? 20,
+        windSpeed: weather?.windSpeed ?? 0,
+        windDirection: weather?.windDirection != null ? degreesToCardinal(weather.windDirection) : '—',
+        pressure: weather?.pressure ?? 1013,
+        pressureTrend: weather?.pressureTrend ?? 'stable',
+        moonPhase: moon.phaseName,
+        moonIllumination: moon.illumination,
+        fishingScore: moon.fishingScore,
+        isInPeak: solunarContext?.isInPeak ?? false,
+        peakType: solunarContext?.peakType ?? null,
+        meteoAlert: meteoAlert ?? { level: null, event: null },
+      }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.advice) {
+          aiAdviceCache.current[cacheKey] = data.advice;
+          setAiAdvice(data.advice);
+        }
+      })
+      .catch(() => { /* silently fail */ })
+      .finally(() => setAiLoading(false));
+  }, [selectedFish, selectedTechnique, terrain]);
 
   const temp = weather?.temperature ?? 18;
   const wind = weather?.windSpeed ?? 5;
@@ -272,15 +325,42 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
               <div style={{ height: '0.5px', background: '#1b2121', margin: '12px 0' }} />
 
-              {advice && (
-                <div style={{ marginBottom: '12px' }}>
-                  <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    Съвет за днес
-                  </div>
-                  <p style={{ fontSize: '13px', lineHeight: 1.65, color: 'rgba(222,228,227,0.85)' }}>{advice.tip}</p>
+              <div style={{ marginBottom: '12px' }}>
+                <style>{`
+                  @keyframes riboPulse { 0%,100%{opacity:.4;transform:scale(.85)} 50%{opacity:1;transform:scale(1.15)} }
+                  @keyframes riboFade  { 0%,100%{opacity:.4} 50%{opacity:.85} }
+                  @keyframes riboShimmer { 0%{opacity:.3} 50%{opacity:.7} 100%{opacity:.3} }
+                `}</style>
+                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  Съвет за днес
+                  <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em', color: '#C8E63C', background: 'rgba(200,230,60,0.1)', border: '1px solid rgba(200,230,60,0.25)', borderRadius: '4px', padding: '2px 6px', textTransform: 'uppercase' }}>AI</span>
                 </div>
-              )}
+
+                {aiLoading && (
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                      <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#2eb5b7', animation: 'riboPulse 1.2s ease-in-out infinite' }} />
+                      <span style={{ fontSize: 12, color: '#869393', animation: 'riboFade 1.8s ease-in-out infinite' }}>Анализирам условията...</span>
+                    </div>
+                    {[80, 65, 90, 50].map((w, i) => (
+                      <div key={i} style={{ height: 10, borderRadius: 5, background: '#1b2121', width: `${w}%`, marginBottom: 8, animation: `riboShimmer 1.6s ease-in-out ${i * 0.2}s infinite` }} />
+                    ))}
+                  </div>
+                )}
+
+                {!aiLoading && aiAdvice && (
+                  <div>
+                    {meteoAlert?.level && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(255,140,66,0.08)', border: '0.5px solid rgba(255,140,66,0.3)', borderRadius: 8, padding: '6px 10px', marginBottom: 8, fontSize: 11, color: '#FF8C42' }}>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FF8C42" strokeWidth="2" strokeLinecap="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                        {meteoAlert.level === 'red' ? 'Червен' : meteoAlert.level === 'orange' ? 'Оранжев' : 'Жълт'} код{meteoAlert.event ? ` · ${meteoAlert.event}` : ''}
+                      </div>
+                    )}
+                    <p style={{ fontSize: 14, lineHeight: 1.65, color: '#dee4e3' }}>{aiAdvice}</p>
+                  </div>
+                )}
+              </div>
 
               {/* Technique pill buttons */}
               {(() => {

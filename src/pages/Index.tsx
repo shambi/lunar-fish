@@ -1180,6 +1180,11 @@ const Index = () => {
           terrain={terrain}
           onTerrainChange={setTerrain}
           solunarContext={solunarContext}
+          meteoAlert={
+            weather?.meteoAlarm?.level && weather.meteoAlarm.level !== 'none'
+              ? { level: weather.meteoAlarm.level, event: weather.meteoAlarm.event }
+              : { level: null, event: null }
+          }
         />
 
         <footer className="text-center mt-4 space-y-0.5">
