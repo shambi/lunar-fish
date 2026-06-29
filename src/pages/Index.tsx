@@ -996,10 +996,10 @@ const Index = () => {
                 <div className="text-[7px] mt-0.5 opacity-50">М. Н.В.</div>
               </div>
               {/* WEATHER ICON */}
-              <div style={{ position: 'relative' }}>
+              <div style={{ position: 'relative' }} className="h-full">
                 <button
                   onClick={() => { if (alertLevel !== 'none') setShowAlertTooltip(v => !v); }}
-                  className="rounded-lg bg-white/[0.03] p-1.5 text-center flex flex-col justify-center w-full"
+                  className="rounded-lg bg-white/[0.03] p-1.5 text-center flex flex-col justify-center w-full h-full"
                   style={{
                     ...(alertLevel === 'none' ? {
                       border: '0.5px solid rgba(255,255,255,0.07)'
@@ -1017,7 +1017,17 @@ const Index = () => {
                     cursor: alertLevel !== 'none' ? 'pointer' : 'default',
                   }}
                 >
-                  <span className="text-xl leading-none">{weather ? weather.weatherIcon : '—'}</span>
+                  <span className="text-xl leading-none">{weather ? (() => {
+                    const code = weather.weatherCode;
+                    if (code <= 1) {
+                      const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
+                      const srMin = parseTime(weather.sunrise);
+                      const ssMin = parseTime(weather.sunset);
+                      const isNight = srMin >= 0 && ssMin >= 0 ? (nowMin < srMin || nowMin >= ssMin) : (new Date().getHours() < 5 || new Date().getHours() >= 21);
+                      if (isNight) return '🌙';
+                    }
+                    return weather.weatherIcon;
+                  })() : '—'}</span>
                   <div className="text-[8px] mt-1 opacity-50 leading-tight whitespace-nowrap overflow-hidden text-ellipsis" title={weather?.weatherLabel}>
                     {weather?.weatherLabel ?? '...'}
                   </div>
@@ -1041,16 +1051,14 @@ const Index = () => {
                     expiresStr = `До ${d.getDate()} ${months[d.getMonth()]} · ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
                   }
                   return (
+                    <>
+                    <div style={{ position: 'fixed', inset: 0, zIndex: 99 }} onClick={() => setShowAlertTooltip(false)} />
                     <div style={{
                       position: 'absolute', bottom: 'calc(100% + 8px)', right: 0,
                       width: 'min(200px, 80vw)', zIndex: 100,
                       background: '#0f1415', border: `1px solid ${borderColor}`,
                       borderRadius: '10px', padding: '10px 12px',
                     }}>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); setShowAlertTooltip(false); }}
-                        style={{ position: 'absolute', top: '6px', right: '8px', background: 'none', border: 'none', color: '#3d4949', fontSize: '14px', cursor: 'pointer', lineHeight: 1 }}
-                      >×</button>
                       <div style={{ fontSize: '11px', fontWeight: 600, color: alarmColor, background: `${alarmColor}1f`, border: `0.5px solid ${alarmColor}4d`, borderRadius: '20px', padding: '3px 8px', display: 'inline-block', marginBottom: '6px' }}>
                         {alarmLabel}{eventBg}
                       </div>
@@ -1062,6 +1070,7 @@ const Index = () => {
                         borderTop: `6px solid ${borderColor}`,
                       }} />
                     </div>
+                    </>
                   );
                 })()}
               </div>
