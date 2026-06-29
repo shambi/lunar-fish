@@ -5,56 +5,6 @@ import type { WeatherData } from '@/hooks/use-weather';
 import { calculateFishingScore } from '@/lib/fishing-score';
 import { Cloud } from 'lucide-react';
 
-function ForecastWeatherIcon({ code }: { code: number }) {
-  const s = { stroke: '#2eb5b7' as const };
-  if (code === 0 || code === 1) return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" {...s}>
-      <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
-    </svg>
-  );
-  if (code === 2) return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" {...s}>
-      <circle cx="10" cy="9" r="3"/><path d="M10 4v1M10 13v1M5 9H4M16 9h-1M6.76 6.76l-.7-.7M13.94 6.76l.7-.7"/>
-      <path d="M7 16a4 4 0 0 1 7.87-1A3 3 0 1 1 17 22H7a4 4 0 0 1 0-8v2"/>
-    </svg>
-  );
-  if (code === 3) return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" {...s}>
-      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
-    </svg>
-  );
-  if (code === 45 || code === 48) return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" {...s}>
-      <path d="M3 10h18M3 14h18M3 18h18"/>
-    </svg>
-  );
-  if (code >= 51 && code <= 67) return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" {...s}>
-      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
-      <path d="M8 19v2M8 13v2M12 21v2M12 15v2M16 19v2M16 13v2"/>
-    </svg>
-  );
-  if (code >= 71 && code <= 77) return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" {...s}>
-      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
-      <path d="M8 19l-1 2M10 19l-1 2M12 19l-1 2M14 19l-1 2M16 19l-1 2"/>
-    </svg>
-  );
-  if (code >= 80 && code <= 82) return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" {...s}>
-      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
-      <path d="M8 19v2M12 19v2M16 19v2"/>
-    </svg>
-  );
-  // thunderstorm / hail
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" {...s}>
-      <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
-      <path d="M13 10l-4 6h5l-4 6"/>
-    </svg>
-  );
-}
-
 interface DayForecast {
   date: Date;
   label: string;
@@ -217,9 +167,8 @@ export function ForecastCards({ weather }: { weather: WeatherData | null }) {
               </div>
 
               {/* Row 3: weather line */}
-              <span className="text-[11px] flex items-center gap-1" style={{ color: '#94A3B8' }}>
-                <ForecastWeatherIcon code={day.weatherCode} />
-                <span style={{ color: '#FFFFFF' }}>{day.tempMax}°С</span> · <span style={{ color: '#FFFFFF' }}>{day.windMax} км/ч</span>
+              <span className="text-[11px]" style={{ color: '#94A3B8' }}>
+                <span style={{ fontSize: '24px', lineHeight: 1 }}>{day.weatherIcon}</span> <span style={{ color: '#FFFFFF' }}>{day.tempMax}°С</span> · <span style={{ color: '#FFFFFF' }}>{day.windMax} км/ч</span>
               </span>
 
               {/* Row 4: fish score */}
