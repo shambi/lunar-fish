@@ -1042,8 +1042,8 @@ const Index = () => {
                   }
                   return (
                     <div style={{
-                      position: 'absolute', bottom: 'calc(100% + 8px)', left: '50%',
-                      transform: 'translateX(-50%)', width: '200px', zIndex: 100,
+                      position: 'absolute', bottom: 'calc(100% + 8px)', right: 0,
+                      width: 'min(200px, 80vw)', zIndex: 100,
                       background: '#0f1415', border: `1px solid ${borderColor}`,
                       borderRadius: '10px', padding: '10px 12px',
                     }}>
@@ -1056,7 +1056,7 @@ const Index = () => {
                       </div>
                       {expiresStr && <div style={{ fontSize: '11px', color: '#869393' }}>{expiresStr}</div>}
                       <div style={{
-                        position: 'absolute', bottom: '-6px', left: '50%', transform: 'translateX(-50%)',
+                        position: 'absolute', bottom: '-6px', right: '20px', left: 'auto', transform: 'none',
                         width: 0, height: 0,
                         borderLeft: '6px solid transparent', borderRight: '6px solid transparent',
                         borderTop: `6px solid ${borderColor}`,
