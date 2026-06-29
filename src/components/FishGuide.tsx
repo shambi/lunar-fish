@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { getScoredFish, getFishModalData, type ScoredFish } from '@/lib/fish-guide';
 import { getDailyAdvice } from '@/lib/fish-advice';
 import type { MoonData } from '@/lib/moon';
@@ -17,8 +17,34 @@ interface FishGuideProps {
   solunarContext?: { isInPeak: boolean; peakType: 'major' | 'minor' | null };
 }
 
+function calcWeight(fishName: string, L: number, G: number): string {
+  if (!L || L <= 0) return '';
+  const g = G > 0 ? G : L * 0.58;
+  let kg: number;
+  if (fishName === 'Сом') {
+    kg = Math.pow(L / 100, 3) * 6;
+  } else if (fishName === 'Каракуда') {
+    kg = (L * g * g) / 27100;
+  } else if (fishName === 'Щука') {
+    kg = (L * g * g) / 32500;
+  } else {
+    kg = (L * g * g) / 28900;
+  }
+  if (kg >= 1) return '~' + kg.toFixed(1) + ' кг';
+  return '~' + Math.round(kg * 1000) + ' г';
+}
+
 export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarContext }: FishGuideProps) {
   const [selectedFish, setSelectedFish] = useState<ScoredFish | null>(null);
+  const [calcLen, setCalcLen] = useState('');
+  const [calcGirth, setCalcGirth] = useState('');
+  const [showFormulaInfo, setShowFormulaInfo] = useState(false);
+
+  useEffect(() => {
+    setCalcLen('');
+    setCalcGirth('');
+    setShowFormulaInfo(false);
+  }, [selectedFish]);
 
   const temp = weather?.temperature ?? 18;
   const wind = weather?.windSpeed ?? 5;
@@ -279,6 +305,64 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     ИАРА Наредби
                   </button>
                 </div>
+              </div>
+
+              <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: 10, padding: '14px 16px', marginBottom: 12 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+                  <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: '#869393' }}>Калкулатор за тегло</span>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 9, color: '#869393', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>Дължина</div>
+                    <div style={{ display: 'flex', alignItems: 'center', background: '#0B0F1A', border: '0.5px solid #3d4949', borderRadius: 7, padding: '7px 9px' }}>
+                      <input type="number" placeholder="см" value={calcLen}
+                        onChange={e => setCalcLen(e.target.value)}
+                        style={{ background: 'none', border: 'none', outline: 'none', color: '#dee4e3', fontSize: 16, fontWeight: 500, width: '100%', minWidth: 0 }} />
+                      <span style={{ fontSize: 11, color: '#3d4949' }}>см</span>
+                    </div>
+                  </div>
+
+                  <span style={{ fontSize: 16, color: '#3d4949', paddingBottom: 8 }}>×</span>
+
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 9, color: '#869393', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>Обиколка</div>
+                    <div style={{ display: 'flex', alignItems: 'center', background: '#0B0F1A', border: '0.5px solid #3d4949', borderRadius: 7, padding: '7px 9px' }}>
+                      <input type="number" placeholder="незадълж." value={calcGirth}
+                        onChange={e => setCalcGirth(e.target.value)}
+                        style={{ background: 'none', border: 'none', outline: 'none', color: '#dee4e3', fontSize: 16, fontWeight: 500, width: '100%', minWidth: 0 }} />
+                      <span style={{ fontSize: 11, color: '#3d4949' }}>см</span>
+                    </div>
+                  </div>
+
+                  <span style={{ fontSize: 16, color: '#3d4949', paddingBottom: 8 }}>=</span>
+
+                  <div style={{ minWidth: 70, textAlign: 'right', paddingBottom: 6 }}>
+                    {calcLen ? (
+                      <span style={{ fontSize: 22, fontWeight: 700, color: '#C8E63C' }}>
+                        {calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))}
+                      </span>
+                    ) : (
+                      <span style={{ fontSize: 20, color: '#3d4949' }}>—</span>
+                    )}
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10, paddingTop: 8, borderTop: '0.5px solid #3d4949' }}>
+                  <span style={{ fontSize: 10, color: '#3d4949' }}>~85% точност</span>
+                  <button onClick={() => setShowFormulaInfo(!showFormulaInfo)}
+                    style={{ display: 'flex', alignItems: 'center', gap: 3, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3d4949" strokeWidth="1.5" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                    <span style={{ fontSize: 10, color: '#3d4949' }}>за формулата</span>
+                  </button>
+                </div>
+
+                {showFormulaInfo && (
+                  <div style={{ fontSize: 11, color: '#869393', lineHeight: 1.5, marginTop: 8, paddingTop: 8, borderTop: '0.5px solid #3d4949' }}>
+                    <span style={{ color: '#2eb5b7', fontWeight: 500 }}>Милко Георгиев — шампион по сомарство.</span> Формулата е верифицирана за български водоеми. Обиколката се изчислява автоматично ако не е въведена.
+                  </div>
+                )}
               </div>
 
               {advice?.mistake && (
