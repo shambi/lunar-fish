@@ -87,7 +87,7 @@ export const FISH_DATABASE: FishSpecies[] = [
       'Фидер':    { groundbait: 'Сладка захранка с царевица и пелети', bait: 'Бойли, царевица, пелети', line_mm: 0.25, hook_size: '6-10', rigs: 'Косъм монтаж, метод фидер' },
       'Поплавък': { groundbait: 'Сладка захранка', bait: 'Червей, царевица, хляб', line_mm: 0.18, hook_size: '10-14', rigs: 'Поплавъчен монтаж' },
     },
-    ecoRed: '⛔ Забранен: зависи от högde на н.в.',
+    ecoRed: '⛔ Забранен: зависи от н.в.',
     ecoGreen: '✅ Мин. размер: 30см',
     altitudeBans: {
       low: { start: '15.04', end: '31.05', maxAlt: 500 },
@@ -117,7 +117,7 @@ export const FISH_DATABASE: FishSpecies[] = [
       'Фидер':    { groundbait: 'Растителна захранка с трева', bait: 'Царевица, трева, зеленчуци', line_mm: 0.28, hook_size: '4-8', rigs: 'Косъм монтаж' },
       'Поплавък': { groundbait: 'Растителна захранка', bait: 'Трева, царевица, хляб', line_mm: 0.20, hook_size: '8-12', rigs: 'Поплавъчен монтаж' },
     },
-    ecoRed: '⛔ Забранен: зависи от території',
+    ecoRed: '⛔ Забранен: зависи от н.в.',
     ecoGreen: '✅ Мин. размер: 40см',
     altitudeBans: {
       low: { start: '15.04', end: '31.05', maxAlt: 500 },
@@ -149,6 +149,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 40см',
+    altitudeBans: {},
   },
   {
     name: 'Сом',
@@ -174,7 +175,7 @@ export const FISH_DATABASE: FishSpecies[] = [
       'Спининг': { bait: 'Голяма жива риба, черен дроб', line_mm: 0.40, hook_size: '2/0-4/0', lures: 'Големи силиконови примамки, воблери 12-20см', rigs: 'Дънен монтаж с тежка тежест' },
       'Кльонк':  { bait: 'Пиявици, жива риба, черен дроб', line_mm: 0.45, hook_size: '3/0-5/0', rigs: 'Буй монтаж, повърхностен монтаж' },
     },
-    ecoRed: '⛔ Забранен: зависи от h',
+    ecoRed: '⛔ Забранен: зависи от н.в.',
     ecoGreen: '✅ Мин. размер: 65см',
     altitudeBans: {
       low: { start: '15.04', end: '31.05', maxAlt: 500 },
@@ -258,12 +259,17 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Ваглер с тънък повод, ултралек поплавъчен монтаж',
     },
     spawnMonths: [4, 5],
+    minSize: 15,
     techniques: { lake: ['Поплавък'], river: ['Поплавък'] },
     techniqueData: {
       'Поплавък': { groundbait: 'Финна захранка с конопено семе, малки порции', bait: 'Опариш, малък червей, тесто, хляб', line_mm: 0.10, hook_size: '18-20', rigs: 'Ваглер с тънък повод, ултралек поплавъчен монтаж' },
     },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 15см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Пъстърва',
@@ -323,6 +329,10 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     ecoRed: '⛔ Забранен: 15.04 – 31.05',
     ecoGreen: '✅ Мин. размер: 25см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '15.04', end: '31.05', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Скобар',
@@ -466,12 +476,17 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Ваглер, фидер с тънък повод 0.08мм',
     },
     spawnMonths: [4, 5],
+    minSize: 15,
     techniques: { lake: ['Поплавък'], river: ['Поплавък'] },
     techniqueData: {
       'Поплавък': { groundbait: 'Ситна захранка с конопено семе', bait: 'Опариш, червей, малка царевица, тесто', line_mm: 0.12, hook_size: '14-16', rigs: 'Ваглер, фидер с тънък повод 0.08мм' },
     },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 15см',
+    altitudeBans: {
+      low: { start: '15.04', end: '31.05', maxAlt: 500 },
+      mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+    },
   },
   {
     name: 'Червеноперка',
@@ -655,6 +670,10 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     ecoRed: '⛔ Забранен: 01.03 – 30.04',
     ecoGreen: '✅ Мин. размер: 25см',
+    altitudeBans: {
+      low: { start: '01.03', end: '30.04', maxAlt: 500 },
+      mid: { start: '01.03', end: '30.04', minAlt: 500, maxAlt: 1500 },
+    },
   },
 ];
 
