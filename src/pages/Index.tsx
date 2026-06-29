@@ -357,9 +357,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
               marginTop: '10px',
             }}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a8b4b4" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-            </svg>
+            <span className="text-base leading-none">{moon.emoji}</span>
             <span style={{ flex: 1, fontSize: '12px', color: 'rgba(222,228,227,0.85)' }}>
               {fmName} · {monthNameBg} {year}
             </span>
