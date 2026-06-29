@@ -309,34 +309,44 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 );
               })()}
 
-              {/* TODO: filter baseData by selectedTechnique in next step */}
-              <div style={{ marginBottom: '12px' }}>
-                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '8px' }}>
-                  Такъми & Монтаж
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
-                  <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
-                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Стръв & Захранка</div>
-                    <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>{modalData.groundbaitTip}<br/><span style={{ color: '#2eb5b7' }}>{modalData.baitTip}</span></div>
-                  </div>
-                  <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
-                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Влакно</div>
-                    <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}><span style={{ color: '#2eb5b7' }}>{modalData.lineDiameter}</span></div>
-                  </div>
-                  <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
-                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Куки</div>
-                    <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>{modalData.hookTip}</div>
-                  </div>
-                  <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
-                    <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>
-                      {modalData.lureTip ? 'Воблери' : 'Монтаж'}
+              {(() => {
+                const td = selectedTechnique ? selectedFish.techniqueData?.[selectedTechnique] : null;
+                const displayGroundbait = td?.groundbait ?? modalData.groundbaitTip;
+                const displayBait = td?.bait ?? modalData.baitTip;
+                const displayLine = td?.line_mm ? `${td.line_mm}мм` : modalData.lineDiameter;
+                const displayHook = td?.hook_size ?? modalData.hookTip;
+                const displayLures = td ? (td.lures ?? null) : modalData.lureTip;
+                const displayRigs = td?.rigs ?? modalData.rigTip;
+                return (
+                  <div style={{ marginBottom: '12px' }}>
+                    <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '8px' }}>
+                      Такъми & Монтаж
                     </div>
-                    <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>
-                      <span style={{ color: '#2eb5b7' }}>{modalData.lureTip ?? modalData.rigTip}</span>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                      <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
+                        <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Стръв & Захранка</div>
+                        <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>{displayGroundbait}<br/><span style={{ color: '#2eb5b7' }}>{displayBait}</span></div>
+                      </div>
+                      <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
+                        <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Влакно</div>
+                        <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}><span style={{ color: '#2eb5b7' }}>{displayLine}</span></div>
+                      </div>
+                      <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
+                        <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Куки</div>
+                        <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>{displayHook}</div>
+                      </div>
+                      <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
+                        <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>
+                          {displayLures ? 'Воблери' : 'Монтаж'}
+                        </div>
+                        <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>
+                          <span style={{ color: '#2eb5b7' }}>{displayLures ?? displayRigs}</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                );
+              })()}
 
               <div style={{ marginBottom: '12px' }}>
                 <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px' }}>

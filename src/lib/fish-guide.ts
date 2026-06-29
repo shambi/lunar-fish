@@ -35,6 +35,17 @@ export interface FishSpecies {
     lake: string[];
     river: string[];
   };
+  /** Tackle data per technique */
+  techniqueData?: {
+    [technique: string]: {
+      groundbait?: string;
+      bait?: string;
+      line_mm?: number;
+      hook_size?: string;
+      rigs?: string;
+      lures?: string;
+    };
+  };
   /** Altitude-based ban periods (IARA regulations by elevation) */
   altitudeBans?: {
     low?: { start: string; end: string; maxAlt: number };        // до 500m на н.в.
@@ -72,6 +83,10 @@ export const FISH_DATABASE: FishSpecies[] = [
     spawnMonths: [4, 5],
     minSize: 30,
     techniques: { lake: ['Фидер', 'Поплавък'], river: ['Фидер', 'Поплавък'] },
+    techniqueData: {
+      'Фидер':    { groundbait: 'Сладка захранка с царевица и пелети', bait: 'Бойли, царевица, пелети', line_mm: 0.25, hook_size: '6-10', rigs: 'Косъм монтаж, метод фидер' },
+      'Поплавък': { groundbait: 'Сладка захранка', bait: 'Червей, царевица, хляб', line_mm: 0.18, hook_size: '10-14', rigs: 'Поплавъчен монтаж' },
+    },
     ecoRed: '⛔ Забранен: зависи от högde на н.в.',
     ecoGreen: '✅ Мин. размер: 30см',
     altitudeBans: {
@@ -98,6 +113,10 @@ export const FISH_DATABASE: FishSpecies[] = [
     spawnMonths: [4, 5],
     minSize: 40,
     techniques: { lake: ['Фидер', 'Поплавък'], river: ['Фидер', 'Поплавък'] },
+    techniqueData: {
+      'Фидер':    { groundbait: 'Растителна захранка с трева', bait: 'Царевица, трева, зеленчуци', line_mm: 0.28, hook_size: '4-8', rigs: 'Косъм монтаж' },
+      'Поплавък': { groundbait: 'Растителна захранка', bait: 'Трева, царевица, хляб', line_mm: 0.20, hook_size: '8-12', rigs: 'Поплавъчен монтаж' },
+    },
     ecoRed: '⛔ Забранен: зависи от території',
     ecoGreen: '✅ Мин. размер: 40см',
     altitudeBans: {
@@ -150,6 +169,10 @@ export const FISH_DATABASE: FishSpecies[] = [
     spawnMonths: [4, 5],
     minSize: 65,
     techniques: { lake: ['Спининг', 'Кльонк'], river: ['Спининг', 'Кльонк'] },
+    techniqueData: {
+      'Спининг': { bait: 'Голяма жива риба, черен дроб', line_mm: 0.40, hook_size: '2/0-4/0', lures: 'Големи силиконови примамки, воблери 12-20см', rigs: 'Дънен монтаж с тежка тежест' },
+      'Кльонк':  { bait: 'Пиявици, жива риба, черен дроб', line_mm: 0.45, hook_size: '3/0-5/0', rigs: 'Буй монтаж, повърхностен монтаж' },
+    },
     ecoRed: '⛔ Забранен: зависи от h',
     ecoGreen: '✅ Мин. размер: 65см',
     altitudeBans: {
@@ -177,6 +200,9 @@ export const FISH_DATABASE: FishSpecies[] = [
     spawnMonths: [2, 3, 4],
     minSize: 35,
     techniques: { lake: ['Спининг'], river: ['Спининг'] },
+    techniqueData: {
+      'Спининг': { bait: 'Жива рибка, мъртва рибка', line_mm: 0.30, hook_size: '1/0-3/0', lures: 'Воблери 7-15см, спинери, блесни', rigs: 'Стоманен повод, спининг монтаж' },
+    },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 35см',
     altitudeBans: {
@@ -203,6 +229,10 @@ export const FISH_DATABASE: FishSpecies[] = [
     spawnMonths: [4, 5],
     minSize: 15,
     techniques: { lake: ['Поплавък', 'Фидер'], river: ['Поплавък'] },
+    techniqueData: {
+      'Поплавък': { groundbait: 'Сладка финна захранка', bait: 'Червей, опариш, царевица', line_mm: 0.14, hook_size: '12-16', rigs: 'Лек поплавъчен монтаж' },
+      'Фидер':    { groundbait: 'Финна сладка захранка', bait: 'Червей, опариш', line_mm: 0.16, hook_size: '12-14', rigs: 'Лек фидер монтаж' },
+    },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 15см',
     altitudeBans: {
@@ -254,6 +284,11 @@ export const FISH_DATABASE: FishSpecies[] = [
     spawnMonths: [10, 11, 12, 1],
     minSize: 23,
     techniques: { lake: ['Спининг', 'Поплавък'], river: ['Спининг', 'Муха'] },
+    techniqueData: {
+      'Спининг':  { bait: 'Малки воблери, блесни, силикон', line_mm: 0.14, hook_size: '6-10', lures: 'Воблери 3-7см, въртящи блесни', rigs: 'Лек спинингов монтаж' },
+      'Муха':     { bait: 'Сухи мухи, нимфи, мокри мухи', line_mm: 0.12, hook_size: '12-18', rigs: 'Мухарски монтаж с шнур и лидер' },
+      'Поплавък': { bait: 'Червей, ларви, опариш', line_mm: 0.14, hook_size: '10-14', rigs: 'Лек поплавъчен монтаж' },
+    },
     ecoRed: '⛔ Забранен: 01.10 – 31.01',
     ecoGreen: '✅ Мин. размер: 23см',
     altitudeBans: {
@@ -322,6 +357,10 @@ export const FISH_DATABASE: FishSpecies[] = [
     spawnMonths: [4, 5],
     minSize: 20,
     techniques: { lake: ['Поплавък', 'Фидер'], river: ['Поплавък'] },
+    techniqueData: {
+      'Поплавък': { groundbait: 'Финна сладка захранка', bait: 'Червей, опариш, хляб', line_mm: 0.14, hook_size: '12-14', rigs: 'Лек поплавъчен монтаж' },
+      'Фидер':    { groundbait: 'Финна захранка', bait: 'Червей, опариш', line_mm: 0.16, hook_size: '12-14', rigs: 'Лек фидер монтаж' },
+    },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 20см',
     altitudeBans: {
@@ -350,6 +389,10 @@ export const FISH_DATABASE: FishSpecies[] = [
     spawnMonths: [4, 5],
     minSize: 12,
     techniques: { lake: ['Спининг', 'Поплавък'], river: ['Спининг', 'Поплавък'] },
+    techniqueData: {
+      'Спининг':  { bait: 'Малки воблери 3-7см, спинери, силикон', line_mm: 0.18, hook_size: '4-8', lures: 'Воблери, спинери, туистери', rigs: 'Спинингов монтаж' },
+      'Поплавък': { groundbait: 'Без захранка', bait: 'Червей, малка жива рибка', line_mm: 0.16, hook_size: '8-12', rigs: 'Поплавъчен монтаж с живец' },
+    },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 12см',
     altitudeBans: {
@@ -376,6 +419,10 @@ export const FISH_DATABASE: FishSpecies[] = [
     spawnMonths: [4, 5],
     minSize: 20,
     techniques: { lake: ['Фидер', 'Поплавък'], river: ['Фидер', 'Поплавък'] },
+    techniqueData: {
+      'Фидер':    { groundbait: 'Финна захранка с червей', bait: 'Червей, опариш, бял червей', line_mm: 0.16, hook_size: '10-14', rigs: 'Фидер монтаж с кратък повод' },
+      'Поплавък': { groundbait: 'Финна захранка', bait: 'Червей, опариш', line_mm: 0.14, hook_size: '12-16', rigs: 'Болонезе монтаж' },
+    },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 20см',
     altitudeBans: {
@@ -428,6 +475,9 @@ export const FISH_DATABASE: FishSpecies[] = [
     spawnMonths: [4, 5],
     minSize: 12,
     techniques: { lake: ['Поплавък'], river: ['Поплавък'] },
+    techniqueData: {
+      'Поплавък': { groundbait: 'Лека повърхностна захранка', bait: 'Опариш, малки мухи, хляб, тесто', line_mm: 0.12, hook_size: '14-18', rigs: 'Ваглер, повърхностен монтаж' },
+    },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 12см',
     altitudeBans: {
@@ -454,6 +504,11 @@ export const FISH_DATABASE: FishSpecies[] = [
     spawnMonths: [4, 5],
     minSize: 25,
     techniques: { lake: [], river: ['Поплавък', 'Муха', 'Фидер'] },
+    techniqueData: {
+      'Поплавък': { groundbait: 'Без захранка или минимална', bait: 'Червей, опариш, тесто', line_mm: 0.16, hook_size: '8-12', rigs: 'Метод "на куршум", поплавъчен монтаж' },
+      'Муха':     { bait: 'Утежнена нимфа, мокра муха', line_mm: 0.12, hook_size: '12-16', rigs: 'Мухарски монтаж' },
+      'Фидер':    { groundbait: 'Речна захранка', bait: 'Червей, опариш', line_mm: 0.18, hook_size: '10-14', rigs: 'Лек фидер монтаж' },
+    },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 25см',
     altitudeBans: {
@@ -528,6 +583,9 @@ export const FISH_DATABASE: FishSpecies[] = [
     spawnMonths: [3, 4, 5],
     minSize: 45,
     techniques: { lake: ['Спининг'], river: ['Спининг'] },
+    techniqueData: {
+      'Спининг': { bait: 'Жива рибка, малки воблери', line_mm: 0.28, hook_size: '1/0-2/0', lures: 'Малки воблери, силикон', rigs: 'Спинингов монтаж' },
+    },
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 45см',
     altitudeBans: {
