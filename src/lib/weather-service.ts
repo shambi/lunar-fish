@@ -3,6 +3,13 @@ import { WEATHER_API_CONFIG } from '@/config/weather-api';
 
 export type AlertLevel = 'none' | 'yellow' | 'orange' | 'red';
 
+export interface MeteoAlarmData {
+  level: AlertLevel;
+  event: string;
+  expires: string;
+  headline: string;
+}
+
 export interface WeatherData {
   temperature: number;
   windSpeed: number;
@@ -27,7 +34,7 @@ export interface WeatherData {
   moonAntitransit: string;
   solunarPeaks: ReturnType<typeof getSolunarPeaks>;
   waterTemp: number;
-  meteoAlarmLevel: AlertLevel;
+  meteoAlarm: MeteoAlarmData;
   hourlyForecast: { hour: string; temp: number; code: number }[];
 }
 
@@ -139,27 +146,38 @@ export async function reverseGeocode(lat: number, lon: number): Promise<string> 
   }
 }
 
-export async function fetchMeteoAlarmLevel(): Promise<AlertLevel> {
+export async function fetchMeteoAlarmLevel(): Promise<MeteoAlarmData> {
+  const none: MeteoAlarmData = { level: 'none', event: '', expires: '', headline: '' };
   try {
     const res = await fetch('/api/meteoalarm');
-    if (!res.ok) return 'none';
+    if (!res.ok) return none;
     const xml = await res.text();
     const levelPriority: Record<AlertLevel, number> = { none: 0, yellow: 1, orange: 2, red: 3 };
     let highest: AlertLevel = 'none';
-    const severities = xml.matchAll(/<cap:severity>([\s\S]*?)<\/cap:severity>/gi);
-    for (const match of severities) {
-      const s = match[1].trim().toLowerCase();
+    let bestEvent = '', bestExpires = '', bestHeadline = '';
+    // Split into <entry> blocks and process each
+    const entries = [...xml.matchAll(/<entry[\s\S]*?<\/entry>/gi)].map(m => m[0]);
+    for (const entry of entries) {
+      const sevMatch = entry.match(/<cap:severity>([\s\S]*?)<\/cap:severity>/i);
+      if (!sevMatch) continue;
+      const s = sevMatch[1].trim().toLowerCase();
       let found: AlertLevel = 'none';
       if (s === 'extreme') found = 'red';
       else if (s === 'severe') found = 'orange';
       else if (s === 'moderate' || s === 'minor') found = 'yellow';
-      if (levelPriority[found] > levelPriority[highest]) highest = found;
+      if (levelPriority[found] > levelPriority[highest]) {
+        highest = found;
+        bestEvent = (entry.match(/<cap:event>([\s\S]*?)<\/cap:event>/i)?.[1] ?? '').trim();
+        bestExpires = (entry.match(/<cap:expires>([\s\S]*?)<\/cap:expires>/i)?.[1] ?? '').trim();
+        const hl = (entry.match(/<cap:headline>([\s\S]*?)<\/cap:headline>/i)?.[1] ?? '').trim();
+        bestHeadline = hl || bestEvent;
+      }
     }
-    return highest;
+    return { level: highest, event: bestEvent, expires: bestExpires, headline: bestHeadline };
   } catch {
-    return 'none';
+    return none;
   }
-  }
+}
 export async function fetchWeatherData(latitude: number, longitude: number, altitude: number = 0, locationName?: string): Promise<WeatherData> {
   const res = await fetchWithTimeout(
     `${WEATHER_API_CONFIG.apis.weather}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure,temperature_2m,weather_code&daily=sunrise,sunset&past_days=1&forecast_days=1&timezone=auto`,
@@ -246,7 +264,7 @@ export async function fetchWeatherData(latitude: number, longitude: number, alti
     moonAntitransit: moonTimesData.antitransit ?? '--:--',
     solunarPeaks,
     waterTemp,
-    meteoAlarmLevel: 'none',
+    meteoAlarm: { level: 'none', event: '', expires: '', headline: '' },
     hourlyForecast,
   };
 }
