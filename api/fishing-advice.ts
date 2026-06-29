@@ -23,7 +23,7 @@ export default async function handler(req: any, res: any) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'llama-3.1-8b-instant',
+          model: 'llama-3.3-70b-versatile',
           max_tokens: 300,
           messages: [
             {
