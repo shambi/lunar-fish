@@ -22,6 +22,8 @@ export interface FishSpecies {
   spawnWarning?: string;
   /** Terrain where the fish should be hidden (not shown) */
   hideOnTerrain?: 'river' | 'lake';
+  /** Minimum legal size in cm (IARA) */
+  minSize?: number;
   /** Eco-warning texts for modal */
   ecoRed?: string;
   ecoGreen?: string;
@@ -63,6 +65,7 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Косъм монтаж (Hair rig), фидер',
     },
     spawnMonths: [4, 5],
+    minSize: 30,
     ecoRed: '⛔ Забранен: зависи от högde на н.в.',
     ecoGreen: '✅ Мин. размер: 30см',
     altitudeBans: {
@@ -87,8 +90,9 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Поплавъчен монтаж, свободна линия',
     },
     spawnMonths: [4, 5],
+    minSize: 40,
     ecoRed: '⛔ Забранен: зависи от території',
-    ecoGreen: '✅ Мин. размер: 30см',
+    ecoGreen: '✅ Мин. размер: 40см',
     altitudeBans: {
       low: { start: '15.04', end: '31.05', maxAlt: 500 },
       mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
@@ -137,6 +141,7 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Дънен монтаж с тежка тежест, буй монтаж',
     },
     spawnMonths: [4, 5],
+    minSize: 65,
     ecoRed: '⛔ Забранен: зависи от h',
     ecoGreen: '✅ Мин. размер: 65см',
     altitudeBans: {
@@ -162,11 +167,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Стоманен повод, спининг монтаж',
     },
     spawnMonths: [2, 3, 4],
+    minSize: 35,
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 35см',
     altitudeBans: {
       low: { start: '15.02', end: '30.04', maxAlt: 500 },
-      mid: { start: '01.03', end: '15.05', minAlt: 500, maxAlt: 1500 },
+      mid: { start: '15.02', end: '30.04', minAlt: 500, maxAlt: 1500 },
     },
   },
   {
@@ -186,8 +192,9 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Лек поплавъчен монтаж',
     },
     spawnMonths: [4, 5],
+    minSize: 15,
     ecoRed: '⛔ Забранен: зависи от място',
-    ecoGreen: '✅ Мин. размер: 16см',
+    ecoGreen: '✅ Мин. размер: 15см',
     altitudeBans: {
       low: { start: '15.04', end: '31.05', maxAlt: 500 },
       mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
@@ -235,8 +242,13 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Спининг, муха, бомбарда монтаж',
     },
     spawnMonths: [10, 11, 12, 1],
+    minSize: 23,
     ecoRed: '⛔ Забранен: 01.10 – 31.01',
     ecoGreen: '✅ Мин. размер: 23см',
+    altitudeBans: {
+      mid: { start: '01.10', end: '31.01', minAlt: 500, maxAlt: 1500 },
+      high: { start: '01.10', end: '31.01', minAlt: 1500 },
+    },
   },
   {
     name: 'Кефал',
@@ -297,6 +309,7 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Поплавъчен монтаж, лек фидер',
     },
     spawnMonths: [4, 5],
+    minSize: 20,
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 20см',
     altitudeBans: {
@@ -323,6 +336,7 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Лек джиг монтаж, каролина монтаж',
     },
     spawnMonths: [4, 5],
+    minSize: 12,
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 12см',
     altitudeBans: {
@@ -347,6 +361,7 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Фидер монтаж, легер с повод 40-60см',
     },
     spawnMonths: [4, 5],
+    minSize: 20,
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 20см',
     altitudeBans: {
@@ -397,8 +412,9 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Ваглер, повърхностен монтаж',
     },
     spawnMonths: [4, 5],
+    minSize: 12,
     ecoRed: '⛔ Забранен: зависи от място',
-    ecoGreen: '✅ Мин. размер: 15см',
+    ecoGreen: '✅ Мин. размер: 12см',
     altitudeBans: {
       low: { start: '15.04', end: '31.05', maxAlt: 500 },
       mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
@@ -421,11 +437,13 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Тежък фидер 60-100г, кратък повод 10-15см',
     },
     spawnMonths: [4, 5],
+    minSize: 25,
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 25см',
     altitudeBans: {
       low: { start: '15.04', end: '31.05', maxAlt: 500 },
       mid: { start: '01.05', end: '15.06', minAlt: 500, maxAlt: 1500 },
+      high: { start: '01.05', end: '15.06', minAlt: 1500 },
     },
   },
   {
@@ -492,11 +510,12 @@ export const FISH_DATABASE: FishSpecies[] = [
       rigs: 'Джиг монтаж, живца монтаж, подводна плувка',
     },
     spawnMonths: [3, 4, 5],
+    minSize: 45,
     ecoRed: '⛔ Забранен: зависи от място',
     ecoGreen: '✅ Мин. размер: 45см',
     altitudeBans: {
-      low: { start: '15.03', end: '31.05', maxAlt: 500 },
-      mid: { start: '01.04', end: '15.06', minAlt: 500, maxAlt: 1500 },
+      low: { start: '15.03', end: '15.05', maxAlt: 500 },
+      mid: { start: '15.03', end: '15.05', minAlt: 500, maxAlt: 1500 },
     },
   },
   {

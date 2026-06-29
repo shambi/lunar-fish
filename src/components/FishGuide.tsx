@@ -17,6 +17,17 @@ interface FishGuideProps {
   solunarContext?: { isInPeak: boolean; peakType: 'major' | 'minor' | null };
 }
 
+function isInBanPeriod(start: string, end: string): boolean {
+  const now = new Date();
+  const [sd, sm] = start.split('.').map(Number);
+  const [ed, em] = end.split('.').map(Number);
+  const todayVal = (now.getMonth() + 1) * 100 + now.getDate();
+  const startVal = sm * 100 + sd;
+  const endVal = em * 100 + ed;
+  if (startVal <= endVal) return todayVal >= startVal && todayVal <= endVal;
+  return todayVal >= startVal || todayVal <= endVal;
+}
+
 function calcWeight(fishName: string, L: number, G: number): string {
   if (!L || L <= 0) return '';
   const g = G > 0 ? G : L * 0.58;
@@ -287,24 +298,80 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               </div>
 
               <div style={{ marginBottom: '12px' }}>
-                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px' }}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
                   Еко & Правила
                 </div>
-                <div style={{ background: '#1b2121', border: '0.5px solid rgba(200,230,60,0.2)', borderRadius: '12px', padding: '10px 12px' }}>
-                  <p style={{ fontSize: '12px', color: 'rgba(222,228,227,0.8)', lineHeight: 1.5, whiteSpace: 'pre-line', marginBottom: '8px' }}>
-                    {modalData.ecoWarning}
-                  </p>
-                  {modalData.ecoFooter && (
-                    <p style={{ fontSize: '11px', color: '#a8b4b4', lineHeight: 1.4 }}>{modalData.ecoFooter}</p>
-                  )}
-                  <button
-                    onClick={() => window.open('https://iara.government.bg', '_blank')}
-                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', width: '100%', marginTop: '8px', padding: '7px', border: '0.5px solid #3d4949', borderRadius: '8px', background: 'transparent', fontSize: '11px', fontWeight: 600, letterSpacing: '0.08em', color: '#2eb5b7', cursor: 'pointer', textTransform: 'uppercase' }}>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.5" strokeLinecap="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                    ИАРА Наредби
-                  </button>
-                </div>
+
+                {/* Min size ruler */}
+                {selectedFish.minSize && (() => {
+                  const pct = Math.min(100, (selectedFish.minSize / 100) * 100);
+                  return (
+                    <div style={{ marginBottom: 14 }}>
+                      <div style={{ fontSize: 9, color: '#869393', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>Мин. размер</div>
+                      <div style={{ position: 'relative', height: 24 }}>
+                        {/* baseline */}
+                        <div style={{ position: 'absolute', bottom: 4, left: 0, right: 0, height: 1, background: '#3d4949' }} />
+                        {/* filled portion */}
+                        <div style={{ position: 'absolute', bottom: 4, left: 0, width: `${pct}%`, height: 1, background: '#2eb5b7' }} />
+                        {/* marker */}
+                        <div style={{ position: 'absolute', bottom: 2, left: `${pct}%`, transform: 'translateX(-50%)' }}>
+                          <div style={{ width: 1, height: 8, background: '#2eb5b7', margin: '0 auto' }} />
+                        </div>
+                        {/* label */}
+                        <div style={{ position: 'absolute', bottom: 12, left: `${pct}%`, transform: 'translateX(-50%)', fontSize: 10, fontWeight: 600, color: '#2eb5b7', whiteSpace: 'nowrap' }}>
+                          {selectedFish.minSize} см
+                        </div>
+                        {/* scale ends */}
+                        <div style={{ position: 'absolute', bottom: 0, left: 0, fontSize: 9, color: '#3d4949' }}>0</div>
+                        <div style={{ position: 'absolute', bottom: 0, right: 0, fontSize: 9, color: '#3d4949' }}>100 см</div>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Ban periods */}
+                {selectedFish.altitudeBans && (() => {
+                  const alt = weather?.altitude ?? 0;
+                  const zones: { key: 'low' | 'mid' | 'high'; label: string; minA: number; maxA: number }[] = [
+                    { key: 'low',  label: 'До 500м',      minA: 0,    maxA: 499 },
+                    { key: 'mid',  label: '500–1500м',    minA: 500,  maxA: 1499 },
+                    { key: 'high', label: 'Над 1500м',    minA: 1500, maxA: Infinity },
+                  ];
+                  const activeZones = zones.filter(z => selectedFish.altitudeBans![z.key]);
+                  if (activeZones.length === 0) return null;
+                  return (
+                    <div style={{ marginBottom: 12 }}>
+                      <div style={{ fontSize: 9, color: '#869393', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>Забранен период</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        {activeZones.map(z => {
+                          const ban = selectedFish.altitudeBans![z.key]!;
+                          const isMyZone = alt >= z.minA && alt <= z.maxA;
+                          const isBanned = isInBanPeriod(ban.start, ban.end);
+                          return (
+                            <div key={z.key} style={{
+                              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                              padding: '4px 8px', borderRadius: 6,
+                              border: isMyZone ? '1px solid rgba(200,230,60,0.4)' : 'none',
+                              background: isMyZone ? 'rgba(200,230,60,0.04)' : 'transparent',
+                            }}>
+                              <span style={{ fontSize: 11, color: isMyZone ? '#dee4e3' : '#869393' }}>{z.label}</span>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                <span style={{ fontSize: 11, color: isMyZone ? '#dee4e3' : '#869393' }}>{ban.start} – {ban.end}</span>
+                                {isBanned && <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#ff4444', flexShrink: 0 }} />}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                <a href="https://iara.government.bg" target="_blank" rel="noreferrer"
+                  style={{ fontSize: 11, color: '#2eb5b7', textDecoration: 'none' }}>
+                  iara.government.bg ↗
+                </a>
               </div>
 
               <div style={{ borderTop: '0.5px solid #3d4949', padding: '14px 0', marginBottom: 12 }}>
