@@ -132,6 +132,26 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
     const recommendedHookSize = tdForFetch?.hook_size ?? modalDataForFetch.hookTip;
     const recommendedLineThickness = tdForFetch?.line_mm ? `${tdForFetch.line_mm}мм` : modalDataForFetch.lineDiameter;
 
+    // Derived from the hourlyForecast array (precipitation/temp per hour) — gives the
+    // AI field knowledge a static tile can't show: has it rained recently, and where
+    // are temp/pressure headed in the next few hours.
+    const hourly = weather?.hourlyForecast ?? [];
+    const currentHour = new Date().getHours();
+    const currentIdx = hourly.findIndex(h => parseInt(h.hour, 10) === currentHour);
+    const recentRain = currentIdx >= 0
+      ? hourly.slice(Math.max(0, currentIdx - 2), currentIdx + 1).some(h => h.precipitation > 0)
+      : false;
+    let forecastTrend = 'няма данни за следващите часове';
+    if (currentIdx >= 0) {
+      const next3 = hourly.slice(currentIdx + 1, currentIdx + 4);
+      if (next3.length > 0) {
+        const tempDelta = next3[next3.length - 1].temp - hourly[currentIdx].temp;
+        const tempDir = tempDelta > 1 ? 'температурата ще се покачи' : tempDelta < -1 ? 'температурата ще спадне' : 'температурата ще остане стабилна';
+        const pressureDir = weather?.pressureTrend === 'rising' ? 'налягането расте' : weather?.pressureTrend === 'falling' ? 'налягането пада' : 'налягането е стабилно';
+        forecastTrend = `${tempDir}, ${pressureDir}`;
+      }
+    }
+
     fetch('/api/fishing-advice', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -157,6 +177,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
         recommendedLineThickness,
         overallScore: selectedFish.score,
         isRecommended: selectedFish.isRecommended,
+        recentRain,
+        forecastTrend,
       }),
     })
       .then(r => r.json())
