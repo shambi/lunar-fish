@@ -25,24 +25,12 @@ export function SolunarInfoModal({ onClose }: SolunarInfoModalProps) {
         style={{
           width: '100%',
           maxWidth: '340px',
-          background: '#0f1415',
+          background: '#0B0F1A',
           border: '1px solid #3d4949',
           borderRadius: '16px',
         }}
       >
-        <div style={{
-          padding: '16px 18px 14px',
-          borderBottom: '1px solid #3d4949',
-        }}>
-          <span style={{
-            fontSize: '13px', fontWeight: 600, letterSpacing: '0.08em',
-            color: '#869393', textTransform: 'uppercase',
-          }}>
-            Солунарна активност
-          </span>
-        </div>
-
-        <div style={{ padding: '0 18px' }}>
+        <div style={{ padding: '16px 18px 0' }}>
           {/* РЕД 1 — Голям пик */}
           <div style={{ display: 'flex', gap: '12px', padding: '14px 0', borderBottom: '1px solid #1b2121' }}>
             <div style={{
