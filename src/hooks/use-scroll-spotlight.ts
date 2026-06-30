@@ -13,12 +13,17 @@ import { useEffect, useRef, useState, type RefObject } from 'react';
 export function useScrollSpotlight(
   containerRef: RefObject<HTMLElement>,
   itemsRef: RefObject<(HTMLElement | null)[]>,
-  itemCount: number
+  itemCount: number,
+  isActive: boolean
 ): number {
   const [activeIndex, setActiveIndex] = useState(-1);
   const distancesRef = useRef<number[]>([]);
 
   useEffect(() => {
+    if (!isActive) {
+      setActiveIndex(-1);
+      return;
+    }
     const container = containerRef.current;
     if (!container || itemCount === 0) return;
 
@@ -64,7 +69,11 @@ export function useScrollSpotlight(
     items.forEach((item) => observer.observe(item));
 
     return () => observer.disconnect();
-  }, [containerRef, itemsRef, itemCount]);
+  }, [containerRef, itemsRef, itemCount, isActive]);
+
+  useEffect(() => {
+    console.log('[useScrollSpotlight] activeIndex changed:', activeIndex);
+  }, [activeIndex]);
 
   return activeIndex;
 }

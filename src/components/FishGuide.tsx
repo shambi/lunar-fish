@@ -85,7 +85,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
   const aiAdviceCache = useRef<Record<string, string>>({});
   const modalScrollRef = useRef<HTMLDivElement>(null);
   const tackleSectionRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const activeTackleSection = useScrollSpotlight(modalScrollRef, tackleSectionRefs, 4);
+  const activeTackleSection = useScrollSpotlight(modalScrollRef, tackleSectionRefs, 4, !!selectedFish);
 
   useEffect(() => {
     if (selectedFish) {
@@ -423,8 +423,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
                       <div ref={el => tackleSectionRefs.current[0] = el} style={{
                         background: 'rgba(255,255,255,0.03)',
-                        border: activeTackleSection === 0 ? '1px solid rgba(46,181,183,0.25)' : '1px solid rgba(255,255,255,0.05)',
-                        boxShadow: activeTackleSection === 0 ? '0 0 16px rgba(46,181,183,0.08)' : 'none',
+                        border: activeTackleSection === 0 ? '1px solid rgba(46,181,183,0.6)' : '1px solid rgba(255,255,255,0.05)',
+                        boxShadow: activeTackleSection === 0 ? '0 0 24px rgba(46,181,183,0.3)' : 'none',
                         transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
                         borderRadius: '8px', padding: '10px 12px',
                       }}>
@@ -433,8 +433,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       </div>
                       <div ref={el => tackleSectionRefs.current[1] = el} style={{
                         background: 'rgba(255,255,255,0.03)',
-                        border: activeTackleSection === 1 ? '1px solid rgba(46,181,183,0.25)' : '1px solid rgba(255,255,255,0.05)',
-                        boxShadow: activeTackleSection === 1 ? '0 0 16px rgba(46,181,183,0.08)' : 'none',
+                        border: activeTackleSection === 1 ? '1px solid rgba(46,181,183,0.6)' : '1px solid rgba(255,255,255,0.05)',
+                        boxShadow: activeTackleSection === 1 ? '0 0 24px rgba(46,181,183,0.3)' : 'none',
                         transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
                         borderRadius: '8px', padding: '10px 12px',
                       }}>
@@ -443,8 +443,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       </div>
                       <div ref={el => tackleSectionRefs.current[2] = el} style={{
                         background: 'rgba(255,255,255,0.03)',
-                        border: activeTackleSection === 2 ? '1px solid rgba(46,181,183,0.25)' : '1px solid rgba(255,255,255,0.05)',
-                        boxShadow: activeTackleSection === 2 ? '0 0 16px rgba(46,181,183,0.08)' : 'none',
+                        border: activeTackleSection === 2 ? '1px solid rgba(46,181,183,0.6)' : '1px solid rgba(255,255,255,0.05)',
+                        boxShadow: activeTackleSection === 2 ? '0 0 24px rgba(46,181,183,0.3)' : 'none',
                         transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
                         borderRadius: '8px', padding: '10px 12px',
                       }}>
@@ -453,8 +453,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       </div>
                       <div ref={el => tackleSectionRefs.current[3] = el} style={{
                         background: 'rgba(255,255,255,0.03)',
-                        border: activeTackleSection === 3 ? '1px solid rgba(46,181,183,0.25)' : '1px solid rgba(255,255,255,0.05)',
-                        boxShadow: activeTackleSection === 3 ? '0 0 16px rgba(46,181,183,0.08)' : 'none',
+                        border: activeTackleSection === 3 ? '1px solid rgba(46,181,183,0.6)' : '1px solid rgba(255,255,255,0.05)',
+                        boxShadow: activeTackleSection === 3 ? '0 0 24px rgba(46,181,183,0.3)' : 'none',
                         transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
                         borderRadius: '8px', padding: '10px 12px',
                       }}>
