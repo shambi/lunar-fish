@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { getMoonData } from '@/lib/moon';
 import { isGoldenHour } from '@/lib/moon-times';
+import { SolunarInfoModal } from '@/components/SolunarInfoModal';
 import { getSmartFishingTips, getTimePeriod } from '@/lib/fishing-expert';
 import { calculateFishingScore } from '@/lib/fishing-score';
 import { useWeather } from '@/hooks/use-weather';
@@ -13,6 +14,7 @@ import { WindCompass } from '@/components/WindCompass';
 const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
   const [now, setNow] = useState(() => new Date());
   const [openMoon, setOpenMoon] = useState(false);
+  const [showSolunarInfo, setShowSolunarInfo] = useState(false);
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 30000);
     return () => clearInterval(t);
@@ -193,7 +195,13 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
         </svg>
         Солунарна активност
+        <i
+          className="ti ti-info-circle"
+          onClick={() => setShowSolunarInfo(true)}
+          style={{ fontSize: '16px', color: '#869393', cursor: 'pointer', background: 'none' }}
+        />
       </div>
+      {showSolunarInfo && <SolunarInfoModal onClose={() => setShowSolunarInfo(false)} />}
 
       <div style={{ marginBottom: '8px' }}>
         <div style={{ fontSize: '17px', fontWeight: 600, color: verdictColor, lineHeight: 1.2 }}>{verdict}</div>
