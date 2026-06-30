@@ -279,16 +279,12 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
         <DialogContent className="max-w-sm border-border transition-all duration-300 ease-out" style={{ background: '#0B0F1A' }}>
           {selectedFish && modalData && (
             <>
-              {/* Static brightness vignette — pinned to top of scrollport, fades to transparent at bottom. Decorative only. */}
+              {/* Static brightness vignette — overlays the scrollport top, fades to transparent at bottom. Decorative only, takes no layout space. */}
               <div style={{
-                position: 'sticky',
-                top: 0,
-                height: '90vh',
-                maxHeight: '100%',
-                gridRow: '1 / -1',
-                gridColumn: '1 / -1',
+                position: 'absolute',
+                inset: 0,
                 pointerEvents: 'none',
-                zIndex: -1,
+                zIndex: 0,
                 background: 'linear-gradient(to bottom, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 50%, rgba(255,255,255,0) 100%)',
               }} />
 
