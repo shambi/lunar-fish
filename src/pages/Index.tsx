@@ -454,6 +454,7 @@ const Index = () => {
   const [showAlertTooltip, setShowAlertTooltip] = useState(false);
   const [hourlyOpen, setHourlyOpen] = useState(false);
   const hourlyScrollRef = useRef<HTMLDivElement>(null);
+  const hourlyToggleRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!hourlyOpen) return;
     const t = setTimeout(() => {
@@ -469,12 +470,17 @@ const Index = () => {
   useEffect(() => {
     if (!hourlyOpen) return;
     const handleOutsideClick = (e: MouseEvent) => {
-      if (hourlyScrollRef.current && !hourlyScrollRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      const clickedInsideStrip = hourlyScrollRef.current?.contains(target) ?? false;
+      const clickedToggle = hourlyToggleRef.current?.contains(target) ?? false;
+      if (!clickedInsideStrip && !clickedToggle) {
         setHourlyOpen(false);
       }
     };
-    document.addEventListener('click', handleOutsideClick);
-    return () => document.removeEventListener('click', handleOutsideClick);
+    // mousedown instead of click — fires strictly before this same click can
+    // be (mis)interpreted as "outside" by a listener attached mid-dispatch.
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [hourlyOpen]);
 
   const today = new Date().toLocaleDateString('bg-BG', {
@@ -1174,6 +1180,7 @@ const Index = () => {
             <>
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
                 <button
+                  ref={hourlyToggleRef}
                   onClick={() => setHourlyOpen(o => !o)}
                   style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                   aria-label="Почасова прогноза"
