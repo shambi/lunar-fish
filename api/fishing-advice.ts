@@ -139,7 +139,14 @@ Hook size нотацията зависи от вида риба — копир�
     }
 
     const data = await response.json();
-    const advice = data.choices[0].message.content;
+    const rawAdvice: string = data.choices[0].message.content;
+    // Groq occasionally leaks stray Unicode artifacts (e.g. Arabic presentation
+    // forms) into otherwise-Cyrillic text — strip anything outside Cyrillic,
+    // Latin, digits, whitespace, and basic punctuation before returning it.
+    const advice = rawAdvice
+      .replace(/[^Ѐ-ӿ -~—–…№]/g, '')
+      .replace(/ {2,}/g, ' ')
+      .trim();
     return res.status(200).json({ advice });
   } catch {
     return res.status(500).json({ error: 'Internal server error' });
