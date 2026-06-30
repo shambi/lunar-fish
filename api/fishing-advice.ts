@@ -135,20 +135,34 @@ Hook size нотацията зависи от вида риба — копир�
     );
 
     if (!response.ok) {
-      return res.status(502).json({ error: 'Upstream API error' });
+      const errBody = await response.text().catch(() => '');
+      console.error('[fishing-advice] Groq error:', response.status, errBody);
+      return res.status(502).json({ error: 'Upstream API error', detail: response.status });
     }
 
     const data = await response.json();
-    const rawAdvice: string = data.choices[0].message.content;
-    // Groq occasionally leaks stray Unicode artifacts (e.g. Arabic presentation
-    // forms) into otherwise-Cyrillic text — strip anything outside Cyrillic,
-    // Latin, digits, whitespace, and basic punctuation before returning it.
+    const rawAdvice: string | undefined = data?.choices?.[0]?.message?.content;
+
+    if (!rawAdvice) {
+      console.error('[fishing-advice] No content in Groq response:', JSON.stringify(data).slice(0, 300));
+      return res.status(502).json({ error: 'Empty response from model' });
+    }
+
+    // Strip stray non-Cyrillic / non-Latin Unicode artifacts (e.g. Arabic presentation
+    // forms occasionally leaked by Groq token encoding) before returning to the client.
     const advice = rawAdvice
       .replace(/[^Ѐ-ӿ -~—–…№]/g, '')
       .replace(/ {2,}/g, ' ')
       .trim();
+
+    if (!advice) {
+      console.error('[fishing-advice] Sanitization produced empty string from:', rawAdvice.slice(0, 100));
+      return res.status(200).json({ advice: rawAdvice.trim() }); // fallback: return unsanitized
+    }
+
     return res.status(200).json({ advice });
-  } catch {
+  } catch (err) {
+    console.error('[fishing-advice] Unhandled error:', err);
     return res.status(500).json({ error: 'Internal server error' });
   }
 }
