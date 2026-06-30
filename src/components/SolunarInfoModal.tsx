@@ -26,7 +26,7 @@ export function SolunarInfoModal({ onClose }: SolunarInfoModalProps) {
           width: '100%',
           maxWidth: '340px',
           background: '#0B0F1A',
-          border: '1px solid #3d4949',
+          border: '1px solid rgba(255,255,255,0.05)',
           borderRadius: '16px',
         }}
       >
@@ -40,14 +40,16 @@ export function SolunarInfoModal({ onClose }: SolunarInfoModalProps) {
             }}>
               <i className="ti ti-moon" style={{ fontSize: '14px', color: '#C8E63C' }} />
             </div>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '4px' }}>
-                <span style={{ fontSize: '13px', fontWeight: 600, color: '#C8E63C' }}>Голям пик</span>
-                <span style={{ fontSize: '11px', color: '#869393' }}>~2 часа</span>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '6px' }}>
+                <span style={{ fontSize: '12px', fontWeight: 500, color: '#EAF7FF' }}>Голям пик</span>
+                <span style={{ fontSize: '11px', color: 'rgba(127,147,168,0.95)' }}>~2 часа</span>
               </div>
-              <p style={{ fontSize: '12px', color: '#a8b4b4', lineHeight: 1.55, margin: 0 }}>
-                Луната е в зенит (над теб) или надир (под теб) — най-силният период на активност.
-              </p>
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '8px 10px' }}>
+                <p style={{ fontSize: '11px', color: 'rgba(127,147,168,0.95)', lineHeight: 1.375, margin: 0 }}>
+                  Луната е в зенит (над теб) или надир (под теб) — най-силният период на активност.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -60,14 +62,16 @@ export function SolunarInfoModal({ onClose }: SolunarInfoModalProps) {
             }}>
               <i className="ti ti-moon" style={{ fontSize: '14px', color: '#2eb5b7' }} />
             </div>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '4px' }}>
-                <span style={{ fontSize: '13px', fontWeight: 600, color: '#2eb5b7' }}>Малък пик</span>
-                <span style={{ fontSize: '11px', color: '#869393' }}>~1 час</span>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '6px' }}>
+                <span style={{ fontSize: '12px', fontWeight: 500, color: '#EAF7FF' }}>Малък пик</span>
+                <span style={{ fontSize: '11px', color: 'rgba(127,147,168,0.95)' }}>~1 час</span>
               </div>
-              <p style={{ fontSize: '12px', color: '#a8b4b4', lineHeight: 1.55, margin: 0 }}>
-                Изгрев или залез на Луната — по-слаб, но забележим ефект.
-              </p>
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '8px 10px' }}>
+                <p style={{ fontSize: '11px', color: 'rgba(127,147,168,0.95)', lineHeight: 1.375, margin: 0 }}>
+                  Изгрев или залез на Луната — по-слаб, но забележим ефект.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -83,14 +87,16 @@ export function SolunarInfoModal({ onClose }: SolunarInfoModalProps) {
                 <i className="ti ti-moon" style={{ position: 'absolute', bottom: '-3px', right: '-3px', fontSize: '11px', color: '#C8E63C', opacity: 0.75 }} />
               </div>
             </div>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '4px' }}>
-                <span style={{ fontSize: '13px', fontWeight: 600, color: '#C8E63C' }}>Златен час</span>
-                <span style={{ fontSize: '11px', color: '#869393' }}>2-3 пъти месечно</span>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '6px' }}>
+                <span style={{ fontSize: '12px', fontWeight: 500, color: '#EAF7FF' }}>Златен час</span>
+                <span style={{ fontSize: '11px', color: 'rgba(127,147,168,0.95)' }}>2-3 пъти месечно</span>
               </div>
-              <p style={{ fontSize: '12px', color: '#a8b4b4', lineHeight: 1.55, margin: 0 }}>
-                Солунарен пик съвпада с изгрев или залез на Слънцето — най-силният възможен момент.
-              </p>
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '8px 10px' }}>
+                <p style={{ fontSize: '11px', color: 'rgba(127,147,168,0.95)', lineHeight: 1.375, margin: 0 }}>
+                  Солунарен пик съвпада с изгрев или залез на Слънцето — най-силният възможен момент.
+                </p>
+              </div>
             </div>
           </div>
         </div>
