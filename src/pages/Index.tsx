@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { getMoonData } from '@/lib/moon';
+import { isGoldenHour } from '@/lib/moon-times';
 import { getSmartFishingTips, getTimePeriod } from '@/lib/fishing-expert';
 import { calculateFishingScore } from '@/lib/fishing-score';
 import { useWeather } from '@/hooks/use-weather';
@@ -56,11 +57,17 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
     }
   }
 
-  const verdict = active
+  const goldenHour = isGoldenHour(now, weather.sunrise, weather.sunset, peaks);
+
+  const verdict = goldenHour.isActive
+    ? 'Златен час'
+    : active
     ? (active.type === 'major' ? 'Голям солунарен пик' : 'Малък солунарен пик')
     : (next && next.diff <= 60 ? 'Следващ пик скоро' : 'Стабилни условия');
-  const verdictColor = active ? '#C8E63C' : (next && next.diff <= 60 ? '#C8E63C' : '#7F93A8');
-  const subtitle = active
+  const verdictColor = goldenHour.isActive ? '#C8E63C' : active ? '#C8E63C' : (next && next.diff <= 60 ? '#C8E63C' : '#7F93A8');
+  const subtitle = goldenHour.isActive
+    ? `Още ${goldenHour.minutesRemaining} мин`
+    : active
     ? `Още ${active.remaining}м`
     : next
       ? `До следващ пик: ${next.diff < 60 ? next.diff + 'м' : Math.floor(next.diff / 60) + 'ч ' + (next.diff % 60) + 'м'}`
@@ -204,14 +211,14 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           <path d="M 17,105 A 88,88 0 0,0 193,105" fill="rgba(235,140,89,0.05)" />
           <path d="M 17,105 A 88,88 0 0,1 193,105" fill="rgba(46,181,183,0.03)" />
           {/* Sun icon at 12 (долу) */}
-          <g transform="translate(98.5,163)">
+          <g transform="translate(98.5,163)" style={goldenHour.isActive ? { opacity: 1, animation: 'goldenPulse 1.8s ease-in-out infinite', transformOrigin: 'center', transformBox: 'fill-box' } : undefined}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" x="0" y="0">
               <circle cx="12" cy="12" r="4" />
               <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
             </svg>
           </g>
           {/* Moon icon at 00 (горе) */}
-          <g transform="translate(98.5,38)">
+          <g transform="translate(98.5,38)" style={goldenHour.isActive ? { opacity: 1, animation: 'goldenPulse 1.8s ease-in-out infinite', transformOrigin: 'center', transformBox: 'fill-box' } : undefined}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" x="0" y="0">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
             </svg>

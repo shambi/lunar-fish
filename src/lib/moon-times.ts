@@ -281,3 +281,62 @@ export function getSolunarPeaks(moonTimes: MoonTimes): SolunarPeak[] {
 
   return peaks;
 }
+
+export interface GoldenHourResult {
+  isActive: boolean;
+  minutesRemaining: number | null;
+}
+
+function toMinutes(t: string | null | undefined): number {
+  if (!t || t === '--:--') return -1;
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+
+/** Returns true while now is within ±30min of sunrise/sunset AND inside an active solunar peak window. */
+export function isGoldenHour(
+  now: Date,
+  sunrise: string | null | undefined,
+  sunset: string | null | undefined,
+  peaks: SolunarPeak[]
+): GoldenHourResult {
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+
+  const inWindow = (min: number, start: number, end: number): boolean => {
+    const s = ((start % 1440) + 1440) % 1440;
+    const e = ((end % 1440) + 1440) % 1440;
+    if (s <= e) return min >= s && min <= e;
+    return min >= s || min <= e; // wraps past midnight
+  };
+
+  const minutesUntilEnd = (end: number): number => {
+    const e = ((end % 1440) + 1440) % 1440;
+    return ((e - nowMin) + 1440) % 1440;
+  };
+
+  const sunWindows: { start: number; end: number }[] = [];
+  const sr = toMinutes(sunrise);
+  const ss = toMinutes(sunset);
+  if (sr >= 0) sunWindows.push({ start: sr - 30, end: sr + 30 });
+  if (ss >= 0) sunWindows.push({ start: ss - 30, end: ss + 30 });
+
+  let minutesRemaining: number | null = null;
+
+  for (const sunWin of sunWindows) {
+    if (!inWindow(nowMin, sunWin.start, sunWin.end)) continue;
+    for (const peak of peaks) {
+      const ps = toMinutes(peak.start);
+      const pe = toMinutes(peak.end);
+      if (ps < 0 || pe < 0) continue;
+      if (!inWindow(nowMin, ps, pe)) continue;
+
+      const remaining = Math.min(minutesUntilEnd(sunWin.end), minutesUntilEnd(pe));
+      if (minutesRemaining === null || remaining < minutesRemaining) {
+        minutesRemaining = remaining;
+      }
+    }
+  }
+
+  if (minutesRemaining === null) return { isActive: false, minutesRemaining: null };
+  return { isActive: true, minutesRemaining };
+}
