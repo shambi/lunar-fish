@@ -1118,62 +1118,93 @@ const Index = () => {
 
         {/* Hourly forecast toggle + strip */}
         {weather && weather.hourlyForecast?.length > 0 && (() => {
-          const renderHourIcon = (code: number, hour: number) => {
+          const renderHourIcon = (code: number, hour: number, precipitation: number, windSpeed: number) => {
             const isNight = hour >= 21 || hour <= 5;
+            let baseIcon: JSX.Element;
 
             // Priority 1 — precipitation/storm dominates regardless of hour.
-            if (code >= 95) return (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M13 11l-4 6h6l-4 6" />
-              </svg>
-            );
-            if (code >= 71 && code <= 77) return (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M8 15h.01M8 19h.01M12 17h.01M12 21h.01M16 15h.01M16 19h.01" />
-              </svg>
-            );
-            if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M8 19v1M8 14v1M12 21v1M12 16v1M16 19v1M16 14v1" />
-              </svg>
-            );
+            if (code >= 95) {
+              baseIcon = precipitation > 0.1 ? (
+                // Thunderstorm WITH rain — lightning and rain drops together, never hidden behind a plain rain icon.
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
+                  <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" />
+                  <path d="M11 11l-3 5h4l-2 4" />
+                  <path d="M17 17v1M17 21v1" />
+                </svg>
+              ) : (
+                // Dry thunderstorm — lightning only, no rain drops.
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
+                  <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M13 11l-4 6h6l-4 6" />
+                </svg>
+              );
+            } else if (code >= 71 && code <= 77) {
+              baseIcon = (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
+                  <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M8 15h.01M8 19h.01M12 17h.01M12 21h.01M16 15h.01M16 19h.01" />
+                </svg>
+              );
+            } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
+              baseIcon = (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
+                  <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M8 19v1M8 14v1M12 21v1M12 16v1M16 19v1M16 14v1" />
+                </svg>
+              );
+            } else if (code === 3) {
+              // Priority 2 — overcast: solid cloud, no sun/moon behind it, regardless of hour.
+              baseIcon = (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
+                  <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z" />
+                </svg>
+              );
+            } else if (code === 2) {
+              // Priority 3 — partly cloudy: sun/moon + cloud, depending on hour.
+              baseIcon = isNight ? (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M13 4a4 4 0 0 0 4 4" />
+                  <path d="M13 4a4 4 0 0 1-1 7.9" />
+                  <path d="M6 17a4 4 0 0 1 7.9-1A2.5 2.5 0 1 1 15 21H6a4 4 0 0 1 0-8v1" />
+                </svg>
+              ) : (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
+                  <circle cx="10" cy="9" r="3" />
+                  <path d="M10 4v1M10 13v1M5 9H4M16 9h-1M6.76 6.76l-.7-.7M13.94 6.76l.7-.7" />
+                  <path d="M7 16a4 4 0 0 1 7.87-1A3 3 0 1 1 17 22H7a4 4 0 0 1 0-8v2" />
+                </svg>
+              );
+            } else if (code === 0 || code === 1) {
+              // Priority 4 — fully clear sky only: sun alone by day, moon alone by night.
+              baseIcon = isNight ? (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+              ) : (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
+                  <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                </svg>
+              );
+            } else {
+              // Fallback (fog, etc.) — treat as overcast.
+              baseIcon = (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
+                  <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z" />
+                </svg>
+              );
+            }
 
-            // Priority 2 — overcast: solid cloud, no sun/moon behind it, regardless of hour.
-            if (code === 3) return (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z" />
-              </svg>
-            );
+            // Dangerous wind ahead of a front — overlay a small wind indicator on
+            // top of the existing weather icon, without replacing it.
+            const showWindWarning = windSpeed > 40;
 
-            // Priority 3 — partly cloudy: sun/moon + cloud, depending on hour.
-            if (code === 2) return isNight ? (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M13 4a4 4 0 0 0 4 4" />
-                <path d="M13 4a4 4 0 0 1-1 7.9" />
-                <path d="M6 17a4 4 0 0 1 7.9-1A2.5 2.5 0 1 1 15 21H6a4 4 0 0 1 0-8v1" />
-              </svg>
-            ) : (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                <circle cx="10" cy="9" r="3" />
-                <path d="M10 4v1M10 13v1M5 9H4M16 9h-1M6.76 6.76l-.7-.7M13.94 6.76l.7-.7" />
-                <path d="M7 16a4 4 0 0 1 7.87-1A3 3 0 1 1 17 22H7a4 4 0 0 1 0-8v2" />
-              </svg>
-            );
-
-            // Priority 4 — fully clear sky only: sun alone by day, moon alone by night.
-            if (code === 0 || code === 1) return isNight ? (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-            ) : (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-              </svg>
-            );
-
-            // Fallback (fog, etc.) — treat as overcast.
             return (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z" />
-              </svg>
+              <div style={{ position: 'relative', width: 22, height: 22 }}>
+                {baseIcon}
+                {showWindWarning && (
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FF8C42" strokeWidth="2.5" strokeLinecap="round"
+                    style={{ position: 'absolute', bottom: -2, right: -2, background: '#0B0F1A', borderRadius: '50%' }}>
+                    <path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2" />
+                    <path d="M9.6 4.6A2 2 0 1 1 11 8H2" />
+                    <path d="M12.6 19.4A2 2 0 1 0 14 16H2" />
+                  </svg>
+                )}
+              </div>
             );
           };
           return (
@@ -1196,7 +1227,7 @@ const Index = () => {
                   <div style={{ display: 'flex', gap: '4px', minWidth: 'max-content' }}>
                     {weather.hourlyForecast.map((h, i) => (
                       <div key={i} data-hour={parseInt(h.hour, 10)} style={{ minWidth: '44px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
-                        {renderHourIcon(h.code, parseInt(h.hour, 10))}
+                        {renderHourIcon(h.code, parseInt(h.hour, 10), h.precipitation, h.windSpeed)}
                         <span style={{ fontSize: '11px', fontWeight: 500, color: '#dee4e3', lineHeight: 1 }}>{h.temp}°</span>
                         <span style={{ fontSize: '10px', color: '#869393', lineHeight: 1 }}>{h.hour}:00</span>
                       </div>

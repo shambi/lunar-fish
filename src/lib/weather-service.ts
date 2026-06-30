@@ -35,7 +35,7 @@ export interface WeatherData {
   solunarPeaks: ReturnType<typeof getSolunarPeaks>;
   waterTemp: number;
   meteoAlarm: MeteoAlarmData;
-  hourlyForecast: { hour: string; temp: number; code: number }[];
+  hourlyForecast: { hour: string; temp: number; code: number; precipitation: number; windSpeed: number }[];
 }
 
 const WMO_CODES: Record<number, { label: string; icon: string }> = {
@@ -192,7 +192,7 @@ export async function fetchMeteoAlarmLevel(): Promise<MeteoAlarmData> {
 }
 export async function fetchWeatherData(latitude: number, longitude: number, altitude: number = 0, locationName?: string): Promise<WeatherData> {
   const res = await fetchWithTimeout(
-    `${WEATHER_API_CONFIG.apis.weather}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure,temperature_2m,weather_code&daily=sunrise,sunset&past_days=1&forecast_days=1&timezone=auto`,
+    `${WEATHER_API_CONFIG.apis.weather}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure,temperature_2m,weather_code,precipitation,wind_speed_10m&daily=sunrise,sunset&past_days=1&forecast_days=1&timezone=auto`,
     WEATHER_API_CONFIG.timeouts.weather
   );
   if (!res.ok) throw new Error('API error');
@@ -204,15 +204,19 @@ export async function fetchWeatherData(latitude: number, longitude: number, alti
   const hourlyTimes: string[] = data.hourly?.time ?? [];
   const hourlyTemp: number[] = data.hourly?.temperature_2m ?? [];
   const hourlyCode: number[] = data.hourly?.weather_code ?? [];
+  const hourlyPrecipitation: number[] = data.hourly?.precipitation ?? [];
+  const hourlyWindSpeed: number[] = data.hourly?.wind_speed_10m ?? [];
   const now = new Date();
   const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-  const hourlyForecast: { hour: string; temp: number; code: number }[] = [];
+  const hourlyForecast: { hour: string; temp: number; code: number; precipitation: number; windSpeed: number }[] = [];
   for (let i = 0; i < hourlyTimes.length; i++) {
     if (hourlyTimes[i]?.startsWith(todayStr)) {
       hourlyForecast.push({
         hour: String(new Date(hourlyTimes[i]).getHours()).padStart(2, '0'),
         temp: Math.round(hourlyTemp[i] ?? 0),
         code: hourlyCode[i] ?? 0,
+        precipitation: hourlyPrecipitation[i] ?? 0,
+        windSpeed: Math.round(hourlyWindSpeed[i] ?? 0),
       });
     }
   }
