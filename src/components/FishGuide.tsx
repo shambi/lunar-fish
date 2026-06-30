@@ -8,6 +8,7 @@ import {
   DialogContent,
 } from '@/components/ui/dialog';
 import { FISH_ICON_MAP } from '@/components/FishIcons';
+import { useScrollSpotlight } from '@/hooks/use-scroll-spotlight';
 
 interface FishGuideProps {
   moon: MoonData;
@@ -82,6 +83,9 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
   const [aiAdvice, setAiAdvice] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const aiAdviceCache = useRef<Record<string, string>>({});
+  const modalScrollRef = useRef<HTMLDivElement>(null);
+  const tackleSectionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const activeTackleSection = useScrollSpotlight(modalScrollRef, tackleSectionRefs, 4);
 
   useEffect(() => {
     if (selectedFish) {
@@ -276,7 +280,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
       {/* Fish detail modal */}
       <Dialog open={!!selectedFish} onOpenChange={(open) => !open && setSelectedFish(null)}>
-        <DialogContent className="max-w-sm border-border transition-all duration-300 ease-out" style={{ background: '#0B0F1A' }}>
+        <DialogContent ref={modalScrollRef} className="max-w-sm border-border transition-all duration-300 ease-out" style={{ background: '#0B0F1A' }}>
           {selectedFish && modalData && (
             <>
               {/* Тип риба */}
@@ -417,19 +421,43 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       Такъми & Монтаж
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
-                      <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '10px 12px' }}>
+                      <div ref={el => tackleSectionRefs.current[0] = el} style={{
+                        background: 'rgba(255,255,255,0.03)',
+                        border: activeTackleSection === 0 ? '1px solid rgba(46,181,183,0.25)' : '1px solid rgba(255,255,255,0.05)',
+                        boxShadow: activeTackleSection === 0 ? '0 0 16px rgba(46,181,183,0.08)' : 'none',
+                        transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
+                        borderRadius: '8px', padding: '10px 12px',
+                      }}>
                         <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Стръв & Захранка</div>
                         <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>{displayGroundbait}<br/><span style={{ color: '#2eb5b7' }}>{displayBait}</span></div>
                       </div>
-                      <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '10px 12px' }}>
+                      <div ref={el => tackleSectionRefs.current[1] = el} style={{
+                        background: 'rgba(255,255,255,0.03)',
+                        border: activeTackleSection === 1 ? '1px solid rgba(46,181,183,0.25)' : '1px solid rgba(255,255,255,0.05)',
+                        boxShadow: activeTackleSection === 1 ? '0 0 16px rgba(46,181,183,0.08)' : 'none',
+                        transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
+                        borderRadius: '8px', padding: '10px 12px',
+                      }}>
                         <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Влакно</div>
                         <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}><span style={{ color: '#2eb5b7' }}>{displayLine}</span></div>
                       </div>
-                      <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '10px 12px' }}>
+                      <div ref={el => tackleSectionRefs.current[2] = el} style={{
+                        background: 'rgba(255,255,255,0.03)',
+                        border: activeTackleSection === 2 ? '1px solid rgba(46,181,183,0.25)' : '1px solid rgba(255,255,255,0.05)',
+                        boxShadow: activeTackleSection === 2 ? '0 0 16px rgba(46,181,183,0.08)' : 'none',
+                        transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
+                        borderRadius: '8px', padding: '10px 12px',
+                      }}>
                         <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Куки</div>
                         <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>{displayHook}</div>
                       </div>
-                      <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '10px 12px' }}>
+                      <div ref={el => tackleSectionRefs.current[3] = el} style={{
+                        background: 'rgba(255,255,255,0.03)',
+                        border: activeTackleSection === 3 ? '1px solid rgba(46,181,183,0.25)' : '1px solid rgba(255,255,255,0.05)',
+                        boxShadow: activeTackleSection === 3 ? '0 0 16px rgba(46,181,183,0.08)' : 'none',
+                        transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
+                        borderRadius: '8px', padding: '10px 12px',
+                      }}>
                         <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>
                           {displayLures ? 'Воблери' : 'Монтаж'}
                         </div>
