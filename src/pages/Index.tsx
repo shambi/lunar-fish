@@ -1125,11 +1125,12 @@ const Index = () => {
             // Priority 1 — precipitation/storm dominates regardless of hour.
             if (code >= 95) {
               baseIcon = precipitation > 0.1 ? (
-                // Thunderstorm WITH rain — lightning and rain drops together, never hidden behind a plain rain icon.
+                // Thunderstorm WITH rain — same proven lightning bolt as the dry variant,
+                // plus two short rain-drop ticks placed clear of the bolt on either side.
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
                   <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" />
-                  <path d="M11 11l-3 5h4l-2 4" />
-                  <path d="M17 17v1M17 21v1" />
+                  <path d="M13 11l-4 6h6l-4 6" />
+                  <path d="M6 20v2M19 20v2" />
                 </svg>
               ) : (
                 // Dry thunderstorm — lightning only, no rain drops.
