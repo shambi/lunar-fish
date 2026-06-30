@@ -143,6 +143,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
         meteoAlert: meteoAlert ?? { level: null, event: null },
         recommendedHookSize,
         recommendedLineThickness,
+        overallScore: selectedFish.score,
+        isRecommended: selectedFish.isRecommended,
       }),
     })
       .then(r => r.json())
