@@ -80,6 +80,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
   const [showFormulaInfo, setShowFormulaInfo] = useState(false);
   const [selectedTechnique, setSelectedTechnique] = useState<string | null>(null);
   const [aiAdvice, setAiAdvice] = useState<string | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const aiAdviceCache = useRef<Record<string, string>>({});
   const latestAiRequestKeyRef = useRef<string | null>(null);
@@ -116,6 +117,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
       return;
     }
     setAiAdvice(null);
+    setAiError(null);
     setAiLoading(true);
 
     // Same lookup logic used by the КУКИ/ВЛАКНО tiles in the modal — technique-specific
@@ -190,9 +192,15 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
           if (latestAiRequestKeyRef.current === cacheKey) {
             setAiAdvice(data.advice);
           }
+        } else if (data.error && latestAiRequestKeyRef.current === cacheKey) {
+          setAiError(`[debug] ${data.error}${data.detail ? ' ' + data.detail : ''}`);
         }
       })
-      .catch(() => { /* silently fail */ })
+      .catch((err: unknown) => {
+        if (latestAiRequestKeyRef.current === cacheKey) {
+          setAiError(`[debug] fetch error: ${String(err)}`);
+        }
+      })
       .finally(() => {
         if (latestAiRequestKeyRef.current === cacheKey) setAiLoading(false);
       });
@@ -436,6 +444,10 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       <div key={i} style={{ height: 10, borderRadius: 5, background: '#1b2121', width: `${w}%`, marginBottom: 8, animation: `riboShimmer 1.6s ease-in-out ${i * 0.2}s infinite` }} />
                     ))}
                   </div>
+                )}
+
+                {!aiLoading && aiError && (
+                  <p style={{ fontSize: 11, color: '#DC3C3C', fontFamily: 'monospace', wordBreak: 'break-all' }}>{aiError}</p>
                 )}
 
                 {!aiLoading && aiAdvice && (
