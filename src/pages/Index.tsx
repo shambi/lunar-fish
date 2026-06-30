@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { getMoonData } from '@/lib/moon';
 import { isGoldenHour } from '@/lib/moon-times';
 import { SolunarInfoModal } from '@/components/SolunarInfoModal';
@@ -1069,7 +1070,10 @@ const Index = () => {
                   }
                   return (
                     <>
-                    <div style={{ position: 'fixed', inset: 0, zIndex: 99 }} onClick={() => setShowAlertTooltip(false)} />
+                    {createPortal(
+                      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, height: '100vh', width: '100vw', zIndex: 99 }} onClick={() => setShowAlertTooltip(false)} />,
+                      document.body
+                    )}
                     <div style={{
                       position: 'absolute', bottom: 'calc(100% + 8px)', right: 0,
                       width: 'min(200px, 80vw)', zIndex: 100,
