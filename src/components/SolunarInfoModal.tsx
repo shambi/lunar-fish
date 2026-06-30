@@ -42,11 +42,11 @@ export function SolunarInfoModal({ onClose }: SolunarInfoModalProps) {
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '6px' }}>
-                <span style={{ fontSize: '12px', fontWeight: 500, color: '#EAF7FF' }}>Голям пик</span>
+                <span style={{ fontSize: '12px', fontWeight: 500, color: '#C8E63C' }}>Голям пик</span>
                 <span style={{ fontSize: '11px', color: 'rgba(127,147,168,0.95)' }}>~2 часа</span>
               </div>
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '8px 10px' }}>
-                <p style={{ fontSize: '11px', color: 'rgba(127,147,168,0.95)', lineHeight: 1.375, margin: 0 }}>
+                <p style={{ fontSize: '14px', fontWeight: 400, fontFamily: "'Outfit', sans-serif", color: 'rgba(222,228,227,0.85)', lineHeight: 1.55, margin: 0 }}>
                   Луната е в зенит (над теб) или надир (под теб) — най-силният период на активност.
                 </p>
               </div>
@@ -64,11 +64,11 @@ export function SolunarInfoModal({ onClose }: SolunarInfoModalProps) {
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '6px' }}>
-                <span style={{ fontSize: '12px', fontWeight: 500, color: '#EAF7FF' }}>Малък пик</span>
+                <span style={{ fontSize: '12px', fontWeight: 500, color: '#2eb5b7' }}>Малък пик</span>
                 <span style={{ fontSize: '11px', color: 'rgba(127,147,168,0.95)' }}>~1 час</span>
               </div>
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '8px 10px' }}>
-                <p style={{ fontSize: '11px', color: 'rgba(127,147,168,0.95)', lineHeight: 1.375, margin: 0 }}>
+                <p style={{ fontSize: '14px', fontWeight: 400, fontFamily: "'Outfit', sans-serif", color: 'rgba(222,228,227,0.85)', lineHeight: 1.55, margin: 0 }}>
                   Изгрев или залез на Луната — по-слаб, но забележим ефект.
                 </p>
               </div>
@@ -89,11 +89,11 @@ export function SolunarInfoModal({ onClose }: SolunarInfoModalProps) {
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '6px' }}>
-                <span style={{ fontSize: '12px', fontWeight: 500, color: '#EAF7FF' }}>Златен час</span>
+                <span style={{ fontSize: '12px', fontWeight: 500, color: '#C8E63C', textShadow: '0 0 8px rgba(200,230,60,0.6)' }}>Златен час</span>
                 <span style={{ fontSize: '11px', color: 'rgba(127,147,168,0.95)' }}>2-3 пъти месечно</span>
               </div>
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '8px 10px' }}>
-                <p style={{ fontSize: '11px', color: 'rgba(127,147,168,0.95)', lineHeight: 1.375, margin: 0 }}>
+                <p style={{ fontSize: '14px', fontWeight: 400, fontFamily: "'Outfit', sans-serif", color: 'rgba(222,228,227,0.85)', lineHeight: 1.55, margin: 0 }}>
                   Солунарен пик съвпада с изгрев или залез на Слънцето — най-силният възможен момент.
                 </p>
               </div>
