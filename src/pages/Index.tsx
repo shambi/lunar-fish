@@ -1145,7 +1145,12 @@ const Index = () => {
 
             // Priority 4 — fully clear sky only: sun alone by day, moon alone by night.
             if (code === 0 || code === 1) return isNight ? (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+                <circle cx="5" cy="5" r="1.1" fill="#FFFFFF" stroke="none" opacity="0.7" />
+                <circle cx="4" cy="13" r="0.9" fill="#FFFFFF" stroke="none" opacity="0.6" />
+                <circle cx="7" cy="19" r="1" fill="#FFFFFF" stroke="none" opacity="0.7" />
+              </svg>
             ) : (
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
                 <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
