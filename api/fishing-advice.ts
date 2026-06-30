@@ -13,18 +13,17 @@ export default async function handler(req: any, res: any) {
     return res.status(500).json({ error: 'API key not configured' });
   }
 
-  try {
-    const response = await fetch(
-      'https://api.groq.com/openai/v1/chat/completions',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
-          max_tokens: 300,
+  const makeRequest = () => fetch(
+    'https://api.groq.com/openai/v1/chat/completions',
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        max_tokens: 200,
           messages: [
             {
               role: 'system',
@@ -132,7 +131,16 @@ Hook size нотацията зависи от вида риба — копир�
           ],
         }),
       }
-    );
+  );
+
+  try {
+    let response = await makeRequest();
+
+    // Retry once on 429 — Groq free-tier rate limit is transient; waiting 2s usually clears it.
+    if (response.status === 429) {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      response = await makeRequest();
+    }
 
     if (!response.ok) {
       const errBody = await response.text().catch(() => '');
