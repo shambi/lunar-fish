@@ -1103,13 +1103,32 @@ const Index = () => {
         {weather && weather.hourlyForecast?.length > 0 && (() => {
           const renderHourIcon = (code: number, hour: number) => {
             const isNight = hour >= 21 || hour <= 5;
-            if (code === 0 || code === 1) return isNight ? (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-            ) : (
+
+            // Priority 1 — precipitation/storm dominates regardless of hour.
+            if (code >= 95) return (
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M13 11l-4 6h6l-4 6" />
               </svg>
             );
+            if (code >= 71 && code <= 77) return (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
+                <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M8 15h.01M8 19h.01M12 17h.01M12 21h.01M16 15h.01M16 19h.01" />
+              </svg>
+            );
+            if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
+                <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M8 19v1M8 14v1M12 21v1M12 16v1M16 19v1M16 14v1" />
+              </svg>
+            );
+
+            // Priority 2 — overcast: solid cloud, no sun/moon behind it, regardless of hour.
+            if (code === 3) return (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
+                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z" />
+              </svg>
+            );
+
+            // Priority 3 — partly cloudy: sun/moon + cloud, depending on hour.
             if (code === 2) return isNight ? (
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M13 4a4 4 0 0 0 4 4" />
@@ -1123,26 +1142,17 @@ const Index = () => {
                 <path d="M7 16a4 4 0 0 1 7.87-1A3 3 0 1 1 17 22H7a4 4 0 0 1 0-8v2" />
               </svg>
             );
-            if (code === 3) return (
+
+            // Priority 4 — fully clear sky only: sun alone by day, moon alone by night.
+            if (code === 0 || code === 1) return isNight ? (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            ) : (
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z" />
+                <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
               </svg>
             );
-            if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M8 19v1M8 14v1M12 21v1M12 16v1M16 19v1M16 14v1" />
-              </svg>
-            );
-            if (code >= 71 && code <= 77) return (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M8 15h.01M8 19h.01M12 17h.01M12 21h.01M16 15h.01M16 19h.01" />
-              </svg>
-            );
-            if (code >= 95) return (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M13 11l-4 6h6l-4 6" />
-              </svg>
-            );
+
+            // Fallback (fog, etc.) — treat as overcast.
             return (
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
                 <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z" />
