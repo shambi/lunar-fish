@@ -276,18 +276,23 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
       {/* Fish detail modal */}
       <Dialog open={!!selectedFish} onOpenChange={(open) => !open && setSelectedFish(null)}>
-        <DialogContent className="max-w-sm border-border transition-all duration-300 ease-out" style={{ background: '#0B0F1A' }}>
+        <DialogContent
+          className="max-w-sm border-border transition-all duration-300 ease-out"
+          style={{ background: '#0B0F1A', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
+        >
           {selectedFish && modalData && (
             <>
-              {/* Static brightness vignette — overlays the scrollport top, fades to transparent at bottom. Decorative only, takes no layout space. */}
+              {/* Static brightness vignette — anchored to the fixed modal frame (DialogContent), stays put while the scroll wrapper below moves. */}
               <div style={{
                 position: 'absolute',
                 inset: 0,
                 pointerEvents: 'none',
-                zIndex: 0,
+                zIndex: 1,
                 background: 'linear-gradient(to bottom, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 50%, rgba(255,255,255,0) 100%)',
               }} />
 
+              {/* Scroll wrapper — only this div scrolls; the overlay above is a sibling, outside its scroll context. */}
+              <div style={{ position: 'relative', overflowY: 'auto', flex: 1, minHeight: 0 }}>
               {/* Тип риба */}
               <p style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>
                 {selectedFish.fishType ?? 'Сладководна риба'}
@@ -611,6 +616,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   </div>
                 </div>
               )}
+              </div>
             </>
           )}
         </DialogContent>
