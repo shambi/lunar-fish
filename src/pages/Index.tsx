@@ -1174,17 +1174,26 @@ const Index = () => {
                 </button>
               </div>
               {hourlyOpen && (
-                <div ref={hourlyScrollRef} style={{ padding: '8px 16px', overflowX: 'auto', scrollbarWidth: 'none', marginBottom: '8px' }}>
-                  <div style={{ display: 'flex', gap: '4px', minWidth: 'max-content' }}>
-                    {weather.hourlyForecast.map((h, i) => (
-                      <div key={i} data-hour={parseInt(h.hour, 10)} style={{ minWidth: '44px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
-                        {renderHourIcon(h.code, parseInt(h.hour, 10))}
-                        <span style={{ fontSize: '11px', fontWeight: 500, color: '#dee4e3', lineHeight: 1 }}>{h.temp}°</span>
-                        <span style={{ fontSize: '10px', color: '#869393', lineHeight: 1 }}>{h.hour}:00</span>
-                      </div>
-                    ))}
+                <>
+                  {createPortal(
+                    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, height: '100vh', width: '100vw', zIndex: 99 }} onClick={() => setHourlyOpen(false)} />,
+                    document.body
+                  )}
+                  <div
+                    ref={hourlyScrollRef}
+                    style={{ position: 'relative', zIndex: 100, padding: '8px 16px', overflowX: 'auto', scrollbarWidth: 'none', marginBottom: '8px' }}
+                  >
+                    <div style={{ display: 'flex', gap: '4px', minWidth: 'max-content' }}>
+                      {weather.hourlyForecast.map((h, i) => (
+                        <div key={i} data-hour={parseInt(h.hour, 10)} style={{ minWidth: '44px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
+                          {renderHourIcon(h.code, parseInt(h.hour, 10))}
+                          <span style={{ fontSize: '11px', fontWeight: 500, color: '#dee4e3', lineHeight: 1 }}>{h.temp}°</span>
+                          <span style={{ fontSize: '10px', color: '#869393', lineHeight: 1 }}>{h.hour}:00</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                </>
               )}
             </>
           );
