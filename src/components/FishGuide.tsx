@@ -105,6 +105,21 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
     }
     setAiAdvice(null);
     setAiLoading(true);
+
+    // Same lookup logic used by the КУКИ/ВЛАКНО tiles in the modal — technique-specific
+    // data first, falling back to the fish's general modal data, so the AI is fed the
+    // exact same numbers the user already sees on screen.
+    const tdForFetch = selectedTechnique ? selectedFish.techniqueData?.[selectedTechnique] : null;
+    const modalDataForFetch = getFishModalData(
+      selectedFish,
+      weather?.temperature ?? 18,
+      weather?.weatherCode ?? 0,
+      terrain,
+      weather?.altitude
+    );
+    const recommendedHookSize = tdForFetch?.hook_size ?? modalDataForFetch.hookTip;
+    const recommendedLineThickness = tdForFetch?.line_mm ? `${tdForFetch.line_mm}мм` : modalDataForFetch.lineDiameter;
+
     fetch('/api/fishing-advice', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -126,6 +141,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
         isInPeak: solunarContext?.isInPeak ?? false,
         peakType: solunarContext?.peakType ?? null,
         meteoAlert: meteoAlert ?? { level: null, event: null },
+        recommendedHookSize,
+        recommendedLineThickness,
       }),
     })
       .then(r => r.json())
