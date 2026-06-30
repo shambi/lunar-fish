@@ -82,11 +82,23 @@ export async function fetchElevation(latitude: number, longitude: number, fallba
       `${WEATHER_API_CONFIG.apis.elevation}?locations=${latitude},${longitude}`,
       WEATHER_API_CONFIG.timeouts.elevation
     );
-    if (!res.ok) return fallbackAltitude;
+    if (!res.ok) {
+      console.log('[fetchElevation] response not ok, status:', res.status, '— using fallback:', fallbackAltitude);
+      return fallbackAltitude;
+    }
     const data = await res.json();
     const elevation = data?.results?.[0]?.elevation;
-    return Number.isFinite(elevation) ? Math.round(elevation) : fallbackAltitude;
-  } catch {
+    console.log('[fetchElevation] raw API response elevation:', elevation, 'full data:', data);
+    // Treat 0/null/undefined/non-finite as invalid — Bulgaria has no sea-level
+    // locations, so a 0 reading almost always means the API returned junk,
+    // not a real measurement. Fall back instead of showing a bogus 0.
+    if (!Number.isFinite(elevation) || elevation === 0) {
+      console.log('[fetchElevation] elevation invalid or zero — using fallback:', fallbackAltitude);
+      return fallbackAltitude;
+    }
+    return Math.round(elevation);
+  } catch (err) {
+    console.log('[fetchElevation] fetch failed/timed out:', err, '— using fallback:', fallbackAltitude);
     return fallbackAltitude;
   }
 }

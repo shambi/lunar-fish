@@ -91,7 +91,10 @@ export function useWeather() {
       try {
         const position = await getLocation();
         const { latitude, longitude, altitude: gpsAltitude } = position.coords;
-        const fallbackAltitude = gpsAltitude ?? WEATHER_API_CONFIG.fallback.altitude;
+        // GPS altitude of exactly 0 almost always means "no altitude reading",
+        // not a real sea-level position (Bulgaria has none) — don't trust it.
+        const fallbackAltitude = (gpsAltitude && gpsAltitude !== 0) ? gpsAltitude : WEATHER_API_CONFIG.fallback.altitude;
+        console.log('[useWeather] gpsAltitude from device:', gpsAltitude, '— fallbackAltitude resolved to:', fallbackAltitude);
 
         // ✅ FIX #2: Use Promise.allSettled() for robust error handling
         // This allows partial success if one API fails
@@ -119,9 +122,10 @@ export function useWeather() {
         const weatherData = weatherResult.value;
 
         // Altitude and location are nice-to-have - use fallbacks if they fail
-        const altitude = altitudeResult.status === 'fulfilled' 
-          ? altitudeResult.value 
+        const altitude = altitudeResult.status === 'fulfilled'
+          ? altitudeResult.value
           : fallbackAltitude;
+        console.log('[useWeather] final resolved altitude:', altitude, '(race status:', altitudeResult.status, ')');
 
         const locationName = nameResult.status === 'fulfilled'
           ? nameResult.value
@@ -190,7 +194,10 @@ export function useWeather() {
       try {
         const position = await getLocation();
         const { latitude, longitude, altitude: gpsAltitude } = position.coords;
-        const fallbackAltitude = gpsAltitude ?? 0;
+        // GPS altitude of exactly 0 almost always means "no altitude reading",
+        // not a real sea-level position (Bulgaria has none) — don't trust it.
+        const fallbackAltitude = (gpsAltitude && gpsAltitude !== 0) ? gpsAltitude : WEATHER_API_CONFIG.fallback.altitude;
+        console.log('[useWeather:silentBackgroundRefresh] gpsAltitude:', gpsAltitude, '— fallbackAltitude resolved to:', fallbackAltitude);
 
         // Parallelize the three API calls with graceful degradation
         const results = await Promise.allSettled([
