@@ -417,19 +417,19 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       Такъми & Монтаж
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
-                      <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
+                      <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '10px 12px' }}>
                         <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Стръв & Захранка</div>
                         <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>{displayGroundbait}<br/><span style={{ color: '#2eb5b7' }}>{displayBait}</span></div>
                       </div>
-                      <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
+                      <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '10px 12px' }}>
                         <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Влакно</div>
                         <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}><span style={{ color: '#2eb5b7' }}>{displayLine}</span></div>
                       </div>
-                      <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
+                      <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '10px 12px' }}>
                         <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Куки</div>
                         <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>{displayHook}</div>
                       </div>
-                      <div style={{ background: '#1b2121', border: '0.5px solid #3d4949', borderRadius: '12px', padding: '10px 12px' }}>
+                      <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '10px 12px' }}>
                         <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>
                           {displayLures ? 'Воблери' : 'Монтаж'}
                         </div>
