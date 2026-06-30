@@ -82,6 +82,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
   const [aiAdvice, setAiAdvice] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const aiAdviceCache = useRef<Record<string, string>>({});
+  const latestAiRequestKeyRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (selectedFish) {
@@ -97,7 +98,18 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
   useEffect(() => {
     if (!selectedFish) return;
+
+    // Guard against the sibling "reset technique on fish change" effect: in the same
+    // render pass right after switching fish, selectedTechnique can still hold the
+    // PREVIOUS fish's value (the reset's setState hasn't applied yet). If that stale
+    // technique isn't valid for the newly selected fish, skip — the reset effect will
+    // commit the correct technique and this effect will re-fire with the right value.
+    const validTechniques = selectedFish.techniques?.[terrain] ?? [];
+    const isStaleTechnique = selectedTechnique !== null && !validTechniques.includes(selectedTechnique);
+    if (isStaleTechnique) return;
+
     const cacheKey = `${selectedFish.name}-${selectedTechnique ?? ''}-${terrain}`;
+    latestAiRequestKeyRef.current = cacheKey;
     if (aiAdviceCache.current[cacheKey]) {
       setAiAdvice(aiAdviceCache.current[cacheKey]);
       setAiLoading(false);
@@ -151,11 +163,17 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
       .then(data => {
         if (data.advice) {
           aiAdviceCache.current[cacheKey] = data.advice;
-          setAiAdvice(data.advice);
+          // Only apply if no newer request has superseded this one — prevents a
+          // slow, stale-technique response from overwriting the correct advice.
+          if (latestAiRequestKeyRef.current === cacheKey) {
+            setAiAdvice(data.advice);
+          }
         }
       })
       .catch(() => { /* silently fail */ })
-      .finally(() => setAiLoading(false));
+      .finally(() => {
+        if (latestAiRequestKeyRef.current === cacheKey) setAiLoading(false);
+      });
   }, [selectedFish, selectedTechnique, terrain]);
 
   const temp = weather?.temperature ?? 18;
