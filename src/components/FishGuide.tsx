@@ -276,7 +276,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
       {/* Fish detail modal */}
       <Dialog open={!!selectedFish} onOpenChange={(open) => !open && setSelectedFish(null)}>
-        <DialogContent className="max-w-sm bg-card border-border transition-all duration-300 ease-out">
+        <DialogContent className="max-w-sm border-border transition-all duration-300 ease-out" style={{ background: '#0B0F1A' }}>
           {selectedFish && modalData && (
             <>
               {/* Тип риба */}
