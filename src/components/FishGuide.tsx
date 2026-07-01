@@ -370,52 +370,45 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               {/* ═══════ SECTION 1 — HEADER ═══════ */}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 20 }}>
 
-                {/* Score — dot matrix double layer */}
-                <div style={{ position: 'relative', height: '64px', marginBottom: '8px', textAlign: 'center' }}>
-                  <div style={{ fontFamily: "'VT323', monospace", fontSize: '64px', lineHeight: '1', letterSpacing: '2px', color: '#ffffff', opacity: 0.08, position: 'absolute', left: 0, right: 0, zIndex: 1, pointerEvents: 'none' }}>
-                    88/188
-                  </div>
-                  <div style={{ fontFamily: "'VT323', monospace", fontSize: '64px', lineHeight: '1', letterSpacing: '2px', color: '#dee4e3', position: 'relative', zIndex: 2, textShadow: '0 0 2px rgba(222,228,227,0.4), 0 0 8px rgba(46,181,183,0.3)' }}>
-                    {selectedFish.score} / 100
-                  </div>
+                {/* SCORE */}
+                <div style={{ fontFamily: "'Orbitron', sans-serif", fontSize: '44px', fontWeight: '700', color: '#dee4e3', lineHeight: '1.1', letterSpacing: '1px', marginBottom: '14px', textAlign: 'center', textShadow: '0 0 10px rgba(46,181,183,0.4)' }}>
+                  {selectedFish.score} <span style={{ color: '#869393', fontSize: '24px', fontWeight: '400' }}>/ 100</span>
                 </div>
 
-                {/* Category */}
-                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '15px', fontWeight: 400, letterSpacing: '0.05em', color: '#869393', textTransform: 'uppercase', marginBottom: '4px', textAlign: 'center' }}>
-                  {selectedFish.fishType ?? 'Сладководна риба'}
-                </div>
-
-                {/* Fish name */}
-                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '38px', fontWeight: 700, letterSpacing: '-0.01em', color: '#dee4e3', textTransform: 'uppercase', marginBottom: '2px', textAlign: 'center' }}>
-                  {selectedFish.name}
-                </div>
-
-                {/* Latin name */}
-                {selectedFish.latinName && (
-                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '16px', fontWeight: 400, fontStyle: 'italic', letterSpacing: '0.02em', color: '#a8b4b4', marginBottom: '20px', textAlign: 'center' }}>
-                    {selectedFish.latinName}
+                {/* КАТЕГОРИЯ + ИМЕ + ЛАТИНСКО */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', marginBottom: '14px' }}>
+                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '11px', fontWeight: '500', letterSpacing: '0.12em', color: '#869393', textTransform: 'uppercase' }}>
+                    {selectedFish.fishType ?? 'Сладководна риба'}
                   </div>
-                )}
+                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '32px', fontWeight: '700', letterSpacing: '-0.02em', color: '#dee4e3', textTransform: 'uppercase', lineHeight: '1.1' }}>
+                    {selectedFish.name}
+                  </div>
+                  {selectedFish.latinName && (
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '14px', fontWeight: '400', fontStyle: 'italic', color: '#a8b4b4' }}>
+                      {selectedFish.latinName}
+                    </div>
+                  )}
+                </div>
 
-                {/* Fish icon */}
-                <div style={{ width: '260px', height: '140px', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '16px', filter: 'drop-shadow(0 0 16px rgba(46,181,183,0.45)) drop-shadow(0 0 2px rgba(46,181,183,0.3))' }}>
+                {/* РИБА SVG */}
+                <div style={{ width: '180px', height: '90px', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '16px', filter: 'drop-shadow(0 0 12px rgba(46,181,183,0.5))' }}>
                   {FISH_ICON_MAP[selectedFish.name]
-                    ? FISH_ICON_MAP[selectedFish.name]({ width: '100%', height: '100%', strokeWidth: 1.5, stroke: '#2eb5b7' })
-                    : <span style={{ fontSize: '8rem' }}>{selectedFish.emoji}</span>
+                    ? FISH_ICON_MAP[selectedFish.name]({ style: { width: '100%', height: '100%' }, strokeWidth: 1.5, stroke: '#2eb5b7' })
+                    : <span style={{ fontSize: '4rem' }}>{selectedFish.emoji}</span>
                   }
                 </div>
 
-                {/* Description */}
+                {/* ОПИСАНИЕ */}
                 {selectedFish.character && (
-                  <div style={{ textAlign: 'left', fontFamily: "'Space Grotesk', sans-serif", fontSize: '15px', lineHeight: '1.5', color: '#a8b4b4', marginBottom: '16px', width: '100%' }}>
+                  <div style={{ textAlign: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: '14px', lineHeight: '1.4', color: '#a8b4b4', padding: '0 12px', marginBottom: selectedFish.score >= 61 ? '16px' : '0px' }}>
                     {selectedFish.character}
                   </div>
                 )}
 
-                {/* Badge */}
+                {/* BADGE */}
                 {selectedFish.score >= 61 && (
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(27,33,33,0.4)', color: '#2eb5b7', padding: '6px 16px', borderRadius: '100px', fontFamily: "'Space Grotesk', sans-serif", fontSize: '13px', fontWeight: 500, letterSpacing: '0.02em', marginBottom: '20px' }}>
-                    <span>★</span> ПРЕПОРЪЧАНО ДНЕС
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(27,33,33,0.4)', color: '#2eb5b7', padding: '6px 16px', borderRadius: '100px', fontFamily: "'Space Grotesk', sans-serif", fontSize: '12px', fontWeight: 500, letterSpacing: '0.02em' }}>
+                    <span style={{ color: '#2eb5b7' }}>★</span> ПРЕПОРЪЧАНО ДНЕС
                   </div>
                 )}
 
