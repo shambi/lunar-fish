@@ -369,45 +369,60 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
               {/* ═══════ SECTION 1 — HEADER ═══════ */}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 20 }}>
-                {/* VT323 score */}
-                <div style={{ fontFamily: "'VT323', monospace", fontSize: 64, color: '#2eb5b7', lineHeight: 1, letterSpacing: 2, textShadow: '0 0 10px rgba(46,181,183,0.3)', marginBottom: 8 }}>
-                  {selectedFish.score} / 100
+
+                {/* Score — dot matrix double layer */}
+                <div style={{ position: 'relative', textAlign: 'center', marginBottom: 8, lineHeight: 1 }}>
+                  {/* Inactive layer — dot matrix illusion */}
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, fontFamily: "'VT323', monospace", fontSize: 64, lineHeight: 1, color: '#ffffff', opacity: 0.08, letterSpacing: 2, zIndex: 1, textAlign: 'center' }}>
+                    88 / 100
+                  </div>
+                  {/* Active layer — real score */}
+                  <div style={{ position: 'relative', fontFamily: "'VT323', monospace", fontSize: 64, lineHeight: 1, color: '#dee4e3', letterSpacing: 2, zIndex: 2, textShadow: '0 0 2px rgba(222,228,227,0.4), 0 0 8px rgba(46,181,183,0.3)' }}>
+                    {selectedFish.score} / 100
+                  </div>
                 </div>
-                {/* Category label */}
-                <p style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#869393', marginBottom: 4 }}>
+
+                {/* Category */}
+                <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 400, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#869393', textAlign: 'center', marginBottom: 4 }}>
                   {selectedFish.fishType ?? 'Сладководна риба'}
                 </p>
+
                 {/* Fish name */}
-                <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 32, fontWeight: 700, color: '#dee4e3', textAlign: 'center', margin: '0 0 2px' }}>
+                <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 38, fontWeight: 700, letterSpacing: '-0.01em', color: '#dee4e3', textTransform: 'uppercase', textAlign: 'center', margin: '0 0 4px' }}>
                   {selectedFish.name}
                 </h2>
+
                 {/* Latin name */}
                 {selectedFish.latinName && (
-                  <p style={{ fontSize: 14, fontStyle: 'italic', color: '#a8b4b4', textAlign: 'center', marginBottom: 20 }}>
+                  <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, fontWeight: 400, fontStyle: 'italic', letterSpacing: '0.02em', color: '#a8b4b4', textAlign: 'center', marginBottom: 20 }}>
                     {selectedFish.latinName}
                   </p>
                 )}
+
                 {/* Fish icon */}
-                <div style={{ display: 'block', margin: '0 auto 16px', filter: 'drop-shadow(0px 0px 12px rgba(46,181,183,0.5))' }}>
+                <div style={{ display: 'block', margin: '8px auto 8px', filter: 'drop-shadow(0 0 16px rgba(46,181,183,0.45)) drop-shadow(0 0 2px rgba(46,181,183,0.3))' }}>
                   {FISH_ICON_MAP[selectedFish.name]
-                    ? FISH_ICON_MAP[selectedFish.name]({ size: 160, strokeWidth: 1.5, stroke: '#2eb5b7' })
+                    ? FISH_ICON_MAP[selectedFish.name]({ width: 260, height: 140, strokeWidth: 1.5, stroke: '#2eb5b7' })
                     : <span style={{ fontSize: '8rem' }}>{selectedFish.emoji}</span>
                   }
                 </div>
+
                 {/* Description */}
                 {selectedFish.character && (
-                  <p style={{ fontSize: 14, color: '#a8b4b4', lineHeight: 1.5, textAlign: 'center', padding: '0 10px', marginBottom: 16 }}>
+                  <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, lineHeight: 1.5, color: '#a8b4b4', textAlign: 'left', padding: '0 4px', marginBottom: 16 }}>
                     {selectedFish.character}
                   </p>
                 )}
+
                 {/* Recommended badge */}
                 {selectedFish.score >= 61 && (
                   <div style={{ textAlign: 'center' }}>
-                    <span style={{ display: 'inline-block', border: '1px solid #C8E63C', color: '#C8E63C', padding: '6px 16px', borderRadius: 100, fontSize: 12, fontWeight: 700, letterSpacing: '0.05em', background: 'rgba(200,230,60,0.03)' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(27,33,33,0.4)', color: '#2eb5b7', padding: '6px 16px', borderRadius: 100, fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, fontWeight: 500, letterSpacing: '0.02em' }}>
                       ★ ПРЕПОРЪЧАНО ДНЕС
                     </span>
                   </div>
                 )}
+
               </div>
 
               {/* ═══════ SECTION 2 — ТЕХНИКА БУТОНИ ═══════ */}
