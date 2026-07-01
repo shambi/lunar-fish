@@ -360,78 +360,102 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
               {/* Scroll wrapper — only this div scrolls; the overlay above is a sibling, outside its scroll context. */}
               <div style={{ position: 'relative', overflowY: 'auto', flex: 1, minHeight: 0 }}>
-              {/* Тип риба */}
-              <p style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>
-                {selectedFish.fishType ?? 'Сладководна риба'}
-              </p>
+              <style>{`
+                @keyframes riboPulse { 0%,100%{opacity:.4;transform:scale(.85)} 50%{opacity:1;transform:scale(1.15)} }
+                @keyframes riboFade  { 0%,100%{opacity:.4} 50%{opacity:.85} }
+                @keyframes riboShimmer { 0%{opacity:.3} 50%{opacity:.7} 100%{opacity:.3} }
+                @keyframes aiGlow { 0%,100%{box-shadow:0 0 0 1px rgba(200,230,60,0.25), 0 0 18px rgba(200,230,60,0.08)} 50%{box-shadow:0 0 0 1px rgba(200,230,60,0.4), 0 0 24px rgba(200,230,60,0.16)} }
+                input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+              `}</style>
 
-              {/* Риба + Име */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-                {FISH_ICON_MAP[selectedFish.name]
-                  ? FISH_ICON_MAP[selectedFish.name]({ size: 44, strokeWidth: 1.5 })
-                  : <span style={{ fontSize: '2.5rem' }}>{selectedFish.emoji}</span>
-                }
-                <h2 style={{ fontSize: '22px', fontWeight: 600, color: '#dee4e3', lineHeight: 1 }}>
-                  {selectedFish.name}
-                </h2>
-              </div>
-
-              {/* Латинско + характер */}
-              {selectedFish.latinName && (
-                <p style={{ fontSize: '11px', fontStyle: 'italic', color: '#a8b4b4', marginBottom: '2px' }}>
-                  {selectedFish.latinName}
-                </p>
-              )}
-              {selectedFish.character && (
-                <p style={{ fontSize: '12px', color: 'rgba(222,228,227,0.65)', lineHeight: 1.5, marginBottom: '12px' }}>
-                  {selectedFish.character}
-                </p>
-              )}
-
-              {/* Score кръг + Badge */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '0px' }}>
-                <div style={{ position: 'relative', width: '52px', height: '52px', flexShrink: 0 }}>
-                  <svg width="52" height="52" viewBox="0 0 52 52" style={{ position: 'absolute', top: 0, left: 0 }}>
-                    <circle cx="26" cy="26" r="21" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="2"/>
-                    <circle cx="26" cy="26" r="21" fill="none" stroke="#2eb5b7" strokeWidth="2"
-                      strokeDasharray={`${(selectedFish.score / 100) * 131.9} 131.9`}
-                      strokeLinecap="round"
-                      transform="rotate(-90 26 26)"/>
-                  </svg>
-                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', textAlign: 'center' }}>
-                    <div style={{ fontFamily: 'monospace', fontSize: '13px', fontWeight: 600, color: '#dee4e3', lineHeight: 1 }}>
-                      {selectedFish.score}
+              {/* ═══════ HEADER: name + score side-by-side ═══════ */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 10 }}>
+                {/* Icon + name block */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393', marginBottom: 6 }}>
+                    {selectedFish.fishType ?? 'Сладководна риба'}
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+                    <div style={{ flexShrink: 0 }}>
+                      {FISH_ICON_MAP[selectedFish.name]
+                        ? FISH_ICON_MAP[selectedFish.name]({ size: 42, strokeWidth: 1.5 })
+                        : <span style={{ fontSize: '2.4rem' }}>{selectedFish.emoji}</span>
+                      }
                     </div>
-                    <div style={{ fontSize: '7px', letterSpacing: '0.06em', color: '#a8b4b4', textTransform: 'uppercase' }}>
-                      /100
+                    <div style={{ minWidth: 0 }}>
+                      <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 24, fontWeight: 600, color: '#dee4e3', lineHeight: 1.05, letterSpacing: '-0.01em' }}>
+                        {selectedFish.name}
+                      </h2>
+                      {selectedFish.latinName && (
+                        <p style={{ fontSize: 11, fontStyle: 'italic', color: '#869393', marginTop: 2 }}>
+                          {selectedFish.latinName}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                {selectedFish.isRecommended && (
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 8px', border: '0.5px solid rgba(200,230,60,0.5)', borderRadius: '20px', background: 'rgba(200,230,60,0.06)' }}>
-                    <svg width="9" height="9" viewBox="0 0 24 24" fill="#C8E63C" stroke="none">
-                      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                    </svg>
-                    <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.05em', color: '#C8E63C' }}>
-                      Препоръчано днес
-                    </span>
+                {/* Score arc */}
+                <div style={{ position: 'relative', width: 68, height: 68, flexShrink: 0 }}>
+                  <svg width="68" height="68" viewBox="0 0 68 68" style={{ position: 'absolute', top: 0, left: 0 }}>
+                    <circle cx="34" cy="34" r="28" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="3"/>
+                    <circle cx="34" cy="34" r="28" fill="none" stroke="#2eb5b7" strokeWidth="3"
+                      strokeDasharray={`${(selectedFish.score / 100) * 175.9} 175.9`}
+                      strokeLinecap="round"
+                      transform="rotate(-90 34 34)"
+                      style={{ filter: 'drop-shadow(0 0 6px rgba(46,181,183,0.5))' }}/>
+                  </svg>
+                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', textAlign: 'center' }}>
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 20, fontWeight: 700, color: '#dee4e3', lineHeight: 1 }}>
+                      {selectedFish.score}
+                    </div>
+                    <div style={{ fontSize: 8, letterSpacing: '0.1em', color: '#869393', textTransform: 'uppercase', marginTop: 2 }}>
+                      / 100
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
 
-              <div style={{ height: '0.5px', background: '#1b2121', margin: '12px 0' }} />
+              {/* Recommended badge — full width for punch */}
+              {selectedFish.isRecommended && (
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                  padding: '6px 10px',
+                  border: '1px solid rgba(200,230,60,0.4)',
+                  borderRadius: 8,
+                  background: 'rgba(200,230,60,0.08)',
+                  marginBottom: 10,
+                }}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="#C8E63C" stroke="none" className="animate-pulse-glow-citron">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                  <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', color: '#C8E63C', textTransform: 'uppercase' }}>
+                    Препоръчано днес
+                  </span>
+                </div>
+              )}
 
-              <div style={{ marginBottom: '12px' }}>
-                <style>{`
-                  @keyframes riboPulse { 0%,100%{opacity:.4;transform:scale(.85)} 50%{opacity:1;transform:scale(1.15)} }
-                  @keyframes riboFade  { 0%,100%{opacity:.4} 50%{opacity:.85} }
-                  @keyframes riboShimmer { 0%{opacity:.3} 50%{opacity:.7} 100%{opacity:.3} }
-                `}</style>
-                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              {/* Character description */}
+              {selectedFish.character && (
+                <p style={{ fontSize: 12.5, color: '#a8b4b4', lineHeight: 1.5, marginBottom: 14 }}>
+                  {selectedFish.character}
+                </p>
+              )}
+
+              {/* ═══════ AI ADVICE — premium block ═══════ */}
+              <div style={{
+                position: 'relative',
+                background: 'linear-gradient(135deg, rgba(200,230,60,0.06) 0%, rgba(46,181,183,0.04) 100%)',
+                border: '1px solid rgba(200,230,60,0.25)',
+                borderRadius: 10,
+                padding: '12px 14px',
+                marginBottom: 14,
+                animation: 'aiGlow 4s ease-in-out infinite',
+              }}>
+                <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#869393', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                   Съвет за днес
-                  <span style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.06em', color: '#C8E63C', background: 'rgba(200,230,60,0.1)', border: '1px solid rgba(200,230,60,0.25)', borderRadius: '4px', padding: '2px 6px', textTransform: 'uppercase' }}>AI</span>
+                  <span style={{ marginLeft: 'auto', fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', color: '#0B0F1A', background: '#C8E63C', borderRadius: 3, padding: '2px 6px' }}>AI</span>
                 </div>
 
                 {aiLoading && (
@@ -441,7 +465,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       <span style={{ fontSize: 12, color: '#869393', animation: 'riboFade 1.8s ease-in-out infinite' }}>Анализирам условията...</span>
                     </div>
                     {[80, 65, 90, 50].map((w, i) => (
-                      <div key={i} style={{ height: 10, borderRadius: 5, background: '#1b2121', width: `${w}%`, marginBottom: 8, animation: `riboShimmer 1.6s ease-in-out ${i * 0.2}s infinite` }} />
+                      <div key={i} style={{ height: 9, borderRadius: 4, background: 'rgba(255,255,255,0.04)', width: `${w}%`, marginBottom: 6, animation: `riboShimmer 1.6s ease-in-out ${i * 0.2}s infinite` }} />
                     ))}
                   </div>
                 )}
@@ -451,43 +475,50 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 )}
 
                 {!aiLoading && aiAdvice && (
-                  <div>
+                  <>
                     {meteoAlert?.level && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(255,140,66,0.08)', border: '0.5px solid rgba(255,140,66,0.3)', borderRadius: 8, padding: '6px 10px', marginBottom: 8, fontSize: 11, color: '#FF8C42' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(255,140,66,0.1)', border: '1px solid rgba(255,140,66,0.35)', borderRadius: 6, padding: '5px 9px', marginBottom: 8, fontSize: 11, fontWeight: 500, color: '#FF8C42' }}>
                         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FF8C42" strokeWidth="2" strokeLinecap="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
                         {meteoAlert.level === 'red' ? 'Червен' : meteoAlert.level === 'orange' ? 'Оранжев' : 'Жълт'} код{meteoAlert.event ? ` · ${translateAlert(meteoAlert.event)}` : ''}
                       </div>
                     )}
-                    <p style={{ fontSize: 14, lineHeight: 1.65, color: '#dee4e3' }}>{aiAdvice}</p>
-                  </div>
+                    <p style={{ fontSize: 14, lineHeight: 1.6, color: '#dee4e3' }}>{aiAdvice}</p>
+                  </>
                 )}
               </div>
 
-              {/* Technique pill buttons */}
+              {/* ═══════ Technique pills ═══════ */}
               {(() => {
                 const techniques = selectedFish.techniques?.[terrain] ?? [];
                 if (techniques.length === 0) return null;
                 return (
-                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
-                    {techniques.map(t => (
-                      <button key={t}
-                        onClick={() => setSelectedTechnique(t === selectedTechnique ? null : t)}
-                        style={{
-                          padding: '5px 14px',
-                          borderRadius: 20,
-                          border: selectedTechnique === t ? '1px solid #2eb5b7' : '0.5px solid #3d4949',
-                          background: selectedTechnique === t ? 'rgba(46,181,183,0.1)' : 'transparent',
-                          color: selectedTechnique === t ? '#2eb5b7' : '#869393',
-                          fontSize: 12,
-                          fontWeight: 500,
-                          cursor: 'pointer',
-                        }}
-                      >{t}</button>
-                    ))}
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 16 }}>
+                    {techniques.map(t => {
+                      const active = selectedTechnique === t;
+                      return (
+                        <button key={t}
+                          onClick={() => setSelectedTechnique(t === selectedTechnique ? null : t)}
+                          style={{
+                            padding: '6px 14px',
+                            borderRadius: 8,
+                            border: active ? '1px solid #2eb5b7' : '1px solid rgba(255,255,255,0.05)',
+                            background: active ? 'rgba(46,181,183,0.15)' : 'rgba(255,255,255,0.03)',
+                            color: active ? '#5cd8da' : '#a8b4b4',
+                            fontSize: 12,
+                            fontWeight: 600,
+                            letterSpacing: '0.02em',
+                            cursor: 'pointer',
+                            boxShadow: active ? '0 0 12px rgba(46,181,183,0.25)' : 'none',
+                            transition: 'all 0.2s ease',
+                          }}
+                        >{t}</button>
+                      );
+                    })}
                   </div>
                 );
               })()}
 
+              {/* ═══════ ТАКЪМИ & МОНТАЖ — 2x2 grid ═══════ */}
               {(() => {
                 const td = selectedTechnique ? selectedFish.techniqueData?.[selectedTechnique] : null;
                 const displayGroundbait = td?.groundbait ?? modalData.groundbaitTip;
@@ -496,60 +527,52 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 const displayHook = td?.hook_size ?? modalData.hookTip;
                 const displayLures = td ? (td.lures ?? null) : modalData.lureTip;
                 const displayRigs = td?.rigs ?? modalData.rigTip;
+
+                const tileBase: React.CSSProperties = {
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.05)',
+                  borderRadius: 8,
+                  padding: '10px 12px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 4,
+                };
+                const labelStyle: React.CSSProperties = { fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393' };
+                const valueStyle: React.CSSProperties = { fontSize: 13, fontWeight: 500, color: '#dee4e3', lineHeight: 1.4 };
+                const accentStyle: React.CSSProperties = { color: '#5cd8da', fontWeight: 600 };
+
                 return (
-                  <div style={{ marginBottom: '12px' }}>
-                    <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '8px' }}>
+                  <div style={{ marginBottom: 16 }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#869393', marginBottom: 8 }}>
                       Такъми & Монтаж
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
-                      <div style={{
-                        background: 'rgba(255,255,255,0.03)',
-                        border: '1px solid rgba(46,181,183,0.25)',
-                        boxShadow: '0 0 10px rgba(46,181,183,0.1)',
-                        borderRadius: '8px', padding: '10px 12px',
-                      }}>
-                        <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Стръв & Захранка</div>
-                        <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>{displayGroundbait}<br/><span style={{ color: '#2eb5b7' }}>{displayBait}</span></div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+                      <div style={tileBase}>
+                        <div style={labelStyle}>Стръв</div>
+                        <div style={valueStyle}>{displayGroundbait}</div>
+                        <div style={{ ...valueStyle, ...accentStyle, fontSize: 12 }}>{displayBait}</div>
                       </div>
-                      <div style={{
-                        background: 'rgba(255,255,255,0.03)',
-                        border: '1px solid rgba(46,181,183,0.25)',
-                        boxShadow: '0 0 10px rgba(46,181,183,0.1)',
-                        borderRadius: '8px', padding: '10px 12px',
-                      }}>
-                        <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Влакно</div>
-                        <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}><span style={{ color: '#2eb5b7' }}>{displayLine}</span></div>
+                      <div style={tileBase}>
+                        <div style={labelStyle}>Влакно</div>
+                        <div style={{ ...valueStyle, ...accentStyle, fontSize: 15 }}>{displayLine}</div>
                       </div>
-                      <div style={{
-                        background: 'rgba(255,255,255,0.03)',
-                        border: '1px solid rgba(200,230,60,0.25)',
-                        boxShadow: '0 0 10px rgba(200,230,60,0.1)',
-                        borderRadius: '8px', padding: '10px 12px',
-                      }}>
-                        <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>Куки</div>
-                        <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>{displayHook}</div>
+                      <div style={tileBase}>
+                        <div style={labelStyle}>Куки</div>
+                        <div style={{ ...valueStyle, color: '#C8E63C', fontSize: 15, fontWeight: 600 }}>{displayHook}</div>
                       </div>
-                      <div style={{
-                        background: 'rgba(255,255,255,0.03)',
-                        border: '1px solid rgba(200,230,60,0.25)',
-                        boxShadow: '0 0 10px rgba(200,230,60,0.1)',
-                        borderRadius: '8px', padding: '10px 12px',
-                      }}>
-                        <div style={{ fontSize: '9px', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#a8b4b4', marginBottom: '4px' }}>
-                          {displayLures ? 'Воблери' : 'Монтаж'}
-                        </div>
-                        <div style={{ fontSize: '12px', color: '#dee4e3', lineHeight: 1.5 }}>
-                          <span style={{ color: '#2eb5b7' }}>{displayLures ?? displayRigs}</span>
-                        </div>
+                      <div style={tileBase}>
+                        <div style={labelStyle}>{displayLures ? 'Воблери' : 'Монтаж'}</div>
+                        <div style={{ ...valueStyle, ...accentStyle }}>{displayLures ?? displayRigs}</div>
                       </div>
                     </div>
                   </div>
                 );
               })()}
 
-              <div style={{ marginBottom: '12px' }}>
-                <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '12px' }}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+              {/* ═══════ ЕКО & ПРАВИЛА ═══════ */}
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#869393', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
                   Еко & Правила
                 </div>
 
@@ -557,24 +580,22 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 {selectedFish.minSize && (() => {
                   const pct = Math.min(100, (selectedFish.minSize / 100) * 100);
                   return (
-                    <div style={{ marginBottom: 14 }}>
-                      <div style={{ fontSize: 9, color: '#869393', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>Мин. размер</div>
-                      <div style={{ position: 'relative', height: 24 }}>
-                        {/* baseline */}
-                        <div style={{ position: 'absolute', bottom: 4, left: 0, right: 0, height: 1, background: '#3d4949' }} />
-                        {/* filled portion */}
-                        <div style={{ position: 'absolute', bottom: 4, left: 0, width: `${pct}%`, height: 1, background: '#2eb5b7' }} />
-                        {/* marker */}
-                        <div style={{ position: 'absolute', bottom: 2, left: `${pct}%`, transform: 'translateX(-50%)' }}>
-                          <div style={{ width: 1, height: 8, background: '#2eb5b7', margin: '0 auto' }} />
-                        </div>
-                        {/* label */}
-                        <div style={{ position: 'absolute', bottom: 12, left: `${pct}%`, transform: 'translateX(-50%)', fontSize: 10, fontWeight: 600, color: '#2eb5b7', whiteSpace: 'nowrap' }}>
-                          {selectedFish.minSize} см
-                        </div>
-                        {/* scale ends */}
-                        <div style={{ position: 'absolute', bottom: 0, left: 0, fontSize: 9, color: '#3d4949' }}>0</div>
-                        <div style={{ position: 'absolute', bottom: 0, right: 0, fontSize: 9, color: '#3d4949' }}>100 см</div>
+                    <div style={{
+                      background: 'rgba(255,255,255,0.03)',
+                      border: '1px solid rgba(255,255,255,0.05)',
+                      borderRadius: 8,
+                      padding: '10px 12px',
+                      marginBottom: 8,
+                    }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+                        <span style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', color: '#869393', textTransform: 'uppercase' }}>Мин. размер</span>
+                        <span style={{ fontSize: 14, fontWeight: 700, color: '#5cd8da' }}>{selectedFish.minSize} см</span>
+                      </div>
+                      <div style={{ position: 'relative', height: 6, background: 'rgba(255,255,255,0.05)', borderRadius: 3, overflow: 'hidden' }}>
+                        <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${pct}%`, background: 'linear-gradient(90deg, #2eb5b7, #5cd8da)', borderRadius: 3, boxShadow: '0 0 8px rgba(46,181,183,0.5)' }} />
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4, fontSize: 9, color: '#869393' }}>
+                        <span>0</span><span>100 см</span>
                       </div>
                     </div>
                   );
@@ -590,8 +611,14 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   const activeZones = zones.filter(z => selectedFish.altitudeBans![z.key]);
                   if (activeZones.length === 0) return null;
                   return (
-                    <div style={{ marginBottom: 12 }}>
-                      <div style={{ fontSize: 9, color: '#869393', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 6 }}>Забранен период</div>
+                    <div style={{
+                      background: 'rgba(255,255,255,0.03)',
+                      border: '1px solid rgba(255,255,255,0.05)',
+                      borderRadius: 8,
+                      padding: '10px 12px',
+                      marginBottom: 8,
+                    }}>
+                      <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', color: '#869393', textTransform: 'uppercase', marginBottom: 8 }}>Забранен период</div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                         {activeZones.map(z => {
                           const ban = selectedFish.altitudeBans![z.key]!;
@@ -599,12 +626,13 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                           return (
                             <div key={z.key} style={{
                               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                              padding: isBanned ? '4px 8px' : '2px 0',
+                              padding: '4px 8px',
                               borderRadius: 6,
-                              border: isBanned ? '1px solid rgba(220,60,60,0.6)' : 'none',
+                              background: isBanned ? 'rgba(220,60,60,0.1)' : 'transparent',
+                              border: isBanned ? '1px solid rgba(220,60,60,0.5)' : '1px solid transparent',
                             }}>
-                              <span style={{ fontSize: 11, color: '#869393' }}>{z.label}</span>
-                              <span style={{ fontSize: 11, color: isBanned ? '#DC3C3C' : '#869393' }}>{ban.start} – {ban.end}</span>
+                              <span style={{ fontSize: 11, fontWeight: 500, color: isBanned ? '#dee4e3' : '#a8b4b4' }}>{z.label}</span>
+                              <span style={{ fontSize: 11, fontWeight: 600, fontFamily: 'monospace', color: isBanned ? '#DC3C3C' : '#a8b4b4' }}>{ban.start} – {ban.end}</span>
                             </div>
                           );
                         })}
@@ -614,76 +642,83 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 })()}
 
                 <a href="https://iara.government.bg" target="_blank" rel="noreferrer"
-                  style={{ fontSize: 11, color: '#2eb5b7', textDecoration: 'none' }}>
+                  style={{ fontSize: 11, color: '#2eb5b7', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
                   iara.government.bg ↗
                 </a>
               </div>
 
-              <div style={{ borderTop: '0.5px solid #3d4949', padding: '14px 0', marginBottom: 12 }}>
+              {/* ═══════ КАЛКУЛАТОР ═══════ */}
+              <div style={{
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.05)',
+                borderRadius: 8,
+                padding: '12px 14px',
+                marginBottom: 12,
+              }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
-                  <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '.08em', textTransform: 'uppercase', color: '#869393' }}>Калкулатор за тегло</span>
+                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#869393' }}>Калкулатор за тегло</span>
                 </div>
 
-                <style>{`input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}`}</style>
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 9, color: '#a8b4b4', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>Дължина</div>
+                    <div style={{ fontSize: 9, color: '#869393', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 4, fontWeight: 600 }}>Дължина</div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                       <input type="number" placeholder="0" value={calcLen} autoFocus={false} tabIndex={-1}
                         onChange={e => setCalcLen(e.target.value)}
-                        style={{ background: 'transparent', border: 'none', borderBottom: '1px solid #a8b4b4', borderRadius: 0, outline: 'none', color: '#dee4e3', fontSize: 14, fontWeight: 500, width: '100%', minWidth: 0, padding: '4px 0', MozAppearance: 'textfield' } as React.CSSProperties} />
-                      <span style={{ fontSize: 11, color: '#3d4949' }}>см</span>
+                        style={{ background: 'transparent', border: 'none', borderBottom: '1px solid #3d4949', borderRadius: 0, outline: 'none', color: '#dee4e3', fontSize: 15, fontWeight: 600, width: '100%', minWidth: 0, padding: '4px 0', MozAppearance: 'textfield' } as React.CSSProperties} />
+                      <span style={{ fontSize: 11, color: '#869393' }}>см</span>
                     </div>
                   </div>
 
-                  <span style={{ fontSize: 16, color: '#3d4949', paddingBottom: 8 }}>×</span>
+                  <span style={{ fontSize: 14, color: '#3d4949', paddingBottom: 8 }}>×</span>
 
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 9, color: '#a8b4b4', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 4 }}>Обиколка</div>
+                    <div style={{ fontSize: 9, color: '#869393', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 4, fontWeight: 600 }}>Обиколка</div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                       <input type="number" placeholder="—" value={calcGirth} autoFocus={false} tabIndex={-1}
                         onChange={e => setCalcGirth(e.target.value)}
-                        style={{ background: 'transparent', border: 'none', borderBottom: '1px solid #a8b4b4', borderRadius: 0, outline: 'none', color: '#dee4e3', fontSize: 14, fontWeight: 500, width: '100%', minWidth: 0, padding: '4px 0', MozAppearance: 'textfield' } as React.CSSProperties} />
-                      <span style={{ fontSize: 11, color: '#3d4949' }}>см</span>
+                        style={{ background: 'transparent', border: 'none', borderBottom: '1px solid #3d4949', borderRadius: 0, outline: 'none', color: '#dee4e3', fontSize: 15, fontWeight: 600, width: '100%', minWidth: 0, padding: '4px 0', MozAppearance: 'textfield' } as React.CSSProperties} />
+                      <span style={{ fontSize: 11, color: '#869393' }}>см</span>
                     </div>
                   </div>
 
-                  <span style={{ fontSize: 16, color: '#3d4949', paddingBottom: 8 }}>=</span>
+                  <span style={{ fontSize: 14, color: '#3d4949', paddingBottom: 8 }}>=</span>
 
-                  <div style={{ minWidth: 70, textAlign: 'right', paddingBottom: 6 }}>
+                  <div style={{ minWidth: 72, textAlign: 'right', paddingBottom: 4 }}>
                     {calcLen ? (
-                      <span style={{ fontSize: 18, fontWeight: 700, color: '#C8E63C' }}>
+                      <span style={{ fontSize: 20, fontWeight: 700, color: '#C8E63C', textShadow: '0 0 12px rgba(200,230,60,0.3)' }}>
                         {calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))}
                       </span>
                     ) : (
-                      <span style={{ fontSize: 18, color: '#3d4949' }}>—</span>
+                      <span style={{ fontSize: 20, color: '#3d4949' }}>—</span>
                     )}
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10, paddingTop: 8, borderTop: '0.5px solid #3d4949' }}>
-                  <span style={{ fontSize: 10, color: '#3d4949' }}>~85% точност</span>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                  <span style={{ fontSize: 10, color: '#869393' }}>~85% точност</span>
                   <button onClick={() => setShowFormulaInfo(!showFormulaInfo)}
                     style={{ display: 'flex', alignItems: 'center', gap: 3, background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3d4949" strokeWidth="1.5" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                    <span style={{ fontSize: 10, color: '#3d4949' }}>за формулата</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#869393" strokeWidth="1.5" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                    <span style={{ fontSize: 10, color: '#869393' }}>за формулата</span>
                   </button>
                 </div>
 
                 {showFormulaInfo && (
-                  <div style={{ fontSize: 11, color: '#869393', lineHeight: 1.5, marginTop: 8, paddingTop: 8, borderTop: '0.5px solid #3d4949' }}>
-                    Формулата принадлежи на <span style={{ color: '#2eb5b7', fontWeight: 500 }}>Милко Георгиев</span> — легенда в българското сомарство. Проверена в практиката, с точност до ~85%.
+                  <div style={{ fontSize: 11, color: '#a8b4b4', lineHeight: 1.5, marginTop: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                    Формулата принадлежи на <span style={{ color: '#5cd8da', fontWeight: 600 }}>Милко Георгиев</span> — легенда в българското сомарство. Проверена в практиката, с точност до ~85%.
                   </div>
                 )}
               </div>
 
+              {/* ═══════ ЧЕСТА ГРЕШКА ═══════ */}
               {advice?.mistake && (
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', background: 'rgba(147,0,10,0.1)', border: '0.5px solid rgba(255,180,171,0.2)', borderRadius: '12px', padding: '10px 12px' }}>
-                  <div style={{ width: '24px', height: '24px', borderRadius: '6px', background: 'rgba(147,0,10,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '11px', fontWeight: 700, color: '#ffb4ab' }}>!</div>
+                <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start', background: 'rgba(220,60,60,0.08)', border: '1px solid rgba(220,60,60,0.3)', borderRadius: 8, padding: '10px 12px' }}>
+                  <div style={{ width: 22, height: 22, borderRadius: 6, background: 'rgba(220,60,60,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 12, fontWeight: 700, color: '#ff8080' }}>!</div>
                   <div>
-                    <div style={{ fontSize: '10px', fontWeight: 600, letterSpacing: '0.08em', color: 'rgba(255,180,171,0.8)', textTransform: 'uppercase', marginBottom: '3px' }}>Честа грешка</div>
-                    <p style={{ fontSize: '12px', color: 'rgba(222,228,227,0.7)', lineHeight: 1.55 }}>{advice.mistake}</p>
+                    <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.1em', color: '#ff8080', textTransform: 'uppercase', marginBottom: 3 }}>Честа грешка</div>
+                    <p style={{ fontSize: 12.5, color: '#dee4e3', lineHeight: 1.5 }}>{advice.mistake}</p>
                   </div>
                 </div>
               )}
