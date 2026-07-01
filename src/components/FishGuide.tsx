@@ -632,7 +632,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       onChange={e => setCalcLen(e.target.value)}
                       onFocus={e => { (e.target as HTMLInputElement).style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.18), 0 0 20px rgba(46,181,183,0.22)'; }}
                       onBlur={e => { (e.target as HTMLInputElement).style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.18), 0 0 18px rgba(46,181,183,0.14)'; }}
-                      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 20, fontWeight: 700, color: 'rgba(125,135,145,0.85)', background: 'linear-gradient(180deg, #55cfd1 0%, #47c4c6 100%)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 28, height: 84, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18), 0 0 18px rgba(46,181,183,0.14)', MozAppearance: 'textfield' } as React.CSSProperties} />
+                      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 18, fontWeight: 700, color: 'rgba(125,135,145,0.85)', background: 'linear-gradient(180deg, #55A3A5 0%, #499A9B 100%)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 22, height: 67, padding: 0, width: '90%', margin: '0 auto', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18), 0 0 18px rgba(46,181,183,0.14)', MozAppearance: 'textfield' } as React.CSSProperties} />
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', paddingBottom: 10, flexShrink: 0 }}>
@@ -645,7 +645,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       onChange={e => setCalcGirth(e.target.value)}
                       onFocus={e => { (e.target as HTMLInputElement).style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.18), 0 0 20px rgba(46,181,183,0.22)'; }}
                       onBlur={e => { (e.target as HTMLInputElement).style.boxShadow = 'inset 0 1px 0 rgba(255,255,255,0.18), 0 0 18px rgba(46,181,183,0.14)'; }}
-                      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 20, fontWeight: 700, color: 'rgba(125,135,145,0.85)', background: 'linear-gradient(180deg, #55cfd1 0%, #47c4c6 100%)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 28, height: 84, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18), 0 0 18px rgba(46,181,183,0.14)', MozAppearance: 'textfield' } as React.CSSProperties} />
+                      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 18, fontWeight: 700, color: 'rgba(125,135,145,0.85)', background: 'linear-gradient(180deg, #55A3A5 0%, #499A9B 100%)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 22, height: 67, padding: 0, width: '90%', margin: '0 auto', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18), 0 0 18px rgba(46,181,183,0.14)', MozAppearance: 'textfield' } as React.CSSProperties} />
                   </div>
                 </div>
 
