@@ -370,25 +370,25 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               {/* ═══════ SECTION 1 — HEADER ═══════ */}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 20 }}>
                 {/* VT323 score */}
-                <div style={{ fontFamily: "'VT323', monospace", fontSize: 52, color: '#dee4e3', lineHeight: 1 }}>
+                <div style={{ fontFamily: "'VT323', monospace", fontSize: 64, color: '#2eb5b7', lineHeight: 1, letterSpacing: 2, textShadow: '0 0 10px rgba(46,181,183,0.3)', marginBottom: 8 }}>
                   {selectedFish.score} / 100
                 </div>
                 {/* Category label */}
-                <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#869393', marginTop: 4, marginBottom: 0 }}>
+                <p style={{ fontSize: 11, letterSpacing: '0.15em', textTransform: 'uppercase', color: '#869393', marginBottom: 4 }}>
                   {selectedFish.fishType ?? 'Сладководна риба'}
                 </p>
                 {/* Fish name */}
-                <h2 style={{ fontSize: 28, fontWeight: 700, color: '#dee4e3', textAlign: 'center', margin: '4px 0 2px' }}>
+                <h2 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 32, fontWeight: 700, color: '#dee4e3', textAlign: 'center', margin: '0 0 2px' }}>
                   {selectedFish.name}
                 </h2>
                 {/* Latin name */}
                 {selectedFish.latinName && (
-                  <p style={{ fontSize: 13, fontStyle: 'italic', color: '#a8b4b4', textAlign: 'center', margin: 0 }}>
+                  <p style={{ fontSize: 14, fontStyle: 'italic', color: '#a8b4b4', textAlign: 'center', marginBottom: 20 }}>
                     {selectedFish.latinName}
                   </p>
                 )}
                 {/* Fish icon */}
-                <div style={{ margin: '14px 0 10px', filter: 'drop-shadow(0 0 12px rgba(46,181,183,0.5))' }}>
+                <div style={{ display: 'block', margin: '0 auto 16px', filter: 'drop-shadow(0px 0px 12px rgba(46,181,183,0.5))' }}>
                   {FISH_ICON_MAP[selectedFish.name]
                     ? FISH_ICON_MAP[selectedFish.name]({ size: 160, strokeWidth: 1.5, stroke: '#2eb5b7' })
                     : <span style={{ fontSize: '8rem' }}>{selectedFish.emoji}</span>
@@ -396,37 +396,40 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 </div>
                 {/* Description */}
                 {selectedFish.character && (
-                  <p style={{ fontSize: 14, color: '#a8b4b4', lineHeight: 1.6, textAlign: 'center', padding: '0 16px', marginBottom: 12 }}>
+                  <p style={{ fontSize: 14, color: '#a8b4b4', lineHeight: 1.5, textAlign: 'center', padding: '0 10px', marginBottom: 16 }}>
                     {selectedFish.character}
                   </p>
                 )}
                 {/* Recommended badge */}
                 {selectedFish.score >= 61 && (
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'transparent', border: '1px solid #C8E63C', borderRadius: 20, padding: '6px 16px', color: '#C8E63C', fontSize: 12, fontWeight: 600, letterSpacing: '0.08em' }}>
-                    ★ ПРЕПОРЪЧАНО ДНЕС
+                  <div style={{ textAlign: 'center' }}>
+                    <span style={{ display: 'inline-block', border: '1px solid #C8E63C', color: '#C8E63C', padding: '6px 16px', borderRadius: 100, fontSize: 12, fontWeight: 700, letterSpacing: '0.05em', background: 'rgba(200,230,60,0.03)' }}>
+                      ★ ПРЕПОРЪЧАНО ДНЕС
+                    </span>
                   </div>
                 )}
               </div>
 
-              {/* ═══════ SECTION 2 — TECHNIQUE PILLS ═══════ */}
+              {/* ═══════ SECTION 2 — ТЕХНИКА БУТОНИ ═══════ */}
               {(() => {
                 const techniques = selectedFish.techniques?.[terrain] ?? [];
                 if (techniques.length === 0) return null;
                 return (
-                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 20 }}>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 20 }}>
                     {techniques.map(t => {
                       const active = selectedTechnique === t;
                       return (
                         <button key={t}
                           onClick={() => setSelectedTechnique(t === selectedTechnique ? null : t)}
                           style={{
-                            padding: '8px 20px',
-                            borderRadius: 20,
-                            border: active ? 'none' : '1px solid #3d4949',
+                            flex: 1,
+                            padding: '10px',
+                            borderRadius: 10,
+                            border: active ? '1px solid #2eb5b7' : '1px solid rgba(255,255,255,0.1)',
                             background: active ? '#2eb5b7' : 'transparent',
                             color: active ? '#0B0F1A' : '#a8b4b4',
-                            fontSize: 14,
-                            fontWeight: active ? 600 : 400,
+                            fontSize: 13,
+                            fontWeight: active ? 700 : 500,
                             cursor: 'pointer',
                             minHeight: 44,
                             transition: 'all 0.2s ease',
@@ -438,35 +441,31 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 );
               })()}
 
-              {/* ═══════ SECTION 3 — AI СЪВЕТ ═══════ */}
+              {/* ═══════ SECTION 3 — AI ПОДХОД ═══════ */}
               <div style={{
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(46,181,183,0.2)',
-                borderRadius: 12,
-                padding: '14px 16px',
+                background: '#1b2121',
+                border: '1px solid rgba(46,181,183,0.15)',
+                borderRadius: 16,
+                padding: 16,
                 marginBottom: 20,
               }}>
-                {/* Header row */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2EB5B7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
-                    <path d="M12 6v12"/>
-                    <path d="M8 10c-1-1-2.5-1-3.5 0s-1 2.5 0 3.5l3.5-3.5z"/>
-                    <path d="M16 10c1-1 2.5-1 3.5 0s1 2.5 0 3.5l-3.5-3.5z"/>
-                    <circle cx="12" cy="12" r="1" fill="#2EB5B7"/>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="2.5">
+                    <circle cx="12" cy="12" r="10" strokeDasharray="3 3"/>
+                    <circle cx="12" cy="12" r="6"/>
+                    <circle cx="12" cy="12" r="1" fill="#2eb5b7"/>
+                    <line x1="12" y1="12" x2="20" y2="6" strokeLinecap="round"/>
                   </svg>
-                  <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393', flex: 1 }}>AI ПОДХОД</span>
-                  <span style={{ background: 'rgba(200,230,60,0.1)', border: '1px solid rgba(200,230,60,0.25)', borderRadius: 4, padding: '2px 6px', fontSize: 10, fontWeight: 600, color: '#C8E63C' }}>AI</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#2eb5b7' }}>AI ПОДХОД</span>
+                  <span style={{ marginLeft: 'auto', background: 'rgba(200,230,60,0.1)', border: '1px solid rgba(200,230,60,0.25)', borderRadius: 4, padding: '2px 6px', fontSize: 10, fontWeight: 600, color: '#C8E63C' }}>AI</span>
                 </div>
 
-                {/* MeteoAlert strip */}
                 {meteoAlert?.level && (
-                  <div style={{ background: 'rgba(255,160,50,0.08)', border: '1px solid rgba(255,160,50,0.25)', borderRadius: 8, padding: '8px 10px', color: '#ffaa33', fontSize: 12, marginBottom: 8 }}>
+                  <div style={{ background: 'rgba(255,160,50,0.08)', border: '1px solid rgba(255,160,50,0.25)', borderRadius: 8, padding: '8px 10px', color: '#ffaa33', fontSize: 12, marginBottom: 10 }}>
                     {meteoAlert.level === 'red' ? 'Червен' : meteoAlert.level === 'orange' ? 'Оранжев' : 'Жълт'} код{meteoAlert.event ? ` · ${translateAlert(meteoAlert.event)}` : ''}
                   </div>
                 )}
 
-                {/* Loading skeleton */}
                 {aiLoading && (
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
@@ -479,18 +478,16 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   </div>
                 )}
 
-                {/* Error */}
                 {!aiLoading && aiError && (
                   <p style={{ fontSize: 11, color: '#DC3C3C', fontFamily: 'monospace', wordBreak: 'break-all' }}>{aiError}</p>
                 )}
 
-                {/* Advice text */}
                 {!aiLoading && aiAdvice && (
-                  <p style={{ fontSize: 14, lineHeight: 1.65, color: '#dee4e3', margin: 0 }}>{aiAdvice}</p>
+                  <p style={{ fontSize: 13, lineHeight: 1.6, color: '#dee4e3', margin: 0 }}>{aiAdvice}</p>
                 )}
               </div>
 
-              {/* ═══════ SECTION 4 — ТАКЪМИ & МОНТАЖ (Bento Grid) ═══════ */}
+              {/* ═══════ SECTION 4 — ТАКЪМИ & МОНТАЖ ═══════ */}
               {(() => {
                 const td = selectedTechnique ? selectedFish.techniqueData?.[selectedTechnique] : null;
                 const displayGroundbait = td?.groundbait ?? modalData.groundbaitTip;
@@ -503,38 +500,42 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 const tile: React.CSSProperties = {
                   background: '#1b2121',
                   border: '1px solid rgba(255,255,255,0.05)',
-                  borderRadius: 8,
+                  borderRadius: 14,
                   padding: 12,
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: 4,
                 };
-                const tileLabel: React.CSSProperties = { fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393' };
-                const tileValue: React.CSSProperties = { fontSize: 22, fontWeight: 700, color: '#2eb5b7', lineHeight: 1.2 };
-                const tileSub: React.CSSProperties = { fontSize: 12, color: '#5cd8da', lineHeight: 1.4 };
+                const tileLabel: React.CSSProperties = { fontSize: 10, textTransform: 'uppercase', color: '#869393', letterSpacing: '0.05em', marginBottom: 8 };
+
+                const renderTileValue = (val: string, forceSm?: boolean) => {
+                  const isLong = forceSm || (val?.length ?? 0) > 14;
+                  return isLong
+                    ? <div style={{ fontSize: 16, fontWeight: 600, color: '#2eb5b7', lineHeight: 1.3 }}>{val}</div>
+                    : <div style={{ fontSize: 22, fontWeight: 700, color: '#2eb5b7', marginBottom: 4 }}><span style={{ color: '#2eb5b7', marginRight: 4 }}>●</span>{val}</div>;
+                };
 
                 return (
                   <div style={{ marginBottom: 20 }}>
-                    <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393', marginBottom: 10 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#869393', marginBottom: 10 }}>
                       Такъми & Монтаж
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                       <div style={tile}>
                         <div style={tileLabel}>Стръв</div>
-                        <div style={tileValue}><span style={{ color: '#2eb5b7', marginRight: 6 }}>●</span>{displayGroundbait}</div>
-                        {displayBait && <div style={tileSub}>{displayBait}</div>}
+                        {renderTileValue(displayGroundbait)}
+                        {displayBait && <div style={{ fontSize: 12, color: '#a8b4b4', lineHeight: 1.4 }}>{displayBait}</div>}
                       </div>
                       <div style={tile}>
                         <div style={tileLabel}>Влакно</div>
-                        <div style={tileValue}><span style={{ color: '#2eb5b7', marginRight: 6 }}>●</span>{displayLine}</div>
+                        {renderTileValue(displayLine)}
                       </div>
                       <div style={tile}>
                         <div style={tileLabel}>Куки</div>
-                        <div style={tileValue}><span style={{ color: '#2eb5b7', marginRight: 6 }}>●</span>{displayHook}</div>
+                        {renderTileValue(displayHook)}
                       </div>
                       <div style={tile}>
                         <div style={tileLabel}>{displayLures ? 'Воблери' : 'Монтаж'}</div>
-                        <div style={tileValue}><span style={{ color: '#2eb5b7', marginRight: 6 }}>●</span>{displayLures ?? displayRigs}</div>
+                        {renderTileValue(displayLures ?? displayRigs ?? '')}
                       </div>
                     </div>
                   </div>
@@ -542,15 +543,15 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               })()}
 
               {/* ═══════ SECTION 5 — ЕКО & ПРАВИЛА ═══════ */}
-              <div style={{ marginBottom: 20 }}>
-                <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393', marginBottom: 10 }}>
+              <div style={{ background: '#1b2121', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: 16, marginBottom: 20 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#869393', marginBottom: 12 }}>
                   Еко & Правила
                 </div>
 
                 {selectedFish.minSize && (() => {
                   const pct = Math.min(100, (selectedFish.minSize / 100) * 100);
                   return (
-                    <div style={{ background: '#1b2121', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 8, padding: '14px 16px', marginBottom: 8 }}>
+                    <div style={{ marginBottom: 12 }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
                         <span style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', color: '#869393', textTransform: 'uppercase' }}>Мин. размер</span>
                         <span style={{ fontSize: 14, fontWeight: 700, color: '#5cd8da' }}>{selectedFish.minSize} см</span>
@@ -574,16 +575,16 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   const activeZones = zones.filter(z => selectedFish.altitudeBans![z.key]);
                   if (activeZones.length === 0) return null;
                   return (
-                    <div style={{ background: '#1b2121', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 8, padding: '14px 16px', marginBottom: 8 }}>
+                    <div style={{ marginBottom: 12 }}>
                       <div style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', color: '#869393', textTransform: 'uppercase', marginBottom: 8 }}>Забранен период</div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                         {activeZones.map(z => {
                           const ban = selectedFish.altitudeBans![z.key]!;
                           const isBanned = isInBanPeriod(ban.start, ban.end);
                           return (
-                            <div key={z.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 0' }}>
-                              <span style={{ fontSize: 11, fontWeight: 500, color: '#a8b4b4' }}>{z.label}</span>
-                              <span style={{ fontSize: 11, fontWeight: 600, fontFamily: 'monospace', color: isBanned ? '#ff6b6b' : '#a8b4b4' }}>{ban.start} – {ban.end}</span>
+                            <div key={z.key} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
+                              <span style={{ color: isBanned ? '#ff6b6b' : '#dee4e3' }}>{z.label}</span>
+                              <span style={{ color: isBanned ? '#ff6b6b' : '#dee4e3', fontFamily: 'monospace' }}>{ban.start} – {ban.end}</span>
                             </div>
                           );
                         })}
@@ -599,41 +600,35 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               </div>
 
               {/* ═══════ SECTION 6 — КАЛКУЛАТОР ═══════ */}
-              <div style={{ background: '#1b2121', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 8, padding: '14px 16px', marginBottom: 20 }}>
-                <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393', marginBottom: 12 }}>
+              <div style={{ background: '#1b2121', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: 16, marginBottom: 20 }}>
+                <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#869393', marginBottom: 14 }}>
                   Калкулатор за тегло
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8 }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 10, color: '#869393', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4, fontWeight: 600 }}>Дължина</div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <input type="number" placeholder="0" value={calcLen} autoFocus={false} tabIndex={-1}
-                        onChange={e => setCalcLen(e.target.value)}
-                        onFocus={e => { (e.target as HTMLInputElement).style.borderColor = '#2eb5b7'; }}
-                        onBlur={e => { (e.target as HTMLInputElement).style.borderColor = '#3d4949'; }}
-                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid #3d4949', borderRadius: 6, outline: 'none', color: '#dee4e3', fontSize: 16, width: '100%', minWidth: 0, padding: '10px 12px', MozAppearance: 'textfield', transition: 'border-color 0.15s' } as React.CSSProperties} />
-                      <span style={{ fontSize: 11, color: '#869393' }}>см</span>
-                    </div>
+                    <div style={{ fontSize: 11, color: '#869393', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6, fontWeight: 600 }}>Дължина</div>
+                    <input type="number" placeholder="0" value={calcLen} autoFocus={false} tabIndex={-1}
+                      onChange={e => setCalcLen(e.target.value)}
+                      onFocus={e => { (e.target as HTMLInputElement).style.borderColor = '#2eb5b7'; }}
+                      onBlur={e => { (e.target as HTMLInputElement).style.borderColor = 'rgba(255,255,255,0.1)'; }}
+                      style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: 10, fontFamily: "'VT323', monospace", fontSize: 20, color: '#2eb5b7', textAlign: 'center', width: '100%', outline: 'none', MozAppearance: 'textfield', transition: 'border-color 0.15s' } as React.CSSProperties} />
                   </div>
 
-                  <span style={{ fontSize: 14, color: '#3d4949', paddingBottom: 14 }}>×</span>
+                  <span style={{ fontSize: 18, color: '#3d4949', paddingBottom: 10 }}>×</span>
 
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 10, color: '#869393', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4, fontWeight: 600 }}>Обиколка</div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <input type="number" placeholder="—" value={calcGirth} autoFocus={false} tabIndex={-1}
-                        onChange={e => setCalcGirth(e.target.value)}
-                        onFocus={e => { (e.target as HTMLInputElement).style.borderColor = '#2eb5b7'; }}
-                        onBlur={e => { (e.target as HTMLInputElement).style.borderColor = '#3d4949'; }}
-                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid #3d4949', borderRadius: 6, outline: 'none', color: '#dee4e3', fontSize: 16, width: '100%', minWidth: 0, padding: '10px 12px', MozAppearance: 'textfield', transition: 'border-color 0.15s' } as React.CSSProperties} />
-                      <span style={{ fontSize: 11, color: '#869393' }}>см</span>
-                    </div>
+                    <div style={{ fontSize: 11, color: '#869393', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6, fontWeight: 600 }}>Обиколка</div>
+                    <input type="number" placeholder="—" value={calcGirth} autoFocus={false} tabIndex={-1}
+                      onChange={e => setCalcGirth(e.target.value)}
+                      onFocus={e => { (e.target as HTMLInputElement).style.borderColor = '#2eb5b7'; }}
+                      onBlur={e => { (e.target as HTMLInputElement).style.borderColor = 'rgba(255,255,255,0.1)'; }}
+                      style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, padding: 10, fontFamily: "'VT323', monospace", fontSize: 20, color: '#2eb5b7', textAlign: 'center', width: '100%', outline: 'none', MozAppearance: 'textfield', transition: 'border-color 0.15s' } as React.CSSProperties} />
                   </div>
 
-                  <span style={{ fontSize: 14, color: '#3d4949', paddingBottom: 14 }}>=</span>
+                  <span style={{ fontSize: 18, color: '#3d4949', paddingBottom: 10 }}>=</span>
 
-                  <div style={{ minWidth: 72, textAlign: 'right', paddingBottom: 6 }}>
+                  <div style={{ minWidth: 80, textAlign: 'right', paddingBottom: 6 }}>
                     {calcLen ? (
                       <span style={{ fontSize: 28, fontWeight: 700, fontFamily: "'VT323', monospace", color: '#C8E63C' }}>
                         {calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))}
@@ -644,10 +639,10 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 10, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 12, paddingTop: 10, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                   <span style={{ fontSize: 11, color: '#869393' }}>~85% точност</span>
                   <button onClick={() => setShowFormulaInfo(!showFormulaInfo)}
-                    style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#2eb5b7', fontSize: 11 }}>
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#2eb5b7', fontSize: 11 }}>
                     ⓘ за формулата
                   </button>
                 </div>
@@ -661,15 +656,12 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
               {/* ═══════ SECTION 7 — ТАКТИЧЕСКА БЕЛЕЖКА ═══════ */}
               {advice?.mistake && (
-                <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 12, padding: '14px 16px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a8b4b4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="10"/>
-                      <path d="M12 16v-4M12 8h.01"/>
-                    </svg>
-                    <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#a8b4b4' }}>Тактическа бележка</span>
+                <div style={{ background: 'rgba(27,33,33,0.5)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 14, padding: 14 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                    <span style={{ fontSize: 13, color: '#869393' }}>ⓘ</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393' }}>Тактическа бележка</span>
                   </div>
-                  <p style={{ fontSize: 13, lineHeight: 1.6, color: '#dee4e3', margin: 0 }}>{advice.mistake}</p>
+                  <p style={{ fontSize: 12, lineHeight: 1.6, color: '#a8b4b4', margin: 0 }}>{advice.mistake}</p>
                 </div>
               )}
               </div>
