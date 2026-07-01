@@ -604,7 +604,9 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               </div>
 
               {/* ═══════ SECTION 6 — КАЛКУЛАТОР ═══════ */}
-              <div style={{ background: '#1b2121', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: 16, marginBottom: 20 }}>
+              <div style={{ position: 'relative', background: '#141A20', borderRadius: 30, marginBottom: 20, overflow: 'hidden' }}>
+                <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 15% 40%, rgba(0,110,255,.12), transparent 50%)', pointerEvents: 'none' }} />
+                <div style={{ position: 'relative', zIndex: 1, background: 'linear-gradient(180deg, #1B232A 0%, #151B20 100%)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 30, boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.35), 0 10px 30px rgba(0,0,0,0.25)', padding: 16 }}>
 
                 {/* Ред 1 — заглавие + резултат */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
@@ -614,12 +616,12 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       <line x1="12" y1="20" x2="12" y2="4"/>
                       <line x1="6" y1="20" x2="6" y2="14"/>
                     </svg>
-                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, fontWeight: 700, color: '#dee4e3', textTransform: 'uppercase', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>Калкулатор за тегло</span>
+                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, fontWeight: 700, color: '#D9DDE0', textTransform: 'uppercase', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>Калкулатор за тегло</span>
                   </div>
-                  <div style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 16, fontWeight: 700, color: '#dee4e3', letterSpacing: '0.04em' }}>
+                  <div style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 16, fontWeight: 700, color: 'rgba(174,180,187,.72)', letterSpacing: '0.04em' }}>
                     {calcLen
-                      ? <>{calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))}<span style={{ fontSize: 12, color: '#869393', fontWeight: 400, marginLeft: 4 }}>КГ</span></>
-                      : <>0.00<span style={{ fontSize: 12, color: '#3d4949', fontWeight: 400, marginLeft: 4 }}>КГ</span></>
+                      ? <>{calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))}<span style={{ fontSize: 12, color: '#8B959D', fontWeight: 400, marginLeft: 4 }}>КГ</span></>
+                      : <>0.00<span style={{ fontSize: 12, color: '#8B959D', fontWeight: 400, marginLeft: 4 }}>КГ</span></>
                     }
                   </div>
                 </div>
@@ -627,43 +629,44 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 {/* Ред 2 — inputs */}
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 10 }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>[ Дължина ]</div>
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#8B959D', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>[ Дължина ]</div>
                     <input type="number" placeholder="0.00" value={calcLen} autoFocus={false} tabIndex={-1}
                       onChange={e => setCalcLen(e.target.value)}
-                      onFocus={e => { (e.target as HTMLInputElement).style.background = '#d7f05e'; }}
-                      onBlur={e => { (e.target as HTMLInputElement).style.background = '#C8E63C'; }}
-                      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 20, fontWeight: 700, color: '#0B0F1A', background: '#C8E63C', border: 'none', borderRadius: 10, padding: '11px 0', width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxShadow: 'none', MozAppearance: 'textfield' } as React.CSSProperties} />
+                      onFocus={e => { (e.target as HTMLInputElement).style.background = 'linear-gradient(180deg, #83E6ED 0%, #5FD3DD 100%)'; }}
+                      onBlur={e => { (e.target as HTMLInputElement).style.background = 'linear-gradient(180deg, #74E2EA 0%, #55CDD8 100%)'; }}
+                      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 20, fontWeight: 700, color: '#0B0F1A', background: 'linear-gradient(180deg, #74E2EA 0%, #55CDD8 100%)', border: 'none', borderRadius: 18, padding: '11px 0', width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxShadow: 'inset 0 1px 0 rgba(255,255,255,.25), 0 0 25px rgba(84,220,230,.12)', MozAppearance: 'textfield' } as React.CSSProperties} />
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', paddingBottom: 10, flexShrink: 0 }}>
-                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 700, color: '#C8E63C', letterSpacing: '0.02em' }}>X =</span>
+                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 700, color: '#8B959D', letterSpacing: '0.02em' }}>X =</span>
                   </div>
 
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>[ Обиколка ]</div>
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#8B959D', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>[ Обиколка ]</div>
                     <input type="number" placeholder="0.00" value={calcGirth} autoFocus={false} tabIndex={-1}
                       onChange={e => setCalcGirth(e.target.value)}
-                      onFocus={e => { (e.target as HTMLInputElement).style.background = '#d7f05e'; }}
-                      onBlur={e => { (e.target as HTMLInputElement).style.background = '#C8E63C'; }}
-                      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 20, fontWeight: 700, color: '#0B0F1A', background: '#C8E63C', border: 'none', borderRadius: 10, padding: '11px 0', width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxShadow: 'none', MozAppearance: 'textfield' } as React.CSSProperties} />
+                      onFocus={e => { (e.target as HTMLInputElement).style.background = 'linear-gradient(180deg, #83E6ED 0%, #5FD3DD 100%)'; }}
+                      onBlur={e => { (e.target as HTMLInputElement).style.background = 'linear-gradient(180deg, #74E2EA 0%, #55CDD8 100%)'; }}
+                      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 20, fontWeight: 700, color: '#0B0F1A', background: 'linear-gradient(180deg, #74E2EA 0%, #55CDD8 100%)', border: 'none', borderRadius: 18, padding: '11px 0', width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxShadow: 'inset 0 1px 0 rgba(255,255,255,.25), 0 0 25px rgba(84,220,230,.12)', MozAppearance: 'textfield' } as React.CSSProperties} />
                   </div>
                 </div>
 
                 {/* Ред 3 — footer */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393' }}>Въведи размерите на улова</span>
+                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#8B959D' }}>Въведи размерите на улова</span>
                   <button onClick={() => setShowFormulaInfo(!showFormulaInfo)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#869393', fontSize: 13, lineHeight: 1 }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#8B959D', fontSize: 13, lineHeight: 1 }}
                     title="За формулата">
                     ✦
                   </button>
                 </div>
 
                 {showFormulaInfo && (
-                  <div style={{ fontSize: 11, color: '#a8b4b4', lineHeight: 1.5, marginTop: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ fontSize: 11, color: '#8B959D', lineHeight: 1.5, marginTop: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                     Формулата принадлежи на <span style={{ color: '#5cd8da', fontWeight: 600 }}>Милко Георгиев</span> — легенда в българското сомарство. Проверена в практиката, с точност до ~85%.
                   </div>
                 )}
+                </div>
               </div>
 
               {/* ═══════ SECTION 7 — ТАКТИЧЕСКА БЕЛЕЖКА ═══════ */}
