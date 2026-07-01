@@ -607,57 +607,55 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               <div style={{ background: '#1b2121', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 16, padding: 16, marginBottom: 20 }}>
 
                 {/* Ред 1 — заглавие + резултат */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="2.5">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="2.5" style={{ flexShrink: 0 }}>
                       <line x1="18" y1="20" x2="18" y2="10"/>
                       <line x1="12" y1="20" x2="12" y2="4"/>
                       <line x1="6" y1="20" x2="6" y2="14"/>
                     </svg>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: '#dee4e3', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Калкулатор за тегло</span>
+                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, fontWeight: 700, color: '#dee4e3', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Калкулатор за тегло</span>
                   </div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: '#dee4e3' }}>
+                  <div style={{ fontFamily: "'Orbitron', monospace", fontSize: 16, fontWeight: 700, color: '#dee4e3', letterSpacing: '0.04em' }}>
                     {calcLen
-                      ? <>{calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))} <span style={{ fontSize: 11, color: '#869393', fontWeight: 400 }}>КГ</span></>
-                      : <span style={{ fontSize: 14, color: '#3d4949' }}>—</span>
+                      ? <>{calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))}<span style={{ fontSize: 12, color: '#869393', fontWeight: 400, marginLeft: 4 }}>КГ</span></>
+                      : <>0.00<span style={{ fontSize: 12, color: '#3d4949', fontWeight: 400, marginLeft: 4 }}>КГ</span></>
                     }
                   </div>
                 </div>
 
                 {/* Ред 2 — inputs */}
-                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 8 }}>
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 10 }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: '#869393', textAlign: 'center', marginBottom: 6 }}>Дължина</div>
-                    <input type="number" placeholder="0" value={calcLen} autoFocus={false} tabIndex={-1}
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>[ Дължина ]</div>
+                    <input type="number" placeholder="0.00" value={calcLen} autoFocus={false} tabIndex={-1}
                       onChange={e => setCalcLen(e.target.value)}
-                      onFocus={e => { (e.target as HTMLInputElement).style.background = '#5cd8da'; }}
+                      onFocus={e => { (e.target as HTMLInputElement).style.background = '#34c5c7'; }}
                       onBlur={e => { (e.target as HTMLInputElement).style.background = '#2eb5b7'; }}
-                      style={{ background: '#2eb5b7', border: 'none', borderRadius: 10, padding: '12px 0', width: '100%', textAlign: 'center', fontSize: 22, fontWeight: 700, color: '#0B0F1A', outline: 'none', MozAppearance: 'textfield', display: 'block' } as React.CSSProperties} />
+                      style={{ fontFamily: "'Orbitron', monospace", fontSize: 20, fontWeight: 700, color: '#0B0F1A', background: '#2eb5b7', border: 'none', borderRadius: 10, padding: '11px 0', width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxShadow: 'none', MozAppearance: 'textfield' } as React.CSSProperties} />
                   </div>
 
-                  <span style={{ fontSize: 28, fontWeight: 700, color: '#C8E63C', paddingBottom: 10, flexShrink: 0 }}>×</span>
+                  <div style={{ display: 'flex', alignItems: 'center', paddingBottom: 10, flexShrink: 0 }}>
+                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 700, color: '#2eb5b7', letterSpacing: '0.02em' }}>X =</span>
+                  </div>
 
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: '#869393', textAlign: 'center', marginBottom: 6 }}>Обиколка</div>
-                    <input type="number" placeholder="—" value={calcGirth} autoFocus={false} tabIndex={-1}
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>[ Обиколка ]</div>
+                    <input type="number" placeholder="0.00" value={calcGirth} autoFocus={false} tabIndex={-1}
                       onChange={e => setCalcGirth(e.target.value)}
-                      onFocus={e => { (e.target as HTMLInputElement).style.background = '#5cd8da'; }}
+                      onFocus={e => { (e.target as HTMLInputElement).style.background = '#34c5c7'; }}
                       onBlur={e => { (e.target as HTMLInputElement).style.background = '#2eb5b7'; }}
-                      style={{ background: '#2eb5b7', border: 'none', borderRadius: 10, padding: '12px 0', width: '100%', textAlign: 'center', fontSize: 22, fontWeight: 700, color: '#0B0F1A', outline: 'none', MozAppearance: 'textfield', display: 'block' } as React.CSSProperties} />
+                      style={{ fontFamily: "'Orbitron', monospace", fontSize: 20, fontWeight: 700, color: '#0B0F1A', background: '#2eb5b7', border: 'none', borderRadius: 10, padding: '11px 0', width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxShadow: 'none', MozAppearance: 'textfield' } as React.CSSProperties} />
                   </div>
                 </div>
 
-                {/* Ред 3 — помощен текст */}
-                <div style={{ fontSize: 11, color: '#869393', marginBottom: 12 }}>
-                  Въведи размерите на улова
-                </div>
-
-                {/* Ред 4 — footer */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: 10, fontSize: 11 }}>
-                  <span style={{ color: '#869393' }}>~85% точност</span>
+                {/* Ред 3 — footer */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393' }}>Въведи размерите на улова</span>
                   <button onClick={() => setShowFormulaInfo(!showFormulaInfo)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#2eb5b7', fontSize: 11 }}>
-                    ⓘ за формулата
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#869393', fontSize: 13, lineHeight: 1 }}
+                    title="За формулата">
+                    ✦
                   </button>
                 </div>
 
