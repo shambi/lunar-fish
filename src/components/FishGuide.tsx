@@ -371,20 +371,20 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 20 }}>
 
                 {/* SCORE */}
-                <div style={{ fontFamily: "'Orbitron', sans-serif", fontSize: '44px', fontWeight: '700', color: '#dee4e3', lineHeight: '1.1', letterSpacing: '1px', marginBottom: '14px', textAlign: 'center', textShadow: '0 0 10px rgba(46,181,183,0.4)' }}>
-                  {selectedFish.score} <span style={{ color: '#869393', fontSize: '24px', fontWeight: '400' }}>/ 100</span>
+                <div style={{ fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize: '48px', fontWeight: '700', color: '#dee4e3', lineHeight: '1.1', letterSpacing: '-0.02em', marginBottom: '14px', textAlign: 'center', textShadow: '0 0 10px rgba(46,181,183,0.3)' }}>
+                  {selectedFish.score} <span style={{ color: '#2eb5b7', fontSize: '28px', fontWeight: '400' }}>/ 100</span>
                 </div>
 
                 {/* КАТЕГОРИЯ + ИМЕ + ЛАТИНСКО */}
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', marginBottom: '14px' }}>
-                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '11px', fontWeight: '500', letterSpacing: '0.12em', color: '#869393', textTransform: 'uppercase' }}>
+                  <div style={{ fontFamily: "Inter, -apple-system, sans-serif", fontSize: '11px', fontWeight: '300', letterSpacing: '0.25em', color: '#869393', textTransform: 'uppercase' }}>
                     {selectedFish.fishType ?? 'Сладководна риба'}
                   </div>
-                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '32px', fontWeight: '700', letterSpacing: '-0.02em', color: '#dee4e3', textTransform: 'uppercase', lineHeight: '1.1' }}>
+                  <div style={{ fontFamily: "Inter, -apple-system, sans-serif", fontSize: '48px', fontWeight: '700', letterSpacing: '-0.01em', color: '#dee4e3', textTransform: 'uppercase', lineHeight: '1.1' }}>
                     {selectedFish.name}
                   </div>
                   {selectedFish.latinName && (
-                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '14px', fontWeight: '400', fontStyle: 'italic', color: '#a8b4b4' }}>
+                    <div style={{ fontFamily: "Inter, -apple-system, sans-serif", fontSize: '15px', fontWeight: '400', fontStyle: 'italic', color: '#a8b4b4' }}>
                       {selectedFish.latinName}
                     </div>
                   )}
