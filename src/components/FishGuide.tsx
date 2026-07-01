@@ -614,9 +614,9 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       <line x1="12" y1="20" x2="12" y2="4"/>
                       <line x1="6" y1="20" x2="6" y2="14"/>
                     </svg>
-                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, fontWeight: 700, color: '#dee4e3', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Калкулатор за тегло</span>
+                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, fontWeight: 700, color: '#dee4e3', textTransform: 'uppercase', letterSpacing: '0.08em', whiteSpace: 'nowrap' }}>Калкулатор за тегло</span>
                   </div>
-                  <div style={{ fontFamily: "'Orbitron', monospace", fontSize: 16, fontWeight: 700, color: '#dee4e3', letterSpacing: '0.04em' }}>
+                  <div style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 16, fontWeight: 700, color: '#dee4e3', letterSpacing: '0.04em' }}>
                     {calcLen
                       ? <>{calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))}<span style={{ fontSize: 12, color: '#869393', fontWeight: 400, marginLeft: 4 }}>КГ</span></>
                       : <>0.00<span style={{ fontSize: 12, color: '#3d4949', fontWeight: 400, marginLeft: 4 }}>КГ</span></>
@@ -630,22 +630,22 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>[ Дължина ]</div>
                     <input type="number" placeholder="0.00" value={calcLen} autoFocus={false} tabIndex={-1}
                       onChange={e => setCalcLen(e.target.value)}
-                      onFocus={e => { (e.target as HTMLInputElement).style.background = '#34c5c7'; }}
-                      onBlur={e => { (e.target as HTMLInputElement).style.background = '#2eb5b7'; }}
-                      style={{ fontFamily: "'Orbitron', monospace", fontSize: 20, fontWeight: 700, color: '#0B0F1A', background: '#2eb5b7', border: 'none', borderRadius: 10, padding: '11px 0', width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxShadow: 'none', MozAppearance: 'textfield' } as React.CSSProperties} />
+                      onFocus={e => { (e.target as HTMLInputElement).style.background = '#d7f05e'; }}
+                      onBlur={e => { (e.target as HTMLInputElement).style.background = '#C8E63C'; }}
+                      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 20, fontWeight: 700, color: '#0B0F1A', background: '#C8E63C', border: 'none', borderRadius: 10, padding: '11px 0', width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxShadow: 'none', MozAppearance: 'textfield' } as React.CSSProperties} />
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', paddingBottom: 10, flexShrink: 0 }}>
-                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 700, color: '#2eb5b7', letterSpacing: '0.02em' }}>X =</span>
+                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 700, color: '#C8E63C', letterSpacing: '0.02em' }}>X =</span>
                   </div>
 
                   <div style={{ flex: 1 }}>
                     <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>[ Обиколка ]</div>
                     <input type="number" placeholder="0.00" value={calcGirth} autoFocus={false} tabIndex={-1}
                       onChange={e => setCalcGirth(e.target.value)}
-                      onFocus={e => { (e.target as HTMLInputElement).style.background = '#34c5c7'; }}
-                      onBlur={e => { (e.target as HTMLInputElement).style.background = '#2eb5b7'; }}
-                      style={{ fontFamily: "'Orbitron', monospace", fontSize: 20, fontWeight: 700, color: '#0B0F1A', background: '#2eb5b7', border: 'none', borderRadius: 10, padding: '11px 0', width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxShadow: 'none', MozAppearance: 'textfield' } as React.CSSProperties} />
+                      onFocus={e => { (e.target as HTMLInputElement).style.background = '#d7f05e'; }}
+                      onBlur={e => { (e.target as HTMLInputElement).style.background = '#C8E63C'; }}
+                      style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', fontSize: 20, fontWeight: 700, color: '#0B0F1A', background: '#C8E63C', border: 'none', borderRadius: 10, padding: '11px 0', width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxShadow: 'none', MozAppearance: 'textfield' } as React.CSSProperties} />
                   </div>
                 </div>
 
