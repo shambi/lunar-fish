@@ -359,7 +359,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               }} />
 
               {/* Scroll wrapper — only this div scrolls; the overlay above is a sibling, outside its scroll context. */}
-              <div style={{ position: 'relative', overflowY: 'auto', flex: 1, minHeight: 0 }}>
+              <div className="no-scrollbar" style={{ position: 'relative', overflowY: 'auto', flex: 1, minHeight: 0, scrollbarWidth: 'none', msOverflowStyle: 'none' } as React.CSSProperties}>
               <style>{`
                 @keyframes riboPulse { 0%,100%{opacity:.4;transform:scale(.85)} 50%{opacity:1;transform:scale(1.15)} }
                 @keyframes riboFade  { 0%,100%{opacity:.4} 50%{opacity:.85} }
