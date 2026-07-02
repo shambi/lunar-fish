@@ -646,33 +646,34 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               </div>
 
               {/* ═══════ SECTION 5 — ПОЛЕВИ ПРАВИЛА (WARNING BORDER) ═══════ */}
-              <div style={{
-                background: 'rgba(220,60,60,0.04)',
-                border: '1px solid rgba(220,60,60,0.35)',
-                borderRadius: 16,
-                padding: 16,
-                marginBottom: 18,
-                animation: 'riboAiGlow 3.6s ease-in-out infinite',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+              <div style={{ marginBottom: 18 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
                   {/* Brain-fish icon */}
-                  <svg width="20" height="18" viewBox="0 0 32 24" fill="none" stroke="#5cd8da" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+                  <svg width="16" height="14" viewBox="0 0 32 24" fill="none" stroke="#2eb5b7" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M4 12 Q4 6 10 6 Q13 3 16 6 Q19 3 22 6 Q28 6 28 12 Q28 18 22 18 Q19 21 16 18 Q13 21 10 18 Q4 18 4 12Z"/>
                     <path d="M10 10 Q13 12 10 14 M22 10 Q19 12 22 14" opacity="0.6"/>
-                    <circle cx="15" cy="12" r="0.8" fill="#5cd8da"/>
+                    <circle cx="15" cy="12" r="0.8" fill="#2eb5b7"/>
                   </svg>
-                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.16em', color: '#5cd8da' }}>ПОЛЕВИ ПРАВИЛА</span>
+                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', color: '#869393' }}>ПОЛЕВИ ПРАВИЛА</span>
                 </div>
 
-                {meteoAlert?.level && (
-                  <div style={{ background: 'rgba(255,140,66,0.08)', border: '1px solid rgba(255,140,66,0.25)', borderRadius: 8, padding: '8px 10px', color: '#FF8C42', fontSize: 12, marginBottom: 10, fontFamily: "'Space Grotesk', sans-serif" }}>
-                    {meteoAlert.level === 'red' ? 'Червен' : meteoAlert.level === 'orange' ? 'Оранжев' : 'Жълт'} код{meteoAlert.event ? ` · ${translateAlert(meteoAlert.event)}` : ''}
-                  </div>
-                )}
+                <div style={{
+                  background: 'rgba(220,60,60,0.04)',
+                  border: '1px solid rgba(220,60,60,0.35)',
+                  borderRadius: 16,
+                  padding: 16,
+                  animation: 'riboAiGlow 3.6s ease-in-out infinite',
+                }}>
+                  {meteoAlert?.level && (
+                    <div style={{ background: 'rgba(255,140,66,0.08)', border: '1px solid rgba(255,140,66,0.25)', borderRadius: 8, padding: '8px 10px', color: '#FF8C42', fontSize: 12, marginBottom: 10, fontFamily: "'Space Grotesk', sans-serif" }}>
+                      {meteoAlert.level === 'red' ? 'Червен' : meteoAlert.level === 'orange' ? 'Оранжев' : 'Жълт'} код{meteoAlert.event ? ` · ${translateAlert(meteoAlert.event)}` : ''}
+                    </div>
+                  )}
 
-                {fieldAdvice && (
-                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13.5, lineHeight: 1.55, color: '#dee4e3', margin: 0 }}>{fieldAdvice}</p>
-                )}
+                  {fieldAdvice && (
+                    <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13.5, lineHeight: 1.55, color: '#dee4e3', margin: 0 }}>{fieldAdvice}</p>
+                  )}
+                </div>
               </div>
 
               {/* ═══════ SECTION 6 — ТАКТИЧЕСКА БЕЛЕЖКА ═══════ */}
