@@ -519,21 +519,20 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   background: 'rgba(255,255,255,0.03)',
                   border: '1px solid rgba(255,255,255,0.07)',
                   borderRadius: 16,
-                  padding: '14px 14px 16px',
+                  padding: '12px 12px 14px',
                   display: 'flex',
                   flexDirection: 'column',
-                  minHeight: 140,
                 };
-                const tileHeader: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 };
+                const tileHeader: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 };
                 const tileTitle: React.CSSProperties = { fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 700, color: '#dee4e3', letterSpacing: '0.06em' };
-                const tileSubLabel: React.CSSProperties = { fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, color: '#869393', marginBottom: 8 };
+                const tileSubLabel: React.CSSProperties = { fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, color: '#869393', marginBottom: 6 };
 
                 // Short numeric-like values get a big Space Grotesk figure with a • bullet,
                 // plus an optional compact secondary badge inline next to it (e.g. mono diameter
                 // alongside the primary braid value) instead of its own full-height row.
                 const renderBigValue = (val: string, badge?: string) => (
-                  <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', rowGap: 4, columnGap: 8 }}>
-                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 34, fontWeight: 400, color: '#5cd8da', lineHeight: 1, letterSpacing: '0.02em', textShadow: '0 0 4px rgba(92,216,218,0.18)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', rowGap: 3, columnGap: 8 }}>
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 28, fontWeight: 400, color: '#5cd8da', lineHeight: 1, letterSpacing: '0.02em', textShadow: '0 0 4px rgba(92,216,218,0.18)', display: 'flex', alignItems: 'center', gap: 6 }}>
                       <span style={{ color: '#5cd8da', fontSize: 14 }}>●</span>{val}
                     </div>
                     {badge && (
@@ -544,7 +543,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   </div>
                 );
                 const renderTextValue = (val: string) => (
-                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, fontWeight: 600, color: '#5cd8da', lineHeight: 1.35, display: 'flex', alignItems: 'flex-start', gap: 6 }}>
+                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, fontWeight: 600, color: '#5cd8da', lineHeight: 1.25, display: 'flex', alignItems: 'flex-start', gap: 6 }}>
                     <span style={{ color: '#5cd8da', fontSize: 9, lineHeight: 1.8 }}>●</span><span>{val}</span>
                   </div>
                 );
@@ -628,7 +627,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <line x1="15" y1="8" x2="15" y2="11"/>
                     <line x1="19" y1="8" x2="19" y2="11"/>
                   </svg>
-                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', color: '#dee4e3', textTransform: 'uppercase' }}>Еко &amp; Правила</span>
+                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', color: '#869393', textTransform: 'uppercase' }}>Еко &amp; Правила</span>
                 </div>
 
                 <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '14px 16px' }}>
@@ -666,12 +665,10 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                           {activeZones.map(z => {
                             const ban = selectedFish.altitudeBans![z.key]!;
-                            const isBanned = isInBanPeriod(ban.start, ban.end);
-                            const color = isBanned ? '#DC3C3C' : '#dee4e3';
                             return (
-                              <div key={z.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 12 }}>
-                                <span style={{ color: '#869393' }}>{z.label}</span>
-                                <span style={{ color, fontFamily: "'Space Grotesk', sans-serif", fontSize: 18, letterSpacing: '0.05em' }}>{ban.start} – {ban.end}</span>
+                              <div key={z.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                                <span style={{ fontSize: 9, color: '#a8b4b4' }}>{z.label}</span>
+                                <span style={{ fontSize: 13, fontWeight: 400, color: '#fff', lineHeight: 1 }}>{ban.start} – {ban.end}</span>
                               </div>
                             );
                           })}
@@ -694,21 +691,21 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       </div>
                     );
                   })()}
-                </div>
 
-                <a
-                  href="https://iara.government.bg/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 8, fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textDecoration: 'none' }}
-                >
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#869393" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                    <path d="M15 3h6v6"/>
-                    <path d="M10 14 21 3"/>
-                  </svg>
-                  Източник: ИАРА
-                </a>
+                  <a
+                    href="https://iara.government.bg/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 12, paddingTop: 12, borderTop: '1px solid rgba(255,255,255,0.07)', fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textDecoration: 'none' }}
+                  >
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#869393" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                      <path d="M15 3h6v6"/>
+                      <path d="M10 14 21 3"/>
+                    </svg>
+                    Източник: ИАРА
+                  </a>
+                </div>
               </div>
 
               {/* ═══════ SECTION 5 — AI ПОДХОД (WARNING BORDER) ═══════ */}
