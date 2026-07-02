@@ -497,6 +497,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 const displayGroundbait = td?.groundbait ?? modalData.groundbaitTip;
                 const displayBait = td?.bait ?? modalData.baitTip;
                 const displayLine = td?.line_mm ? `${td.line_mm}мм` : modalData.lineDiameter;
+                const displayBraid = td?.braid_mm ? `${td.braid_mm}мм` : null;
                 const displayHook = td?.hook_size ?? modalData.hookTip;
                 const displayLures = td ? (td.lures ?? null) : modalData.lureTip;
                 const displayRigs = td?.rigs ?? modalData.rigTip;
@@ -572,8 +573,13 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                         <span style={tileTitle}>ВЛАКНО</span>
                         {IconLine}
                       </div>
-                      <div style={tileSubLabel}>Монофилно</div>
-                      {renderBigValue(displayLine)}
+                      <div style={tileSubLabel}>{displayBraid ? 'Плетено' : 'Монофилно'}</div>
+                      {renderBigValue(displayBraid ?? displayLine)}
+                      {displayBraid && (
+                        <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', marginTop: 4 }}>
+                          Монофилно {displayLine}
+                        </div>
+                      )}
                     </div>
                     <div style={tile}>
                       <div style={tileHeader}>
