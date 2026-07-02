@@ -371,69 +371,18 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               {/* ═══════ SECTION 1 — HEADER (КАТЕГОРИЯ + SCORE + FISH) ═══════ */}
               <div style={{ marginBottom: 18 }}>
                 {/* КАТЕГОРИЯ label — same section-title style as "Солунарна активност"/"Условия днес" in Index.tsx */}
-                <div className="font-display text-[11px] font-semibold uppercase tracking-wider" style={{ color: '#869393', textAlign: 'center', marginBottom: 10 }}>
+                <div className="font-display text-[11px] font-semibold uppercase tracking-wider" style={{ color: '#869393', textAlign: 'left', marginBottom: 10 }}>
                   {selectedFish.fishType ?? 'Сладководна риба'}
                 </div>
 
-                {/* SCORE — circular progress ring */}
-                {(() => {
-                  const score = Math.max(0, Math.min(100, selectedFish.score));
-                  // Same 4-color palette/thresholds already used across the app (status dot in
-                  // Index.tsx "Условия", ПРЕПОРЪЧАНО ДНЕС badge threshold of 61 in this file).
-                  const scoreColor = score >= 86 ? '#C8E63C' : score >= 61 ? '#2eb5b7' : score >= 40 ? '#7F93A8' : '#FF8C42';
-
-                  const mixColor = (hex: string, target: string, amount: number) => {
-                    const clean = (c: string) => c.replace('#', '');
-                    const a = clean(hex), b = clean(target);
-                    const channel = (offset: number) => {
-                      const v1 = parseInt(a.substr(offset, 2), 16);
-                      const v2 = parseInt(b.substr(offset, 2), 16);
-                      return Math.round(v1 + (v2 - v1) * amount).toString(16).padStart(2, '0');
-                    };
-                    return `#${channel(0)}${channel(2)}${channel(4)}`;
-                  };
-                  const arcLight = mixColor(scoreColor, '#ffffff', 0.35);
-                  const arcDark = mixColor(scoreColor, '#000000', 0.2);
-
-                  const size = 168, strokeWidth = 12;
-                  const r = (size - strokeWidth) / 2;
-                  const circumference = 2 * Math.PI * r;
-                  const dashOffset = circumference * (1 - score / 100);
-
-                  return (
-                    <div style={{ position: 'relative', width: size, height: size, margin: '0 auto 8px' }}>
-                      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-                        <circle cx={size / 2} cy={size / 2} r={r} fill="none" style={{ stroke: 'hsl(var(--ocean))' }} strokeWidth={strokeWidth} />
-                        <defs>
-                          <linearGradient id="fishScoreArcGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor={arcLight} />
-                            <stop offset="100%" stopColor={arcDark} />
-                          </linearGradient>
-                        </defs>
-                        <circle
-                          cx={size / 2} cy={size / 2} r={r} fill="none"
-                          stroke="url(#fishScoreArcGradient)" strokeWidth={strokeWidth} strokeLinecap="round"
-                          strokeDasharray={circumference} strokeDashoffset={dashOffset}
-                          transform={`rotate(-90 ${size / 2} ${size / 2})`}
-                        />
-                      </svg>
-                      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 58, color: '#dee4e3', lineHeight: 1 }}>
-                          {selectedFish.score}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })()}
-
                 {/* NAME */}
-                <div style={{ textAlign: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: '0.14em', color: '#dee4e3', textTransform: 'uppercase', marginBottom: 3 }}>
+                <div style={{ textAlign: 'left', fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: '0.14em', color: '#dee4e3', textTransform: 'uppercase', marginBottom: 3 }}>
                   {selectedFish.name}
                 </div>
 
                 {/* LATIN NAME — moved here from calculator footer, reuses existing secondary label style */}
                 {selectedFish.latinName && (
-                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
+                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textAlign: 'left', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
                     {selectedFish.latinName}
                   </div>
                 )}
@@ -445,35 +394,66 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   </p>
                 )}
 
-                {/* FISH SVG */}
-                <div style={{ width: '100%', height: 110, display: 'flex', justifyContent: 'center', alignItems: 'center', filter: 'drop-shadow(0 0 6px rgba(46,181,183,0.55)) drop-shadow(0 0 14px rgba(46,181,183,0.3))' }}>
+                {/* FISH SVG — unchanged illustration/glow, now positioned right before the score+badge row */}
+                <div style={{ width: '100%', height: 110, display: 'flex', justifyContent: 'center', alignItems: 'center', filter: 'drop-shadow(0 0 6px rgba(46,181,183,0.55)) drop-shadow(0 0 14px rgba(46,181,183,0.3))', marginBottom: 12 }}>
                   {FISH_ICON_MAP[selectedFish.name]
                     ? FISH_ICON_MAP[selectedFish.name]({ style: { width: '75%', height: '100%' }, strokeWidth: 1.4, stroke: '#5cd8da' })
                     : <span style={{ fontSize: '4rem' }}>{selectedFish.emoji}</span>
                   }
                 </div>
 
-                {/* ПРЕПОРЪЧАНО ДНЕС — same badge treatment as the DECISION BANNER (glow===true) in Index.tsx */}
-                {selectedFish.score >= 61 && (
-                  <div style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    background: 'linear-gradient(135deg, rgba(46,181,183,0.08), rgba(46,181,183,0.02))',
-                    border: '1px solid rgba(46,181,183,0.35)',
-                    borderRadius: 16,
-                    boxShadow: '0 0 32px rgba(46,181,183,0.25)',
-                    padding: '8px 14px',
-                    fontFamily: "'Space Grotesk', sans-serif",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    letterSpacing: '0.14em',
-                    color: '#dee4e3',
-                    textTransform: 'uppercase',
-                    marginTop: 4,
-                  }}>
-                    ПРЕПОРЪЧАНО ДНЕС
-                  </div>
-                )}
+                {/* SCORE (compact ring) + ПРЕПОРЪЧАНО ДНЕС — one row */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  {(() => {
+                    const score = Math.max(0, Math.min(100, selectedFish.score));
+                    // Same 4-color palette/thresholds already used across the app (status dot in
+                    // Index.tsx "Условия", ПРЕПОРЪЧАНО ДНЕС badge threshold of 61 in this file).
+                    const scoreColor = score >= 86 ? '#C8E63C' : score >= 61 ? '#2eb5b7' : score >= 40 ? '#7F93A8' : '#FF8C42';
+
+                    const size = 40, strokeWidth = 4;
+                    const r = (size - strokeWidth) / 2;
+                    const circumference = 2 * Math.PI * r;
+                    const dashOffset = circumference * (1 - score / 100);
+
+                    return (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+                          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={strokeWidth} />
+                          <circle
+                            cx={size / 2} cy={size / 2} r={r} fill="none"
+                            stroke={scoreColor} strokeWidth={strokeWidth} strokeLinecap="round"
+                            strokeDasharray={circumference} strokeDashoffset={dashOffset}
+                            transform={`rotate(-90 ${size / 2} ${size / 2})`}
+                          />
+                        </svg>
+                        <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 22, color: '#dee4e3', lineHeight: 1 }}>
+                          {selectedFish.score}
+                        </span>
+                      </div>
+                    );
+                  })()}
+
+                  {/* ПРЕПОРЪЧАНО ДНЕС — same badge treatment as the DECISION BANNER (glow===true) in Index.tsx */}
+                  {selectedFish.score >= 61 && (
+                    <div style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      background: 'linear-gradient(135deg, rgba(46,181,183,0.08), rgba(46,181,183,0.02))',
+                      border: '1px solid rgba(46,181,183,0.35)',
+                      borderRadius: 16,
+                      boxShadow: '0 0 32px rgba(46,181,183,0.25)',
+                      padding: '8px 14px',
+                      fontFamily: "'Space Grotesk', sans-serif",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      letterSpacing: '0.14em',
+                      color: '#dee4e3',
+                      textTransform: 'uppercase',
+                    }}>
+                      ПРЕПОРЪЧАНО ДНЕС
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* ═══════ SECTION 2 — ТЕХНИКА БУТОНИ ═══════ */}
