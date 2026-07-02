@@ -637,12 +637,12 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       <div style={{ marginBottom: (selectedFish.altitudeBans ? 12 : 0) }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
                           <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', color: 'rgba(222,228,227,0.85)', textTransform: 'uppercase' }}>Мин. размер</span>
-                          <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 20, color: '#5cd8da', lineHeight: 1 }}>{selectedFish.minSize} см</span>
+                          <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, color: '#5cd8da', lineHeight: 1 }}>{selectedFish.minSize} см</span>
                         </div>
                         <div style={{ position: 'relative', height: 5, background: 'rgba(255,255,255,0.05)', borderRadius: 3, overflow: 'hidden' }}>
-                          <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${pct}%`, background: 'linear-gradient(90deg, #2eb5b7, #5cd8da)', borderRadius: 3, boxShadow: '0 0 8px rgba(46,181,183,0.5)' }} />
+                          <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${pct}%`, background: 'linear-gradient(90deg, #2eb5b7, #5cd8da)', borderRadius: 3, boxShadow: '0 0 6px rgba(46,181,183,0.5)' }} />
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4, fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: '#869393' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4, fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, color: '#869393' }}>
                           <span>0</span><span>100 см</span>
                         </div>
                       </div>
@@ -667,7 +667,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                             const ban = selectedFish.altitudeBans![z.key]!;
                             return (
                               <div key={z.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                                <span style={{ fontSize: 9, color: '#a8b4b4' }}>{z.label}</span>
+                                <span style={{ fontSize: 10, color: '#a8b4b4' }}>{z.label}</span>
                                 <span style={{ fontSize: 13, fontWeight: 400, color: '#fff', lineHeight: 1 }}>{ban.start} – {ban.end}</span>
                               </div>
                             );
@@ -683,8 +683,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       ? (['low', 'mid', 'high'] as const).some(k => bans[k] && isInBanPeriod(bans[k]!.start, bans[k]!.end))
                       : false;
                     return (
-                      <div style={{ marginTop: (selectedFish.minSize || (bans && Object.keys(bans).length > 0)) ? 12 : 0, display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ width: 6, height: 6, borderRadius: '50%', flexShrink: 0, background: isCurrentlyBanned ? '#FF8C42' : 'rgba(222,228,227,0.85)' }} />
+                      <div style={{ marginTop: (selectedFish.minSize || (bans && Object.keys(bans).length > 0)) ? 12 : 0, display: 'flex', alignItems: 'center' }}>
                         <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, fontWeight: isCurrentlyBanned ? 700 : 400, color: isCurrentlyBanned ? '#FF8C42' : 'rgba(222,228,227,0.85)' }}>
                           {isCurrentlyBanned ? 'Забранен период — само хвани и пусни' : 'Хвани и пусни, когато е възможно — опазва популацията'}
                         </span>
