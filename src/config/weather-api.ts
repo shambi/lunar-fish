@@ -24,6 +24,7 @@ export const WEATHER_API_CONFIG = {
   // Cache Durations (milliseconds)
   cache: {
     weather: 600000,      // 10 minutes - reload weather data frequently
+    meteoAlarm: 300000,   // 5 minutes - storm/severe-weather alerts are safety-critical, must stay fresher than general weather
     geocoding: 86400000,  // 24 hours - location names don't change often
   },
 
@@ -52,6 +53,7 @@ export const WEATHER_API_CONFIG = {
   // Cache Keys
   cacheKeys: {
     weather: 'lunar-fish-weather-cache',
+    meteoAlarm: 'lunar-fish-meteoalarm-cache',
     geocoding: (lat: number, lon: number) => `geocode_${lat.toFixed(3)}_${lon.toFixed(3)}`,
   },
 } as const;

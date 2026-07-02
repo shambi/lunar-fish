@@ -49,6 +49,30 @@ async function fetchLocationName(latitude: number, longitude: number): Promise<s
 }
 
 
+// meteoAlarm gets its own cache key with a much shorter TTL than the general weather
+// blob — storm warnings are safety-critical and must not ride along on a 10-minute
+// temperature/wind cache.
+function getCachedMeteoAlarm(): MeteoAlarmData | null {
+  const cached = localStorage.getItem(WEATHER_API_CONFIG.cacheKeys.meteoAlarm);
+  if (!cached) return null;
+  try {
+    const { data, timestamp } = JSON.parse(cached);
+    if (Date.now() - timestamp < WEATHER_API_CONFIG.cache.meteoAlarm) return data;
+  } catch {
+    localStorage.removeItem(WEATHER_API_CONFIG.cacheKeys.meteoAlarm);
+  }
+  return null;
+}
+
+async function getFreshMeteoAlarm(): Promise<MeteoAlarmData> {
+  const alarm = await fetchMeteoAlarmLevel();
+  localStorage.setItem(WEATHER_API_CONFIG.cacheKeys.meteoAlarm, JSON.stringify({
+    data: alarm,
+    timestamp: Date.now(),
+  }));
+  return alarm;
+}
+
 export function useWeather() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -69,9 +93,18 @@ export function useWeather() {
           
           // Cache is fresh: use it immediately
           if (age < WEATHER_API_CONFIG.cache.weather) {
-            setWeather(data);
+            const cachedAlarm = getCachedMeteoAlarm();
+            setWeather(cachedAlarm ? { ...data, meteoAlarm: cachedAlarm } : data);
             setLoading(false);
-            
+
+            // meteoAlarm has its own (shorter) TTL — if it's stale, refresh it right
+            // away instead of waiting for the general weather cache to expire.
+            if (!cachedAlarm) {
+              getFreshMeteoAlarm()
+                .then(alarm => setWeather(prev => (prev ? { ...prev, meteoAlarm: alarm } : prev)))
+                .catch(() => {});
+            }
+
             // Schedule background refresh once (fire-and-forget)
             if (!backgroundRefreshRef.current) {
               backgroundRefreshRef.current = new AbortController();
@@ -134,7 +167,7 @@ export function useWeather() {
         // Merge the data
         weatherData.altitude = altitude;
         weatherData.locationName = locationName;
-        weatherData.meteoAlarm = await fetchMeteoAlarmLevel();
+        weatherData.meteoAlarm = await getFreshMeteoAlarm();
 
         setWeather(weatherData);
         setLocationDenied(false);
@@ -176,6 +209,7 @@ export function useWeather() {
             fallbackAltitude,
             WEATHER_API_CONFIG.fallback.name
           );
+          weatherData.meteoAlarm = await getFreshMeteoAlarm();
           setWeather(weatherData);
         } catch (fetchErr) {
           console.error('Failed to fetch fallback weather for Sofia:', fetchErr);
@@ -234,7 +268,7 @@ export function useWeather() {
 
         weatherData.altitude = altitude;
         weatherData.locationName = locationName;
-        weatherData.meteoAlarm = await fetchMeteoAlarmLevel();
+        weatherData.meteoAlarm = await getFreshMeteoAlarm();
 
         // Update state silently (no loading indicator change)
         setWeather(weatherData);
@@ -261,5 +295,18 @@ export function useWeather() {
     };
   }, []);
 
+  // The one-shot background refresh above only catches a newly-issued storm warning
+  // if the tab gets reloaded. A tab left open (e.g. at the reservoir) would otherwise
+  // never see an alert that appears mid-session — poll just the small meteoAlarm feed
+  // on its own short TTL, independent of the full weather refresh.
+  useEffect(() => {
+    const interval = setInterval(() => {
+      getFreshMeteoAlarm()
+        .then(alarm => setWeather(prev => (prev ? { ...prev, meteoAlarm: alarm } : prev)))
+        .catch(() => {});
+    }, WEATHER_API_CONFIG.cache.meteoAlarm);
+    return () => clearInterval(interval);
+  }, []);
+
   return { weather, loading, error, locationDenied };
-}      
+}
