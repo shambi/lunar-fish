@@ -679,7 +679,36 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       </div>
                     );
                   })()}
+
+                  {(() => {
+                    const bans = selectedFish.altitudeBans;
+                    const isCurrentlyBanned = bans
+                      ? (['low', 'mid', 'high'] as const).some(k => bans[k] && isInBanPeriod(bans[k]!.start, bans[k]!.end))
+                      : false;
+                    return (
+                      <div style={{ marginTop: (selectedFish.minSize || (bans && Object.keys(bans).length > 0)) ? 12 : 0, display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ width: 6, height: 6, borderRadius: '50%', flexShrink: 0, background: isCurrentlyBanned ? '#FF8C42' : 'rgba(222,228,227,0.85)' }} />
+                        <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, fontWeight: isCurrentlyBanned ? 700 : 400, color: isCurrentlyBanned ? '#FF8C42' : 'rgba(222,228,227,0.85)' }}>
+                          {isCurrentlyBanned ? 'Забранен период — само хвани и пусни' : 'Хвани и пусни, когато е възможно — опазва популацията'}
+                        </span>
+                      </div>
+                    );
+                  })()}
                 </div>
+
+                <a
+                  href="https://iara.government.bg/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 8, fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textDecoration: 'none' }}
+                >
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#869393" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                    <path d="M15 3h6v6"/>
+                    <path d="M10 14 21 3"/>
+                  </svg>
+                  Източник: ИАРА
+                </a>
               </div>
 
               {/* ═══════ SECTION 5 — AI ПОДХОД (WARNING BORDER) ═══════ */}
