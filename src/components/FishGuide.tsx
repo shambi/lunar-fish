@@ -385,6 +385,13 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   {selectedFish.name}
                 </div>
 
+                {/* LATIN NAME — moved here from calculator footer, reuses existing secondary label style */}
+                {selectedFish.latinName && (
+                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
+                    {selectedFish.latinName}
+                  </div>
+                )}
+
                 {/* Character line — moved here from bottom, right after name */}
                 {selectedFish.character && (
                   <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11.5, lineHeight: 1.5, color: '#869393', textAlign: 'center', margin: 0, marginBottom: 10, padding: '0 6px' }}>
@@ -720,12 +727,6 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 {showFormulaInfo && (
                   <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, color: '#869393', lineHeight: 1.5, marginTop: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                     Формулата принадлежи на <span style={{ color: '#5cd8da', fontWeight: 600 }}>Милко Георгиев</span> — легенда в българското сомарство. Проверена в практиката, с точност до ~85%.
-                  </div>
-                )}
-
-                {selectedFish.latinName && (
-                  <div style={{ fontFamily: "'Outfit', sans-serif", fontStyle: 'italic', fontSize: 11, color: '#869393', textAlign: 'right', marginTop: 10 }}>
-                    {selectedFish.latinName}
                   </div>
                 )}
               </div>
