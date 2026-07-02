@@ -370,16 +370,18 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               {/* ═══════ SECTION 1 — HEADER ═══════ */}
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 20 }}>
 
+                {/* КАТЕГОРИЯ */}
+                <div style={{ fontFamily: "Inter, -apple-system, sans-serif", fontSize: '11px', fontWeight: '300', letterSpacing: '0.25em', color: '#869393', textTransform: 'uppercase', marginBottom: '2px' }}>
+                  {selectedFish.fishType ?? 'Сладководна риба'}
+                </div>
+
                 {/* SCORE */}
                 <div style={{ fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif", fontSize: '48px', fontWeight: '700', color: '#dee4e3', lineHeight: '1.1', letterSpacing: '-0.02em', marginBottom: '14px', textAlign: 'center', textShadow: '0 0 10px rgba(46,181,183,0.3)' }}>
                   {selectedFish.score} <span style={{ color: '#2eb5b7', fontSize: '28px', fontWeight: '400' }}>/ 100</span>
                 </div>
 
-                {/* КАТЕГОРИЯ + ИМЕ + ЛАТИНСКО */}
+                {/* ИМЕ + ЛАТИНСКО */}
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px', marginBottom: '14px' }}>
-                  <div style={{ fontFamily: "Inter, -apple-system, sans-serif", fontSize: '11px', fontWeight: '300', letterSpacing: '0.25em', color: '#869393', textTransform: 'uppercase' }}>
-                    {selectedFish.fishType ?? 'Сладководна риба'}
-                  </div>
                   <div style={{ fontFamily: "Inter, -apple-system, sans-serif", fontSize: '48px', fontWeight: '700', letterSpacing: '-0.01em', color: '#dee4e3', textTransform: 'uppercase', lineHeight: '1.1' }}>
                     {selectedFish.name}
                   </div>
@@ -390,6 +392,13 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   )}
                 </div>
 
+                {/* ОПИСАНИЕ */}
+                {selectedFish.character && (
+                  <div style={{ textAlign: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: '14px', lineHeight: '1.4', color: '#a8b4b4', padding: '0 12px', marginBottom: '16px' }}>
+                    {selectedFish.character}
+                  </div>
+                )}
+
                 {/* РИБА SVG */}
                 <div style={{ width: '180px', height: '90px', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '16px', filter: 'drop-shadow(0 0 12px rgba(46,181,183,0.5))' }}>
                   {FISH_ICON_MAP[selectedFish.name]
@@ -397,13 +406,6 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     : <span style={{ fontSize: '4rem' }}>{selectedFish.emoji}</span>
                   }
                 </div>
-
-                {/* ОПИСАНИЕ */}
-                {selectedFish.character && (
-                  <div style={{ textAlign: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: '14px', lineHeight: '1.4', color: '#a8b4b4', padding: '0 12px', marginBottom: selectedFish.score >= 61 ? '16px' : '0px' }}>
-                    {selectedFish.character}
-                  </div>
-                )}
 
                 {/* BADGE */}
                 {selectedFish.score >= 61 && (
@@ -603,7 +605,18 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 </a>
               </div>
 
-              {/* ═══════ SECTION 6 — КАЛКУЛАТОР ═══════ */}
+              {/* ═══════ SECTION 6 — ТАКТИЧЕСКА БЕЛЕЖКА ═══════ */}
+              {advice?.mistake && (
+                <div style={{ background: 'rgba(27,33,33,0.5)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 14, padding: 14, marginBottom: 20 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                    <span style={{ fontSize: 13, color: '#869393' }}>ⓘ</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393' }}>Тактическа бележка</span>
+                  </div>
+                  <p style={{ fontSize: 12, lineHeight: 1.6, color: '#a8b4b4', margin: 0 }}>{advice.mistake}</p>
+                </div>
+              )}
+
+              {/* ═══════ SECTION 7 — КАЛКУЛАТОР ═══════ */}
               <div style={{ background: 'linear-gradient(180deg, #131919 0%, #0f1415 100%)', border: '1px solid rgba(46,181,183,0.35)', borderRadius: 30, boxShadow: '0 20px 40px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.04)', padding: 16, marginBottom: 20 }}>
 
                 {/* Ред 1 — заглавие + резултат */}
@@ -665,17 +678,6 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   </div>
                 )}
               </div>
-
-              {/* ═══════ SECTION 7 — ТАКТИЧЕСКА БЕЛЕЖКА ═══════ */}
-              {advice?.mistake && (
-                <div style={{ background: 'rgba(27,33,33,0.5)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 14, padding: 14 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-                    <span style={{ fontSize: 13, color: '#869393' }}>ⓘ</span>
-                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#869393' }}>Тактическа бележка</span>
-                  </div>
-                  <p style={{ fontSize: 12, lineHeight: 1.6, color: '#a8b4b4', margin: 0 }}>{advice.mistake}</p>
-                </div>
-              )}
               </div>
             </>
           )}
