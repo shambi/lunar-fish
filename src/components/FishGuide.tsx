@@ -427,7 +427,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 })()}
 
                 {/* NAME */}
-                <div style={{ textAlign: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: '0.14em', color: '#dee4e3', textTransform: 'uppercase', marginBottom: 6 }}>
+                <div style={{ textAlign: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: '0.14em', color: '#dee4e3', textTransform: 'uppercase', marginBottom: 3 }}>
                   {selectedFish.name}
                 </div>
 
@@ -440,7 +440,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                 {/* Character line — moved here from bottom, right after name */}
                 {selectedFish.character && (
-                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11.5, lineHeight: 1.5, color: '#869393', textAlign: 'center', margin: 0, marginBottom: 10, padding: '0 6px' }}>
+                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11.5, lineHeight: 1.5, color: '#869393', textAlign: 'left', margin: 0, marginBottom: 10, padding: '0 6px' }}>
                     {selectedFish.character}
                   </p>
                 )}
@@ -453,9 +453,24 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   }
                 </div>
 
-                {/* ПРЕПОРЪЧАНО ДНЕС */}
+                {/* ПРЕПОРЪЧАНО ДНЕС — same badge treatment as the DECISION BANNER (glow===true) in Index.tsx */}
                 {selectedFish.score >= 61 && (
-                  <div style={{ textAlign: 'left', fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, fontWeight: 600, letterSpacing: '0.14em', color: '#dee4e3', textTransform: 'uppercase', marginTop: 4 }}>
+                  <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    background: 'linear-gradient(135deg, rgba(46,181,183,0.08), rgba(46,181,183,0.02))',
+                    border: '1px solid rgba(46,181,183,0.35)',
+                    borderRadius: 16,
+                    boxShadow: '0 0 32px rgba(46,181,183,0.25)',
+                    padding: '8px 14px',
+                    fontFamily: "'Space Grotesk', sans-serif",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    letterSpacing: '0.14em',
+                    color: '#dee4e3',
+                    textTransform: 'uppercase',
+                    marginTop: 4,
+                  }}>
                     ПРЕПОРЪЧАНО ДНЕС
                   </div>
                 )}
