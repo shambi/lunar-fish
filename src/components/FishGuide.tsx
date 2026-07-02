@@ -395,7 +395,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 </div>
 
                 {/* FISH SVG — unchanged illustration/glow, moderately wider than the original compact size, centered, not edge-to-edge */}
-                <div style={{ width: 220, height: 110, margin: '0 auto', display: 'flex', justifyContent: 'center', alignItems: 'center', filter: 'drop-shadow(0 0 6px rgba(46,181,183,0.55)) drop-shadow(0 0 14px rgba(46,181,183,0.3))', marginBottom: 12 }}>
+                <div style={{ width: 220, height: 110, margin: '0 auto', display: 'flex', justifyContent: 'center', alignItems: 'center', filter: 'drop-shadow(0 0 12px rgba(46,181,183,0.4))', marginBottom: 12 }}>
                   {FISH_ICON_MAP[selectedFish.name]
                     ? FISH_ICON_MAP[selectedFish.name]({ style: { width: '100%', height: '100%' }, strokeWidth: 1.4, stroke: '#5cd8da' })
                     : <span style={{ fontSize: '4rem' }}>{selectedFish.emoji}</span>
