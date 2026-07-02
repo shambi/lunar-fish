@@ -514,16 +514,25 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   padding: '14px 14px 16px',
                   display: 'flex',
                   flexDirection: 'column',
-                  minHeight: 130,
+                  minHeight: 140,
                 };
                 const tileHeader: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 };
                 const tileTitle: React.CSSProperties = { fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 700, color: '#dee4e3', letterSpacing: '0.06em' };
                 const tileSubLabel: React.CSSProperties = { fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, color: '#869393', marginBottom: 8 };
 
-                // Short numeric-like values get a big Space Grotesk figure with a • bullet
-                const renderBigValue = (val: string) => (
-                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 34, fontWeight: 400, color: '#5cd8da', lineHeight: 1, letterSpacing: '0.02em', textShadow: '0 0 4px rgba(92,216,218,0.18)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span style={{ color: '#5cd8da', fontSize: 14 }}>●</span>{val}
+                // Short numeric-like values get a big Space Grotesk figure with a • bullet,
+                // plus an optional compact secondary badge inline next to it (e.g. mono diameter
+                // alongside the primary braid value) instead of its own full-height row.
+                const renderBigValue = (val: string, badge?: string) => (
+                  <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', rowGap: 4, columnGap: 8 }}>
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 34, fontWeight: 400, color: '#5cd8da', lineHeight: 1, letterSpacing: '0.02em', textShadow: '0 0 4px rgba(92,216,218,0.18)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ color: '#5cd8da', fontSize: 14 }}>●</span>{val}
+                    </div>
+                    {badge && (
+                      <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, color: '#869393', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, padding: '2px 6px', whiteSpace: 'nowrap' }}>
+                        {badge}
+                      </span>
+                    )}
                   </div>
                 );
                 const renderTextValue = (val: string) => (
@@ -579,12 +588,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                         {IconLine}
                       </div>
                       <div style={tileSubLabel}>{displayBraid ? 'Плетено' : 'Монофилно'}</div>
-                      {renderBigValue(displayBraid ?? displayLine)}
-                      {displayBraid && (
-                        <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', marginTop: 4 }}>
-                          Монофилно {displayLine}
-                        </div>
-                      )}
+                      {renderBigValue(displayBraid ?? displayLine, displayBraid ? `моно ${displayLine}` : undefined)}
                     </div>
                     <div style={tile}>
                       <div style={tileHeader}>
