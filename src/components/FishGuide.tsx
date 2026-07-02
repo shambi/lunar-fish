@@ -1,6 +1,7 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { getScoredFish, getFishModalData, type ScoredFish } from '@/lib/fish-guide';
 import { getDailyAdvice } from '@/lib/fish-advice';
+import { generateFieldAdvice } from '@/lib/field-advice';
 import type { MoonData } from '@/lib/moon';
 import type { WeatherData } from '@/hooks/use-weather';
 import {
@@ -16,11 +17,6 @@ interface FishGuideProps {
   onTerrainChange: (terrain: 'river' | 'lake') => void;
   solunarContext?: { isInPeak: boolean; peakType: 'major' | 'minor' | null };
   meteoAlert?: { level: 'yellow' | 'orange' | 'red' | null; event: string | null };
-}
-
-function degreesToCardinal(deg: number): string {
-  const dirs = ['С', 'СИ', 'И', 'ЮИ', 'Ю', 'ЮЗ', 'З', 'СЗ'];
-  return dirs[Math.round(deg / 45) % 8];
 }
 
 const translateAlert = (event: string | null): string => {
@@ -79,11 +75,6 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
   const [calcGirth, setCalcGirth] = useState('');
   const [showFormulaInfo, setShowFormulaInfo] = useState(false);
   const [selectedTechnique, setSelectedTechnique] = useState<string | null>(null);
-  const [aiAdvice, setAiAdvice] = useState<string | null>(null);
-  const [aiError, setAiError] = useState<string | null>(null);
-  const [aiLoading, setAiLoading] = useState(false);
-  const aiAdviceCache = useRef<Record<string, string>>({});
-  const latestAiRequestKeyRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (selectedFish) {
@@ -97,114 +88,62 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
     }
   }, [selectedFish, terrain]);
 
-  useEffect(() => {
-    if (!selectedFish) return;
+  // Deterministic replacement for the old Groq-backed fetch — same tackle numbers the
+  // КУКИ/ВЛАКНО tiles show (technique-specific data first, falling back to the fish's
+  // general modal data), fed straight into generateFieldAdvice with no network round-trip.
+  const fieldAdvice = useMemo(() => {
+    if (!selectedFish) return null;
 
-    // Guard against the sibling "reset technique on fish change" effect: in the same
-    // render pass right after switching fish, selectedTechnique can still hold the
-    // PREVIOUS fish's value (the reset's setState hasn't applied yet). If that stale
-    // technique isn't valid for the newly selected fish, skip — the reset effect will
-    // commit the correct technique and this effect will re-fire with the right value.
     const validTechniques = selectedFish.techniques?.[terrain] ?? [];
     const isStaleTechnique = selectedTechnique !== null && !validTechniques.includes(selectedTechnique);
-    if (isStaleTechnique) return;
+    if (isStaleTechnique) return null;
 
-    const cacheKey = `${selectedFish.name}-${selectedTechnique ?? ''}-${terrain}`;
-    latestAiRequestKeyRef.current = cacheKey;
-    if (aiAdviceCache.current[cacheKey]) {
-      setAiAdvice(aiAdviceCache.current[cacheKey]);
-      setAiLoading(false);
-      return;
-    }
-    setAiAdvice(null);
-    setAiError(null);
-    setAiLoading(true);
-
-    // Same lookup logic used by the КУКИ/ВЛАКНО tiles in the modal — technique-specific
-    // data first, falling back to the fish's general modal data, so the AI is fed the
-    // exact same numbers the user already sees on screen.
-    const tdForFetch = selectedTechnique ? selectedFish.techniqueData?.[selectedTechnique] : null;
-    const modalDataForFetch = getFishModalData(
+    const td = selectedTechnique ? selectedFish.techniqueData?.[selectedTechnique] : null;
+    const modalDataForAdvice = getFishModalData(
       selectedFish,
       weather?.temperature ?? 18,
       weather?.weatherCode ?? 0,
       terrain,
       weather?.altitude
     );
-    const recommendedHookSize = tdForFetch?.hook_size ?? modalDataForFetch.hookTip;
-    const recommendedLineThickness = tdForFetch?.line_mm ? `${tdForFetch.line_mm}мм` : modalDataForFetch.lineDiameter;
+    const recommendedHookSize = td?.hook_size ?? modalDataForAdvice.hookTip;
+    const recommendedLineThickness = td?.line_mm ? `${td.line_mm}мм` : modalDataForAdvice.lineDiameter;
 
     // Derived from the hourlyForecast array (precipitation/temp per hour) — gives the
-    // AI field knowledge a static tile can't show: has it rained recently, and where
-    // are temp/pressure headed in the next few hours.
+    // field advice knowledge a static tile can't show: has it rained recently, and
+    // where is temperature headed in the next few hours.
     const hourly = weather?.hourlyForecast ?? [];
     const currentHour = new Date().getHours();
     const currentIdx = hourly.findIndex(h => parseInt(h.hour, 10) === currentHour);
     const recentRain = currentIdx >= 0
       ? hourly.slice(Math.max(0, currentIdx - 2), currentIdx + 1).some(h => h.precipitation > 0)
       : false;
-    let forecastTrend = 'няма данни за следващите часове';
+    let tempTrend = 0;
     if (currentIdx >= 0) {
       const next3 = hourly.slice(currentIdx + 1, currentIdx + 4);
       if (next3.length > 0) {
-        const tempDelta = next3[next3.length - 1].temp - hourly[currentIdx].temp;
-        const tempDir = tempDelta > 1 ? 'температурата ще се покачи' : tempDelta < -1 ? 'температурата ще спадне' : 'температурата ще остане стабилна';
-        const pressureDir = weather?.pressureTrend === 'rising' ? 'налягането расте' : weather?.pressureTrend === 'falling' ? 'налягането пада' : 'налягането е стабилно';
-        forecastTrend = `${tempDir}, ${pressureDir}`;
+        tempTrend = next3[next3.length - 1].temp - hourly[currentIdx].temp;
       }
     }
 
-    fetch('/api/fishing-advice', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        fish: selectedFish.name,
-        fishBehavior: selectedFish.character ?? '',
-        technique: selectedTechnique ?? '',
-        terrain,
-        month: new Date().getMonth() + 1,
-        hour: new Date().getHours(),
-        temperature: weather?.temperature ?? 20,
-        windSpeed: weather?.windSpeed ?? 0,
-        windDirection: weather?.windDirection != null ? degreesToCardinal(weather.windDirection) : '—',
-        pressure: weather?.pressure ?? 1013,
-        pressureTrend: weather?.pressureTrend ?? 'stable',
-        moonPhase: moon.phaseName,
-        moonIllumination: moon.illumination,
-        fishingScore: moon.fishingScore,
-        isInPeak: solunarContext?.isInPeak ?? false,
-        peakType: solunarContext?.peakType ?? null,
-        meteoAlert: meteoAlert ?? { level: null, event: null },
-        recommendedHookSize,
-        recommendedLineThickness,
-        overallScore: selectedFish.score,
-        isRecommended: selectedFish.isRecommended,
-        recentRain,
-        forecastTrend,
-      }),
-    })
-      .then(r => r.json())
-      .then(data => {
-        if (data.advice) {
-          aiAdviceCache.current[cacheKey] = data.advice;
-          // Only apply if no newer request has superseded this one — prevents a
-          // slow, stale-technique response from overwriting the correct advice.
-          if (latestAiRequestKeyRef.current === cacheKey) {
-            setAiAdvice(data.advice);
-          }
-        } else if (data.error && latestAiRequestKeyRef.current === cacheKey) {
-          setAiError(`[debug] ${data.error}${data.detail ? ' ' + data.detail : ''}`);
-        }
-      })
-      .catch((err: unknown) => {
-        if (latestAiRequestKeyRef.current === cacheKey) {
-          setAiError(`[debug] fetch error: ${String(err)}`);
-        }
-      })
-      .finally(() => {
-        if (latestAiRequestKeyRef.current === cacheKey) setAiLoading(false);
-      });
-  }, [selectedFish, selectedTechnique, terrain]);
+    return generateFieldAdvice({
+      fishName: selectedFish.name,
+      windSpeed: weather?.windSpeed ?? 0,
+      recentRain,
+      terrain,
+      weatherCode: weather?.weatherCode ?? 0,
+      hour: currentHour,
+      month: new Date().getMonth() + 1,
+      temperature: weather?.temperature ?? 20,
+      tempTrend,
+      pressureTrend: weather?.pressureTrend ?? 'stable',
+      isInPeak: solunarContext?.isInPeak ?? false,
+      peakType: solunarContext?.peakType ?? null,
+      overallScore: selectedFish.score,
+      recommendedHookSize,
+      recommendedLineThickness,
+    });
+  }, [selectedFish, selectedTechnique, terrain, weather, solunarContext]);
 
   const temp = weather?.temperature ?? 18;
   const wind = weather?.windSpeed ?? 5;
@@ -361,9 +300,6 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               {/* Scroll wrapper */}
               <div className="no-scrollbar" style={{ position: 'relative', overflowY: 'auto', flex: 1, minHeight: 0, scrollbarWidth: 'none', msOverflowStyle: 'none', padding: '20px 18px' } as React.CSSProperties}>
               <style>{`
-                @keyframes riboPulse { 0%,100%{opacity:.4;transform:scale(.85)} 50%{opacity:1;transform:scale(1.15)} }
-                @keyframes riboFade  { 0%,100%{opacity:.4} 50%{opacity:.85} }
-                @keyframes riboShimmer { 0%{opacity:.3} 50%{opacity:.7} 100%{opacity:.3} }
                 @keyframes riboAiGlow { 0%,100%{box-shadow:0 0 20px rgba(220,60,60,.12), inset 0 0 24px rgba(220,60,60,.04)} 50%{box-shadow:0 0 28px rgba(220,60,60,.22), inset 0 0 28px rgba(220,60,60,.06)} }
                 input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
               `}</style>
@@ -709,7 +645,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 </div>
               </div>
 
-              {/* ═══════ SECTION 5 — AI ПОДХОД (WARNING BORDER) ═══════ */}
+              {/* ═══════ SECTION 5 — ПОЛЕВИ ПРАВИЛА (WARNING BORDER) ═══════ */}
               <div style={{
                 background: 'rgba(220,60,60,0.04)',
                 border: '1px solid rgba(220,60,60,0.35)',
@@ -725,7 +661,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <path d="M10 10 Q13 12 10 14 M22 10 Q19 12 22 14" opacity="0.6"/>
                     <circle cx="15" cy="12" r="0.8" fill="#5cd8da"/>
                   </svg>
-                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.16em', color: '#5cd8da' }}>AI ПОДХОД:</span>
+                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.16em', color: '#5cd8da' }}>ПОЛЕВИ ПРАВИЛА</span>
                 </div>
 
                 {meteoAlert?.level && (
@@ -734,24 +670,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   </div>
                 )}
 
-                {aiLoading && (
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-                      <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#2eb5b7', animation: 'riboPulse 1.2s ease-in-out infinite' }} />
-                      <span style={{ fontSize: 12, color: '#5cd8da', animation: 'riboFade 1.8s ease-in-out infinite', fontFamily: "'Space Grotesk', sans-serif" }}>Анализирам условията...</span>
-                    </div>
-                    {[80, 65, 90, 50].map((w, i) => (
-                      <div key={i} style={{ height: 9, borderRadius: 4, background: 'rgba(255,255,255,0.04)', width: `${w}%`, marginBottom: 6, animation: `riboShimmer 1.6s ease-in-out ${i * 0.2}s infinite` }} />
-                    ))}
-                  </div>
-                )}
-
-                {!aiLoading && aiError && (
-                  <p style={{ fontSize: 11, color: '#DC3C3C', fontFamily: 'monospace', wordBreak: 'break-all', margin: 0 }}>{aiError}</p>
-                )}
-
-                {!aiLoading && aiAdvice && (
-                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13.5, lineHeight: 1.55, color: '#dee4e3', margin: 0 }}>{aiAdvice}</p>
+                {fieldAdvice && (
+                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13.5, lineHeight: 1.55, color: '#dee4e3', margin: 0 }}>{fieldAdvice}</p>
                 )}
               </div>
 

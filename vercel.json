@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/fishing-advice.ts": {
-      "maxDuration": 15
-    }
-  },
   "headers": [
     {
       "source": "/assets/(.*)",
