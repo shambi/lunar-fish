@@ -368,11 +368,11 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
               `}</style>
 
-              {/* ═══════ SECTION 1 — HEADER (РИБО КАРТА + SCORE + FISH) ═══════ */}
+              {/* ═══════ SECTION 1 — HEADER (КАТЕГОРИЯ + SCORE + FISH) ═══════ */}
               <div style={{ marginBottom: 18 }}>
-                {/* РИБО КАРТА label */}
+                {/* КАТЕГОРИЯ label */}
                 <div style={{ fontFamily: "'VT323', monospace", fontSize: 22, letterSpacing: '0.08em', color: '#dee4e3', textTransform: 'uppercase', lineHeight: 1, marginBottom: 10 }}>
-                  РИБО КАРТА:
+                  {selectedFish.fishType ?? 'Сладководна риба'}
                 </div>
 
                 {/* SCORE — dot matrix */}
@@ -384,6 +384,13 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 <div style={{ textAlign: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: '0.14em', color: '#dee4e3', textTransform: 'uppercase', marginBottom: 6 }}>
                   {selectedFish.name}
                 </div>
+
+                {/* Character line — moved here from bottom, right after name */}
+                {selectedFish.character && (
+                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11.5, lineHeight: 1.5, color: '#869393', textAlign: 'center', margin: 0, marginBottom: 10, padding: '0 6px' }}>
+                    {selectedFish.character}
+                  </p>
+                )}
 
                 {/* FISH SVG */}
                 <div style={{ width: '100%', height: 110, display: 'flex', justifyContent: 'center', alignItems: 'center', filter: 'drop-shadow(0 0 6px rgba(46,181,183,0.55)) drop-shadow(0 0 14px rgba(46,181,183,0.3))' }}>
@@ -647,7 +654,18 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 )}
               </div>
 
-              {/* ═══════ SECTION 6 — КАЛКУЛАТОР ═══════ */}
+              {/* ═══════ SECTION 6 — ТАКТИЧЕСКА БЕЛЕЖКА ═══════ */}
+              {advice?.mistake && (
+                <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: 14, marginBottom: 18 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                    <span style={{ display: 'inline-flex', width: 18, height: 18, borderRadius: '50%', background: 'rgba(46,181,183,0.15)', color: '#5cd8da', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700 }}>ⓘ</span>
+                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#dee4e3' }}>Тактическа бележка</span>
+                  </div>
+                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 12.5, lineHeight: 1.55, color: '#a8b4b4', margin: 0 }}>{advice.mistake}</p>
+                </div>
+              )}
+
+              {/* ═══════ SECTION 7 — КАЛКУЛАТОР ═══════ */}
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 20, padding: 16, marginBottom: 18 }}>
 
                 {/* Ред 1 — заглавие + резултат */}
@@ -711,24 +729,6 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   </div>
                 )}
               </div>
-
-              {/* ═══════ SECTION 7 — ТАКТИЧЕСКА БЕЛЕЖКА ═══════ */}
-              {advice?.mistake && (
-                <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: 14 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                    <span style={{ display: 'inline-flex', width: 18, height: 18, borderRadius: '50%', background: 'rgba(46,181,183,0.15)', color: '#5cd8da', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700 }}>ⓘ</span>
-                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#dee4e3' }}>Тактическа бележка</span>
-                  </div>
-                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 12.5, lineHeight: 1.55, color: '#a8b4b4', margin: 0 }}>{advice.mistake}</p>
-                </div>
-              )}
-
-              {/* Character line — kept subtle at bottom (was removed from header for the new dot-matrix hero layout) */}
-              {selectedFish.character && (
-                <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11.5, lineHeight: 1.5, color: '#869393', textAlign: 'center', marginTop: 14, padding: '0 6px' }}>
-                  {selectedFish.character}
-                </p>
-              )}
               </div>
             </>
           )}
