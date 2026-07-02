@@ -463,8 +463,16 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 if (techniques.length === 0) return null;
                 return (
                   <>
-                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', color: '#869393', marginBottom: 8 }}>
-                      ТЕХНИКИ
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round">
+                        <path d="M12 3 L12 14 Q12 20 7 20 Q3 20 3 16"/>
+                        <path d="M2 17 L4 15"/>
+                        <line x1="12" y1="3" x2="10" y2="4"/>
+                        <line x1="12" y1="3" x2="14" y2="4"/>
+                      </svg>
+                      <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', color: '#869393' }}>
+                        ТЕХНИКИ
+                      </span>
                     </div>
                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
                     {techniques.map(t => {
@@ -613,12 +621,14 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               {/* ═══════ SECTION 4 — ЕКО & ПРАВИЛА ═══════ */}
               <div style={{ marginBottom: 18 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="2" strokeLinecap="round">
-                    <line x1="4" y1="20" x2="4" y2="14"/>
-                    <line x1="12" y1="20" x2="12" y2="8"/>
-                    <line x1="20" y1="20" x2="20" y2="4"/>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="8" width="18" height="8" rx="1"/>
+                    <line x1="7" y1="8" x2="7" y2="11"/>
+                    <line x1="11" y1="8" x2="11" y2="11"/>
+                    <line x1="15" y1="8" x2="15" y2="11"/>
+                    <line x1="19" y1="8" x2="19" y2="11"/>
                   </svg>
-                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, fontWeight: 700, letterSpacing: '0.14em', color: '#dee4e3', textTransform: 'uppercase' }}>Еко &amp; Правила</span>
+                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', color: '#dee4e3', textTransform: 'uppercase' }}>Еко &amp; Правила</span>
                 </div>
 
                 <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '14px 16px' }}>
@@ -627,13 +637,13 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     return (
                       <div style={{ marginBottom: (selectedFish.altitudeBans ? 12 : 0) }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
-                          <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', color: '#869393', textTransform: 'uppercase' }}>Мин. размер</span>
-                          <span style={{ fontFamily: "'VT323', monospace", fontSize: 20, color: '#5cd8da', lineHeight: 1 }}>{selectedFish.minSize} см</span>
+                          <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', color: 'rgba(222,228,227,0.85)', textTransform: 'uppercase' }}>Мин. размер</span>
+                          <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 20, color: '#5cd8da', lineHeight: 1 }}>{selectedFish.minSize} см</span>
                         </div>
                         <div style={{ position: 'relative', height: 5, background: 'rgba(255,255,255,0.05)', borderRadius: 3, overflow: 'hidden' }}>
                           <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${pct}%`, background: 'linear-gradient(90deg, #2eb5b7, #5cd8da)', borderRadius: 3, boxShadow: '0 0 8px rgba(46,181,183,0.5)' }} />
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4, fontFamily: "'VT323', monospace", fontSize: 14, color: '#869393' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4, fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: '#869393' }}>
                           <span>0</span><span>100 см</span>
                         </div>
                       </div>
@@ -651,7 +661,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     return (
                       <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
-                          <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', color: '#869393', textTransform: 'uppercase' }}>Забранен период</span>
+                          <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', color: 'rgba(222,228,227,0.85)', textTransform: 'uppercase' }}>Забранен период</span>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                           {activeZones.map(z => {
@@ -661,7 +671,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                             return (
                               <div key={z.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 12 }}>
                                 <span style={{ color: '#869393' }}>{z.label}</span>
-                                <span style={{ color, fontFamily: "'VT323', monospace", fontSize: 18, letterSpacing: '0.05em' }}>{ban.start} – {ban.end}</span>
+                                <span style={{ color, fontFamily: "'Space Grotesk', sans-serif", fontSize: 18, letterSpacing: '0.05em' }}>{ban.start} – {ban.end}</span>
                               </div>
                             );
                           })}
