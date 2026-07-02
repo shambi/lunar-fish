@@ -417,7 +417,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                     return (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+                        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ background: 'transparent', overflow: 'visible' }}>
                           <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#1f2a2e" strokeWidth={strokeWidth} />
                           <circle
                             cx={size / 2} cy={size / 2} r={r} fill="none"
