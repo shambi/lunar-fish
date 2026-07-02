@@ -462,12 +462,16 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 const techniques = selectedFish.techniques?.[terrain] ?? [];
                 if (techniques.length === 0) return null;
                 return (
-                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
+                  <>
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', color: '#869393', marginBottom: 8 }}>
+                      ТЕХНИКИ
+                    </div>
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
                     {techniques.map(t => {
                       const active = selectedTechnique === t;
                       return (
                         <button key={t}
-                          onClick={() => setSelectedTechnique(t === selectedTechnique ? null : t)}
+                          onClick={() => setSelectedTechnique(t)}
                           style={{
                             flex: '0 0 auto',
                             padding: '8px 10px',
@@ -487,7 +491,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                         >{t}</button>
                       );
                     })}
-                  </div>
+                    </div>
+                  </>
                 );
               })()}
 
@@ -515,10 +520,10 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 const tileTitle: React.CSSProperties = { fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 700, color: '#dee4e3', letterSpacing: '0.06em' };
                 const tileSubLabel: React.CSSProperties = { fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, color: '#869393', marginBottom: 8 };
 
-                // Dot-matrix style value: short numeric-like values get big VT323 with • bullet
+                // Short numeric-like values get a big Space Grotesk figure with a • bullet
                 const renderBigValue = (val: string) => (
-                  <div style={{ fontFamily: "'VT323', monospace", fontSize: 34, fontWeight: 400, color: '#5cd8da', lineHeight: 1, letterSpacing: '0.02em', textShadow: '0 0 8px rgba(92,216,218,0.35)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span style={{ color: '#5cd8da', fontSize: 10 }}>●</span>{val}
+                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 34, fontWeight: 400, color: '#5cd8da', lineHeight: 1, letterSpacing: '0.02em', textShadow: '0 0 4px rgba(92,216,218,0.18)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ color: '#5cd8da', fontSize: 14 }}>●</span>{val}
                   </div>
                 );
                 const renderTextValue = (val: string) => (
@@ -529,20 +534,20 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                 // Small tactical icons (thin stroke)
                 const IconWorm = (
-                  <svg width="26" height="20" viewBox="0 0 32 24" fill="none" stroke="#dee4e3" strokeWidth="1.2" strokeLinecap="round">
+                  <svg width="28" height="22" viewBox="0 0 32 24" fill="none" stroke="#a8b4b4" strokeWidth="1.2" strokeLinecap="round">
                     <path d="M2 12 Q6 6 10 12 T18 12 T26 12" />
-                    <circle cx="27" cy="12" r="1.4" fill="#dee4e3"/>
+                    <circle cx="27" cy="12" r="1.4" fill="#a8b4b4"/>
                     <ellipse cx="26" cy="16" rx="3" ry="2" opacity="0.5"/>
                   </svg>
                 );
                 const IconLine = (
-                  <svg width="24" height="20" viewBox="0 0 24 24" fill="none" stroke="#dee4e3" strokeWidth="1.2" strokeLinecap="round">
+                  <svg width="26" height="22" viewBox="0 0 24 24" fill="none" stroke="#a8b4b4" strokeWidth="1.2" strokeLinecap="round">
                     <path d="M3 3 Q10 10 14 14 T21 21"/>
                     <path d="M18 16 L21 21 L16 20 Z" fill="none"/>
                   </svg>
                 );
                 const IconHook = (
-                  <svg width="20" height="22" viewBox="0 0 24 24" fill="none" stroke="#dee4e3" strokeWidth="1.2" strokeLinecap="round">
+                  <svg width="22" height="24" viewBox="0 0 24 24" fill="none" stroke="#a8b4b4" strokeWidth="1.2" strokeLinecap="round">
                     <path d="M12 3 L12 14 Q12 20 7 20 Q3 20 3 16"/>
                     <path d="M2 17 L4 15"/>
                     <line x1="12" y1="3" x2="10" y2="4"/>
@@ -550,7 +555,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   </svg>
                 );
                 const IconRig = (
-                  <svg width="20" height="22" viewBox="0 0 24 24" fill="none" stroke="#dee4e3" strokeWidth="1.2" strokeLinecap="round">
+                  <svg width="22" height="24" viewBox="0 0 24 24" fill="none" stroke="#a8b4b4" strokeWidth="1.2" strokeLinecap="round">
                     <line x1="12" y1="2" x2="12" y2="22"/>
                     <circle cx="12" cy="9" r="3"/>
                     <path d="M9 9 L15 9"/>
