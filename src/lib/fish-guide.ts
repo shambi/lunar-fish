@@ -537,7 +537,7 @@ export const FISH_DATABASE: FishSpecies[] = [
     },
     spawnMonths: [4, 5],
     minSize: 25,
-    techniques: { lake: [], river: ['Поплавък', 'Муха', 'Фидер'] },
+    techniques: { lake: ['Поплавък', 'Фидер'], river: ['Поплавък', 'Муха', 'Фидер'] },
     techniqueData: {
       'Поплавък': { groundbait: 'Без захранка или минимална', bait: 'Червей, опариш, тесто', line_mm: 0.16, hook_size: '8-12', rigs: 'Метод "на куршум", поплавъчен монтаж' },
       'Муха':     { bait: 'Утежнена нимфа, мокра муха', line_mm: 0.12, hook_size: '12-16', rigs: 'Мухарски монтаж' },
