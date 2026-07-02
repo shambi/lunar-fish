@@ -522,6 +522,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   padding: '12px 12px 14px',
                   display: 'flex',
                   flexDirection: 'column',
+                  height: '100%',
+                  minHeight: 0,
                 };
                 const tileHeader: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 };
                 const tileTitle: React.CSSProperties = { fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 700, color: '#dee4e3', letterSpacing: '0.06em' };
@@ -580,7 +582,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 );
 
                 return (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 18 }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 18, alignItems: 'stretch' }}>
                     <div style={tile}>
                       <div style={tileHeader}>
                         <span style={tileTitle}>СТРЪВ</span>
