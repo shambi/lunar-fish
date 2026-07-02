@@ -375,29 +375,29 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   {selectedFish.fishType ?? 'Сладководна риба'}
                 </div>
 
-                {/* NAME */}
-                <div style={{ textAlign: 'left', fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: '0.14em', color: '#dee4e3', textTransform: 'uppercase', marginBottom: 3 }}>
-                  {selectedFish.name}
-                </div>
-
-                {/* LATIN NAME — moved here from calculator footer, reuses existing secondary label style */}
-                {selectedFish.latinName && (
-                  <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textAlign: 'left', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>
-                    {selectedFish.latinName}
-                  </div>
-                )}
-
-                {/* Character line — moved here from bottom, right after name */}
+                {/* Character line — moved above the name, right after the category */}
                 {selectedFish.character && (
-                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11.5, lineHeight: 1.5, color: '#869393', textAlign: 'left', margin: 0, marginBottom: 10, padding: '0 6px' }}>
+                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13, lineHeight: 1.5, color: '#a8b4b4', textAlign: 'left', margin: 0, marginBottom: 16 }}>
                     {selectedFish.character}
                   </p>
                 )}
 
-                {/* FISH SVG — unchanged illustration/glow, now positioned right before the score+badge row */}
-                <div style={{ width: '100%', height: 110, display: 'flex', justifyContent: 'center', alignItems: 'center', filter: 'drop-shadow(0 0 6px rgba(46,181,183,0.55)) drop-shadow(0 0 14px rgba(46,181,183,0.3))', marginBottom: 12 }}>
+                {/* NAME + LATIN NAME group */}
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ textAlign: 'left', fontFamily: "'Space Grotesk', sans-serif", fontSize: 24, fontWeight: 700, color: '#dee4e3' }}>
+                    {selectedFish.name}
+                  </div>
+                  {selectedFish.latinName && (
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textAlign: 'left', textTransform: 'uppercase', letterSpacing: '0.08em', marginTop: 2 }}>
+                      {selectedFish.latinName}
+                    </div>
+                  )}
+                </div>
+
+                {/* FISH SVG — unchanged illustration/glow, moderately wider than the original compact size, centered, not edge-to-edge */}
+                <div style={{ width: 220, height: 110, margin: '0 auto', display: 'flex', justifyContent: 'center', alignItems: 'center', filter: 'drop-shadow(0 0 6px rgba(46,181,183,0.55)) drop-shadow(0 0 14px rgba(46,181,183,0.3))', marginBottom: 12 }}>
                   {FISH_ICON_MAP[selectedFish.name]
-                    ? FISH_ICON_MAP[selectedFish.name]({ style: { width: '75%', height: '100%' }, strokeWidth: 1.4, stroke: '#5cd8da' })
+                    ? FISH_ICON_MAP[selectedFish.name]({ style: { width: '100%', height: '100%' }, strokeWidth: 1.4, stroke: '#5cd8da' })
                     : <span style={{ fontSize: '4rem' }}>{selectedFish.emoji}</span>
                   }
                 </div>
@@ -410,7 +410,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     // Index.tsx "Условия", ПРЕПОРЪЧАНО ДНЕС badge threshold of 61 in this file).
                     const scoreColor = score >= 86 ? '#C8E63C' : score >= 61 ? '#2eb5b7' : score >= 40 ? '#7F93A8' : '#FF8C42';
 
-                    const size = 40, strokeWidth = 4;
+                    const size = 26, strokeWidth = 1.5;
                     const r = (size - strokeWidth) / 2;
                     const circumference = 2 * Math.PI * r;
                     const dashOffset = circumference * (1 - score / 100);
@@ -418,7 +418,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     return (
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-                          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={strokeWidth} />
+                          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#1f2a2e" strokeWidth={strokeWidth} />
                           <circle
                             cx={size / 2} cy={size / 2} r={r} fill="none"
                             stroke={scoreColor} strokeWidth={strokeWidth} strokeLinecap="round"
@@ -426,31 +426,31 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                             transform={`rotate(-90 ${size / 2} ${size / 2})`}
                           />
                         </svg>
-                        <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 22, color: '#dee4e3', lineHeight: 1 }}>
+                        {/* Same class as the temp/humidity/pressure values in the "Условия" bento grid (Index.tsx) */}
+                        <span className="text-sm font-bold text-white" style={{ lineHeight: 1 }}>
                           {selectedFish.score}
+                          <span style={{ fontSize: 11, fontWeight: 500, color: '#869393', marginLeft: 2 }}>/100</span>
                         </span>
                       </div>
                     );
                   })()}
 
-                  {/* ПРЕПОРЪЧАНО ДНЕС — same badge treatment as the DECISION BANNER (glow===true) in Index.tsx */}
+                  {/* ПРЕПОРЪЧАНО ДНЕС — compact pill, same border/background/text color as the active technique buttons */}
                   {selectedFish.score >= 61 && (
                     <div style={{
                       display: 'inline-flex',
                       alignItems: 'center',
-                      background: 'linear-gradient(135deg, rgba(46,181,183,0.08), rgba(46,181,183,0.02))',
-                      border: '1px solid rgba(46,181,183,0.35)',
-                      borderRadius: 16,
-                      boxShadow: '0 0 32px rgba(46,181,183,0.25)',
-                      padding: '8px 14px',
+                      padding: '4px 12px',
+                      borderRadius: 999,
+                      border: '1px solid #2eb5b7',
+                      background: 'rgba(46,181,183,0.15)',
                       fontFamily: "'Space Grotesk', sans-serif",
-                      fontSize: 13,
+                      fontSize: 11,
                       fontWeight: 600,
-                      letterSpacing: '0.14em',
-                      color: '#dee4e3',
-                      textTransform: 'uppercase',
+                      color: '#5cd8da',
+                      whiteSpace: 'nowrap',
                     }}>
-                      ПРЕПОРЪЧАНО ДНЕС
+                      Препоръчано днес
                     </div>
                   )}
                 </div>
