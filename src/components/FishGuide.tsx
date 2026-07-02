@@ -377,7 +377,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                 {/* Character line — moved above the name, right after the category */}
                 {selectedFish.character && (
-                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13, lineHeight: 1.5, color: '#a8b4b4', textAlign: 'left', margin: 0, marginBottom: 16 }}>
+                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13, lineHeight: 1.5, color: '#a8b4b4', textAlign: 'left', margin: 0, marginBottom: 12, borderLeft: '1px solid rgba(46,181,183,0.3)', paddingLeft: 10 }}>
                     {selectedFish.character}
                   </p>
                 )}
@@ -424,6 +424,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                             stroke={scoreColor} strokeWidth={strokeWidth} strokeLinecap="round"
                             strokeDasharray={circumference} strokeDashoffset={dashOffset}
                             transform={`rotate(-90 ${size / 2} ${size / 2})`}
+                            style={{ filter: `drop-shadow(0 0 3px ${scoreColor})` }}
                           />
                         </svg>
                         {/* Same class as the temp/humidity/pressure values in the "Условия" bento grid (Index.tsx) */}
@@ -468,7 +469,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                         <button key={t}
                           onClick={() => setSelectedTechnique(t === selectedTechnique ? null : t)}
                           style={{
-                            flex: 1,
+                            flex: '0 0 auto',
                             padding: '8px 10px',
                             borderRadius: 12,
                             border: active ? '1px solid #2eb5b7' : '1px solid rgba(255,255,255,0.08)',
