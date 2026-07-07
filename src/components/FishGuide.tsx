@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { getScoredFish, getFishModalData, type ScoredFish } from '@/lib/fish-guide';
 import { getDailyAdvice } from '@/lib/fish-advice';
-import { generateFieldAdvice } from '@/lib/field-advice';
 import type { MoonData } from '@/lib/moon';
 import type { WeatherData } from '@/hooks/use-weather';
 import {
@@ -88,63 +87,6 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
     }
   }, [selectedFish, terrain]);
 
-  // Deterministic replacement for the old Groq-backed fetch — same tackle numbers the
-  // КУКИ/ВЛАКНО tiles show (technique-specific data first, falling back to the fish's
-  // general modal data), fed straight into generateFieldAdvice with no network round-trip.
-  const fieldAdvice = useMemo(() => {
-    if (!selectedFish) return null;
-
-    const validTechniques = selectedFish.techniques?.[terrain] ?? [];
-    const isStaleTechnique = selectedTechnique !== null && !validTechniques.includes(selectedTechnique);
-    if (isStaleTechnique) return null;
-
-    const td = selectedTechnique ? selectedFish.techniqueData?.[selectedTechnique] : null;
-    const modalDataForAdvice = getFishModalData(
-      selectedFish,
-      weather?.temperature ?? 18,
-      weather?.weatherCode ?? 0,
-      terrain,
-      weather?.altitude
-    );
-    const recommendedHookSize = td?.hook_size ?? modalDataForAdvice.hookTip;
-    const recommendedLineThickness = td?.line_mm ? `${td.line_mm}мм` : modalDataForAdvice.lineDiameter;
-
-    // Derived from the hourlyForecast array (precipitation/temp per hour) — gives the
-    // field advice knowledge a static tile can't show: has it rained recently, and
-    // where is temperature headed in the next few hours.
-    const hourly = weather?.hourlyForecast ?? [];
-    const currentHour = new Date().getHours();
-    const currentIdx = hourly.findIndex(h => parseInt(h.hour, 10) === currentHour);
-    const recentRain = currentIdx >= 0
-      ? hourly.slice(Math.max(0, currentIdx - 2), currentIdx + 1).some(h => h.precipitation > 0)
-      : false;
-    let tempTrend = 0;
-    if (currentIdx >= 0) {
-      const next3 = hourly.slice(currentIdx + 1, currentIdx + 4);
-      if (next3.length > 0) {
-        tempTrend = next3[next3.length - 1].temp - hourly[currentIdx].temp;
-      }
-    }
-
-    return generateFieldAdvice({
-      fishName: selectedFish.name,
-      windSpeed: weather?.windSpeed ?? 0,
-      recentRain,
-      terrain,
-      weatherCode: weather?.weatherCode ?? 0,
-      hour: currentHour,
-      month: new Date().getMonth() + 1,
-      temperature: weather?.temperature ?? 20,
-      tempTrend,
-      pressureTrend: weather?.pressureTrend ?? 'stable',
-      isInPeak: solunarContext?.isInPeak ?? false,
-      peakType: solunarContext?.peakType ?? null,
-      overallScore: selectedFish.score,
-      recommendedHookSize,
-      recommendedLineThickness,
-    });
-  }, [selectedFish, selectedTechnique, terrain, weather, solunarContext]);
-
   const temp = weather?.temperature ?? 18;
   const wind = weather?.windSpeed ?? 5;
   const weatherCode = weather?.weatherCode ?? 0;
@@ -176,7 +118,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
   const advice = useMemo(() => {
     if (!selectedFish) return null;
-    return getDailyAdvice(selectedFish, moon, weather, terrain, solunarContext);
+    return getDailyAdvice(selectedFish, moon, weather, terrain, selectedFish.score, solunarContext);
   }, [selectedFish, moon, weather, terrain, solunarContext]);
 
   return (
@@ -670,8 +612,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     </div>
                   )}
 
-                  {fieldAdvice && (
-                    <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13.5, lineHeight: 1.55, color: '#dee4e3', margin: 0 }}>{fieldAdvice}</p>
+                  {advice?.tip && (
+                    <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13.5, lineHeight: 1.55, color: '#dee4e3', margin: 0, whiteSpace: 'pre-line' }}>{advice.tip}</p>
                   )}
                 </div>
               </div>

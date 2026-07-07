@@ -3,8 +3,8 @@ import type { MoonData } from './moon';
 import type { WeatherData } from '@/hooks/use-weather';
 
 export interface DailyAdvice {
-  tip: string; // 3 sentences
-  mistake: string | null; // 1 sentence or null
+  tip: string; // 3-4 sentences (4th is a forward-looking forecast, omitted during a solunar peak)
+  mistake: string | null; // 1-2 sentences or null
 }
 
 // Grammar helper: Get appropriate pronoun based on fish gender
@@ -13,6 +13,10 @@ export const getPronoun = (fish: FishSpecies): string => {
 };
 
 const CARP_FAMILY = ['Шаран', 'Амур', 'Толстолоб', 'Каракуда', 'Лин'];
+
+// Predators for which a bright leader would spook rather than help, even in muddy
+// water — ported from field-advice.ts's DARK_LEADER_ONLY species check.
+const DARK_LEADER_SPECIES = new Set(['Сом', 'Щука', 'Сулка', 'Костур', 'Бибан']);
 
 // Per-species tackle specs (line diameter, hook size, lure/bait size)
 interface FishSpecs {
@@ -90,11 +94,52 @@ function wasRaining(weatherCode: number): boolean {
   return [51, 53, 55, 61, 63, 65, 80, 81, 82, 95, 96, 99].includes(weatherCode);
 }
 
+// Delta °C over the next ~3h, read from the hourly forecast — same derivation
+// FishGuide.tsx used to do for generateFieldAdvice's tempTrend input.
+function computeTempTrend(weather: WeatherData | null): number {
+  const hourly = weather?.hourlyForecast ?? [];
+  const currentHour = new Date().getHours();
+  const currentIdx = hourly.findIndex(h => parseInt(h.hour, 10) === currentHour);
+  if (currentIdx < 0) return 0;
+  const next3 = hourly.slice(currentIdx + 1, currentIdx + 4);
+  if (next3.length === 0) return 0;
+  return next3[next3.length - 1].temp - hourly[currentIdx].temp;
+}
+
+type TempBucket = 'cooling' | 'stable' | 'warming';
+
+function tempTrendBucket(tempTrend: number): TempBucket {
+  if (tempTrend < -1) return 'cooling';
+  if (tempTrend > 1) return 'warming';
+  return 'stable';
+}
+
+// 3 (temp direction) × 3 (pressure trend) forward-looking forecast templates,
+// ported verbatim from field-advice.ts's FORECAST_TEMPLATES.
+const FORECAST_TEMPLATES: Record<TempBucket, Record<'falling' | 'stable' | 'rising', string>> = {
+  cooling: {
+    falling: 'Температурата ще спадне, а налягането продължава да пада — очаквай по-слабо кълване следващите часове, рибата се притаява.',
+    stable: 'Температурата ще спадне при стабилно налягане — рибата остава активна, но приближаването ѝ към дъното ще се засили.',
+    rising: 'Застудяване с покачващо се налягане — очаквай постепенно затихване на активността до края на деня.',
+  },
+  stable: {
+    falling: 'Температурата остава стабилна, но налягането пада — рибата усеща промяната преди теб и обикновено засилва кълването в следващия час-два.',
+    stable: 'Условията остават непроменени — добър момент за постоянство в тактиката, без резки промени.',
+    rising: 'Налягането се покачва при стабилна температура — очаквай по-предпазливо поведение на рибата напред.',
+  },
+  warming: {
+    falling: 'Затопля се, а налягането пада — комбинацията обикновено засилва апетита на рибата през следващите часове.',
+    stable: 'Температурата ще се покачи при стабилно налягане — активността расте плавно до края на деня.',
+    rising: 'Затопля се, но налягането расте — кълването може да отслабне въпреки по-топлата вода.',
+  },
+};
+
 export function getDailyAdvice(
   fish: FishSpecies,
   moon: MoonData,
   weather: WeatherData | null,
   terrain: 'river' | 'lake',
+  overallScore: number,
   solunarContext?: { isInPeak: boolean; peakType: 'major' | 'minor' | null }
 ): DailyAdvice {
   const name = fish.name;
@@ -158,10 +203,11 @@ export function getDailyAdvice(
     s1 = `Падащото налягане притиска ${name} надолу — очаквай деликатна и бавна хапка.`;
   } else if (isNewMoon) {
     s1 = `${name} е в тъмнина и ловува смело — хапе по-агресивно от обичайното.`;
-  } else if (isFullMoon) {
-    if (name === 'Сом') {
-      s1 = `При пълнолуние сомът се крие по-дълбоко — лови в облачна нощ или преди изгрев, не на открито при лунна светлина.`;
-    } else if (isPredator) {
+  } else if (isFullMoon && name !== 'Сом') {
+    // Сом+пълнолуние е изключен нарочно: сомът се крие по-дълбоко при пълнолуние
+    // (обратното на "пик на активност"), а този нюанс вече живее в getCommonMistake.
+    // Тук пропускаме направо към следващия, не-лунен branch в йерархията.
+    if (isPredator) {
       s1 = `Пълнолунието е пик на активност за ${name} — използвай ${FISH_SPECS[name]?.lure ?? 'по-едри примамки'} с активна игра.`;
     } else {
       s1 = `Пълнолунието е активирало ${name} — захрани обилно и изчакай.`;
@@ -207,8 +253,8 @@ export function getDailyAdvice(
       secondary = ` Вълните вкарват кислород и храна към брега — търси ${name} точно там, където вятърът бие в брега.`;
     } else if (wind > 25 && terrain === 'river') {
       secondary = ` Силният вятър разбърква водата — хвърляй по посока на течението.`;
-    } else if (wind < 10 && !s1.includes('тихо') && !s1.includes('Тихо')) {
-      secondary = ` Тихото огледално време ${pronounAcc(name)} прави по-${adjSuspicious(name)} — ${tackleHint(name, isPredator)}.`;
+    } else if (wind < 10 && !isRaining && !s1.includes('тихо') && !s1.includes('Тихо')) {
+      secondary = ` Тихото огледално време ${pronounAcc(name)} прави по-${adjSuspicious(name)} — по-тънък повод, минимум движение край брега.`;
     } else if (isSouthWind(windDir)) {
       if (CARP_FAMILY.includes(name)) {
         secondary = ` Южният топъл вятър раздвижва шарановите — добър знак за деня.`;
@@ -218,15 +264,19 @@ export function getDailyAdvice(
           : ` Южният вятър активира ${name} — търси го в по-плитките зони.`;
       }
     } else if (terrain === 'river' && isRaining) {
-      secondary = isPredator
-        ? ` Мътната вода след дъжда е предимство — използвай силно вибриращи блесни и ярки цветове (оранжево, жълто).`
-        : ` Мътната вода след дъжда е намалила видимостта — захрани по-обилно за да привлечеш ${name} към стръвта.`;
-    } else if (isPredator && !s1.includes('цвет')) {
-      if (isOvercast) {
-        secondary = ` Облачното небе е твой съюзник — използвай ярки цветове: оранжево, жълто, шартрьоз.`;
-      } else if (isSunny && isSunHours && name !== 'Распер') {
-        secondary = ` Силното слънце е скрило ${name} в сянката на крайбрежните дървета и тръстиката — заложи на естествени цветове: сребристо, кафяво, зелено и търси го там.`;
+      if (isPredator) {
+        secondary = DARK_LEADER_SPECIES.has(name)
+          ? ` Мътната вода след дъжда е предимство — използвай силно вибриращи блесни и ярки цветове (оранжево, жълто), но поводът остава тъмен и незабележим.`
+          : ` Мътната вода след дъжда е предимство — използвай силно вибриращи блесни и ярки цветове (оранжево, жълто).`;
+      } else {
+        secondary = ` Мътната вода след дъжда е намалила видимостта — захрани по-обилно за да привлечеш ${name} към стръвта.`;
       }
+    } else if (isSunny && isSunHours && name !== 'Распер' && !s1.includes('цвет')) {
+      secondary = isPredator
+        ? ` Силното слънце е скрило ${name} в сянката на крайбрежните дървета и тръстиката — заложи на естествени цветове: сребристо, кафяво, зелено и търси го там.`
+        : ` Силното слънце разкрива всичко под водата — избягвай крещящи цветове по влакното и монтажа, ${name} става по-предпазлив.`;
+    } else if (isPredator && isOvercast && !s1.includes('цвет')) {
+      secondary = ` Облачното небе е твой съюзник — използвай ярки цветове: оранжево, жълто, шартрьоз.`;
     } else if (altitude > 500 && altitude <= 1000) {
       secondary = ` На тази височина сезонът е малко по-закъснял — рибата е по-активна отколкото очакваш за месеца.`;
     }
@@ -234,6 +284,10 @@ export function getDailyAdvice(
     if (secondary) {
       s1 += secondary;
     }
+  }
+
+  if (overallScore < 40) {
+    s1 += ` Рибата е по-пасивна — по-фина стръв, по-тихо приближаване.`;
   }
 
   // ——— SENTENCE 2: WHAT (technique) ———
@@ -344,6 +398,9 @@ export function getDailyAdvice(
       } else {
         s2 = `На по-топъл водоем търси ${name} по ръба на плиткото и храни по-ритмично с царевица или пелети на пружина.`;
       }
+      if (isSunny && isSunHours) {
+        s2 += ` При силно слънце избягвай крещящи цветове по монтажа.`;
+      }
     }
   } else {
     // River
@@ -385,7 +442,14 @@ export function getDailyAdvice(
     s3 = `Около залез (${subHour(sunset)} — ${sunset}) активността ще се засили.`;
   }
 
-  const tip = `${s1}\n${s2}\n${s3}`;
+  // ——— SENTENCE 4: FORECAST (forward-looking, skipped during a solunar peak) ———
+  let s4 = '';
+  if (!solunarContext?.isInPeak) {
+    const tempTrend = computeTempTrend(weather);
+    s4 = FORECAST_TEMPLATES[tempTrendBucket(tempTrend)][pt];
+  }
+
+  const tip = s4 ? `${s1}\n${s2}\n${s3}\n${s4}` : `${s1}\n${s2}\n${s3}`;
 
   // ——— SECTION 2: COMMON MISTAKE ———
   const mistake = getCommonMistake(fish, moon, weather, terrain);
@@ -415,60 +479,88 @@ function getCommonMistake(
   const isRaining = wasRaining(wc);
   const month = new Date().getMonth() + 1;
 
+  let mistake: string | null = null;
+
   // Condition 7 — Full moon + Сом (higher priority, check first)
   if (isFullMoon && name === 'Сом') {
-    return `При пълнолуние много рибари търсят сома на плитко — грешка. Мустакатият се е скрил на дълбочина, търси го там.`;
+    mistake = `При пълнолуние много рибари търсят сома на плитко — грешка. Мустакатият се е скрил на дълбочина, търси го там.`;
   }
 
   // Condition 1 — Full moon + sunny
-  if (isFullMoon && isSunny) {
-    return `Пълнолунието и бистрата вода правят ${name} изключително подозрителна — дебело влакно и ярки цветове ще я изплашат преди да хапе.`;
+  else if (isFullMoon && isSunny) {
+    mistake = `Пълнолунието и бистрата вода правят ${name} изключително подозрителна — дебело влакно и ярки цветове ще я изплашат преди да хапе.`;
   }
 
   // Condition 2 — Pressure falling fast + non-predator
-  if (pRate < -3 && !isPredator) {
-    return `При рязко падащо налягане много рибари захранват обилно — грешка. Рибата е пасивна и малките порции работят по-добре.`;
+  else if (pRate < -3 && !isPredator) {
+    mistake = `При рязко падащо налягане много рибари захранват обилно — грешка. Рибата е пасивна и малките порции работят по-добре.`;
   }
 
   // Condition 11 — Rising fast pressure after storm
-  if (pRate > 3) {
-    return `Налягането скача след бурята — много рибари бързат да хвърлят. Изчакай 2-3 часа докато рибата се ориентира.`;
+  else if (pRate > 3) {
+    mistake = `Налягането скача след бурята — много рибари бързат да хвърлят. Изчакай 2-3 часа докато рибата се ориентира.`;
   }
 
   // Condition 3 — East wind
-  if (isEastWind(windDir)) {
-    return `Източният вятър кара рибарите да сменят постоянно местата — грешка. Изчакай търпеливо на едно място.`;
+  else if (isEastWind(windDir)) {
+    mistake = `Източният вятър кара рибарите да сменят постоянно местата — грешка. Изчакай търпеливо на едно място.`;
   }
 
   // Condition 4 — Cold + predator
-  if (temp < 5 && isPredator) {
-    return `В студена вода едрите примамки са грешка — ${name} не преследва нищо. Мини на ${tackleHint(name, isPredator)} с малка стръв.`;
+  else if (temp < 5 && isPredator) {
+    mistake = `В студена вода едрите примамки са грешка — ${name} не преследва нищо. Мини на ${tackleHint(name, isPredator)} с малка стръв.`;
   }
 
   // Condition 5 — Sunny + predator
-  if (isSunny && isSunHours && isPredator) {
-    return `В слънчево време много рибари хвърлят на открито — грешка. ${name} е в сянката на крайбрежните дървета и тръстиката.`;
+  else if (isSunny && isSunHours && isPredator) {
+    mistake = `В слънчево време много рибари хвърлят на открито — грешка. ${name} е в сянката на крайбрежните дървета и тръстиката.`;
   }
 
   // Condition 6 — Rain + Водоем
-  if (isRaining && terrain === 'lake') {
-    return `След дъжд много рибари очакват мътна вода във водоема — тя остава бистра. Не сменяй примамките към ярки цветове.`;
+  else if (isRaining && terrain === 'lake') {
+    mistake = `След дъжд много рибари очакват мътна вода във водоема — тя остава бистра. Не сменяй примамките към ярки цветове.`;
   }
 
   // Condition 8 — Wind >20 + non-predator + Река
-  if (wind > 20 && !isPredator && terrain === 'river') {
-    return `При силен вятър на река захранката се разнася от течението — хвърляй по-тежка захранка или смени на по-тихо място.`;
+  else if (wind > 20 && !isPredator && terrain === 'river') {
+    mistake = `При силен вятър на река захранката се разнася от течението — хвърляй по-тежка захранка или смени на по-тихо място.`;
   }
 
   // Condition 9 — Spawning months
-  if (month >= 5 && month <= 6) {
-    return `В размножителния период рибата пази гнездата си — не тълкувай хапката като хранене, може да е защитна реакция.`;
+  else if (month >= 5 && month <= 6) {
+    mistake = `В размножителния период рибата пази гнездата си — не тълкувай хапката като хранене, може да е защитна реакция.`;
   }
 
   // Condition 10 — Waning moon + predator
-  if (isWaning && isPredator) {
-    return `Намаляващата луна успокоява ${name} — ярките и шумни примамки са грешка днес, мини на деликатни и естествени цветове.`;
+  else if (isWaning && isPredator) {
+    mistake = `Намаляващата луна успокоява ${name} — ярките и шумни примамки са грешка днес, мини на деликатни и естествени цветове.`;
   }
 
+  // Condition 12 — Seasonal leader/line colour, appended to whatever fired above
+  // (or standing alone if none of the conditions 1-11 matched).
+  const colorNote = seasonalLeaderColorNote(month);
+  if (colorNote) {
+    return mistake ? `${mistake} ${colorNote}` : colorNote;
+  }
+  return mistake;
+}
+
+// DRAFT — season → влакно/повод цвят, 1 изречение. Есенният текст е пренесен буквално
+// от field-advice.ts (fallback branch); пролет/лято/зима текстовете са нови формулировки
+// за преглед. Месеци 5-6 умишлено без цветова бележка — вече покрити от Condition 9
+// (размножителен период) по-горе.
+function seasonalLeaderColorNote(month: number): string | null {
+  if (month === 3 || month === 4) {
+    return `През пролетта водата се избистря след зимата — заложи на по-светли, естествени цветове по повода.`;
+  }
+  if (month === 7 || month === 8) {
+    return `При силна видимост в бистрата лятна вода — избери по-прозрачни и светли нюанси на влакното.`;
+  }
+  if (month === 9 || month === 10) {
+    return `Заложи на кафяв повод, имитиращ есенна растителност.`;
+  }
+  if (month === 11 || month === 12 || month === 1 || month === 2) {
+    return `Зимата бави и изостря вниманието на рибата — по-тъмни, неутрални нюанси на влакното работят по-добре.`;
+  }
   return null;
 }
