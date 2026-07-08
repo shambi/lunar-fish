@@ -628,9 +628,24 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, color: '#869393', textTransform: 'uppercase', letterSpacing: '0.14em', whiteSpace: 'nowrap' }}>Калкулатор за тегло</span>
                 </div>
 
-                {/* Ред 2 — лого (бледо) + резултат */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, marginBottom: 14 }}>
-                  <img src="/1.png" alt="" style={{ width: 32, height: 32, borderRadius: 6, opacity: 0.2, filter: 'grayscale(1)', mixBlendMode: 'screen' }} />
+                {/* Ред 2 — лого (тийл воден знак) + резултат */}
+                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      width: 32,
+                      height: 32,
+                      backgroundColor: '#2eb5b7',
+                      opacity: 0.4,
+                      WebkitMaskImage: 'url(/1.png)',
+                      maskImage: 'url(/1.png)',
+                      WebkitMaskSize: 'cover',
+                      maskSize: 'cover',
+                      WebkitMaskRepeat: 'no-repeat',
+                      maskRepeat: 'no-repeat',
+                      maskMode: 'luminance',
+                    } as React.CSSProperties}
+                  />
                   <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 600, color: '#dee4e3', letterSpacing: '0.02em', lineHeight: 1, textShadow: '0 0 4px rgba(92,216,218,0.18)' }}>
                     {calcLen
                       ? <>{calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))}<span style={{ fontSize: 11, color: '#869393', marginLeft: 5, fontWeight: 400 }}>KG</span></>
