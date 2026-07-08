@@ -453,11 +453,10 @@ const Index = () => {
   const alertLevel: 'none' | 'yellow' | 'orange' | 'red' = weather?.meteoAlarm?.level ?? 'none';
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
   const [showAlertTooltip, setShowAlertTooltip] = useState(false);
-  const [hourlyOpen, setHourlyOpen] = useState(false);
   const hourlyScrollRef = useRef<HTMLDivElement>(null);
-  const hourlyToggleRef = useRef<HTMLButtonElement>(null);
+  const hourlyForecastLen = weather?.hourlyForecast?.length ?? 0;
   useEffect(() => {
-    if (!hourlyOpen) return;
+    if (!hourlyForecastLen) return;
     const t = setTimeout(() => {
       const container = hourlyScrollRef.current;
       if (!container) return;
@@ -466,23 +465,8 @@ const Index = () => {
       cell?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     }, 50);
     return () => clearTimeout(t);
-  }, [hourlyOpen]);
+  }, [hourlyForecastLen]);
 
-  useEffect(() => {
-    if (!hourlyOpen) return;
-    const handleOutsideClick = (e: MouseEvent) => {
-      const target = e.target as Node;
-      const clickedInsideStrip = hourlyScrollRef.current?.contains(target) ?? false;
-      const clickedToggle = hourlyToggleRef.current?.contains(target) ?? false;
-      if (!clickedInsideStrip && !clickedToggle) {
-        setHourlyOpen(false);
-      }
-    };
-    // mousedown instead of click — fires strictly before this same click can
-    // be (mis)interpreted as "outside" by a listener attached mid-dispatch.
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, [hourlyOpen]);
 
   const today = new Date().toLocaleDateString('bg-BG', {
     weekday: 'long',
