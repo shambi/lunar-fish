@@ -618,16 +618,19 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               {/* ═══════ SECTION 7 — КАЛКУЛАТОР ═══════ */}
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: 16, marginBottom: 18 }}>
 
-                {/* Ред 1 — заглавие + резултат */}
+                {/* Ред 1 — заглавие */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="4" y1="12" x2="20" y2="12" stroke="#2eb5b7" strokeWidth="2.2" strokeLinecap="round"/>
+                    <circle cx="12" cy="6" r="1.6" fill="#2eb5b7"/>
+                    <circle cx="12" cy="18" r="1.6" fill="#2eb5b7"/>
+                  </svg>
+                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, color: '#869393', textTransform: 'uppercase', letterSpacing: '0.14em', whiteSpace: 'nowrap' }}>Калкулатор за тегло</span>
+                </div>
+
+                {/* Ред 2 — лого (бледо) + резултат */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, marginBottom: 14 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <line x1="4" y1="12" x2="20" y2="12" stroke="#2eb5b7" strokeWidth="2.2" strokeLinecap="round"/>
-                      <circle cx="12" cy="6" r="1.6" fill="#2eb5b7"/>
-                      <circle cx="12" cy="18" r="1.6" fill="#2eb5b7"/>
-                    </svg>
-                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, color: '#869393', textTransform: 'uppercase', letterSpacing: '0.14em', whiteSpace: 'nowrap' }}>Калкулатор за тегло</span>
-                  </div>
+                  <img src="/1.png" alt="" style={{ width: 32, height: 32, borderRadius: 6, opacity: 0.2, filter: 'grayscale(1)', mixBlendMode: 'screen' }} />
                   <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 600, color: '#dee4e3', letterSpacing: '0.02em', lineHeight: 1, textShadow: '0 0 4px rgba(92,216,218,0.18)' }}>
                     {calcLen
                       ? <>{calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))}<span style={{ fontSize: 11, color: '#869393', marginLeft: 5, fontWeight: 400 }}>KG</span></>
@@ -636,7 +639,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   </div>
                 </div>
 
-                {/* Ред 2 — inputs */}
+                {/* Ред 3 — inputs */}
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 10, marginBottom: 12 }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 6 }}>Дължина</div>
@@ -660,7 +663,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   </div>
                 </div>
 
-                {/* Ред 3 — footer */}
+                {/* Ред 4 — footer */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 12, color: '#869393' }}>Въведи размерите на улова</span>
                   <button onClick={() => setShowFormulaInfo(!showFormulaInfo)}
