@@ -1,6 +1,7 @@
 import type { FishSpecies } from './fish-guide';
 import type { MoonData } from './moon';
 import type { WeatherData } from '@/hooks/use-weather';
+import { getMeteoAlertMessage } from '@/lib/meteo-alert';
 
 export interface DailyAdvice {
   tip: string; // 3-4 sentences (4th is a forward-looking forecast, omitted during a solunar peak)
@@ -92,25 +93,6 @@ function subHour(t: string): string {
 
 function wasRaining(weatherCode: number): boolean {
   return [51, 53, 55, 61, 63, 65, 80, 81, 82, 95, 96, 99].includes(weatherCode);
-}
-
-// Moved here from FishGuide.tsx along with the meteoAlarm-reading logic in
-// getCommonMistake — same label map, unchanged text (spec for a dedicated
-// meteoAlarm tactical message still pending).
-const METEO_EVENT_LABELS: Record<string, string> = {
-  'Heat': 'Жега',
-  'Thunderstorms': 'Гръмотевици',
-  'Rain': 'Дъжд',
-  'Wind': 'Силен вятър',
-  'Snow': 'Сняг',
-  'Fog': 'Мъгла',
-  'Flood': 'Наводнение',
-  'Forest fire': 'Горски пожар',
-  'Coastal event': 'Крайбрежно събитие',
-};
-function translateMeteoEvent(event: string | null): string {
-  if (!event) return '';
-  return METEO_EVENT_LABELS[event] ?? event;
 }
 
 // Delta °C over the next ~3h, read from the hourly forecast — same derivation
@@ -500,19 +482,24 @@ export function getCommonMistake(
   const isRaining = wasRaining(wc);
   const month = new Date().getMonth() + 1;
 
-  let mistake: string | null = null;
-
-  // Priority 0 — active meteoAlarm warning, always wins (safety before tactics).
-  // PLACEHOLDER: just the relocated level/event label logic from FishGuide.tsx for
-  // now — a dedicated tactical meteoAlarm message is still pending a follow-up spec.
+  // Priority 0 — active meteoAlarm warning; safety before tactics. red/orange
+  // suppress everything else (return immediately); yellow is prepended as a
+  // first line ahead of the normal Priority 1+2+3 chain below. Event/label
+  // logic itself lives in the shared meteo-alert.ts module (also used by
+  // Index.tsx's alert tooltip) so both places agree on the same 9 hazard types.
+  let safetyPrefix: string | null = null;
   if (meteoAlert?.level) {
-    const levelLabel = meteoAlert.level === 'red' ? 'Червен' : meteoAlert.level === 'orange' ? 'Оранжев' : 'Жълт';
-    const eventLabel = translateMeteoEvent(meteoAlert.event);
-    mistake = `${levelLabel} код${eventLabel ? ` · ${eventLabel}` : ''}`;
+    const safetyMessage = getMeteoAlertMessage(meteoAlert.event ?? '', meteoAlert.level);
+    if (meteoAlert.level === 'red' || meteoAlert.level === 'orange') {
+      return safetyMessage;
+    }
+    safetyPrefix = safetyMessage;
   }
 
+  let mistake: string | null = null;
+
   // Condition 7 — Full moon + Сом (higher priority, check first)
-  else if (isFullMoon && name === 'Сом') {
+  if (isFullMoon && name === 'Сом') {
     mistake = `При пълнолуние много рибари търсят сома на плитко — грешка. Мустакатият се е скрил на дълбочина, търси го там.`;
   }
 
@@ -606,10 +593,11 @@ export function getCommonMistake(
     mistake = `Рибата е по-пасивна — по-фина стръв, по-тихо приближаване.`;
   }
 
-  // Final composition: [Priority 1 winner] + [seasonal colour] + [forecast].
-  // Solunar peak is intentionally never referenced here — that indicator stays
-  // exclusively in the Header/Score block.
+  // Final composition: [yellow safety prefix, if any] + [Priority 1 winner] +
+  // [seasonal colour] + [forecast]. Solunar peak is intentionally never
+  // referenced here — that indicator stays exclusively in the Header/Score block.
   const parts: string[] = [];
+  if (safetyPrefix) parts.push(safetyPrefix);
   if (mistake) parts.push(mistake);
 
   const colorNote = seasonalLeaderColorNote(month);

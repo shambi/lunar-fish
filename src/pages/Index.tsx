@@ -12,6 +12,7 @@ import { ForecastCards } from '@/components/ForecastCards';
 import { PerchIcon, CarpIcon, PikeIcon, BreamIcon, CatfishIcon } from '@/components/FishIcons';
 import { AdviceIcon } from '@/components/AdviceIcon';
 import { WindCompass } from '@/components/WindCompass';
+import { getMeteoAlertLabel } from '@/lib/meteo-alert';
 const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
   const [now, setNow] = useState(() => new Date());
   const [openMoon, setOpenMoon] = useState(false);
@@ -1068,13 +1069,7 @@ const Index = () => {
                   </div>
                 </button>
                 {showAlertTooltip && weather?.meteoAlarm && alertLevel !== 'none' && (() => {
-                  const eventMap: Record<string, string> = {
-                    'heat': 'опасно горещо', 'thunderstorm': 'гръмотевици', 'rain': 'обилни валежи',
-                    'wind': 'силен вятър', 'snow': 'снеговалеж', 'fog': 'гъста мъгла',
-                    'ice': 'заледяване', 'flood': 'наводнение', 'forest fire': 'горски пожари',
-                  };
-                  const rawEvent = weather.meteoAlarm.event;
-                  const eventBg = eventMap[rawEvent.toLowerCase()] ?? rawEvent.toLowerCase();
+                  const eventBg = getMeteoAlertLabel(weather.meteoAlarm.event);
                   const alarmColor = alertLevel === 'red' ? '#DC3C3C' : alertLevel === 'orange' ? '#FF8C42' : '#C8E63C';
                   const borderColor = alertLevel === 'red' ? 'rgba(220,60,60,0.4)' : alertLevel === 'orange' ? 'rgba(255,140,66,0.4)' : 'rgba(200,230,60,0.4)';
                   const alarmLabel = alertLevel === 'red' ? 'Червен код за ' : alertLevel === 'orange' ? 'Оранжев код за ' : 'Жълт код за ';
