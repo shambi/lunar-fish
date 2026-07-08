@@ -560,7 +560,7 @@ const Index = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
+    <div className="min-h-dvh bg-background relative overflow-hidden">
       <div className="fixed inset-0 bg-gradient-to-b from-ocean/40 via-background to-background pointer-events-none" />
       <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,hsl(190_70%_20%/0.3)_0%,transparent_60%)] pointer-events-none" />
 

@@ -214,6 +214,17 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
         >
           {selectedFish && modalData && (
             <>
+              {/* Spotlight/vignette overlay — same as Index.tsx main screen, for visual
+                  consistency. DialogContent above already has an active transform
+                  (translate-x/-y for centering), which per spec makes it the containing
+                  block for `position: fixed` descendants — these overlays are therefore
+                  automatically confined to the modal card itself, not the true device
+                  viewport, so the mobile dvh/toolbar issue from the main screen doesn't
+                  apply here at all. Placed before the vignette below so it paints behind
+                  it and behind the scrollable content. */}
+              <div className="fixed inset-0 bg-gradient-to-b from-ocean/40 via-background to-background pointer-events-none" />
+              <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,hsl(190_70%_20%/0.3)_0%,transparent_60%)] pointer-events-none" />
+
               {/* Static brightness vignette */}
               <div style={{
                 position: 'absolute',
