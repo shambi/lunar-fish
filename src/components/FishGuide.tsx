@@ -630,21 +630,16 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                 {/* Ред 2 — лого (тийл воден знак) + резултат */}
                 <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-                  <div
+                  <img
+                    src="/ribo-fish-watermark.svg"
+                    alt=""
                     aria-hidden="true"
                     style={{
-                      width: 32,
-                      height: 32,
-                      backgroundColor: '#2eb5b7',
+                      width: 67,
+                      height: 28,
                       opacity: 0.4,
-                      WebkitMaskImage: 'url(/1.png)',
-                      maskImage: 'url(/1.png)',
-                      WebkitMaskSize: 'cover',
-                      maskSize: 'cover',
-                      WebkitMaskRepeat: 'no-repeat',
-                      maskRepeat: 'no-repeat',
-                      maskMode: 'luminance',
-                    } as React.CSSProperties}
+                      filter: 'drop-shadow(0 0 5px #2eb5b7)',
+                    }}
                   />
                   <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 600, color: '#dee4e3', letterSpacing: '0.02em', lineHeight: 1, textShadow: '0 0 4px rgba(92,216,218,0.18)' }}>
                     {calcLen
