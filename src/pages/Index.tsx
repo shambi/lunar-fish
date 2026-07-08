@@ -624,12 +624,27 @@ const Index = () => {
 
         {/* Moon Phase Hero */}
         <section className="flex flex-col items-center mt-2 mb-3">
+          {activeMeteorShower && (
+            <div style={{ textAlign: 'center', marginBottom: 6 }}>
+              <div className="font-display text-label-xs font-semibold uppercase tracking-wider" style={{ color: '#869393' }}>
+                Метеорен поток
+              </div>
+              <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, fontWeight: 600, color: '#2eb5b7', marginTop: 2 }}>
+                {activeMeteorShower.name} · {activeMeteorShower.peakLabel}
+              </div>
+              <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, color: '#869393', marginTop: 2 }}>
+                Най-добра видимост тази нощ
+              </div>
+            </div>
+          )}
           <div style={{ position: 'relative' }}>
             {activeMeteorShower && (
               <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'visible', pointerEvents: 'none' }}>
-                <div className="meteor-streak meteor-streak-a" style={{ top: -4, left: 6 }} />
-                <div className="meteor-streak meteor-streak-b meteor-streak-citron" style={{ top: '32%', right: -8 }} />
-                <div className="meteor-streak meteor-streak-c" style={{ bottom: 6, left: -10 }} />
+                <div className="meteor-streak meteor-streak-a" style={{ top: -24, left: -14, '--streak-angle': '-50deg' } as React.CSSProperties} />
+                <div className="meteor-streak meteor-streak-b" style={{ top: -32, right: 6, '--streak-angle': '-25deg' } as React.CSSProperties} />
+                <div className="meteor-streak meteor-streak-c meteor-streak-citron" style={{ top: '38%', right: -38, '--streak-angle': '-60deg' } as React.CSSProperties} />
+                <div className="meteor-streak meteor-streak-d" style={{ bottom: -14, left: 18, '--streak-angle': '-20deg' } as React.CSSProperties} />
+                <div className="meteor-streak meteor-streak-e" style={{ bottom: 16, right: -28, '--streak-angle': '-55deg' } as React.CSSProperties} />
               </div>
             )}
             <div
@@ -645,24 +660,9 @@ const Index = () => {
               {moon.emoji}
             </div>
           </div>
-          <div className="flex items-center justify-center" style={{ gap: 10, rowGap: 2, flexWrap: 'wrap', maxWidth: '100%', paddingLeft: 12, paddingRight: 12 }}>
-            <h2 className="font-display text-xl font-semibold mt-2" style={{ color: '#E2E8F0' }}>
-              {moon.phaseNameBg}
-            </h2>
-            {activeMeteorShower && (
-              <div style={{ textAlign: 'left' }}>
-                <div className="font-display text-label-xs font-semibold uppercase tracking-wider" style={{ color: '#869393' }}>
-                  Метеорен поток
-                </div>
-                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, fontWeight: 600, color: '#2eb5b7', marginTop: 2 }}>
-                  {activeMeteorShower.name} · {activeMeteorShower.peakLabel}
-                </div>
-                <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, color: '#869393', marginTop: 2 }}>
-                  Най-добра видимост тази нощ
-                </div>
-              </div>
-            )}
-          </div>
+          <h2 className="font-display text-xl font-semibold mt-2" style={{ color: '#E2E8F0' }}>
+            {moon.phaseNameBg}
+          </h2>
           <p className="text-sm font-medium mt-1" style={{ color: '#2eb5b7' }}>
             {moon.illumination}% Осветеност
           </p>

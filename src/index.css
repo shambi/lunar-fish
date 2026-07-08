@@ -118,7 +118,7 @@
   height: 2px;
   border-radius: 2px;
   background: linear-gradient(90deg, transparent, #2eb5b7, transparent);
-  transform: rotate(-45deg);
+  transform: rotate(var(--streak-angle, -45deg));
   opacity: 0.7;
 }
 
@@ -128,10 +128,10 @@
 }
 
 @keyframes meteor-streak-move {
-  0% { opacity: 0; transform: rotate(-45deg) translate(14px, -14px); }
+  0% { opacity: 0; transform: rotate(var(--streak-angle, -45deg)) translate(14px, -14px); }
   15% { opacity: 0.9; }
   55% { opacity: 0.9; }
-  100% { opacity: 0; transform: rotate(-45deg) translate(-14px, 14px); }
+  100% { opacity: 0; transform: rotate(var(--streak-angle, -45deg)) translate(-14px, 14px); }
 }
 
 @keyframes meteor-citron-glow {
@@ -145,12 +145,20 @@
     animation-delay: 0s;
   }
   .meteor-streak-b {
-    animation: meteor-streak-move 2.2s ease-in-out infinite, meteor-citron-glow 2.2s ease-in-out infinite;
-    animation-delay: 0.7s;
+    animation: meteor-streak-move 2.2s ease-in-out infinite;
+    animation-delay: 0.44s;
   }
   .meteor-streak-c {
+    animation: meteor-streak-move 2.2s ease-in-out infinite, meteor-citron-glow 2.2s ease-in-out infinite;
+    animation-delay: 0.88s;
+  }
+  .meteor-streak-d {
     animation: meteor-streak-move 2.2s ease-in-out infinite;
-    animation-delay: 1.4s;
+    animation-delay: 1.32s;
+  }
+  .meteor-streak-e {
+    animation: meteor-streak-move 2.2s ease-in-out infinite;
+    animation-delay: 1.76s;
   }
 }
 
