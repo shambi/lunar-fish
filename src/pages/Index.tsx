@@ -455,10 +455,7 @@ const Index = () => {
   // shortly after the day actually rolls over.
   const dayKey = new Date().toDateString();
   const moon = useMemo(() => getMoonData(), [dayKey]);
-  // TEMPORARY — forced to a fixed in-range date (Персеиди) so the effect is visible
-  // for a live preview even though no shower is active today. REVERT to
-  // `getActiveMeteorShower()` (no argument) once confirmed.
-  const activeMeteorShower = useMemo(() => getActiveMeteorShower(new Date('2026-08-12')), [dayKey]);
+  const activeMeteorShower = useMemo(() => getActiveMeteorShower(), [dayKey]);
   const { weather, loading, error, locationDenied } = useWeather();
   const alertLevel: 'none' | 'yellow' | 'orange' | 'red' = weather?.meteoAlarm?.level ?? 'none';
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
