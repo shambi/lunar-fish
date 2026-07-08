@@ -1104,19 +1104,20 @@ const Index = () => {
             // Priority 1 — precipitation/storm dominates regardless of hour.
             if (code >= 95) {
               baseIcon = precipitation > 0.1 ? (
-                // Thunderstorm WITH rain — closed-path cloud, lightning bolt, two rain ticks below.
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                // Thunderstorm WITH rain — cloud, clear zig-zag bolt, two rain ticks below.
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M6 14a4 4 0 0 1 0-8 5 5 0 0 1 9.6 -1.5A4.5 4.5 0 0 1 17 14H6z" />
-                  <path d="M11 14l-2 4h3l-2 4" />
-                  <path d="M6 18v1M9 19v1" opacity="0.6" />
+                  <path d="M13 14l-3 4.5h3l-2 4.5" />
+                  <path d="M7 19.5l-0.8 1.5M17 19.5l-0.8 1.5" opacity="0.6" />
                 </svg>
               ) : (
-                // Dry thunderstorm — closed-path cloud, lightning bolt only, no rain.
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                // Dry thunderstorm — cloud + clear zig-zag bolt only.
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M6 14a4 4 0 0 1 0-8 5 5 0 0 1 9.6 -1.5A4.5 4.5 0 0 1 17 14H6z" />
-                  <path d="M11 14l-2 4h3l-2 4" />
+                  <path d="M13 13l-4 5.5h3.5l-2.5 5.5" />
                 </svg>
               );
+
             } else if (code >= 71 && code <= 77) {
               baseIcon = (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
