@@ -94,6 +94,25 @@ function wasRaining(weatherCode: number): boolean {
   return [51, 53, 55, 61, 63, 65, 80, 81, 82, 95, 96, 99].includes(weatherCode);
 }
 
+// Moved here from FishGuide.tsx along with the meteoAlarm-reading logic in
+// getCommonMistake — same label map, unchanged text (spec for a dedicated
+// meteoAlarm tactical message still pending).
+const METEO_EVENT_LABELS: Record<string, string> = {
+  'Heat': 'Жега',
+  'Thunderstorms': 'Гръмотевици',
+  'Rain': 'Дъжд',
+  'Wind': 'Силен вятър',
+  'Snow': 'Сняг',
+  'Fog': 'Мъгла',
+  'Flood': 'Наводнение',
+  'Forest fire': 'Горски пожар',
+  'Coastal event': 'Крайбрежно събитие',
+};
+function translateMeteoEvent(event: string | null): string {
+  if (!event) return '';
+  return METEO_EVENT_LABELS[event] ?? event;
+}
+
 // Delta °C over the next ~3h, read from the hourly forecast — same derivation
 // FishGuide.tsx used to do for generateFieldAdvice's tempTrend input.
 function computeTempTrend(weather: WeatherData | null): number {
@@ -452,16 +471,18 @@ export function getDailyAdvice(
   const tip = s4 ? `${s1}\n${s2}\n${s3}\n${s4}` : `${s1}\n${s2}\n${s3}`;
 
   // ——— SECTION 2: COMMON MISTAKE ———
-  const mistake = getCommonMistake(fish, moon, weather, terrain);
+  const mistake = getCommonMistake(fish, moon, weather, terrain, overallScore);
 
   return { tip, mistake };
 }
 
-function getCommonMistake(
+export function getCommonMistake(
   fish: FishSpecies,
   moon: MoonData,
   weather: WeatherData | null,
-  terrain: 'river' | 'lake'
+  terrain: 'river' | 'lake',
+  overallScore: number,
+  meteoAlert?: { level: 'yellow' | 'orange' | 'red' | null; event: string | null }
 ): string | null {
   const name = fish.name;
   const isPredator = fish.isPredator;
@@ -481,8 +502,17 @@ function getCommonMistake(
 
   let mistake: string | null = null;
 
+  // Priority 0 — active meteoAlarm warning, always wins (safety before tactics).
+  // PLACEHOLDER: just the relocated level/event label logic from FishGuide.tsx for
+  // now — a dedicated tactical meteoAlarm message is still pending a follow-up spec.
+  if (meteoAlert?.level) {
+    const levelLabel = meteoAlert.level === 'red' ? 'Червен' : meteoAlert.level === 'orange' ? 'Оранжев' : 'Жълт';
+    const eventLabel = translateMeteoEvent(meteoAlert.event);
+    mistake = `${levelLabel} код${eventLabel ? ` · ${eventLabel}` : ''}`;
+  }
+
   // Condition 7 — Full moon + Сом (higher priority, check first)
-  if (isFullMoon && name === 'Сом') {
+  else if (isFullMoon && name === 'Сом') {
     mistake = `При пълнолуние много рибари търсят сома на плитко — грешка. Мустакатият се е скрил на дълбочина, търси го там.`;
   }
 
@@ -536,13 +566,61 @@ function getCommonMistake(
     mistake = `Намаляващата луна успокоява ${name} — ярките и шумни примамки са грешка днес, мини на деликатни и естествени цветове.`;
   }
 
-  // Condition 12 — Seasonal leader/line colour, appended to whatever fired above
-  // (or standing alone if none of the conditions 1-11 matched).
-  const colorNote = seasonalLeaderColorNote(month);
-  if (colorNote) {
-    return mistake ? `${mistake} ${colorNote}` : colorNote;
+  // Condition 12 — South wind warms carp family / activates predators (ported
+  // from getDailyAdvice's isSouthWind secondary clause)
+  else if (isSouthWind(windDir) && (CARP_FAMILY.includes(name) || isPredator)) {
+    if (CARP_FAMILY.includes(name)) {
+      mistake = `Южният топъл вятър раздвижва шарановите — добър знак за деня.`;
+    } else if (name === 'Сом') {
+      mistake = `Южният топъл вятър раздвижва мустакатия — търси го в по-плитките зони вечер.`;
+    } else {
+      mistake = `Южният вятър активира ${name} — търси го в по-плитките зони.`;
+    }
   }
-  return mistake;
+
+  // Condition 13 — Muddy river: bright/vibrating lure + dark leader combo for
+  // DARK_LEADER_SPECIES predators (ported from getDailyAdvice's muddy-water clause)
+  else if (terrain === 'river' && isRaining) {
+    if (isPredator) {
+      mistake = DARK_LEADER_SPECIES.has(name)
+        ? `Мътната вода след дъжда е предимство — използвай силно вибриращи блесни и ярки цветове (оранжево, жълто), но поводът остава тъмен и незабележим.`
+        : `Мътната вода след дъжда е предимство — използвай силно вибриращи блесни и ярки цветове (оранжево, жълто).`;
+    } else {
+      mistake = `Мътната вода след дъжда е намалила видимостта — захрани по-обилно за да привлечеш ${name} към стръвта.`;
+    }
+  }
+
+  // Condition 14 — Clear sunny day, non-predator: avoid gaudy colours (predator
+  // case already covered by Condition 5 above)
+  else if (isSunny && isSunHours && !isPredator) {
+    mistake = `Силното слънце разкрива всичко под водата — избягвай крещящи цветове по влакното и монтажа, ${name} става по-предпазлив.`;
+  }
+
+  // Condition 15 — Calm and clear: thinner leader, minimal movement near the bank
+  else if (wind < 10 && !isRaining) {
+    mistake = `Тихото огледално време ${pronounAcc(name)} прави по-${adjSuspicious(name)} — по-тънък повод, минимум движение край брега.`;
+  }
+
+  // Condition 16 — Low overall score: fish is more passive
+  else if (overallScore < 40) {
+    mistake = `Рибата е по-пасивна — по-фина стръв, по-тихо приближаване.`;
+  }
+
+  // Final composition: [Priority 1 winner] + [seasonal colour] + [forecast].
+  // Solunar peak is intentionally never referenced here — that indicator stays
+  // exclusively in the Header/Score block.
+  const parts: string[] = [];
+  if (mistake) parts.push(mistake);
+
+  const colorNote = seasonalLeaderColorNote(month);
+  if (colorNote) parts.push(colorNote);
+
+  const pt = weather?.pressureTrend ?? 'stable';
+  const tempTrend = computeTempTrend(weather);
+  const forecastNote = FORECAST_TEMPLATES[tempTrendBucket(tempTrend)][pt];
+  if (forecastNote) parts.push(forecastNote);
+
+  return parts.length > 0 ? parts.join(' ') : null;
 }
 
 // DRAFT — season → влакно/повод цвят, 1 изречение. Есенният текст е пренесен буквално

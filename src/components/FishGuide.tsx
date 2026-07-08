@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { getScoredFish, getFishModalData, type ScoredFish } from '@/lib/fish-guide';
-import { getDailyAdvice } from '@/lib/fish-advice';
+import { getCommonMistake } from '@/lib/fish-advice';
 import type { MoonData } from '@/lib/moon';
 import type { WeatherData } from '@/hooks/use-weather';
 import {
@@ -17,22 +17,6 @@ interface FishGuideProps {
   solunarContext?: { isInPeak: boolean; peakType: 'major' | 'minor' | null };
   meteoAlert?: { level: 'yellow' | 'orange' | 'red' | null; event: string | null };
 }
-
-const translateAlert = (event: string | null): string => {
-  if (!event) return '';
-  const map: Record<string, string> = {
-    'Heat': 'Жега',
-    'Thunderstorms': 'Гръмотевици',
-    'Rain': 'Дъжд',
-    'Wind': 'Силен вятър',
-    'Snow': 'Сняг',
-    'Fog': 'Мъгла',
-    'Flood': 'Наводнение',
-    'Forest fire': 'Горски пожар',
-    'Coastal event': 'Крайбрежно събитие',
-  };
-  return map[event] ?? event;
-};
 
 function isInBanPeriod(start: string, end: string): boolean {
   const today = new Date();
@@ -116,10 +100,10 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
     return getFishModalData(selectedFish, temp, weatherCode, terrain, weather?.altitude);
   }, [selectedFish, temp, weatherCode, terrain, weather?.altitude]);
 
-  const advice = useMemo(() => {
+  const mistake = useMemo(() => {
     if (!selectedFish) return null;
-    return getDailyAdvice(selectedFish, moon, weather, terrain, selectedFish.score, solunarContext);
-  }, [selectedFish, moon, weather, terrain, solunarContext]);
+    return getCommonMistake(selectedFish, moon, weather, terrain, selectedFish.score, meteoAlert);
+  }, [selectedFish, moon, weather, terrain, meteoAlert]);
 
   return (
     <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-2">
@@ -242,7 +226,6 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               {/* Scroll wrapper */}
               <div className="no-scrollbar" style={{ position: 'relative', overflowY: 'auto', flex: 1, minHeight: 0, scrollbarWidth: 'none', msOverflowStyle: 'none', padding: '20px 18px' } as React.CSSProperties}>
               <style>{`
-                @keyframes riboAiGlow { 0%,100%{box-shadow:0 0 20px rgba(220,60,60,.12), inset 0 0 24px rgba(220,60,60,.04)} 50%{box-shadow:0 0 28px rgba(220,60,60,.22), inset 0 0 28px rgba(220,60,60,.06)} }
                 input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
               `}</style>
 
@@ -587,45 +570,14 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 </div>
               </div>
 
-              {/* ═══════ SECTION 5 — ПОЛЕВИ ПРАВИЛА (WARNING BORDER) ═══════ */}
-              <div style={{ marginBottom: 18 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
-                  {/* Brain-fish icon */}
-                  <svg width="16" height="14" viewBox="0 0 32 24" fill="none" stroke="#2eb5b7" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 12 Q4 6 10 6 Q13 3 16 6 Q19 3 22 6 Q28 6 28 12 Q28 18 22 18 Q19 21 16 18 Q13 21 10 18 Q4 18 4 12Z"/>
-                    <path d="M10 10 Q13 12 10 14 M22 10 Q19 12 22 14" opacity="0.6"/>
-                    <circle cx="15" cy="12" r="0.8" fill="#2eb5b7"/>
-                  </svg>
-                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', color: '#869393' }}>ПОЛЕВИ ПРАВИЛА</span>
-                </div>
-
-                <div style={{
-                  background: 'rgba(220,60,60,0.04)',
-                  border: '1px solid rgba(220,60,60,0.35)',
-                  borderRadius: 16,
-                  padding: 16,
-                  animation: 'riboAiGlow 3.6s ease-in-out infinite',
-                }}>
-                  {meteoAlert?.level && (
-                    <div style={{ background: 'rgba(255,140,66,0.08)', border: '1px solid rgba(255,140,66,0.25)', borderRadius: 8, padding: '8px 10px', color: '#FF8C42', fontSize: 12, marginBottom: 10, fontFamily: "'Space Grotesk', sans-serif" }}>
-                      {meteoAlert.level === 'red' ? 'Червен' : meteoAlert.level === 'orange' ? 'Оранжев' : 'Жълт'} код{meteoAlert.event ? ` · ${translateAlert(meteoAlert.event)}` : ''}
-                    </div>
-                  )}
-
-                  {advice?.tip && (
-                    <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 13.5, lineHeight: 1.55, color: '#dee4e3', margin: 0, whiteSpace: 'pre-line' }}>{advice.tip}</p>
-                  )}
-                </div>
-              </div>
-
               {/* ═══════ SECTION 6 — ТАКТИЧЕСКА БЕЛЕЖКА ═══════ */}
-              {advice?.mistake && (
+              {mistake && (
                 <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: 14, marginBottom: 18 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
                     <span style={{ display: 'inline-flex', width: 18, height: 18, borderRadius: '50%', background: 'rgba(46,181,183,0.15)', color: '#5cd8da', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700 }}>ⓘ</span>
                     <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#dee4e3' }}>Тактическа бележка</span>
                   </div>
-                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 12.5, lineHeight: 1.55, color: '#a8b4b4', margin: 0 }}>{advice.mistake}</p>
+                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 12.5, lineHeight: 1.55, color: '#a8b4b4', margin: 0 }}>{mistake}</p>
                 </div>
               )}
 
