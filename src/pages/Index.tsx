@@ -1189,35 +1189,21 @@ const Index = () => {
           };
           return (
             <>
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
-                <button
-                  ref={hourlyToggleRef}
-                  onClick={() => setHourlyOpen(o => !o)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                  aria-label="Почасова прогноза"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3d4949" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                    style={{ transition: 'transform 0.25s', transform: hourlyOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
-                </button>
-              </div>
-              {hourlyOpen && (
-                <div ref={hourlyScrollRef} style={{ padding: '8px 16px', overflowX: 'auto', scrollbarWidth: 'none', marginBottom: '8px' }}>
-                  <div style={{ display: 'flex', gap: '4px', minWidth: 'max-content' }}>
-                    {weather.hourlyForecast.map((h, i) => (
-                      <div key={i} data-hour={parseInt(h.hour, 10)} style={{ minWidth: '44px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
-                        {renderHourIcon(h.code, parseInt(h.hour, 10), h.precipitation, h.windSpeed)}
-                        <span style={{ fontSize: '11px', fontWeight: 500, color: '#dee4e3', lineHeight: 1 }}>{h.temp}°</span>
-                        <span style={{ fontSize: '10px', color: '#869393', lineHeight: 1 }}>{h.hour}:00</span>
-                      </div>
-                    ))}
-                  </div>
+              <div ref={hourlyScrollRef} style={{ padding: '8px 16px', overflowX: 'auto', scrollbarWidth: 'none', marginBottom: '8px' }}>
+                <div style={{ display: 'flex', gap: '4px', minWidth: 'max-content' }}>
+                  {weather.hourlyForecast.map((h, i) => (
+                    <div key={i} data-hour={parseInt(h.hour, 10)} style={{ minWidth: '44px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
+                      {renderHourIcon(h.code, parseInt(h.hour, 10), h.precipitation, h.windSpeed)}
+                      <span style={{ fontSize: '11px', fontWeight: 500, color: '#dee4e3', lineHeight: 1 }}>{h.temp}°</span>
+                      <span style={{ fontSize: '10px', color: '#869393', lineHeight: 1 }}>{h.hour}:00</span>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
             </>
           );
         })()}
+
 
         {/* Solunar Activity Section */}
         {weather && weather.solunarPeaks ? (
