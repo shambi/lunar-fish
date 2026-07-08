@@ -17,6 +17,12 @@ export default {
         sans: ["Outfit", "sans-serif"],
         display: ["Space Grotesk", "sans-serif"],
       },
+      fontSize: {
+        'label-xs': ['12px', { lineHeight: '1.4' }],
+        'body': ['16px', { lineHeight: '1.5' }],
+        'legal': ['16px', { lineHeight: '1.5' }],
+        'critical': ['17px', { lineHeight: '1.4' }],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

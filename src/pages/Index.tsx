@@ -192,7 +192,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
       padding: '16px',
       marginBottom: '10px',
     }}>
-      <div className="font-display text-[11px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#869393' }}>
+      <div className="font-display text-label-xs font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#869393' }}>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
         </svg>
@@ -714,7 +714,7 @@ const Index = () => {
               marginBottom: '10px',
             }}
           >
-            <div className="font-display text-[11px] font-semibold uppercase tracking-wider flex items-center gap-1.5" style={{ color: '#869393', marginBottom: '14px' }}>
+            <div className="font-display text-label-xs font-semibold uppercase tracking-wider flex items-center gap-1.5" style={{ color: '#869393', marginBottom: '14px' }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20M2 6h20M2 18h20"/></svg>
               Условия днес
             </div>
@@ -915,7 +915,7 @@ const Index = () => {
 
         {/* Weather Widget — Bento Grid */}
         <section className="rounded-2xl border border-white/5 bg-white/[0.03] backdrop-blur-md p-3 mb-2">
-          <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#869393' }}>
+          <h3 className="font-display text-label-xs font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#869393' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="4" />
               <path d="M12 2v2" /><path d="M12 20v2" />
@@ -951,7 +951,7 @@ const Index = () => {
                 <span className="mt-1 inline-block w-1.5 h-1.5 rounded-full shrink-0" style={{ background: dot, boxShadow: `0 0 6px ${dot}` }} />
                 <div className="min-w-0">
                   <div className="text-[12px] font-medium leading-tight" style={{ color: '#EAF7FF' }}>{title}</div>
-                  <div className="text-[11px] mt-0.5 leading-snug" style={{ color: 'rgba(127,147,168,0.95)' }}>→ {effect}</div>
+                  <div className="text-label-xs mt-0.5 leading-snug" style={{ color: 'rgba(127,147,168,0.95)' }}>→ {effect}</div>
                 </div>
               </div>
             );
@@ -1028,7 +1028,7 @@ const Index = () => {
                       border: '0.5px solid rgba(255,140,66,0.6)',
                       animation: 'pulse-alert-orange 2.5s ease-in-out infinite'
                     } : {
-                      border: '0.5px solid rgba(220,60,60,0.6)',
+                      border: '0.5px solid rgba(226,69,69,0.6)',
                       animation: 'pulse-alert-red 2s ease-in-out infinite'
                     }),
                     background: 'rgba(255,255,255,0.03)',
@@ -1048,14 +1048,14 @@ const Index = () => {
                     }
                     return weather.weatherIcon;
                   })() : '—'}</span>
-                  <div className="text-[8px] mt-1 opacity-50 leading-tight whitespace-nowrap overflow-hidden text-ellipsis" title={weather?.weatherLabel}>
+                  <div className="text-label-xs mt-1 opacity-50 leading-tight whitespace-nowrap overflow-hidden text-ellipsis" title={weather?.weatherLabel}>
                     {weather?.weatherLabel ?? '...'}
                   </div>
                 </button>
                 {showAlertTooltip && weather?.meteoAlarm && alertLevel !== 'none' && (() => {
                   const eventBg = getMeteoAlertLabel(weather.meteoAlarm.event);
-                  const alarmColor = alertLevel === 'red' ? '#DC3C3C' : alertLevel === 'orange' ? '#FF8C42' : '#C8E63C';
-                  const borderColor = alertLevel === 'red' ? 'rgba(220,60,60,0.4)' : alertLevel === 'orange' ? 'rgba(255,140,66,0.4)' : 'rgba(200,230,60,0.4)';
+                  const alarmColor = alertLevel === 'red' ? '#E24545' : alertLevel === 'orange' ? '#FF8C42' : '#C8E63C';
+                  const borderColor = alertLevel === 'red' ? 'rgba(226,69,69,0.4)' : alertLevel === 'orange' ? 'rgba(255,140,66,0.4)' : 'rgba(200,230,60,0.4)';
                   const alarmLabel = alertLevel === 'red' ? 'Червен код за ' : alertLevel === 'orange' ? 'Оранжев код за ' : 'Жълт код за ';
                   const { expires } = weather.meteoAlarm;
                   let expiresStr = '';
@@ -1076,10 +1076,10 @@ const Index = () => {
                       background: '#0f1415', border: `1px solid ${borderColor}`,
                       borderRadius: '10px', padding: '10px 12px',
                     }}>
-                      <div style={{ fontSize: '11px', fontWeight: 600, color: alarmColor, background: `${alarmColor}1f`, border: `0.5px solid ${alarmColor}4d`, borderRadius: '20px', padding: '3px 8px', display: 'inline-block', marginBottom: '6px' }}>
+                      <div className="text-critical" style={{ fontWeight: 600, color: alarmColor, background: `${alarmColor}1f`, border: `0.5px solid ${alarmColor}4d`, borderRadius: '20px', padding: '3px 8px', display: 'inline-block', marginBottom: '6px' }}>
                         {alarmLabel}{eventBg}
                       </div>
-                      {expiresStr && <div style={{ fontSize: '11px', color: '#869393' }}>{expiresStr}</div>}
+                      {expiresStr && <div className="text-critical" style={{ color: '#869393' }}>{expiresStr}</div>}
                       <div style={{
                         position: 'absolute', bottom: '-6px', right: '20px', left: 'auto', transform: 'none',
                         width: 0, height: 0,
@@ -1268,7 +1268,7 @@ const Index = () => {
             title="Сподели РИБО"
           >↗</button>
           {weather && (
-            <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.8)' }}>
+            <p className="text-label-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>
               Данните са базирани на текущата ви локация • <span className="text-white">Open-Meteo API</span>
             </p>
           )}

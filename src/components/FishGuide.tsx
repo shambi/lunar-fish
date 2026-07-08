@@ -107,7 +107,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
   return (
     <section className="rounded-xl border border-border bg-card/60 backdrop-blur-md p-3 mb-2">
-      <h3 className="font-display text-[11px] font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#869393' }}>
+      <h3 className="font-display text-label-xs font-semibold uppercase tracking-wider mb-2 flex items-center gap-1.5" style={{ color: '#869393' }}>
         <svg
           width="14"
           height="14"
@@ -232,7 +232,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               {/* ═══════ SECTION 1 — HEADER (КАТЕГОРИЯ + SCORE + FISH) ═══════ */}
               <div style={{ marginBottom: 18 }}>
                 {/* КАТЕГОРИЯ label — same section-title style as "Солунарна активност"/"Условия днес" in Index.tsx */}
-                <div className="font-display text-[11px] font-semibold uppercase tracking-wider" style={{ color: '#869393', textAlign: 'left', marginBottom: 10 }}>
+                <div className="font-display text-label-xs font-semibold uppercase tracking-wider" style={{ color: '#869393', textAlign: 'left', marginBottom: 10 }}>
                   {selectedFish.fishType ?? 'Сладководна риба'}
                 </div>
 
@@ -299,7 +299,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                   {/* ПРЕПОРЪЧАНО ДНЕС — compact pill, same border/background/text color as the active technique buttons */}
                   {selectedFish.score >= 61 && (
-                    <div style={{
+                    <div className="text-label-xs" style={{
                       display: 'inline-flex',
                       alignItems: 'center',
                       padding: '4px 12px',
@@ -307,7 +307,6 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       border: '1px solid #2eb5b7',
                       background: 'rgba(46,181,183,0.15)',
                       fontFamily: "'Space Grotesk', sans-serif",
-                      fontSize: 11,
                       fontWeight: 600,
                       color: '#5cd8da',
                       whiteSpace: 'nowrap',
@@ -331,7 +330,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                         <line x1="12" y1="3" x2="10" y2="4"/>
                         <line x1="12" y1="3" x2="14" y2="4"/>
                       </svg>
-                      <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', color: '#869393' }}>
+                      <span className="text-label-xs" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, letterSpacing: '0.05em', color: '#869393' }}>
                         ТЕХНИКИ
                       </span>
                     </div>
@@ -399,7 +398,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                       <span style={{ color: '#5cd8da', fontSize: 14 }}>●</span>{val}
                     </div>
                     {badge && (
-                      <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, color: '#869393', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, padding: '2px 6px', whiteSpace: 'nowrap' }}>
+                      <span className="text-label-xs" style={{ fontFamily: "'Space Grotesk', sans-serif", color: '#869393', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 6, padding: '2px 6px', whiteSpace: 'nowrap' }}>
                         {badge}
                       </span>
                     )}
@@ -490,7 +489,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <line x1="15" y1="8" x2="15" y2="11"/>
                     <line x1="19" y1="8" x2="19" y2="11"/>
                   </svg>
-                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.05em', color: '#869393', textTransform: 'uppercase' }}>Еко &amp; Правила</span>
+                  <span className="text-label-xs" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, letterSpacing: '0.05em', color: '#869393', textTransform: 'uppercase' }}>Еко &amp; Правила</span>
                 </div>
 
                 <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: '14px 16px' }}>
@@ -499,13 +498,13 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     return (
                       <div style={{ marginBottom: (selectedFish.altitudeBans ? 12 : 0) }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
-                          <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', color: 'rgba(222,228,227,0.85)', textTransform: 'uppercase' }}>Мин. размер</span>
+                          <span className="text-legal" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, letterSpacing: '0.12em', color: 'rgba(222,228,227,0.85)', textTransform: 'uppercase' }}>Мин. размер</span>
                           <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, color: '#5cd8da', lineHeight: 1 }}>{selectedFish.minSize} см</span>
                         </div>
                         <div style={{ position: 'relative', height: 5, background: 'rgba(255,255,255,0.05)', borderRadius: 3, overflow: 'hidden' }}>
                           <div style={{ position: 'absolute', top: 0, left: 0, height: '100%', width: `${pct}%`, background: 'linear-gradient(90deg, #2eb5b7, #5cd8da)', borderRadius: 3, boxShadow: '0 0 6px rgba(46,181,183,0.5)' }} />
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4, fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, color: '#869393' }}>
+                        <div className="text-label-xs" style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4, fontFamily: "'Space Grotesk', sans-serif", color: '#869393' }}>
                           <span>0</span><span>100 см</span>
                         </div>
                       </div>
@@ -523,15 +522,15 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     return (
                       <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
-                          <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', color: 'rgba(222,228,227,0.85)', textTransform: 'uppercase' }}>Забранен период</span>
+                          <span className="text-legal" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, letterSpacing: '0.12em', color: 'rgba(222,228,227,0.85)', textTransform: 'uppercase' }}>Забранен период</span>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                           {activeZones.map(z => {
                             const ban = selectedFish.altitudeBans![z.key]!;
                             return (
                               <div key={z.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                                <span style={{ fontSize: 10, color: '#a8b4b4' }}>{z.label}</span>
-                                <span style={{ fontSize: 13, fontWeight: 400, color: '#fff', lineHeight: 1 }}>{ban.start} – {ban.end}</span>
+                                <span className="text-legal" style={{ color: '#a8b4b4' }}>{z.label}</span>
+                                <span className="text-legal" style={{ fontWeight: 400, color: '#fff' }}>{ban.start} – {ban.end}</span>
                               </div>
                             );
                           })}
@@ -558,7 +557,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     href="https://iara.government.bg/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 12, paddingTop: 12, borderTop: '1px solid rgba(255,255,255,0.07)', fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textDecoration: 'none' }}
+                    className="text-label-xs"
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 12, paddingTop: 12, borderTop: '1px solid rgba(255,255,255,0.07)', fontFamily: "'Space Grotesk', sans-serif", color: '#869393', textDecoration: 'none' }}
                   >
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#869393" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
@@ -601,13 +601,13 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: 16, marginBottom: 18 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
                       <span style={{ display: 'inline-flex', width: 22, height: 22, borderRadius: '50%', border: '1.4px solid #5cd8da', color: '#5cd8da', alignItems: 'center', justifyContent: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, fontWeight: 700, fontStyle: 'italic', boxShadow: '0 0 4px rgba(92,216,218,0.18)' }}>i</span>
-                      <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#869393' }}>Тактическа бележка</span>
+                      <span className="text-label-xs" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#869393' }}>Тактическа бележка</span>
                     </div>
                     <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
                       {lines.map((line, i) => (
                         <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
                           {bulletIcon(i)}
-                          <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 12.5, lineHeight: 1.5, color: '#dee4e3', flex: 1 }}>{line}</span>
+                          <span className="text-body" style={{ fontFamily: "'Outfit', sans-serif", color: '#dee4e3', flex: 1 }}>{line}</span>
                         </li>
                       ))}
                     </ul>
@@ -625,7 +625,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <circle cx="12" cy="6" r="1.6" fill="#2eb5b7"/>
                     <circle cx="12" cy="18" r="1.6" fill="#2eb5b7"/>
                   </svg>
-                  <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, color: '#869393', textTransform: 'uppercase', letterSpacing: '0.14em', whiteSpace: 'nowrap' }}>Калкулатор за тегло</span>
+                  <span className="text-label-xs" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, color: '#869393', textTransform: 'uppercase', letterSpacing: '0.14em', whiteSpace: 'nowrap' }}>Калкулатор за тегло</span>
                 </div>
 
                 {/* Ред 2 — лого (тийл воден знак) + резултат */}
@@ -648,8 +648,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   />
                   <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 600, color: '#dee4e3', letterSpacing: '0.02em', lineHeight: 1, textShadow: '0 0 4px rgba(92,216,218,0.18)' }}>
                     {calcLen
-                      ? <>{calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))}<span style={{ fontSize: 11, color: '#869393', marginLeft: 5, fontWeight: 400 }}>KG</span></>
-                      : <>0.00<span style={{ fontSize: 11, color: '#869393', marginLeft: 5, fontWeight: 400 }}>KG</span></>
+                      ? <>{calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))}<span className="text-label-xs" style={{ color: '#869393', marginLeft: 5, fontWeight: 400 }}>KG</span></>
+                      : <>0.00<span className="text-label-xs" style={{ color: '#869393', marginLeft: 5, fontWeight: 400 }}>KG</span></>
                     }
                   </div>
                 </div>
@@ -657,7 +657,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 {/* Ред 3 — inputs */}
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 10, marginBottom: 12 }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 6 }}>Дължина</div>
+                    <div className="text-label-xs" style={{ fontFamily: "'Space Grotesk', sans-serif", color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 6 }}>Дължина</div>
                     <input type="number" placeholder="0" value={calcLen} autoFocus={false} tabIndex={-1}
                       onChange={e => setCalcLen(e.target.value)}
                       style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 500, color: calcLen ? '#dee4e3' : '#a8b4b4', background: 'transparent', border: '1px solid #5cd8da', borderRadius: 10, height: 40, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: '0 0 4px rgba(92,216,218,0.18)', MozAppearance: 'textfield', letterSpacing: '0.04em' } as React.CSSProperties} />
@@ -671,7 +671,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   </div>
 
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 6 }}>Обиколка</div>
+                    <div className="text-label-xs" style={{ fontFamily: "'Space Grotesk', sans-serif", color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 6 }}>Обиколка</div>
                     <input type="number" placeholder="0" value={calcGirth} autoFocus={false} tabIndex={-1}
                       onChange={e => setCalcGirth(e.target.value)}
                       style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 500, color: calcGirth ? '#dee4e3' : '#a8b4b4', background: 'transparent', border: '1px solid #5cd8da', borderRadius: 10, height: 40, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: '0 0 4px rgba(92,216,218,0.18)', MozAppearance: 'textfield', letterSpacing: '0.04em' } as React.CSSProperties} />
@@ -684,12 +684,12 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   <button onClick={() => setShowFormulaInfo(!showFormulaInfo)}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'inline-flex', lineHeight: 1 }}
                     title="За формулата">
-                    <span style={{ display: 'inline-flex', width: 18, height: 18, borderRadius: '50%', border: '1.4px solid #5cd8da', color: '#5cd8da', alignItems: 'center', justifyContent: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, fontWeight: 700, fontStyle: 'italic', boxShadow: '0 0 4px rgba(92,216,218,0.18)' }}>i</span>
+                    <span className="text-label-xs" style={{ display: 'inline-flex', width: 18, height: 18, borderRadius: '50%', border: '1.4px solid #5cd8da', color: '#5cd8da', alignItems: 'center', justifyContent: 'center', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontStyle: 'italic', boxShadow: '0 0 4px rgba(92,216,218,0.18)' }}>i</span>
                   </button>
                 </div>
 
                 {showFormulaInfo && (
-                  <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, color: '#869393', lineHeight: 1.5, marginTop: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div className="text-label-xs" style={{ fontFamily: "'Outfit', sans-serif", color: '#869393', marginTop: 8, paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                     Формулата принадлежи на <span style={{ color: '#5cd8da', fontWeight: 600 }}>Милко Георгиев</span> — легенда в българското сомарство. Проверена в практиката, с точност до ~85%.
                   </div>
                 )}

@@ -244,8 +244,8 @@
   50%       { border-color: rgba(255, 140, 66, 0.9); }
 }
 @keyframes pulse-alert-red {
-  0%, 100% { border-color: rgba(220, 60, 60, 0.25); }
-  50%       { border-color: rgba(220, 60, 60, 0.95); }
+  0%, 100% { border-color: rgba(226, 69, 69, 0.25); }
+  50%       { border-color: rgba(226, 69, 69, 0.95); }
 }
 
 @keyframes goldenPulse {
