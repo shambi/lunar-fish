@@ -402,7 +402,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
         </div>
       </div>
 
-      {moon.illumination > 70 && (
+      {moon.illumination > 70 && moon.phase <= 0.5 && (
         <>
           <div
             onClick={() => setOpenMoon(o => !o)}
@@ -448,7 +448,12 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
 
 
 const Index = () => {
-  const moon = useMemo(() => getMoonData(), []);
+  // Recompute once per calendar day (not just once at mount) so a long-lived
+  // tab/PWA session doesn't keep showing stale illumination/phase — existing
+  // weather/meteoAlarm polling already re-renders often enough to pick this up
+  // shortly after the day actually rolls over.
+  const dayKey = new Date().toDateString();
+  const moon = useMemo(() => getMoonData(), [dayKey]);
   const { weather, loading, error, locationDenied } = useWeather();
   const alertLevel: 'none' | 'yellow' | 'orange' | 'red' = weather?.meteoAlarm?.level ?? 'none';
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
