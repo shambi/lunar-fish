@@ -598,7 +598,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   }
                 };
                 return (
-                  <div style={{ background: '#1b2121', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16, padding: 16, marginBottom: 18 }}>
+                  <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: 16, marginBottom: 18 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
                       <span style={{ display: 'inline-flex', width: 22, height: 22, borderRadius: '50%', border: '1.4px solid #5cd8da', color: '#5cd8da', alignItems: 'center', justifyContent: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, fontWeight: 700, fontStyle: 'italic', boxShadow: '0 0 4px rgba(92,216,218,0.18)' }}>i</span>
                       <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#869393' }}>Тактическа бележка</span>
@@ -616,7 +616,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               })()}
 
               {/* ═══════ SECTION 7 — КАЛКУЛАТОР ═══════ */}
-              <div style={{ background: '#1b2121', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16, padding: 16, marginBottom: 18 }}>
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: 16, marginBottom: 18 }}>
 
                 {/* Ред 1 — заглавие + резултат */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
