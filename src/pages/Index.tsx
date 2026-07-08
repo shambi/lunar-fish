@@ -639,13 +639,36 @@ const Index = () => {
           )}
           <div style={{ position: 'relative' }}>
             {activeMeteorShower && (
-              <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'visible', pointerEvents: 'none' }}>
-                <div className="meteor-streak meteor-streak-a" style={{ top: -24, left: -14, '--streak-angle': '-50deg' } as React.CSSProperties} />
-                <div className="meteor-streak meteor-streak-b" style={{ top: -32, right: 6, '--streak-angle': '-25deg' } as React.CSSProperties} />
-                <div className="meteor-streak meteor-streak-c meteor-streak-citron" style={{ top: '38%', right: -38, '--streak-angle': '-60deg' } as React.CSSProperties} />
-                <div className="meteor-streak meteor-streak-d" style={{ bottom: -14, left: 18, '--streak-angle': '-20deg' } as React.CSSProperties} />
-                <div className="meteor-streak meteor-streak-e" style={{ bottom: 16, right: -28, '--streak-angle': '-55deg' } as React.CSSProperties} />
-              </div>
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 200 200"
+                style={{
+                  position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                  width: 220, height: 220, zIndex: 0, overflow: 'visible', pointerEvents: 'none',
+                }}
+              >
+                <defs>
+                  <linearGradient id="meteorTealGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#2eb5b7" stopOpacity="0" />
+                    <stop offset="50%" stopColor="#2eb5b7" stopOpacity="1" />
+                    <stop offset="100%" stopColor="#2eb5b7" stopOpacity="0" />
+                  </linearGradient>
+                  <linearGradient id="meteorCitronGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="#C8E63C" stopOpacity="0" />
+                    <stop offset="50%" stopColor="#C8E63C" stopOpacity="1" />
+                    <stop offset="100%" stopColor="#C8E63C" stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                {/* Straight lines, all the same ~45° angle (parallel falling streaks).
+                    Coordinates deliberately extend past the 0-200 viewBox on the outer
+                    end so most of each streak sits clearly outside the moon's glow halo,
+                    not just at its edge. */}
+                <line className="meteor-streak meteor-streak-a" x1="-10" y1="-5" x2="30" y2="35" stroke="url(#meteorTealGrad)" strokeWidth="3" strokeLinecap="round" />
+                <line className="meteor-streak meteor-streak-b" x1="150" y1="-15" x2="190" y2="25" stroke="url(#meteorTealGrad)" strokeWidth="3" strokeLinecap="round" />
+                <line className="meteor-streak meteor-streak-c meteor-streak-citron" x1="185" y1="90" x2="225" y2="130" stroke="url(#meteorCitronGrad)" strokeWidth="3" strokeLinecap="round" />
+                <line className="meteor-streak meteor-streak-d" x1="-15" y1="140" x2="25" y2="180" stroke="url(#meteorTealGrad)" strokeWidth="3" strokeLinecap="round" />
+                <line className="meteor-streak meteor-streak-e" x1="140" y1="175" x2="180" y2="215" stroke="url(#meteorTealGrad)" strokeWidth="3" strokeLinecap="round" />
+              </svg>
             )}
             <div
               className="text-8xl leading-none select-none"
