@@ -571,55 +571,93 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               </div>
 
               {/* ═══════ SECTION 6 — ТАКТИЧЕСКА БЕЛЕЖКА ═══════ */}
-              {mistake && (
-                <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 14, padding: 14, marginBottom: 18 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                    <span style={{ display: 'inline-flex', width: 18, height: 18, borderRadius: '50%', background: 'rgba(46,181,183,0.15)', color: '#5cd8da', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700 }}>ⓘ</span>
-                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#dee4e3' }}>Тактическа бележка</span>
+              {mistake && (() => {
+                const lines = String(mistake).split(/\n+/).map(s => s.trim()).filter(Boolean);
+                const bulletIcon = (i: number) => {
+                  const common = { width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none', stroke: '#2eb5b7', strokeWidth: 1.6, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, style: { filter: 'drop-shadow(0 0 3px rgba(46,181,183,0.55))', flexShrink: 0, marginTop: 2 } };
+                  switch (i % 3) {
+                    case 0: return (
+                      <svg {...common}>
+                        <circle cx="12" cy="12" r="4"/>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+                      </svg>
+                    );
+                    case 1: return (
+                      <svg {...common}>
+                        <path d="M2 8c2 0 2-1.5 4-1.5S8 8 10 8s2-1.5 4-1.5S16 8 18 8s2-1.5 4-1.5"/>
+                        <path d="M2 14c2 0 2-1.5 4-1.5S8 14 10 14s2-1.5 4-1.5S16 14 18 14s2-1.5 4-1.5"/>
+                        <path d="M2 20c2 0 2-1.5 4-1.5S8 20 10 20s2-1.5 4-1.5S16 20 18 20s2-1.5 4-1.5"/>
+                      </svg>
+                    );
+                    default: return (
+                      <svg {...common}>
+                        <path d="M14 14.76V4a2 2 0 1 0-4 0v10.76a4 4 0 1 0 4 0Z"/>
+                        <path d="M12 8v6"/>
+                      </svg>
+                    );
+                  }
+                };
+                return (
+                  <div style={{ background: '#1b2121', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16, padding: 16, marginBottom: 18 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                      <span style={{ display: 'inline-flex', width: 22, height: 22, borderRadius: '50%', border: '1.4px solid #2eb5b7', color: '#2eb5b7', alignItems: 'center', justifyContent: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, fontWeight: 700, fontStyle: 'italic', boxShadow: '0 0 8px rgba(46,181,183,0.35)', filter: 'drop-shadow(0 0 2px rgba(46,181,183,0.4))' }}>i</span>
+                      <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#869393' }}>Тактическа бележка</span>
+                    </div>
+                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      {lines.map((line, i) => (
+                        <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                          {bulletIcon(i)}
+                          <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 12.5, lineHeight: 1.5, color: '#dee4e3', flex: 1 }}>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 12.5, lineHeight: 1.55, color: '#a8b4b4', margin: 0, whiteSpace: 'pre-line' }}>{mistake}</p>
-                </div>
-              )}
+                );
+              })()}
 
               {/* ═══════ SECTION 7 — КАЛКУЛАТОР ═══════ */}
-              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 20, padding: 16, marginBottom: 18 }}>
+              <div style={{ background: '#1b2121', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16, padding: 16, marginBottom: 18 }}>
 
                 {/* Ред 1 — заглавие + резултат */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="2" strokeLinecap="round">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'drop-shadow(0 0 3px rgba(46,181,183,0.55))' }}>
                       <line x1="4" y1="20" x2="4" y2="14"/>
                       <line x1="12" y1="20" x2="12" y2="8"/>
                       <line x1="20" y1="20" x2="20" y2="4"/>
+                      <line x1="2" y1="21" x2="22" y2="21"/>
                     </svg>
-                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, fontWeight: 700, color: '#dee4e3', textTransform: 'uppercase', letterSpacing: '0.14em', whiteSpace: 'nowrap' }}>Калкулатор за тегло</span>
+                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, color: '#869393', textTransform: 'uppercase', letterSpacing: '0.14em', whiteSpace: 'nowrap' }}>Калкулатор за тегло</span>
                   </div>
-                  <div style={{ fontFamily: "'VT323', monospace", fontSize: 26, color: '#dee4e3', letterSpacing: '0.06em', lineHeight: 1 }}>
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 600, color: '#dee4e3', letterSpacing: '0.02em', lineHeight: 1, textShadow: '0 0 10px rgba(46,181,183,0.35)' }}>
                     {calcLen
-                      ? <>{calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))}<span style={{ fontSize: 14, color: 'rgba(222,228,227,0.45)', marginLeft: 4 }}>KG</span></>
-                      : <>0.00<span style={{ fontSize: 14, color: 'rgba(222,228,227,0.45)', marginLeft: 4 }}>KG</span></>
+                      ? <>{calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))}<span style={{ fontSize: 11, color: '#869393', marginLeft: 5, fontWeight: 400 }}>KG</span></>
+                      : <>0.00<span style={{ fontSize: 11, color: '#869393', marginLeft: 5, fontWeight: 400 }}>KG</span></>
                     }
                   </div>
                 </div>
 
                 {/* Ред 2 — inputs */}
-                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, marginBottom: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 10, marginBottom: 12 }}>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>[ Дължина ]</div>
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 6 }}>Дължина</div>
                     <input type="number" placeholder="0.00" value={calcLen} autoFocus={false} tabIndex={-1}
                       onChange={e => setCalcLen(e.target.value)}
-                      style={{ fontFamily: "'VT323', monospace", fontSize: 26, fontWeight: 400, color: '#0B0F1A', background: 'linear-gradient(180deg, #5cd8da 0%, #2eb5b7 100%)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 16, height: 56, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.25), 0 0 18px rgba(46,181,183,0.2)', MozAppearance: 'textfield', letterSpacing: '0.06em' } as React.CSSProperties} />
+                      style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 500, color: calcLen ? '#dee4e3' : '#a8b4b4', background: '#0f1415', border: '1px solid #2eb5b7', borderRadius: 12, height: 48, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: '0 0 10px rgba(46,181,183,0.15), inset 0 0 0 1px rgba(46,181,183,0.05)', MozAppearance: 'textfield', letterSpacing: '0.04em' } as React.CSSProperties} />
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', paddingBottom: 14, flexShrink: 0 }}>
-                    <span style={{ fontFamily: "'VT323', monospace", fontSize: 22, color: '#5cd8da', letterSpacing: '0.06em' }}>X =</span>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', paddingBottom: 12, flexShrink: 0 }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.8" strokeLinecap="round" style={{ filter: 'drop-shadow(0 0 3px rgba(46,181,183,0.6))' }}>
+                      <line x1="5" y1="5" x2="19" y2="19"/>
+                      <line x1="19" y1="5" x2="5" y2="19"/>
+                    </svg>
                   </div>
 
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>[ Обиколка ]</div>
+                    <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 6 }}>Обиколка</div>
                     <input type="number" placeholder="000" value={calcGirth} autoFocus={false} tabIndex={-1}
                       onChange={e => setCalcGirth(e.target.value)}
-                      style={{ fontFamily: "'VT323', monospace", fontSize: 26, fontWeight: 400, color: '#0B0F1A', background: 'linear-gradient(180deg, #5cd8da 0%, #2eb5b7 100%)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 16, height: 56, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.25), 0 0 18px rgba(46,181,183,0.2)', MozAppearance: 'textfield', letterSpacing: '0.06em' } as React.CSSProperties} />
+                      style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 500, color: calcGirth ? '#dee4e3' : '#a8b4b4', background: '#0f1415', border: '1px solid #2eb5b7', borderRadius: 12, height: 48, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: '0 0 10px rgba(46,181,183,0.15), inset 0 0 0 1px rgba(46,181,183,0.05)', MozAppearance: 'textfield', letterSpacing: '0.04em' } as React.CSSProperties} />
                   </div>
                 </div>
 
@@ -639,6 +677,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   </div>
                 )}
               </div>
+
               </div>
             </>
           )}
