@@ -498,7 +498,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     return (
                       <div style={{ marginBottom: (selectedFish.altitudeBans ? 12 : 0) }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
-                          <span className="text-legal" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, letterSpacing: '0.12em', color: 'rgba(222,228,227,0.85)', textTransform: 'uppercase' }}>Мин. размер</span>
+                          <span className="text-label-xs" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, letterSpacing: '0.12em', color: '#869393', textTransform: 'uppercase' }}>Мин. размер</span>
                           <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, color: '#5cd8da', lineHeight: 1 }}>{selectedFish.minSize} см</span>
                         </div>
                         <div style={{ position: 'relative', height: 5, background: 'rgba(255,255,255,0.05)', borderRadius: 3, overflow: 'hidden' }}>
@@ -522,15 +522,15 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     return (
                       <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
-                          <span className="text-legal" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, letterSpacing: '0.12em', color: 'rgba(222,228,227,0.85)', textTransform: 'uppercase' }}>Забранен период</span>
+                          <span className="text-label-xs" style={{ fontFamily: "'Space Grotesk', sans-serif", fontWeight: 600, letterSpacing: '0.12em', color: '#869393', textTransform: 'uppercase' }}>Забранен период</span>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                           {activeZones.map(z => {
                             const ban = selectedFish.altitudeBans![z.key]!;
                             return (
                               <div key={z.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                                <span className="text-legal" style={{ color: '#a8b4b4' }}>{z.label}</span>
-                                <span className="text-legal" style={{ fontWeight: 400, color: '#fff' }}>{ban.start} – {ban.end}</span>
+                                <span className="text-label-xs" style={{ color: '#a8b4b4' }}>{z.label}</span>
+                                <span className="text-legal" style={{ fontWeight: 400, color: '#C8E63C' }}>{ban.start} – {ban.end}</span>
                               </div>
                             );
                           })}
