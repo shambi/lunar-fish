@@ -1161,14 +1161,25 @@ const Index = () => {
                   <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
                 </svg>
               );
+            } else if (code === 45 || code === 48) {
+              // Fog / freezing fog — dedicated horizontal-mist icon.
+              baseIcon = (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 8h14" />
+                  <path d="M5 12h16" />
+                  <path d="M3 16h14" />
+                  <path d="M6 20h12" />
+                </svg>
+              );
             } else {
-              // Fallback (fog, etc.) — treat as overcast.
+              // Fallback — treat as overcast.
               baseIcon = (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
                   <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z" />
                 </svg>
               );
             }
+
 
             // Dangerous wind ahead of a front — overlay a small wind indicator on
             // top of the existing weather icon, without replacing it.
