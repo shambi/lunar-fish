@@ -648,8 +648,8 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     style={{
                       width: 67,
                       height: 28,
-                      opacity: 0.4,
-                      filter: 'drop-shadow(0 0 5px #2eb5b7)',
+                      opacity: 0.6,
+                      filter: 'drop-shadow(0 0 9px #2eb5b7)',
                     }}
                   />
                   <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 600, color: '#dee4e3', letterSpacing: '0.02em', lineHeight: 1, textShadow: '0 0 4px rgba(92,216,218,0.18)' }}>
