@@ -574,7 +574,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               {mistake && (() => {
                 const lines = String(mistake).split(/\n+/).map(s => s.trim()).filter(Boolean);
                 const bulletIcon = (i: number) => {
-                  const common = { width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none', stroke: '#2eb5b7', strokeWidth: 1.6, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, style: { filter: 'drop-shadow(0 0 3px rgba(46,181,183,0.55))', flexShrink: 0, marginTop: 2 } };
+                  const common = { width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none', stroke: '#5cd8da', strokeWidth: 1.6, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, style: { filter: 'drop-shadow(0 0 4px rgba(92,216,218,0.18))', flexShrink: 0, marginTop: 2 } };
                   switch (i % 3) {
                     case 0: return (
                       <svg {...common}>
@@ -600,7 +600,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 return (
                   <div style={{ background: '#1b2121', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 16, padding: 16, marginBottom: 18 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-                      <span style={{ display: 'inline-flex', width: 22, height: 22, borderRadius: '50%', border: '1.4px solid #2eb5b7', color: '#2eb5b7', alignItems: 'center', justifyContent: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, fontWeight: 700, fontStyle: 'italic', boxShadow: '0 0 8px rgba(46,181,183,0.35)', filter: 'drop-shadow(0 0 2px rgba(46,181,183,0.4))' }}>i</span>
+                      <span style={{ display: 'inline-flex', width: 22, height: 22, borderRadius: '50%', border: '1.4px solid #5cd8da', color: '#5cd8da', alignItems: 'center', justifyContent: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, fontWeight: 700, fontStyle: 'italic', boxShadow: '0 0 4px rgba(92,216,218,0.18)' }}>i</span>
                       <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#869393' }}>Тактическа бележка</span>
                     </div>
                     <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -621,7 +621,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 {/* Ред 1 — заглавие + резултат */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'drop-shadow(0 0 3px rgba(46,181,183,0.55))' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5cd8da" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'drop-shadow(0 0 4px rgba(92,216,218,0.18))' }}>
                       <line x1="4" y1="20" x2="4" y2="14"/>
                       <line x1="12" y1="20" x2="12" y2="8"/>
                       <line x1="20" y1="20" x2="20" y2="4"/>
@@ -629,7 +629,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     </svg>
                     <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, color: '#869393', textTransform: 'uppercase', letterSpacing: '0.14em', whiteSpace: 'nowrap' }}>Калкулатор за тегло</span>
                   </div>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 600, color: '#dee4e3', letterSpacing: '0.02em', lineHeight: 1, textShadow: '0 0 10px rgba(46,181,183,0.35)' }}>
+                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 600, color: '#dee4e3', letterSpacing: '0.02em', lineHeight: 1, textShadow: '0 0 4px rgba(92,216,218,0.18)' }}>
                     {calcLen
                       ? <>{calcWeight(selectedFish.name, parseFloat(calcLen), parseFloat(calcGirth))}<span style={{ fontSize: 11, color: '#869393', marginLeft: 5, fontWeight: 400 }}>KG</span></>
                       : <>0.00<span style={{ fontSize: 11, color: '#869393', marginLeft: 5, fontWeight: 400 }}>KG</span></>
@@ -643,11 +643,11 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 6 }}>Дължина</div>
                     <input type="number" placeholder="0.00" value={calcLen} autoFocus={false} tabIndex={-1}
                       onChange={e => setCalcLen(e.target.value)}
-                      style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 500, color: calcLen ? '#dee4e3' : '#a8b4b4', background: '#0f1415', border: '1px solid #2eb5b7', borderRadius: 12, height: 48, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: '0 0 10px rgba(46,181,183,0.15), inset 0 0 0 1px rgba(46,181,183,0.05)', MozAppearance: 'textfield', letterSpacing: '0.04em' } as React.CSSProperties} />
+                      style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 500, color: calcLen ? '#dee4e3' : '#a8b4b4', background: 'transparent', border: '1px solid #5cd8da', borderRadius: 12, height: 48, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: '0 0 4px rgba(92,216,218,0.18)', MozAppearance: 'textfield', letterSpacing: '0.04em' } as React.CSSProperties} />
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', paddingBottom: 12, flexShrink: 0 }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.8" strokeLinecap="round" style={{ filter: 'drop-shadow(0 0 3px rgba(46,181,183,0.6))' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5cd8da" strokeWidth="1.8" strokeLinecap="round" style={{ filter: 'drop-shadow(0 0 4px rgba(92,216,218,0.18))' }}>
                       <line x1="5" y1="5" x2="19" y2="19"/>
                       <line x1="19" y1="5" x2="5" y2="19"/>
                     </svg>
@@ -657,7 +657,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 6 }}>Обиколка</div>
                     <input type="number" placeholder="000" value={calcGirth} autoFocus={false} tabIndex={-1}
                       onChange={e => setCalcGirth(e.target.value)}
-                      style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 500, color: calcGirth ? '#dee4e3' : '#a8b4b4', background: '#0f1415', border: '1px solid #2eb5b7', borderRadius: 12, height: 48, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: '0 0 10px rgba(46,181,183,0.15), inset 0 0 0 1px rgba(46,181,183,0.05)', MozAppearance: 'textfield', letterSpacing: '0.04em' } as React.CSSProperties} />
+                      style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 500, color: calcGirth ? '#dee4e3' : '#a8b4b4', background: 'transparent', border: '1px solid #5cd8da', borderRadius: 12, height: 48, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: '0 0 4px rgba(92,216,218,0.18)', MozAppearance: 'textfield', letterSpacing: '0.04em' } as React.CSSProperties} />
                   </div>
                 </div>
 
