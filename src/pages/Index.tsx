@@ -1109,17 +1109,19 @@ const Index = () => {
             // Priority 1 — precipitation/storm dominates regardless of hour.
             if (code >= 95) {
               baseIcon = precipitation > 0.1 ? (
-                // Thunderstorm WITH rain — cloud, clear zig-zag bolt, two rain ticks below.
+                // Thunderstorm WITH rain — bolt + rain ticks drawn first, cloud last with a
+                // solid occlusion fill so the bolt's top end disappears behind the cloud
+                // instead of visibly poking through its outline.
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 14a4 4 0 0 1 0-8 5 5 0 0 1 9.6 -1.5A4.5 4.5 0 0 1 17 14H6z" />
                   <path d="M13 14l-3 4.5h3l-2 4.5" />
                   <path d="M7 19.5l-0.8 1.5M17 19.5l-0.8 1.5" opacity="0.6" />
+                  <path d="M6 14a4 4 0 0 1 0-8 5 5 0 0 1 9.6 -1.5A4.5 4.5 0 0 1 17 14H6z" fill="#090D15" />
                 </svg>
               ) : (
-                // Dry thunderstorm — cloud + clear zig-zag bolt only.
+                // Dry thunderstorm — same occlusion treatment: bolt behind, cloud on top with fill.
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 14a4 4 0 0 1 0-8 5 5 0 0 1 9.6 -1.5A4.5 4.5 0 0 1 17 14H6z" />
                   <path d="M13 13l-4 5.5h3.5l-2.5 5.5" />
+                  <path d="M6 14a4 4 0 0 1 0-8 5 5 0 0 1 9.6 -1.5A4.5 4.5 0 0 1 17 14H6z" fill="#090D15" />
                 </svg>
               );
 
@@ -1148,13 +1150,17 @@ const Index = () => {
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M13 4a4 4 0 0 0 4 4" />
                   <path d="M13 4a4 4 0 0 1-1 7.9" />
-                  <path d="M6 17a4 4 0 0 1 7.9-1A2.5 2.5 0 1 1 15 21H6a4 4 0 0 1 0-8v1" />
+                  {/* Cloud gets a solid occlusion fill (matches the page background) so it
+                      visually sits in front of the crescent instead of just outlining over it. */}
+                  <path d="M6 17a4 4 0 0 1 7.9-1A2.5 2.5 0 1 1 15 21H6a4 4 0 0 1 0-8v1" fill="#090D15" />
                 </svg>
               ) : (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
                   <circle cx="10" cy="9" r="3" />
                   <path d="M10 4v1M10 13v1M5 9H4M16 9h-1M6.76 6.76l-.7-.7M13.94 6.76l.7-.7" />
-                  <path d="M7 16a4 4 0 0 1 7.87-1A3 3 0 1 1 17 22H7a4 4 0 0 1 0-8v2" />
+                  {/* Solid occlusion fill so the sun's bottom ray disappears behind the cloud
+                      instead of visibly crossing its outline. */}
+                  <path d="M7 16a4 4 0 0 1 7.87-1A3 3 0 1 1 17 22H7a4 4 0 0 1 0-8v2" fill="#090D15" />
                 </svg>
               );
             } else if (code === 0 || code === 1) {
@@ -1167,13 +1173,17 @@ const Index = () => {
                 </svg>
               );
             } else if (code === 45 || code === 48) {
-              // Fog / freezing fog — dedicated horizontal-mist icon.
+              // Fog / freezing fog — small flat cloud silhouette (same verified cloud path
+              // as the overcast icon above, scaled down) sitting over staggered mist lines.
               baseIcon = (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3 8h14" />
-                  <path d="M5 12h16" />
-                  <path d="M3 16h14" />
-                  <path d="M6 20h12" />
+                  <g transform="scale(0.5) translate(12.25, 0)">
+                    <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z" />
+                  </g>
+                  <path d="M4 11h13" />
+                  <path d="M6 14.5h15" />
+                  <path d="M4 18h13" />
+                  <path d="M7 21.5h11" />
                 </svg>
               );
             } else {
