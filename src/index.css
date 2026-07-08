@@ -107,6 +107,53 @@
   75% { transform: translateX(-4px) translateY(-2px); }
 }
 
+/* Meteor shower streaks behind the moon (Index.tsx Moon Phase Hero). Base rule
+   gives every streak a static, visible appearance (no motion) — the animations
+   themselves only apply under prefers-reduced-motion: no-preference, per the
+   accessibility requirement that reduced-motion users still see the streaks,
+   just not moving. */
+.meteor-streak {
+  position: absolute;
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, #2eb5b7, transparent);
+  transform: rotate(-45deg);
+  opacity: 0.7;
+}
+
+.meteor-streak-citron {
+  background: linear-gradient(90deg, transparent, #C8E63C, transparent);
+  filter: drop-shadow(0 0 4px #C8E63C);
+}
+
+@keyframes meteor-streak-move {
+  0% { opacity: 0; transform: rotate(-45deg) translate(14px, -14px); }
+  15% { opacity: 0.9; }
+  55% { opacity: 0.9; }
+  100% { opacity: 0; transform: rotate(-45deg) translate(-14px, 14px); }
+}
+
+@keyframes meteor-citron-glow {
+  0%, 100% { filter: drop-shadow(0 0 0px #C8E63C); }
+  50% { filter: drop-shadow(0 0 6px #C8E63C); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .meteor-streak-a {
+    animation: meteor-streak-move 2.2s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+  .meteor-streak-b {
+    animation: meteor-streak-move 2.2s ease-in-out infinite, meteor-citron-glow 2.2s ease-in-out infinite;
+    animation-delay: 0.7s;
+  }
+  .meteor-streak-c {
+    animation: meteor-streak-move 2.2s ease-in-out infinite;
+    animation-delay: 1.4s;
+  }
+}
+
 @keyframes fish-swim-1 {
   0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
   33%       { transform: translateX(6px) translateY(-4px) rotate(2deg); }

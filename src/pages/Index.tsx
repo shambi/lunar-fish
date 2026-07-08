@@ -13,6 +13,7 @@ import { PerchIcon, CarpIcon, PikeIcon, BreamIcon, CatfishIcon } from '@/compone
 import { AdviceIcon } from '@/components/AdviceIcon';
 import { WindCompass } from '@/components/WindCompass';
 import { getMeteoAlertLabel } from '@/lib/meteo-alert';
+import { getActiveMeteorShower } from '@/lib/meteor-showers';
 const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
   const [now, setNow] = useState(() => new Date());
   const [openMoon, setOpenMoon] = useState(false);
@@ -454,6 +455,10 @@ const Index = () => {
   // shortly after the day actually rolls over.
   const dayKey = new Date().toDateString();
   const moon = useMemo(() => getMoonData(), [dayKey]);
+  // TEMPORARY — forced to a fixed in-range date (Персеиди) so the effect is visible
+  // for a live preview even though no shower is active today. REVERT to
+  // `getActiveMeteorShower()` (no argument) once confirmed.
+  const activeMeteorShower = useMemo(() => getActiveMeteorShower(new Date('2026-08-12')), [dayKey]);
   const { weather, loading, error, locationDenied } = useWeather();
   const alertLevel: 'none' | 'yellow' | 'orange' | 'red' = weather?.meteoAlarm?.level ?? 'none';
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
@@ -619,19 +624,45 @@ const Index = () => {
 
         {/* Moon Phase Hero */}
         <section className="flex flex-col items-center mt-2 mb-3">
-          <div
-            className="text-8xl leading-none select-none"
-            style={{
-              animation: 'pulse-glow 4s ease-in-out infinite, moon-drift 10s ease-in-out infinite',
-              borderRadius: '50%',
-              filter: 'drop-shadow(0 0 20px hsl(180 80% 55% / 0.4))',
-            }}
-          >
-            {moon.emoji}
+          <div style={{ position: 'relative' }}>
+            {activeMeteorShower && (
+              <div aria-hidden="true" style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'visible', pointerEvents: 'none' }}>
+                <div className="meteor-streak meteor-streak-a" style={{ top: -4, left: 6 }} />
+                <div className="meteor-streak meteor-streak-b meteor-streak-citron" style={{ top: '32%', right: -8 }} />
+                <div className="meteor-streak meteor-streak-c" style={{ bottom: 6, left: -10 }} />
+              </div>
+            )}
+            <div
+              className="text-8xl leading-none select-none"
+              style={{
+                position: 'relative',
+                zIndex: 1,
+                animation: 'pulse-glow 4s ease-in-out infinite, moon-drift 10s ease-in-out infinite',
+                borderRadius: '50%',
+                filter: 'drop-shadow(0 0 20px hsl(180 80% 55% / 0.4))',
+              }}
+            >
+              {moon.emoji}
+            </div>
           </div>
-          <h2 className="font-display text-xl font-semibold mt-2" style={{ color: '#E2E8F0' }}>
-            {moon.phaseNameBg}
-          </h2>
+          <div className="flex items-center justify-center" style={{ gap: 10, rowGap: 2, flexWrap: 'wrap', maxWidth: '100%', paddingLeft: 12, paddingRight: 12 }}>
+            <h2 className="font-display text-xl font-semibold mt-2" style={{ color: '#E2E8F0' }}>
+              {moon.phaseNameBg}
+            </h2>
+            {activeMeteorShower && (
+              <div style={{ textAlign: 'left' }}>
+                <div className="font-display text-label-xs font-semibold uppercase tracking-wider" style={{ color: '#869393' }}>
+                  Метеорен поток
+                </div>
+                <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, fontWeight: 600, color: '#2eb5b7', marginTop: 2 }}>
+                  {activeMeteorShower.name} · {activeMeteorShower.peakLabel}
+                </div>
+                <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 11, color: '#869393', marginTop: 2 }}>
+                  Най-добра видимост тази нощ
+                </div>
+              </div>
+            )}
+          </div>
           <p className="text-sm font-medium mt-1" style={{ color: '#2eb5b7' }}>
             {moon.illumination}% Осветеност
           </p>
