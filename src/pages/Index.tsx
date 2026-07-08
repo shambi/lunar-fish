@@ -453,11 +453,10 @@ const Index = () => {
   const alertLevel: 'none' | 'yellow' | 'orange' | 'red' = weather?.meteoAlarm?.level ?? 'none';
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
   const [showAlertTooltip, setShowAlertTooltip] = useState(false);
-  const [hourlyOpen, setHourlyOpen] = useState(false);
   const hourlyScrollRef = useRef<HTMLDivElement>(null);
-  const hourlyToggleRef = useRef<HTMLButtonElement>(null);
+  const hourlyForecastLen = weather?.hourlyForecast?.length ?? 0;
   useEffect(() => {
-    if (!hourlyOpen) return;
+    if (!hourlyForecastLen) return;
     const t = setTimeout(() => {
       const container = hourlyScrollRef.current;
       if (!container) return;
@@ -466,23 +465,8 @@ const Index = () => {
       cell?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     }, 50);
     return () => clearTimeout(t);
-  }, [hourlyOpen]);
+  }, [hourlyForecastLen]);
 
-  useEffect(() => {
-    if (!hourlyOpen) return;
-    const handleOutsideClick = (e: MouseEvent) => {
-      const target = e.target as Node;
-      const clickedInsideStrip = hourlyScrollRef.current?.contains(target) ?? false;
-      const clickedToggle = hourlyToggleRef.current?.contains(target) ?? false;
-      if (!clickedInsideStrip && !clickedToggle) {
-        setHourlyOpen(false);
-      }
-    };
-    // mousedown instead of click — fires strictly before this same click can
-    // be (mis)interpreted as "outside" by a listener attached mid-dispatch.
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, [hourlyOpen]);
 
   const today = new Date().toLocaleDateString('bg-BG', {
     weekday: 'long',
@@ -1120,19 +1104,20 @@ const Index = () => {
             // Priority 1 — precipitation/storm dominates regardless of hour.
             if (code >= 95) {
               baseIcon = precipitation > 0.1 ? (
-                // Thunderstorm WITH rain — closed-path cloud, lightning bolt, two rain ticks below.
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                // Thunderstorm WITH rain — cloud, clear zig-zag bolt, two rain ticks below.
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M6 14a4 4 0 0 1 0-8 5 5 0 0 1 9.6 -1.5A4.5 4.5 0 0 1 17 14H6z" />
-                  <path d="M11 14l-2 4h3l-2 4" />
-                  <path d="M6 18v1M9 19v1" opacity="0.6" />
+                  <path d="M13 14l-3 4.5h3l-2 4.5" />
+                  <path d="M7 19.5l-0.8 1.5M17 19.5l-0.8 1.5" opacity="0.6" />
                 </svg>
               ) : (
-                // Dry thunderstorm — closed-path cloud, lightning bolt only, no rain.
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                // Dry thunderstorm — cloud + clear zig-zag bolt only.
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M6 14a4 4 0 0 1 0-8 5 5 0 0 1 9.6 -1.5A4.5 4.5 0 0 1 17 14H6z" />
-                  <path d="M11 14l-2 4h3l-2 4" />
+                  <path d="M13 13l-4 5.5h3.5l-2.5 5.5" />
                 </svg>
               );
+
             } else if (code >= 71 && code <= 77) {
               baseIcon = (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
@@ -1176,14 +1161,25 @@ const Index = () => {
                   <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
                 </svg>
               );
+            } else if (code === 45 || code === 48) {
+              // Fog / freezing fog — dedicated horizontal-mist icon.
+              baseIcon = (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 8h14" />
+                  <path d="M5 12h16" />
+                  <path d="M3 16h14" />
+                  <path d="M6 20h12" />
+                </svg>
+              );
             } else {
-              // Fallback (fog, etc.) — treat as overcast.
+              // Fallback — treat as overcast.
               baseIcon = (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
                   <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z" />
                 </svg>
               );
             }
+
 
             // Dangerous wind ahead of a front — overlay a small wind indicator on
             // top of the existing weather icon, without replacing it.
@@ -1205,35 +1201,21 @@ const Index = () => {
           };
           return (
             <>
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2px' }}>
-                <button
-                  ref={hourlyToggleRef}
-                  onClick={() => setHourlyOpen(o => !o)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px 12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                  aria-label="Почасова прогноза"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3d4949" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                    style={{ transition: 'transform 0.25s', transform: hourlyOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
-                </button>
-              </div>
-              {hourlyOpen && (
-                <div ref={hourlyScrollRef} style={{ padding: '8px 16px', overflowX: 'auto', scrollbarWidth: 'none', marginBottom: '8px' }}>
-                  <div style={{ display: 'flex', gap: '4px', minWidth: 'max-content' }}>
-                    {weather.hourlyForecast.map((h, i) => (
-                      <div key={i} data-hour={parseInt(h.hour, 10)} style={{ minWidth: '44px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
-                        {renderHourIcon(h.code, parseInt(h.hour, 10), h.precipitation, h.windSpeed)}
-                        <span style={{ fontSize: '11px', fontWeight: 500, color: '#dee4e3', lineHeight: 1 }}>{h.temp}°</span>
-                        <span style={{ fontSize: '10px', color: '#869393', lineHeight: 1 }}>{h.hour}:00</span>
-                      </div>
-                    ))}
-                  </div>
+              <div ref={hourlyScrollRef} style={{ padding: '8px 16px', overflowX: 'auto', scrollbarWidth: 'none', marginBottom: '8px' }}>
+                <div style={{ display: 'flex', gap: '4px', minWidth: 'max-content' }}>
+                  {weather.hourlyForecast.map((h, i) => (
+                    <div key={i} data-hour={parseInt(h.hour, 10)} style={{ minWidth: '44px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
+                      {renderHourIcon(h.code, parseInt(h.hour, 10), h.precipitation, h.windSpeed)}
+                      <span style={{ fontSize: '11px', fontWeight: 500, color: '#dee4e3', lineHeight: 1 }}>{h.temp}°</span>
+                      <span style={{ fontSize: '10px', color: '#869393', lineHeight: 1 }}>{h.hour}:00</span>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
             </>
           );
         })()}
+
 
         {/* Solunar Activity Section */}
         {weather && weather.solunarPeaks ? (
