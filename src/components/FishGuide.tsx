@@ -619,13 +619,12 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: 16, marginBottom: 18 }}>
 
                 {/* Ред 1 — заглавие + резултат */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, marginBottom: 14 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5cd8da" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'drop-shadow(0 0 4px rgba(92,216,218,0.18))' }}>
-                      <line x1="4" y1="20" x2="4" y2="14"/>
-                      <line x1="12" y1="20" x2="12" y2="8"/>
-                      <line x1="20" y1="20" x2="20" y2="4"/>
-                      <line x1="2" y1="21" x2="22" y2="21"/>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <line x1="4" y1="12" x2="20" y2="12" stroke="#2eb5b7" strokeWidth="2.2" strokeLinecap="round"/>
+                      <circle cx="12" cy="6" r="1.6" fill="#2eb5b7"/>
+                      <circle cx="12" cy="18" r="1.6" fill="#2eb5b7"/>
                     </svg>
                     <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 600, color: '#869393', textTransform: 'uppercase', letterSpacing: '0.14em', whiteSpace: 'nowrap' }}>Калкулатор за тегло</span>
                   </div>
@@ -641,12 +640,12 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 <div style={{ display: 'flex', alignItems: 'flex-end', gap: 10, marginBottom: 12 }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 6 }}>Дължина</div>
-                    <input type="number" placeholder="0.00" value={calcLen} autoFocus={false} tabIndex={-1}
+                    <input type="number" placeholder="0" value={calcLen} autoFocus={false} tabIndex={-1}
                       onChange={e => setCalcLen(e.target.value)}
-                      style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 500, color: calcLen ? '#dee4e3' : '#a8b4b4', background: 'transparent', border: '1px solid #5cd8da', borderRadius: 12, height: 48, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: '0 0 4px rgba(92,216,218,0.18)', MozAppearance: 'textfield', letterSpacing: '0.04em' } as React.CSSProperties} />
+                      style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 500, color: calcLen ? '#dee4e3' : '#a8b4b4', background: 'transparent', border: '1px solid #5cd8da', borderRadius: 10, height: 40, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: '0 0 4px rgba(92,216,218,0.18)', MozAppearance: 'textfield', letterSpacing: '0.04em' } as React.CSSProperties} />
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', paddingBottom: 12, flexShrink: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', paddingBottom: 10, flexShrink: 0 }}>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5cd8da" strokeWidth="1.8" strokeLinecap="round" style={{ filter: 'drop-shadow(0 0 4px rgba(92,216,218,0.18))' }}>
                       <line x1="5" y1="5" x2="19" y2="19"/>
                       <line x1="19" y1="5" x2="5" y2="19"/>
@@ -655,9 +654,9 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
 
                   <div style={{ flex: 1 }}>
                     <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, color: '#869393', textAlign: 'center', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 6 }}>Обиколка</div>
-                    <input type="number" placeholder="000" value={calcGirth} autoFocus={false} tabIndex={-1}
+                    <input type="number" placeholder="0" value={calcGirth} autoFocus={false} tabIndex={-1}
                       onChange={e => setCalcGirth(e.target.value)}
-                      style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 500, color: calcGirth ? '#dee4e3' : '#a8b4b4', background: 'transparent', border: '1px solid #5cd8da', borderRadius: 12, height: 48, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: '0 0 4px rgba(92,216,218,0.18)', MozAppearance: 'textfield', letterSpacing: '0.04em' } as React.CSSProperties} />
+                      style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 20, fontWeight: 500, color: calcGirth ? '#dee4e3' : '#a8b4b4', background: 'transparent', border: '1px solid #5cd8da', borderRadius: 10, height: 40, padding: 0, width: '100%', textAlign: 'center', outline: 'none', display: 'block', boxSizing: 'border-box', boxShadow: '0 0 4px rgba(92,216,218,0.18)', MozAppearance: 'textfield', letterSpacing: '0.04em' } as React.CSSProperties} />
                   </div>
                 </div>
 
@@ -665,9 +664,9 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 12, color: '#869393' }}>Въведи размерите на улова</span>
                   <button onClick={() => setShowFormulaInfo(!showFormulaInfo)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: '#869393', fontSize: 14, lineHeight: 1 }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'inline-flex', lineHeight: 1 }}
                     title="За формулата">
-                    ✦
+                    <span style={{ display: 'inline-flex', width: 18, height: 18, borderRadius: '50%', border: '1.4px solid #5cd8da', color: '#5cd8da', alignItems: 'center', justifyContent: 'center', fontFamily: "'Space Grotesk', sans-serif", fontSize: 10, fontWeight: 700, fontStyle: 'italic', boxShadow: '0 0 4px rgba(92,216,218,0.18)' }}>i</span>
                   </button>
                 </div>
 
