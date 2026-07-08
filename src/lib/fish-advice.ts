@@ -620,7 +620,7 @@ export function getCommonMistake(
   const forecastNote = FORECAST_TEMPLATES[tempTrendBucket(tempTrend)][pt];
   if (forecastNote) parts.push(forecastNote);
 
-  return parts.length > 0 ? parts.join(' ') : null;
+  return parts.length > 0 ? parts.join('\n') : null;
 }
 
 // DRAFT — season → влакно/повод цвят, 1 изречение. Есенният текст е пренесен буквално

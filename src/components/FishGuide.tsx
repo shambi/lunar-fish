@@ -577,7 +577,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <span style={{ display: 'inline-flex', width: 18, height: 18, borderRadius: '50%', background: 'rgba(46,181,183,0.15)', color: '#5cd8da', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700 }}>ⓘ</span>
                     <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#dee4e3' }}>Тактическа бележка</span>
                   </div>
-                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 12.5, lineHeight: 1.55, color: '#a8b4b4', margin: 0 }}>{mistake}</p>
+                  <p style={{ fontFamily: "'Outfit', sans-serif", fontSize: 12.5, lineHeight: 1.55, color: '#a8b4b4', margin: 0, whiteSpace: 'pre-line' }}>{mistake}</p>
                 </div>
               )}
 
