@@ -1158,34 +1158,43 @@ const Index = () => {
             let baseIcon: JSX.Element;
 
             // Priority 1 — precipitation/storm dominates regardless of hour.
+            // Shared compact cloud, anchored top of icon (y≈4–12) so auxiliary
+            // elements (bolt, drops, flakes) live cleanly beneath at y≈14–20.
+            // Same stroke width / scale as the single-element icons below.
+            const cloudTop = (
+              <path d="M6 12a3.4 3.4 0 0 1 0-6.8 4.4 4.4 0 0 1 8.2 1.1A2.9 2.9 0 0 1 15 12H6z" />
+            );
+
             if (code >= 95) {
-              baseIcon = precipitation > 0.1 ? (
-                // Thunderstorm WITH rain — bolt + rain ticks drawn first, cloud last with a
-                // solid occlusion fill so the bolt's top end disappears behind the cloud
-                // instead of visibly poking through its outline.
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M13 14l-3 4.5h3l-2 4.5" />
-                  <path d="M7 19.5l-0.8 1.5M17 19.5l-0.8 1.5" opacity="0.6" />
-                  <path d="M6 14a4 4 0 0 1 0-8 5 5 0 0 1 9.6 -1.5A4.5 4.5 0 0 1 17 14H6z" fill="#090D15" />
-                </svg>
-              ) : (
-                // Dry thunderstorm — same occlusion treatment: bolt behind, cloud on top with fill.
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M13 13l-4 5.5h3.5l-2.5 5.5" />
-                  <path d="M6 14a4 4 0 0 1 0-8 5 5 0 0 1 9.6 -1.5A4.5 4.5 0 0 1 17 14H6z" fill="#090D15" />
+              // Thunderstorm — cloud on top, lightning bolt centered below.
+              // With rain: add two flanking drops beside the bolt.
+              baseIcon = (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                  {cloudTop}
+                  <path d="M11.5 13.5l-2 4h2.5l-1.5 4" />
+                  {precipitation > 0.1 && (
+                    <path d="M6.5 15.5l-0.6 1.4M16 15.5l-0.6 1.4" opacity="0.75" />
+                  )}
                 </svg>
               );
-
             } else if (code >= 71 && code <= 77) {
+              // Snow — cloud on top, three snowflakes (asterisks) below.
               baseIcon = (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                  <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M8 15h.01M8 19h.01M12 17h.01M12 21h.01M16 15h.01M16 19h.01" />
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                  {cloudTop}
+                  <path d="M6.5 15v3.4M5.2 15.7l2.6 2M5.2 17.7l2.6-2" />
+                  <path d="M11 16.2v3.4M9.7 16.9l2.6 2M9.7 18.9l2.6-2" />
+                  <path d="M15.5 15v3.4M14.2 15.7l2.6 2M14.2 17.7l2.6-2" />
                 </svg>
               );
             } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
+              // Rain / drizzle / showers — cloud on top, three vertical drop strokes below.
               baseIcon = (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                  <path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25" /><path d="M8 19v1M8 14v1M12 21v1M12 16v1M16 19v1M16 14v1" />
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                  {cloudTop}
+                  <path d="M7 14.5v2.2M7 18.2v1.6" />
+                  <path d="M11 14.5v2.2M11 18.2v1.6" />
+                  <path d="M15 14.5v2.2M15 18.2v1.6" />
                 </svg>
               );
             } else if (code === 3) {
@@ -1196,22 +1205,17 @@ const Index = () => {
                 </svg>
               );
             } else if (code === 2) {
-              // Priority 3 — partly cloudy: sun/moon + cloud, depending on hour.
+              // Partly cloudy — sun/moon top-left, cloud bottom-right, no overlap.
               baseIcon = isNight ? (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M13 4a4 4 0 0 0 4 4" />
-                  <path d="M13 4a4 4 0 0 1-1 7.9" />
-                  {/* Cloud gets a solid occlusion fill (matches the page background) so it
-                      visually sits in front of the crescent instead of just outlining over it. */}
-                  <path d="M6 17a4 4 0 0 1 7.9-1A2.5 2.5 0 1 1 15 21H6a4 4 0 0 1 0-8v1" fill="#090D15" />
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 3a4 4 0 1 0 4 4 3 3 0 0 1-4-4z" />
+                  <path d="M9 20a3.3 3.3 0 0 1 0-6.6 4.3 4.3 0 0 1 8 1.1A2.8 2.8 0 0 1 17 20H9z" />
                 </svg>
               ) : (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                  <circle cx="10" cy="9" r="3" />
-                  <path d="M10 4v1M10 13v1M5 9H4M16 9h-1M6.76 6.76l-.7-.7M13.94 6.76l.7-.7" />
-                  {/* Solid occlusion fill so the sun's bottom ray disappears behind the cloud
-                      instead of visibly crossing its outline. */}
-                  <path d="M7 16a4 4 0 0 1 7.87-1A3 3 0 1 1 17 22H7a4 4 0 0 1 0-8v2" fill="#090D15" />
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="7" cy="7" r="2.2" />
+                  <path d="M7 3v1.2M7 9.8v1.2M3 7h1.2M9.8 7h1.2M4.5 4.5l.85.85M8.65 8.65l.85.85M4.5 9.5l.85-.85M8.65 5.35l.85-.85" />
+                  <path d="M9 20a3.3 3.3 0 0 1 0-6.6 4.3 4.3 0 0 1 8 1.1A2.8 2.8 0 0 1 17 20H9z" />
                 </svg>
               );
             } else if (code === 0 || code === 1) {
