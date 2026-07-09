@@ -1161,91 +1161,126 @@ const Index = () => {
             // Shared compact cloud, anchored top of icon (y≈4–12) so auxiliary
             // elements (bolt, drops, flakes) live cleanly beneath at y≈14–20.
             // Same stroke width / scale as the single-element icons below.
-            const cloudTop = (
-              <path d="M6 12a3.4 3.4 0 0 1 0-6.8 4.4 4.4 0 0 1 8.2 1.1A2.9 2.9 0 0 1 15 12H6z" />
+            // Unified visual system:
+            //  - All icons render at 22×22 in a 24×24 viewBox with strokeWidth=1
+            //    and vectorEffect="non-scaling-stroke" so lines stay identical
+            //    thickness whether an element is scaled or not.
+            //  - Combined icons share the SAME cloud silhouette as the overcast
+            //    single icon (translated/scaled to reserve breathing room),
+            //    and reuse the SAME moon/sun geometry as the standalone icons.
+            const svgProps = {
+              width: 22,
+              height: 22,
+              viewBox: '0 0 24 24',
+              fill: 'none',
+              stroke: '#2eb5b7',
+              strokeWidth: 1,
+              strokeLinecap: 'round' as const,
+              strokeLinejoin: 'round' as const,
+            };
+            // Canonical cloud (identical to overcast). Combined variants place
+            // it via <g transform> so its stroke stays 1px thanks to non-scaling-stroke.
+            const cloudPath = 'M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z';
+            // Cloud sitting in the lower half, leaving ~10 units of clean space
+            // above it for auxiliary elements. Scale 0.72 keeps its visual mass
+            // comparable to the standalone overcast cloud.
+            const cloudLower = (
+              <g transform="translate(1.2 6.5) scale(0.72)" vectorEffect="non-scaling-stroke">
+                <path d={cloudPath} vectorEffect="non-scaling-stroke" />
+              </g>
+            );
+            // Small cloud tucked bottom-right for partly-cloudy scenes.
+            const cloudCorner = (
+              <g transform="translate(4 9) scale(0.62)" vectorEffect="non-scaling-stroke">
+                <path d={cloudPath} vectorEffect="non-scaling-stroke" />
+              </g>
             );
 
             if (code >= 95) {
-              // Thunderstorm — cloud on top, lightning bolt centered below.
-              // With rain: add two flanking drops beside the bolt.
+              // Thunderstorm — cloud fills upper 2/3, bolt hangs below with room.
               baseIcon = (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                  {cloudTop}
-                  <path d="M11.5 13.5l-2 4h2.5l-1.5 4" />
+                <svg {...svgProps}>
+                  {cloudLower}
+                  <path d="M12 17.2l-1.8 3.4h2.6l-1.2 2.6" vectorEffect="non-scaling-stroke" />
                   {precipitation > 0.1 && (
-                    <path d="M6.5 15.5l-0.6 1.4M16 15.5l-0.6 1.4" opacity="0.75" />
+                    <path d="M7.5 19l-0.6 1.6M16.5 19l-0.6 1.6" opacity="0.75" vectorEffect="non-scaling-stroke" />
                   )}
                 </svg>
               );
             } else if (code >= 71 && code <= 77) {
-              // Snow — cloud on top, three snowflakes (asterisks) below.
+              // Snow — cloud above, three tidy flakes below with equal spacing.
               baseIcon = (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                  {cloudTop}
-                  <path d="M6.5 15v3.4M5.2 15.7l2.6 2M5.2 17.7l2.6-2" />
-                  <path d="M11 16.2v3.4M9.7 16.9l2.6 2M9.7 18.9l2.6-2" />
-                  <path d="M15.5 15v3.4M14.2 15.7l2.6 2M14.2 17.7l2.6-2" />
+                <svg {...svgProps}>
+                  {cloudLower}
+                  <path d="M6.5 18v2.6M5.3 18.6l2.4 1.4M5.3 20l2.4-1.4" vectorEffect="non-scaling-stroke" />
+                  <path d="M12 18.6v2.6M10.8 19.2l2.4 1.4M10.8 20.6l2.4-1.4" vectorEffect="non-scaling-stroke" />
+                  <path d="M17.5 18v2.6M16.3 18.6l2.4 1.4M16.3 20l2.4-1.4" vectorEffect="non-scaling-stroke" />
                 </svg>
               );
             } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
-              // Rain / drizzle / showers — cloud on top, three vertical drop strokes below.
+              // Rain — cloud above, three drop strokes below.
               baseIcon = (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                  {cloudTop}
-                  <path d="M7 14.5v2.2M7 18.2v1.6" />
-                  <path d="M11 14.5v2.2M11 18.2v1.6" />
-                  <path d="M15 14.5v2.2M15 18.2v1.6" />
+                <svg {...svgProps}>
+                  {cloudLower}
+                  <path d="M7 18v2.4" vectorEffect="non-scaling-stroke" />
+                  <path d="M12 18.4v2.4" vectorEffect="non-scaling-stroke" />
+                  <path d="M17 18v2.4" vectorEffect="non-scaling-stroke" />
                 </svg>
               );
             } else if (code === 3) {
-              // Priority 2 — overcast: solid cloud, no sun/moon behind it, regardless of hour.
+              // Overcast — canonical solid cloud, centred.
               baseIcon = (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                  <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z" />
+                <svg {...svgProps}>
+                  <path d={cloudPath} vectorEffect="non-scaling-stroke" />
                 </svg>
               );
             } else if (code === 2) {
-              // Partly cloudy — sun/moon top-left, cloud bottom-right, no overlap.
+              // Partly cloudy — reuse the exact standalone sun/moon geometry,
+              // scaled to top-left, with the shared cloud tucked bottom-right.
               baseIcon = isNight ? (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 3a4 4 0 1 0 4 4 3 3 0 0 1-4-4z" />
-                  <path d="M9 20a3.3 3.3 0 0 1 0-6.6 4.3 4.3 0 0 1 8 1.1A2.8 2.8 0 0 1 17 20H9z" />
+                <svg {...svgProps}>
+                  <g transform="translate(-1 -1) scale(0.55)" vectorEffect="non-scaling-stroke">
+                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" vectorEffect="non-scaling-stroke" />
+                  </g>
+                  {cloudCorner}
                 </svg>
               ) : (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="7" cy="7" r="2.2" />
-                  <path d="M7 3v1.2M7 9.8v1.2M3 7h1.2M9.8 7h1.2M4.5 4.5l.85.85M8.65 8.65l.85.85M4.5 9.5l.85-.85M8.65 5.35l.85-.85" />
-                  <path d="M9 20a3.3 3.3 0 0 1 0-6.6 4.3 4.3 0 0 1 8 1.1A2.8 2.8 0 0 1 17 20H9z" />
+                <svg {...svgProps}>
+                  <g transform="translate(-4.5 -4.5) scale(0.55)" vectorEffect="non-scaling-stroke">
+                    <circle cx="12" cy="12" r="4" vectorEffect="non-scaling-stroke" />
+                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" vectorEffect="non-scaling-stroke" />
+                  </g>
+                  {cloudCorner}
                 </svg>
               );
             } else if (code === 0 || code === 1) {
-              // Priority 4 — fully clear sky only: sun alone by day, moon alone by night.
+              // Clear sky — sun by day, moon by night (standalone geometry).
               baseIcon = isNight ? (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                <svg {...svgProps}>
+                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" vectorEffect="non-scaling-stroke" />
+                </svg>
               ) : (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                  <circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                <svg {...svgProps}>
+                  <circle cx="12" cy="12" r="4" vectorEffect="non-scaling-stroke" />
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" vectorEffect="non-scaling-stroke" />
                 </svg>
               );
             } else if (code === 45 || code === 48) {
-              // Fog / freezing fog — small flat cloud silhouette (same verified cloud path
-              // as the overcast icon above, scaled down) sitting over staggered mist lines.
+              // Fog — small cloud silhouette over staggered mist lines.
               baseIcon = (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
-                  <g transform="scale(0.5) translate(12.25, 0)">
-                    <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z" />
+                <svg {...svgProps}>
+                  <g transform="translate(4 -1) scale(0.5)" vectorEffect="non-scaling-stroke">
+                    <path d={cloudPath} vectorEffect="non-scaling-stroke" />
                   </g>
-                  <path d="M4 11h13" />
-                  <path d="M6 14.5h15" />
-                  <path d="M4 18h13" />
-                  <path d="M7 21.5h11" />
+                  <path d="M4 13h13" vectorEffect="non-scaling-stroke" />
+                  <path d="M6 16.5h15" vectorEffect="non-scaling-stroke" />
+                  <path d="M4 20h13" vectorEffect="non-scaling-stroke" />
                 </svg>
               );
             } else {
-              // Fallback — treat as overcast.
               baseIcon = (
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round">
-                  <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z" />
+                <svg {...svgProps}>
+                  <path d={cloudPath} vectorEffect="non-scaling-stroke" />
                 </svg>
               );
             }
