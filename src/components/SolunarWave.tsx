@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 
 interface SolunarWavePeak {
   type: 'major' | 'minor';
@@ -61,6 +61,7 @@ function intervalsOverlapCircular(aS: number, aE: number, bS: number, bE: number
 }
 
 export const SolunarWave = ({ peaks, sunrise, sunset }: SolunarWaveProps) => {
+  const gradId = useId();
   const srMin = parseTimeMin(sunrise);
   const ssMin = parseTimeMin(sunset);
 
@@ -83,34 +84,32 @@ export const SolunarWave = ({ peaks, sunrise, sunset }: SolunarWaveProps) => {
   }, [peaks]);
 
   const curvePoints = useMemo(() => {
-    const pts: { t: number; v: number }[] = [{ t: 0, v: BASELINE_V }];
+    // Knots sit only at peak centers and at the midpoints between them, so
+    // consecutive knots are naturally hours apart — this is what gives the
+    // Catmull-Rom spline its wide, rounded "hill" shape instead of a sharp
+    // spike (which happens when a trough sits only ~30-60min from its peak).
+    const knots: { t: number; v: number }[] = [{ t: 0, v: BASELINE_V }];
+    let prevT = 0;
     for (const p of displayPeaks) {
-      pts.push({ t: Math.max(0, p.startMin), v: BASELINE_V });
-      pts.push({ t: p.centerMin, v: p.amplitude });
-      pts.push({ t: Math.min(1440, p.endMin), v: BASELINE_V });
-    }
-    pts.push({ t: 1440, v: BASELINE_V });
-    pts.sort((a, b) => a.t - b.t);
-
-    const cleaned: { t: number; v: number }[] = [];
-    for (const p of pts) {
-      const prev = cleaned[cleaned.length - 1];
-      if (prev && p.t - prev.t < 4) {
-        prev.t = (prev.t + p.t) / 2;
-        prev.v = Math.max(prev.v, p.v);
-        continue;
+      if (p.centerMin - prevT > 8) {
+        knots.push({ t: (prevT + p.centerMin) / 2, v: BASELINE_V });
       }
-      cleaned.push({ ...p });
+      knots.push({ t: p.centerMin, v: p.amplitude });
+      prevT = p.centerMin;
     }
-    return cleaned.map(k => ({ x: xForMin(k.t), y: yForValue(k.v) }));
+    if (1440 - prevT > 8) {
+      knots.push({ t: (prevT + 1440) / 2, v: BASELINE_V });
+    }
+    knots.push({ t: 1440, v: BASELINE_V });
+    return knots.map(k => ({ x: xForMin(k.t), y: yForValue(k.v) }));
   }, [displayPeaks]);
 
   const pathD = catmullRomPath(curvePoints);
 
   const sunWindows = [
-    srMin >= 0 ? { start: srMin - 30, end: srMin + 30, color: '#C8E63C', opacity: 0.07 } : null,
-    ssMin >= 0 ? { start: ssMin - 30, end: ssMin + 30, color: '#5cd8da', opacity: 0.055 } : null,
-  ].filter(Boolean) as { start: number; end: number; color: string; opacity: number }[];
+    srMin >= 0 ? { start: srMin - 30, end: srMin + 30, color: '#C8E63C', peakOpacity: 0.075, gradId: `${gradId}-sunrise` } : null,
+    ssMin >= 0 ? { start: ssMin - 30, end: ssMin + 30, color: '#5cd8da', peakOpacity: 0.055, gradId: `${gradId}-sunset` } : null,
+  ].filter(Boolean) as { start: number; end: number; color: string; peakOpacity: number; gradId: string }[];
 
   return (
     <div style={{
@@ -121,6 +120,15 @@ export const SolunarWave = ({ peaks, sunrise, sunset }: SolunarWaveProps) => {
       background: 'rgba(255,255,255,0.02)',
     }}>
       <svg width="100%" height={VB_H} viewBox={`0 0 ${VB_W} ${VB_H}`} preserveAspectRatio="none" overflow="visible">
+        <defs>
+          {sunWindows.map((w, i) => (
+            <linearGradient key={i} id={w.gradId} x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0%" stopColor={w.color} stopOpacity={0} />
+              <stop offset="50%" stopColor={w.color} stopOpacity={w.peakOpacity} />
+              <stop offset="100%" stopColor={w.color} stopOpacity={0} />
+            </linearGradient>
+          ))}
+        </defs>
         {sunWindows.map((w, i) => {
           const x1 = xForMin(Math.max(0, w.start));
           const x2 = xForMin(Math.min(1440, w.end));
@@ -131,8 +139,7 @@ export const SolunarWave = ({ peaks, sunrise, sunset }: SolunarWaveProps) => {
               y={0}
               width={Math.max(0, Math.abs(x2 - x1))}
               height={CURVE_BOTTOM}
-              fill={w.color}
-              opacity={w.opacity}
+              fill={`url(#${w.gradId})`}
             />
           );
         })}
