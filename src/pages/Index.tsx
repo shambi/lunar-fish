@@ -3,7 +3,6 @@ import { createPortal } from 'react-dom';
 import { getMoonData } from '@/lib/moon';
 import { isGoldenHour } from '@/lib/moon-times';
 import { SolunarInfoModal } from '@/components/SolunarInfoModal';
-import { SolunarWave } from '@/components/SolunarWave';
 import { getSmartFishingTips, getTimePeriod } from '@/lib/fishing-expert';
 import { calculateFishingScore } from '@/lib/fishing-score';
 import { useWeather } from '@/hooks/use-weather';
@@ -383,8 +382,6 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           <div style={{ fontFamily: 'monospace', fontSize: '30px', color: '#dee4e3', lineHeight: 1 }}>{nowHHMM}</div>
         </div>
       </div>
-
-      <SolunarWave peaks={peaks} sunrise={weather.sunrise} sunset={weather.sunset} />
 
       <div style={{
         display: 'grid',
