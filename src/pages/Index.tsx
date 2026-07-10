@@ -735,6 +735,9 @@ const Index = () => {
                 boxShadow: glow ? '0 0 32px rgba(46,181,183,0.25)' : 'none',
               }}
             >
+              <div className="font-display text-label-xs font-semibold uppercase tracking-wider mb-3 text-center" style={{ color: '#869393' }}>
+                РИБО ПРОГНОЗА
+              </div>
               <div className="flex items-center justify-between">
                 <div className="flex gap-1">
                   {fishIcons.map((icon, i) => (
