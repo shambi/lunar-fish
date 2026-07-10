@@ -1249,11 +1249,15 @@ const Index = () => {
                   {cloudCorner}
                 </svg>
               ) : (
+                // Sun drawn natively at small scale (not a scaled clone of the
+                // standalone sun) so the disc + rays stay crisp and read as a sun
+                // even inside the 22×22 tile. Cloud tucked bottom-right.
                 <svg {...svgProps}>
-                  <g transform="translate(-4.5 -4.5) scale(0.55)" vectorEffect="non-scaling-stroke">
-                    <circle cx="12" cy="12" r="4" vectorEffect="non-scaling-stroke" />
-                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" vectorEffect="non-scaling-stroke" />
-                  </g>
+                  <circle cx="8" cy="8" r="2.6" vectorEffect="non-scaling-stroke" />
+                  <path
+                    d="M8 2.6v1.8M8 11.6v1.8M2.6 8h1.8M11.6 8h1.8M4.2 4.2l1.3 1.3M10.5 10.5l1.3 1.3M4.2 11.8l1.3-1.3M10.5 5.5l1.3-1.3"
+                    vectorEffect="non-scaling-stroke"
+                  />
                   {cloudCorner}
                 </svg>
               );
