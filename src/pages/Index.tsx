@@ -1222,13 +1222,13 @@ const Index = () => {
                 </svg>
               );
             } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
-              // Rain — cloud above, three drop strokes below.
+              // Rain / drizzle / showers — cloud on top, three dashed drop strokes below (restored previous version).
               baseIcon = (
-                <svg {...svgProps}>
-                  {cloudLower}
-                  <path d="M7 18v2.4" vectorEffect="non-scaling-stroke" />
-                  <path d="M12 18.4v2.4" vectorEffect="non-scaling-stroke" />
-                  <path d="M17 18v2.4" vectorEffect="non-scaling-stroke" />
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+                  {cloudTop}
+                  <path d="M7 14.5v2.2M7 18.2v1.6" />
+                  <path d="M11 14.5v2.2M11 18.2v1.6" />
+                  <path d="M15 14.5v2.2M15 18.2v1.6" />
                 </svg>
               );
             } else if (code === 3) {
