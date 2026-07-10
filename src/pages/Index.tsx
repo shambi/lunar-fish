@@ -476,7 +476,9 @@ const Index = () => {
       if (!container) return;
       const currentHour = new Date().getHours();
       const cell = container.querySelector<HTMLElement>(`[data-hour="${currentHour}"]`);
-      cell?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      if (!cell) return;
+      const targetLeft = cell.offsetLeft - container.clientWidth / 2 + cell.clientWidth / 2;
+      container.scrollTo({ left: targetLeft, behavior: 'smooth' });
     }, 50);
     return () => clearTimeout(t);
   }, [hourlyForecastLen]);
