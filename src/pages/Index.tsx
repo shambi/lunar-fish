@@ -1225,7 +1225,7 @@ const Index = () => {
               // Rain / drizzle / showers — cloud on top, three dashed drop strokes below (restored previous version).
               baseIcon = (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                  {cloudTop}
+                  <path d="M6 12a3.4 3.4 0 0 1 0-6.8 4.4 4.4 0 0 1 8.2 1.1A2.9 2.9 0 0 1 15 12H6z" />
                   <path d="M7 14.5v2.2M7 18.2v1.6" />
                   <path d="M11 14.5v2.2M11 18.2v1.6" />
                   <path d="M15 14.5v2.2M15 18.2v1.6" />
