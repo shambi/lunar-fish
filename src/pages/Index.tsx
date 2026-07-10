@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { getMoonData } from '@/lib/moon';
-import { isGoldenHour } from '@/lib/moon-times';
+import { isGoldenHour, getGoldenHourWindows } from '@/lib/moon-times';
 import { SolunarInfoModal } from '@/components/SolunarInfoModal';
 import { getSmartFishingTips, getTimePeriod } from '@/lib/fishing-expert';
 import { calculateFishingScore } from '@/lib/fishing-score';
@@ -39,6 +39,11 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
     const largeArc = endDeg - startDeg > 180 ? 1 : 0;
     return `M ${x1},${y1} A ${r},${r} 0 ${largeArc},1 ${x2},${y2}`;
   };
+  const minInWindow = (min: number, start: number, end: number) => {
+    const s = ((start % 1440) + 1440) % 1440;
+    const e = ((end % 1440) + 1440) % 1440;
+    return s <= e ? min >= s && min <= e : min >= s || min <= e;
+  };
 
   const peaks = [...(weather.solunarPeaks || [])].sort(
     (a: any, b: any) => parseTime(a.start) - parseTime(b.start)
@@ -63,6 +68,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
   }
 
   const goldenHour = isGoldenHour(now, weather.sunrise, weather.sunset, peaks);
+  const goldenHourWindows = getGoldenHourWindows(weather.sunrise, weather.sunset, peaks);
 
   const verdict = goldenHour.isActive
     ? 'Златен час'
@@ -273,6 +279,19 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
                 opacity="0.85"
                 style={{ filter: 'drop-shadow(0 0 4px rgba(200,230,60,0.8)) drop-shadow(0 0 8px rgba(200,230,60,0.4))' }}
               />
+            );
+          })}
+          {goldenHourWindows.map((w, i) => {
+            const sd = (w.startMin / 1440) * 360, ed = (w.endMin / 1440) * 360;
+            const isWindowActive = minInWindow(currentMin, w.startMin, w.endMin);
+            const d = arcPath(105, 105, 83, sd, ed);
+            return isWindowActive ? (
+              <g key={`gh${i}`}>
+                <path d={d} fill="none" stroke="#ffffff" strokeWidth="8" strokeLinecap="round" opacity="0.35" style={{ filter: 'blur(3px)' }} />
+                <path d={d} fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" opacity="1" style={{ animation: 'goldenArcPulse 1.6s ease-in-out infinite' }} />
+              </g>
+            ) : (
+              <path key={`gh${i}`} d={d} fill="none" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" opacity="0.55" />
             );
           })}
           {(() => {

@@ -317,6 +317,11 @@
   50% { opacity: 0.55; }
 }
 
+@keyframes goldenArcPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
 /* Hide scrollbar in fish guide modal scroll wrapper */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

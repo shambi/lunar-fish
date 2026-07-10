@@ -340,3 +340,55 @@ export function isGoldenHour(
   if (minutesRemaining === null) return { isActive: false, minutesRemaining: null };
   return { isActive: true, minutesRemaining };
 }
+
+export interface GoldenHourWindow {
+  startMin: number; // 0-1440
+  endMin: number;   // 0-1440, always > startMin (already split at midnight if needed)
+}
+
+/**
+ * Exact sub-ranges (in minutes) where a Major solunar peak overlaps a
+ * sunrise/sunset ±30min window — the precise Golden Hour span(s) for today,
+ * as opposed to the full Major peak window. Mirrors isGoldenHour's windowing
+ * logic but returns the intersected ranges instead of a live boolean.
+ */
+export function getGoldenHourWindows(
+  sunrise: string | null | undefined,
+  sunset: string | null | undefined,
+  peaks: SolunarPeak[]
+): GoldenHourWindow[] {
+  const norm = (s: number, e: number): [number, number][] => {
+    s = ((s % 1440) + 1440) % 1440;
+    e = ((e % 1440) + 1440) % 1440;
+    return s <= e ? [[s, e]] : [[s, 1440], [0, e]];
+  };
+  const intersect = (aS: number, aE: number, bS: number, bE: number): [number, number][] => {
+    const segsA = norm(aS, aE), segsB = norm(bS, bE);
+    const out: [number, number][] = [];
+    for (const [as, ae] of segsA) for (const [bs, be] of segsB) {
+      const s = Math.max(as, bs), e = Math.min(ae, be);
+      if (s < e) out.push([s, e]);
+    }
+    return out;
+  };
+
+  const sr = toMinutes(sunrise);
+  const ss = toMinutes(sunset);
+  const sunWindows: [number, number][] = [];
+  if (sr >= 0) sunWindows.push([sr - 30, sr + 30]);
+  if (ss >= 0) sunWindows.push([ss - 30, ss + 30]);
+
+  const windows: GoldenHourWindow[] = [];
+  for (const peak of peaks) {
+    if (peak.type !== 'major') continue;
+    const ps = toMinutes(peak.start);
+    const pe = toMinutes(peak.end);
+    if (ps < 0 || pe < 0) continue;
+    for (const [ws, we] of sunWindows) {
+      for (const [s, e] of intersect(ps, pe, ws, we)) {
+        windows.push({ startMin: s, endMin: e });
+      }
+    }
+  }
+  return windows;
+}
