@@ -307,6 +307,16 @@
   50% { opacity: 1; transform: scale(1.15); }
 }
 
+@keyframes goldenPulseStrong {
+  0%, 100% { opacity: 0.45; transform: scale(0.92); }
+  50% { opacity: 1; transform: scale(1.35); }
+}
+
+@keyframes ringPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
 /* Hide scrollbar in fish guide modal scroll wrapper */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

@@ -70,7 +70,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
     : active
     ? (active.type === 'major' ? 'Голям солунарен пик' : 'Малък солунарен пик')
     : (next && next.diff <= 60 ? 'Следващ пик скоро' : 'Стабилни условия');
-  const verdictColor = goldenHour.isActive ? '#C8E63C' : active ? '#C8E63C' : (next && next.diff <= 60 ? '#C8E63C' : '#7F93A8');
+  const verdictColor = goldenHour.isActive ? '#ffffff' : active ? '#C8E63C' : (next && next.diff <= 60 ? '#C8E63C' : '#7F93A8');
   const subtitle = goldenHour.isActive
     ? `Още ${goldenHour.minutesRemaining} мин`
     : active
@@ -208,15 +208,28 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
       {showSolunarInfo && <SolunarInfoModal onClose={() => setShowSolunarInfo(false)} />}
 
       <div style={{ marginBottom: '8px' }}>
-        <div style={{ fontSize: '17px', fontWeight: 600, color: verdictColor, lineHeight: 1.2 }}>{verdict}</div>
+        <div style={{
+          fontSize: '17px',
+          fontWeight: 600,
+          color: verdictColor,
+          lineHeight: 1.2,
+          textShadow: goldenHour.isActive ? '0 0 8px rgba(255,255,255,0.9), 0 0 20px rgba(200,230,255,0.5)' : undefined,
+        }}>{verdict}</div>
         {subtitle && (
           <div style={{ fontSize: '11px', fontFamily: 'monospace', color: '#a8b4b4', marginTop: '2px' }}>{subtitle}</div>
         )}
       </div>
 
-      <div style={{ position: 'relative', width: '210px', height: '210px', margin: '0 auto' }}>
-        <svg width="210" height="210" viewBox="-15 -28 240 253" overflow="visible">
-          <circle cx="105" cy="105" r="88" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+      <div style={{ position: 'relative', width: '245px', height: '245px', margin: '0 auto' }}>
+        <svg width="245" height="245" viewBox="-15 -28 240 253" overflow="visible">
+          {goldenHour.isActive ? (
+            <>
+              <circle cx="105" cy="105" r="88" fill="none" stroke="#ffffff" strokeWidth="7" opacity="0.35" style={{ filter: 'blur(4px)' }} />
+              <circle cx="105" cy="105" r="88" fill="none" stroke="#ffffff" strokeWidth="2.5" style={{ animation: 'ringPulse 2s ease-in-out infinite' }} />
+            </>
+          ) : (
+            <circle cx="105" cy="105" r="88" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+          )}
           <circle cx="105" cy="105" r="78" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
 
           {/* Day/Night semicircles - ден долу (06-18), нощ горе (18-06) */}
@@ -224,7 +237,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           <path d="M 17,105 A 88,88 0 0,1 193,105" fill="rgba(46,181,183,0.03)" />
           {/* Sun icon at 12 (долу) */}
           <g transform="translate(98.5,163)">
-            <g style={goldenHour.isActive ? { opacity: 1, animation: 'goldenPulse 1.8s ease-in-out infinite', transformOrigin: '6.5px 6.5px' } : undefined}>
+            <g style={goldenHour.isActive ? { opacity: 1, animation: 'goldenPulseStrong 1.6s ease-in-out infinite', transformOrigin: '6.5px 6.5px' } : undefined}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" x="0" y="0">
                 <circle cx="12" cy="12" r="4" />
                 <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
@@ -233,7 +246,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           </g>
           {/* Moon icon at 00 (горе) */}
           <g transform="translate(98.5,38)">
-            <g style={goldenHour.isActive ? { opacity: 1, animation: 'goldenPulse 1.8s ease-in-out infinite', transformOrigin: '6.5px 6.5px' } : undefined}>
+            <g style={goldenHour.isActive ? { opacity: 1, animation: 'goldenPulseStrong 1.6s ease-in-out infinite', transformOrigin: '6.5px 6.5px' } : undefined}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" x="0" y="0">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
               </svg>
@@ -363,11 +376,11 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           position: 'absolute',
           top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: '100px',
+          width: '117px',
           textAlign: 'center',
           pointerEvents: 'none',
         }}>
-          <div style={{ fontFamily: 'monospace', fontSize: '26px', color: '#dee4e3', lineHeight: 1 }}>{nowHHMM}</div>
+          <div style={{ fontFamily: 'monospace', fontSize: '30px', color: '#dee4e3', lineHeight: 1 }}>{nowHHMM}</div>
         </div>
       </div>
 
