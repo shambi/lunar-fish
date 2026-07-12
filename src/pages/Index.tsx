@@ -67,8 +67,13 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
     }
   }
 
-  const goldenHour = isGoldenHour(now, weather.sunrise, weather.sunset, peaks);
-  const goldenHourWindows = getGoldenHourWindows(weather.sunrise, weather.sunset, peaks);
+  let goldenHour = isGoldenHour(now, weather.sunrise, weather.sunset, peaks);
+  let goldenHourWindows = getGoldenHourWindows(weather.sunrise, weather.sunset, peaks);
+
+  // TEMP: forced golden hour for visual testing — REMOVE BEFORE COMMIT
+  goldenHour = { isActive: true, minutesRemaining: 12 };
+  goldenHourWindows = [{ startMin: currentMin - 15, endMin: currentMin + 15 }];
+  // END TEMP
 
   const verdict = goldenHour.isActive
     ? 'Златен час'
