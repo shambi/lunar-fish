@@ -218,7 +218,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           fontWeight: 600,
           color: verdictColor,
           lineHeight: 1.2,
-          textShadow: goldenHour.isActive ? '0 0 8px rgba(255,255,255,0.9), 0 0 20px rgba(200,230,255,0.5)' : undefined,
+          textShadow: goldenHour.isActive ? '0 0 10px rgba(255,255,255,1), 0 0 24px rgba(220,235,255,0.8), 0 0 40px rgba(200,225,255,0.4)' : undefined,
         }}>{verdict}</div>
         {subtitle && (
           <div style={{ fontSize: '11px', fontFamily: 'monospace', color: '#a8b4b4', marginTop: '2px' }}>{subtitle}</div>
@@ -229,8 +229,9 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
         <svg width="245" height="245" viewBox="-15 -28 240 253" overflow="visible">
           {goldenHour.isActive ? (
             <>
-              <circle cx="105" cy="105" r="88" fill="none" stroke="#ffffff" strokeWidth="7" opacity="0.35" style={{ filter: 'blur(4px)' }} />
-              <circle cx="105" cy="105" r="88" fill="none" stroke="#ffffff" strokeWidth="2.5" style={{ animation: 'ringPulse 2s ease-in-out infinite' }} />
+              {/* Outer pulsing ring — well outside citron arc for clear layered effect */}
+              <circle cx="105" cy="105" r="101" fill="none" stroke="#ffffff" strokeWidth="10" opacity="0.28" style={{ filter: 'blur(5px)' }} />
+              <circle cx="105" cy="105" r="101" fill="none" stroke="#ffffff" strokeWidth="3" opacity="0.95" style={{ animation: 'ringPulse 2s ease-in-out infinite', filter: 'drop-shadow(0 0 6px rgba(255,255,255,0.9))' }} />
             </>
           ) : (
             <circle cx="105" cy="105" r="88" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
@@ -284,14 +285,21 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           {goldenHourWindows.map((w, i) => {
             const sd = (w.startMin / 1440) * 360, ed = (w.endMin / 1440) * 360;
             const isWindowActive = minInWindow(currentMin, w.startMin, w.endMin);
-            const d = arcPath(105, 105, 83, sd, ed);
+            // Silver arc sits at r=82 — a clean concentric inset from citron (r=88),
+            // clearly separated from minor teal (r=78) — creating two distinct parallel arcs.
+            const d = arcPath(105, 105, 82, sd, ed);
             return isWindowActive ? (
               <g key={`gh${i}`}>
-                <path d={d} fill="none" stroke="#ffffff" strokeWidth="8" strokeLinecap="round" opacity="0.35" style={{ filter: 'blur(3px)' }} />
-                <path d={d} fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" opacity="1" style={{ animation: 'goldenArcPulse 1.6s ease-in-out infinite' }} />
+                {/* Outer soft halo */}
+                <path d={d} fill="none" stroke="#ffffff" strokeWidth="12" strokeLinecap="round" opacity="0.35" style={{ filter: 'blur(4px)' }} />
+                {/* Crisp bright silver arc */}
+                <path d={d} fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" opacity="1" style={{ animation: 'goldenArcPulse 1.6s ease-in-out infinite', filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.95)) drop-shadow(0 0 10px rgba(220,235,255,0.6))' }} />
               </g>
             ) : (
-              <path key={`gh${i}`} d={d} fill="none" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" opacity="0.55" />
+              <g key={`gh${i}`}>
+                <path d={d} fill="none" stroke="#ffffff" strokeWidth="7" strokeLinecap="round" opacity="0.2" style={{ filter: 'blur(2px)' }} />
+                <path d={d} fill="none" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" opacity="0.85" style={{ filter: 'drop-shadow(0 0 3px rgba(255,255,255,0.7))' }} />
+              </g>
             );
           })}
           {(() => {
