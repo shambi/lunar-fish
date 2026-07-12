@@ -229,8 +229,9 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
         <svg width="245" height="245" viewBox="-15 -28 240 253" overflow="visible">
           {goldenHour.isActive ? (
             <>
-              <circle cx="105" cy="105" r="88" fill="none" stroke="#ffffff" strokeWidth="7" opacity="0.35" style={{ filter: 'blur(4px)' }} />
-              <circle cx="105" cy="105" r="88" fill="none" stroke="#ffffff" strokeWidth="2.5" style={{ animation: 'ringPulse 2s ease-in-out infinite' }} />
+              {/* Outer pulsing ring — well outside citron arc for clear layered effect */}
+              <circle cx="105" cy="105" r="101" fill="none" stroke="#ffffff" strokeWidth="10" opacity="0.28" style={{ filter: 'blur(5px)' }} />
+              <circle cx="105" cy="105" r="101" fill="none" stroke="#ffffff" strokeWidth="3" opacity="0.95" style={{ animation: 'ringPulse 2s ease-in-out infinite', filter: 'drop-shadow(0 0 6px rgba(255,255,255,0.9))' }} />
             </>
           ) : (
             <circle cx="105" cy="105" r="88" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
