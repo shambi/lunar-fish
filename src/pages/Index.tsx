@@ -811,11 +811,11 @@ const Index = () => {
                     </div>
                   )}
                 </div>
-                <div className="text-lg font-bold" style={{ color }}>
+                <div className="text-xl font-bold" style={{ color }}>
                   {fishingScore.label}
                 </div>
               </div>
-              <p className="text-sm mt-3 leading-relaxed" style={{ color: 'rgba(234,247,255,0.65)' }}>
+              <p className="text-sm font-medium mt-3 leading-relaxed" style={{ color: 'rgba(234,247,255,0.88)' }}>
                 {getScoreReason()}
               </p>
             </section>
