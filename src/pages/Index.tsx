@@ -285,14 +285,21 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           {goldenHourWindows.map((w, i) => {
             const sd = (w.startMin / 1440) * 360, ed = (w.endMin / 1440) * 360;
             const isWindowActive = minInWindow(currentMin, w.startMin, w.endMin);
-            const d = arcPath(105, 105, 83, sd, ed);
+            // Silver arc sits at r=82 — a clean concentric inset from citron (r=88),
+            // clearly separated from minor teal (r=78) — creating two distinct parallel arcs.
+            const d = arcPath(105, 105, 82, sd, ed);
             return isWindowActive ? (
               <g key={`gh${i}`}>
-                <path d={d} fill="none" stroke="#ffffff" strokeWidth="8" strokeLinecap="round" opacity="0.35" style={{ filter: 'blur(3px)' }} />
-                <path d={d} fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" opacity="1" style={{ animation: 'goldenArcPulse 1.6s ease-in-out infinite' }} />
+                {/* Outer soft halo */}
+                <path d={d} fill="none" stroke="#ffffff" strokeWidth="12" strokeLinecap="round" opacity="0.35" style={{ filter: 'blur(4px)' }} />
+                {/* Crisp bright silver arc */}
+                <path d={d} fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" opacity="1" style={{ animation: 'goldenArcPulse 1.6s ease-in-out infinite', filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.95)) drop-shadow(0 0 10px rgba(220,235,255,0.6))' }} />
               </g>
             ) : (
-              <path key={`gh${i}`} d={d} fill="none" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" opacity="0.55" />
+              <g key={`gh${i}`}>
+                <path d={d} fill="none" stroke="#ffffff" strokeWidth="7" strokeLinecap="round" opacity="0.2" style={{ filter: 'blur(2px)' }} />
+                <path d={d} fill="none" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" opacity="0.85" style={{ filter: 'drop-shadow(0 0 3px rgba(255,255,255,0.7))' }} />
+              </g>
             );
           })}
           {(() => {
