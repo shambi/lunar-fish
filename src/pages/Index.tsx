@@ -200,7 +200,21 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
       marginBottom: '10px',
     }}>
       <div className="font-display text-label-xs font-semibold uppercase tracking-wider mb-1.5 flex items-center gap-1.5" style={{ color: '#869393' }}>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke={goldenHour.isActive ? '#ffffff' : '#C8E63C'}
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={
+            !goldenHour.isActive && active
+              ? { animation: 'moonSway 3.5s ease-in-out infinite', transformOrigin: 'center' }
+              : undefined
+          }
+        >
           <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
         </svg>
         Солунарна активност
