@@ -218,7 +218,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           fontWeight: 600,
           color: verdictColor,
           lineHeight: 1.2,
-          textShadow: goldenHour.isActive ? '0 0 8px rgba(255,255,255,0.9), 0 0 20px rgba(200,230,255,0.5)' : undefined,
+          textShadow: goldenHour.isActive ? '0 0 10px rgba(255,255,255,1), 0 0 24px rgba(220,235,255,0.8), 0 0 40px rgba(200,225,255,0.4)' : undefined,
         }}>{verdict}</div>
         {subtitle && (
           <div style={{ fontSize: '11px', fontFamily: 'monospace', color: '#a8b4b4', marginTop: '2px' }}>{subtitle}</div>
