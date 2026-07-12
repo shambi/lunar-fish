@@ -209,13 +209,16 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          style={
-            !goldenHour.isActive && active
-              ? { animation: 'moonSway 3.5s ease-in-out infinite', transformOrigin: 'center' }
-              : undefined
-          }
         >
-          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+          <g
+            style={
+              !goldenHour.isActive && active
+                ? { animation: 'moonSway 3.5s ease-in-out infinite', transformOrigin: '12px 12px' }
+                : undefined
+            }
+          >
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+          </g>
         </svg>
         Солунарна активност
         <i
