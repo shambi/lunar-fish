@@ -1238,13 +1238,21 @@ const Index = () => {
             );
 
             if (code >= 95) {
-              // Thunderstorm — cloud fills upper 2/3, bolt hangs below with room.
+              // Thunderstorm — bolt rises above the cloud (same vertical
+              // stacking principle as cloud+moon/sun combos). Cloud keeps the
+              // teal palette; only the bolt uses citron for clear separation.
               baseIcon = (
                 <svg {...svgProps}>
-                  {cloudLower}
-                  <path d="M12 17.2l-1.8 3.4h2.6l-1.2 2.6" vectorEffect="non-scaling-stroke" />
+                  <g transform="translate(1.2 9) scale(0.72)" vectorEffect="non-scaling-stroke">
+                    <path d={cloudPath} vectorEffect="non-scaling-stroke" />
+                  </g>
+                  <path
+                    d="M12.4 2.4l-2.6 5.2h3l-1.6 4"
+                    stroke="#C8E63C"
+                    vectorEffect="non-scaling-stroke"
+                  />
                   {precipitation > 0.1 && (
-                    <path d="M7.5 19l-0.6 1.6M16.5 19l-0.6 1.6" opacity="0.75" vectorEffect="non-scaling-stroke" />
+                    <path d="M7.5 20l-0.5 1.4M16.5 20l-0.5 1.4" opacity="0.75" vectorEffect="non-scaling-stroke" />
                   )}
                 </svg>
               );
