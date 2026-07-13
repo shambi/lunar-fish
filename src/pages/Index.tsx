@@ -213,7 +213,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           <g
             style={
               !goldenHour.isActive && active
-                ? { animation: 'moonSway 3.5s ease-in-out infinite', transformOrigin: '12px 12px' }
+                ? { animation: 'moonBob 1.8s ease-in-out infinite', transformOrigin: '12px 12px' }
                 : undefined
             }
           >

@@ -322,9 +322,9 @@
   50% { opacity: 0.5; }
 }
 
-@keyframes moonSway {
-  0%, 100% { transform: rotate(-18deg); }
-  50% { transform: rotate(18deg); }
+@keyframes moonBob {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
 }
 
 /* Hide scrollbar in fish guide modal scroll wrapper */
