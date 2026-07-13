@@ -192,7 +192,7 @@ export async function fetchMeteoAlarmLevel(): Promise<MeteoAlarmData> {
 }
 export async function fetchWeatherData(latitude: number, longitude: number, altitude: number = 0, locationName?: string): Promise<WeatherData> {
   const res = await fetchWithTimeout(
-    `${WEATHER_API_CONFIG.apis.weather}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure,temperature_2m,weather_code,precipitation,wind_speed_10m&daily=sunrise,sunset&past_days=1&forecast_days=1&timezone=auto`,
+    `${WEATHER_API_CONFIG.apis.weather}?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&hourly=surface_pressure,temperature_2m,weather_code,precipitation,wind_speed_10m&daily=sunrise,sunset&past_days=1&forecast_days=2&timezone=auto`,
     WEATHER_API_CONFIG.timeouts.weather
   );
   if (!res.ok) throw new Error('API error');
@@ -208,24 +208,27 @@ export async function fetchWeatherData(latitude: number, longitude: number, alti
   const hourlyWindSpeed: number[] = data.hourly?.wind_speed_10m ?? [];
   const now = new Date();
   const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-  const hourlyForecast: { hour: string; temp: number; code: number; precipitation: number; windSpeed: number }[] = [];
-  for (let i = 0; i < hourlyTimes.length; i++) {
-    if (hourlyTimes[i]?.startsWith(todayStr)) {
-      hourlyForecast.push({
-        hour: String(new Date(hourlyTimes[i]).getHours()).padStart(2, '0'),
-        temp: Math.round(hourlyTemp[i] ?? 0),
-        code: hourlyCode[i] ?? 0,
-        precipitation: hourlyPrecipitation[i] ?? 0,
-        windSpeed: Math.round(hourlyWindSpeed[i] ?? 0),
-      });
-    }
-  }
-  const currentHourStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}T${String(now.getHours()).padStart(2, '0')}:00`;
+  const currentHourStr = `${todayStr}T${String(now.getHours()).padStart(2, '0')}:00`;
   let curIdx = hourlyTimes.findIndex(t => t >= currentHourStr);
   if (curIdx === -1) curIdx = hourlyTimes.length - 1;
-  const startIdx = Math.max(0, curIdx - 5);
+
+  // Rolling 24h window starting at the current hour — crosses into tomorrow's
+  // data once forecast_days=2 makes it available, instead of stopping at
+  // today's 23:00.
+  const hourlyForecast: { hour: string; temp: number; code: number; precipitation: number; windSpeed: number }[] = [];
+  for (let i = curIdx; i < curIdx + 24 && i < hourlyTimes.length; i++) {
+    hourlyForecast.push({
+      hour: String(new Date(hourlyTimes[i]).getHours()).padStart(2, '0'),
+      temp: Math.round(hourlyTemp[i] ?? 0),
+      code: hourlyCode[i] ?? 0,
+      precipitation: hourlyPrecipitation[i] ?? 0,
+      windSpeed: Math.round(hourlyWindSpeed[i] ?? 0),
+    });
+  }
+
+  const pressureStartIdx = Math.max(0, curIdx - 5);
   const pressureHistory: { time: string; value: number }[] = [];
-  for (let i = startIdx; i <= curIdx; i++) {
+  for (let i = pressureStartIdx; i <= curIdx; i++) {
     const t = hourlyTimes[i];
     if (t && hourlyPressure[i] != null) {
       const d = new Date(t);
@@ -241,7 +244,12 @@ export async function fetchWeatherData(latitude: number, longitude: number, alti
   const pressureChangeRate = pDiff6h / Math.max(pressureHistory.length - 1, 1);
   const pressureTrend: 'rising' | 'stable' | 'falling' = pDiff6h > 1.5 ? 'rising' : pDiff6h < -1.5 ? 'falling' : 'stable';
 
-  const todayIdx = (data.daily?.sunrise?.length ?? 1) - 1;
+  // With forecast_days=2 (needed for the rolling hourly window), data.daily
+  // now spans [yesterday, today, tomorrow] — "last entry" no longer means
+  // "today", so match it by date instead.
+  const dailyTimes: string[] = data.daily?.time ?? [];
+  let todayIdx = dailyTimes.findIndex(t => t === todayStr);
+  if (todayIdx === -1) todayIdx = (data.daily?.sunrise?.length ?? 1) - 1;
   const sunrise = data.daily?.sunrise?.[todayIdx] ?? '';
   const sunset = data.daily?.sunset?.[todayIdx] ?? '';
 

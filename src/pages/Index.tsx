@@ -525,14 +525,12 @@ const Index = () => {
   const hourlyForecastLen = weather?.hourlyForecast?.length ?? 0;
   useEffect(() => {
     if (!hourlyForecastLen) return;
+    // The strip is now a rolling 24h window starting at the current hour, so
+    // the first cell always IS "now" — just reset to the start (past scroll
+    // position could otherwise persist across re-renders). The container's
+    // own padding already keeps it off the edge.
     const t = setTimeout(() => {
-      const container = hourlyScrollRef.current;
-      if (!container) return;
-      const currentHour = new Date().getHours();
-      const cell = container.querySelector<HTMLElement>(`[data-hour="${currentHour}"]`);
-      if (!cell) return;
-      const targetLeft = cell.offsetLeft - container.clientWidth / 2 + cell.clientWidth / 2;
-      container.scrollTo({ left: targetLeft, behavior: 'smooth' });
+      hourlyScrollRef.current?.scrollTo({ left: 0, behavior: 'smooth' });
     }, 50);
     return () => clearTimeout(t);
   }, [hourlyForecastLen]);
@@ -1387,7 +1385,7 @@ const Index = () => {
               <div ref={hourlyScrollRef} style={{ padding: '8px 16px', overflowX: 'auto', scrollbarWidth: 'none', marginBottom: '8px' }}>
                 <div style={{ display: 'flex', gap: '4px', minWidth: 'max-content' }}>
                   {weather.hourlyForecast.map((h, i) => (
-                    <div key={i} data-hour={parseInt(h.hour, 10)} style={{ minWidth: '44px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
+                    <div key={i} style={{ minWidth: '44px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '3px' }}>
                       {renderHourIcon(h.code, parseInt(h.hour, 10), h.precipitation, h.windSpeed)}
                       <span style={{ fontSize: '11px', fontWeight: 500, color: '#dee4e3', lineHeight: 1 }}>{h.temp}°</span>
                       <span style={{ fontSize: '10px', color: '#869393', lineHeight: 1 }}>{h.hour}:00</span>
