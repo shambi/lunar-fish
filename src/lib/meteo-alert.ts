@@ -10,7 +10,7 @@
 
 export type MeteoAlertLevel = 'yellow' | 'orange' | 'red';
 
-type MeteoEventType =
+export type MeteoEventType =
   | 'heat'
   | 'storm'
   | 'rain'
@@ -39,7 +39,7 @@ const LEVEL_LABELS: Record<MeteoAlertLevel, string> = {
   red: 'Червен',
 };
 
-function detectEventType(event: string): MeteoEventType | null {
+export function detectEventType(event: string): MeteoEventType | null {
   const e = event.toLowerCase();
   if (e.includes('temperature') || e.includes('heat')) return 'heat';
   if (e.includes('thunder') || e.includes('storm')) return 'storm';

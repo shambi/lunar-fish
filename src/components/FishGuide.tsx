@@ -8,6 +8,7 @@ import {
   DialogContent,
 } from '@/components/ui/dialog';
 import { FISH_ICON_MAP } from '@/components/FishIcons';
+import { detectEventType, type MeteoEventType } from '@/lib/meteo-alert';
 
 interface FishGuideProps {
   moon: MoonData;
@@ -584,30 +585,79 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
               {/* ═══════ SECTION 6 — ТАКТИЧЕСКА БЕЛЕЖКА ═══════ */}
               {mistake && (() => {
                 const lines = String(mistake).split(/\n+/).map(s => s.trim()).filter(Boolean);
+                const iconCommon = { width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none', stroke: '#5cd8da', strokeWidth: 1.6, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, style: { filter: 'drop-shadow(0 0 4px rgba(92,216,218,0.18))', flexShrink: 0, marginTop: 2 } };
                 const bulletIcon = (i: number) => {
-                  const common = { width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none', stroke: '#5cd8da', strokeWidth: 1.6, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, style: { filter: 'drop-shadow(0 0 4px rgba(92,216,218,0.18))', flexShrink: 0, marginTop: 2 } };
                   switch (i % 3) {
                     case 0: return (
-                      <svg {...common}>
+                      <svg {...iconCommon}>
                         <circle cx="12" cy="12" r="4"/>
                         <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
                       </svg>
                     );
                     case 1: return (
-                      <svg {...common}>
+                      <svg {...iconCommon}>
                         <path d="M2 8c2 0 2-1.5 4-1.5S8 8 10 8s2-1.5 4-1.5S16 8 18 8s2-1.5 4-1.5"/>
                         <path d="M2 14c2 0 2-1.5 4-1.5S8 14 10 14s2-1.5 4-1.5S16 14 18 14s2-1.5 4-1.5"/>
                         <path d="M2 20c2 0 2-1.5 4-1.5S8 20 10 20s2-1.5 4-1.5S16 20 18 20s2-1.5 4-1.5"/>
                       </svg>
                     );
                     default: return (
-                      <svg {...common}>
+                      <svg {...iconCommon}>
                         <path d="M14 14.76V4a2 2 0 1 0-4 0v10.76a4 4 0 1 0 4 0Z"/>
                         <path d="M12 8v6"/>
                       </svg>
                     );
                   }
                 };
+                // Severity line (from an active meteoAlarm) is always pushed as line 0
+                // by getCommonMistake — pick an icon matching the real hazard type
+                // instead of falling into the decorative i%3 rotation above, which
+                // could hand a rain warning the sunburst icon by coincidence.
+                const cloudPath = 'M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 0 1 0 9Z';
+                const severityIcon = (type: MeteoEventType | null) => {
+                  switch (type) {
+                    case 'heat': return bulletIcon(0); // sunburst — already reused as-is
+                    case 'wind': return bulletIcon(1); // wavy lines — already reused as-is
+                    case 'rain':
+                    case 'flood':
+                      return (
+                        <svg {...iconCommon}>
+                          <path d="M6 12a3.4 3.4 0 0 1 0-6.8 4.4 4.4 0 0 1 8.2 1.1A2.9 2.9 0 0 1 15 12H6z"/>
+                          <path d="M7 14.5v2.2M7 18.2v1.6"/>
+                          <path d="M11 14.5v2.2M11 18.2v1.6"/>
+                          <path d="M15 14.5v2.2M15 18.2v1.6"/>
+                        </svg>
+                      );
+                    case 'snow':
+                      return (
+                        <svg {...iconCommon}>
+                          <g transform="translate(1.2 6.5) scale(0.72)"><path d={cloudPath}/></g>
+                          <path d="M6.5 18v2.6M5.3 18.6l2.4 1.4M5.3 20l2.4-1.4"/>
+                          <path d="M12 18.6v2.6M10.8 19.2l2.4 1.4M10.8 20.6l2.4-1.4"/>
+                          <path d="M17.5 18v2.6M16.3 18.6l2.4 1.4M16.3 20l2.4-1.4"/>
+                        </svg>
+                      );
+                    case 'storm':
+                      return (
+                        <svg {...iconCommon}>
+                          <g transform="translate(1.2 9) scale(0.72)"><path d={cloudPath}/></g>
+                          <path d="M12.4 2.4l-2.6 5.2h3l-1.6 4" stroke="#C8E63C"/>
+                        </svg>
+                      );
+                    case 'fog':
+                      return (
+                        <svg {...iconCommon}>
+                          <g transform="translate(4 -1) scale(0.5)"><path d={cloudPath}/></g>
+                          <path d="M4 13h13"/>
+                          <path d="M6 16.5h15"/>
+                          <path d="M4 20h13"/>
+                        </svg>
+                      );
+                    default: return null; // ice/forestFire — no matching icon in the existing set yet
+                  }
+                };
+                const severityEventType = meteoAlert?.level ? detectEventType(meteoAlert.event ?? '') : null;
+                const iconFor = (i: number) => (i === 0 && meteoAlert?.level ? severityIcon(severityEventType) ?? bulletIcon(i) : bulletIcon(i));
                 return (
                   <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 16, padding: 16, marginBottom: 18 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
@@ -617,7 +667,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                     <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
                       {lines.map((line, i) => (
                         <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-                          {bulletIcon(i)}
+                          {iconFor(i)}
                           <span className="text-body" style={{ fontFamily: "'Outfit', sans-serif", color: '#dee4e3', flex: 1 }}>{line}</span>
                         </li>
                       ))}
