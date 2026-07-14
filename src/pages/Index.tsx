@@ -154,7 +154,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
 
 
   // Pre-compute arrow positions with collision detection
-  const _arrowR = 118, _arrowROut = 142;
+  const _arrowR = 118, _arrowROut = 153;
   const _toRad = (deg: number) => (deg * Math.PI) / 180;
   const _posFromMin = (min: number, r: number) => ({
     bx: 105 + r * Math.sin(_toRad((min / 1440) * 360)),
@@ -353,10 +353,11 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
               const by = 105 - _moonR * Math.cos((midDeg * Math.PI) / 180);
               const isRise = p.label?.includes('Изгрев');
               const arrowD = isRise ? "M0 5V-3M-3 1l3-4 3 4" : "M0 -3v8M-3 1l3 4 3-4";
+              const _midRad = (midDeg * Math.PI) / 180;
               return (
                 <g key={`pb${i}`} transform={`translate(${bx},${by})`}>
                   <path d={arrowD} stroke="#2eb5b7" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-                  <g transform="translate(0,13)">
+                  <g transform={`translate(${13 * Math.sin(_midRad)},${-13 * Math.cos(_midRad)})`}>
                     <circle cx="0" cy="0" r="4" fill="#2eb5b7" />
                     <circle cx="1.5" cy="0" r="3" fill="#0B0F1A" />
                   </g>
@@ -373,10 +374,11 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
             const _r = _arrowRadii['sunrise'] ?? 118;
             const bx = 105 + _r * Math.sin((srDeg * Math.PI) / 180);
             const by = 105 - _r * Math.cos((srDeg * Math.PI) / 180);
+            const _srRad = (srDeg * Math.PI) / 180;
             return (
               <g transform={`translate(${bx},${by})`}>
                 <path d="M0 5V-3M-3 1l3-4 3 4" stroke="#C8E63C" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-                <g transform="translate(0,13)">
+                <g transform={`translate(${13 * Math.sin(_srRad)},${-13 * Math.cos(_srRad)})`}>
                   <circle cx="0" cy="0" r="3" stroke="#C8E63C" strokeWidth="0.8" fill="none" />
                   <path d="M0 -5v-2M0 5v2M-5 0h-2M5 0h2M-3.5 -3.5l-1.4-1.4M3.5 3.5l1.4 1.4M3.5 -3.5l1.4-1.4M-3.5 3.5l-1.4 1.4" stroke="#C8E63C" strokeWidth="0.6" strokeLinecap="round" />
                 </g>
@@ -391,10 +393,11 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
             const _r = _arrowRadii['sunset'] ?? 118;
             const bx = 105 + _r * Math.sin((ssDeg * Math.PI) / 180);
             const by = 105 - _r * Math.cos((ssDeg * Math.PI) / 180);
+            const _ssRad = (ssDeg * Math.PI) / 180;
             return (
               <g transform={`translate(${bx},${by})`}>
                 <path d="M0 -3v8M-3 1l3 4 3-4" stroke="#C8E63C" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-                <g transform="translate(0,-13)">
+                <g transform={`translate(${13 * Math.sin(_ssRad)},${-13 * Math.cos(_ssRad)})`}>
                   <circle cx="0" cy="0" r="3" stroke="#C8E63C" strokeWidth="0.8" fill="none" />
                   <path d="M0 -5v-2M0 5v2M-5 0h-2M5 0h2M-3.5 -3.5l-1.4-1.4M3.5 3.5l1.4 1.4M3.5 -3.5l1.4-1.4M-3.5 3.5l-1.4 1.4" stroke="#C8E63C" strokeWidth="0.6" strokeLinecap="round" />
                 </g>
