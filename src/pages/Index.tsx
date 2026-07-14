@@ -834,9 +834,31 @@ const Index = () => {
               marginBottom: '10px',
             }}
           >
-            <div className="font-display text-label-xs font-semibold uppercase tracking-wider flex items-center gap-1.5" style={{ color: '#869393', marginBottom: '14px' }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20M2 6h20M2 18h20"/></svg>
-              Условия днес
+            <div className="font-display text-label-xs font-semibold uppercase tracking-wider flex items-center justify-between" style={{ color: '#869393', marginBottom: '14px' }}>
+              <div className="flex items-center gap-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8E63C" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20M2 6h20M2 18h20"/></svg>
+                Условия днес
+              </div>
+              <svg width="34" height="34" viewBox="0 0 52 52" aria-hidden="true">
+                <circle cx="26" cy="26" r="23" fill="#0f1415" stroke="#3d4949" strokeWidth="1"/>
+                <circle cx="26" cy="26" r="17" fill="none" stroke="#2eb5b7" strokeWidth="0.8" opacity="0.55"/>
+                <circle cx="26" cy="26" r="10" fill="none" stroke="#2eb5b7" strokeWidth="0.8" opacity="0.55"/>
+                <line x1="26" y1="6" x2="26" y2="46" stroke="#2eb5b7" strokeWidth="0.6" opacity="0.35"/>
+                <line x1="6" y1="26" x2="46" y2="26" stroke="#2eb5b7" strokeWidth="0.6" opacity="0.35"/>
+                <path d="M26 26 L26 3 A23 23 0 0 1 45 15 Z" fill="url(#sonarSweepGrad)" opacity="0.95">
+                  <animateTransform attributeName="transform" type="rotate" values="0 26 26;360 26 26" dur="4s" repeatCount="indefinite"/>
+                </path>
+                <defs>
+                  <linearGradient id="sonarSweepGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#C8E63C" stopOpacity="0"/>
+                    <stop offset="100%" stopColor="#C8E63C" stopOpacity="0.9"/>
+                  </linearGradient>
+                </defs>
+                <circle cx="26" cy="26" r="23" fill="none" stroke="#C8E63C" strokeWidth="1.4" opacity="0.9"/>
+                <circle cx="32" cy="19" r="2.4" fill="#C8E63C">
+                  <animate attributeName="opacity" values="1;0.3;1" dur="4s" repeatCount="indefinite"/>
+                </circle>
+              </svg>
             </div>
 
             {fishingScore.isOverride && fishingScore.overrideReason && (
