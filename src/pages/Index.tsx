@@ -154,7 +154,7 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
 
 
   // Pre-compute arrow positions with collision detection
-  const _arrowR = 118, _arrowROut = 153;
+  const _arrowR = 118, _arrowROut = 142;
   const _toRad = (deg: number) => (deg * Math.PI) / 180;
   const _posFromMin = (min: number, r: number) => ({
     bx: 105 + r * Math.sin(_toRad((min / 1440) * 360)),
