@@ -13,7 +13,7 @@ const PARAGRAPHS = [
 ];
 
 const FormulaIcon = ({ name }: { name: string }) => (
-  <i className={`ti ${name}`} style={{ fontSize: '16px' }} />
+  <i className={`ti ${name}`} style={{ fontSize: '12px', flexShrink: 0 }} />
 );
 
 export function AboutModal({ open, onClose }: AboutModalProps) {
@@ -46,13 +46,15 @@ export function AboutModal({ open, onClose }: AboutModalProps) {
             <div
               style={{
                 display: 'flex',
-                flexWrap: 'wrap',
+                flexWrap: 'nowrap',
                 alignItems: 'center',
-                gap: '3px',
+                gap: '1px',
                 fontFamily: "'JetBrains Mono', monospace",
-                fontSize: '14px',
+                fontSize: '11px',
                 color: '#2eb5b7',
                 lineHeight: 1.6,
+                whiteSpace: 'nowrap',
+                overflowX: 'auto',
               }}
             >
               <span>√( (</span>
