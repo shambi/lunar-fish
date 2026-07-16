@@ -1478,9 +1478,14 @@ const Index = () => {
             >↗</button>
             <button
               onClick={() => setShowAboutModal(true)}
-              style={{ width: '32px', height: '32px', border: 'none', background: 'none', color: '#2eb5b7', fontSize: '24px', fontStyle: 'italic', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
+              style={{ width: '32px', height: '32px', borderRadius: '50%', border: '0.5px solid rgba(46,181,183,0.4)', background: 'rgba(46,181,183,0.06)', color: '#2eb5b7', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
               title="За РИБО"
-            >i</button>
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="11" x2="12" y2="16.5" />
+                <circle cx="12" cy="7.2" r="0.6" fill="#2eb5b7" stroke="none" />
+              </svg>
+            </button>
           </div>
           <AboutModal open={showAboutModal} onClose={() => setShowAboutModal(false)} />
           {weather && (
