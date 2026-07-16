@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
 interface AboutModalProps {
   open: boolean;
@@ -20,9 +20,33 @@ export function AboutModal({ open, onClose }: AboutModalProps) {
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent
+        hideDefaultClose
         className="max-w-sm border-border"
         style={{ background: '#0B0F1A', padding: '24px 20px' }}
       >
+        <DialogClose
+          style={{
+            position: 'absolute',
+            top: '16px',
+            right: '16px',
+            zIndex: 2,
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            border: '0.5px solid rgba(46,181,183,0.4)',
+            background: 'rgba(46,181,183,0.06)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+          }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="5" y1="5" x2="19" y2="19" />
+            <line x1="19" y1="5" x2="5" y2="19" />
+          </svg>
+          <span className="sr-only">Close</span>
+        </DialogClose>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <img
             src="/ribo-fish-watermark.svg"
