@@ -5,6 +5,7 @@ import type { MoonData } from '@/lib/moon';
 import type { WeatherData } from '@/hooks/use-weather';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
 } from '@/components/ui/dialog';
 import { FISH_ICON_MAP } from '@/components/FishIcons';
@@ -210,9 +211,33 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
       {/* Fish detail modal */}
       <Dialog open={!!selectedFish} onOpenChange={(open) => !open && setSelectedFish(null)}>
         <DialogContent
+          hideDefaultClose
           className="max-w-sm border-border transition-all duration-300 ease-out"
           style={{ background: '#0B0F1A', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
         >
+          <DialogClose
+            style={{
+              position: 'absolute',
+              top: '16px',
+              right: '16px',
+              zIndex: 2,
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              border: '0.5px solid rgba(46,181,183,0.4)',
+              background: 'rgba(46,181,183,0.06)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2eb5b7" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="5" y1="5" x2="19" y2="19" />
+              <line x1="19" y1="5" x2="5" y2="19" />
+            </svg>
+            <span className="sr-only">Close</span>
+          </DialogClose>
           {selectedFish && modalData && (
             <>
               {/* Spotlight/vignette overlay — same as Index.tsx main screen, for visual
