@@ -1478,11 +1478,9 @@ const Index = () => {
             >↗</button>
             <button
               onClick={() => setShowAboutModal(true)}
-              style={{ width: '32px', height: '32px', borderRadius: '50%', border: '0.5px solid rgba(46,181,183,0.4)', background: 'rgba(46,181,183,0.06)', color: '#2eb5b7', fontSize: '14px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+              style={{ width: '32px', height: '32px', border: 'none', background: 'none', color: '#2eb5b7', fontSize: '24px', fontStyle: 'italic', fontWeight: 700, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: 0 }}
               title="За РИБО"
-            >
-              <i className="ti ti-info-circle" style={{ fontSize: '16px' }} />
-            </button>
+            >i</button>
           </div>
           <AboutModal open={showAboutModal} onClose={() => setShowAboutModal(false)} />
           {weather && (
