@@ -13,7 +13,7 @@ const PARAGRAPHS = [
 ];
 
 const FormulaIcon = ({ name }: { name: string }) => (
-  <i className={`ti ${name}`} style={{ fontSize: '12px', flexShrink: 0 }} />
+  <i className={`ti ${name}`} style={{ fontSize: '15px', flexShrink: 0 }} />
 );
 
 export function AboutModal({ open, onClose }: AboutModalProps) {
@@ -48,25 +48,25 @@ export function AboutModal({ open, onClose }: AboutModalProps) {
                 display: 'flex',
                 flexWrap: 'nowrap',
                 alignItems: 'center',
-                gap: '1px',
+                gap: '2px',
                 fontFamily: "'JetBrains Mono', monospace",
-                fontSize: '11px',
+                fontSize: '12px',
                 color: '#2eb5b7',
                 lineHeight: 1.6,
                 whiteSpace: 'nowrap',
                 overflowX: 'auto',
               }}
             >
-              <span>√( (</span>
+              <span>√((</span>
               <FormulaIcon name="ti-moon" />
               <span>×</span>
               <FormulaIcon name="ti-wind" />
               <FormulaIcon name="ti-gauge" />
-              <span>) / (</span>
+              <span>)/(</span>
               <FormulaIcon name="ti-cloud" />
               <span>+</span>
               <FormulaIcon name="ti-thermometer" />
-              <span>) ) × √(късмет +</span>
+              <span>))×√(късмет+</span>
               <FormulaIcon name="ti-clover" />
               <span>)</span>
               <span style={{ color: '#C8E63C', fontWeight: 700 }}>= РИБО</span>
