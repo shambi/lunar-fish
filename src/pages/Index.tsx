@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { getMoonData } from '@/lib/moon';
 import { isGoldenHour, getGoldenHourWindows } from '@/lib/moon-times';
 import { SolunarInfoModal } from '@/components/SolunarInfoModal';
+import { AboutModal } from '@/components/AboutModal';
 import { getSmartFishingTips, getTimePeriod } from '@/lib/fishing-expert';
 import { calculateFishingScore } from '@/lib/fishing-score';
 import { useWeather } from '@/hooks/use-weather';
@@ -524,6 +525,7 @@ const Index = () => {
   const alertLevel: 'none' | 'yellow' | 'orange' | 'red' = weather?.meteoAlarm?.level ?? 'none';
   const [terrain, setTerrain] = useState<'river' | 'lake'>('lake');
   const [showAlertTooltip, setShowAlertTooltip] = useState(false);
+  const [showAboutModal, setShowAboutModal] = useState(false);
   const hourlyScrollRef = useRef<HTMLDivElement>(null);
   const hourlyForecastLen = weather?.hourlyForecast?.length ?? 0;
   useEffect(() => {
@@ -1462,17 +1464,27 @@ const Index = () => {
 
         <footer className="text-center mt-4 space-y-0.5">
           <p className="text-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>Наслука!</p>
-          <button
-            onClick={() => {
-              if (navigator.share) {
-                navigator.share({ title: 'РИБО риболовен гид', text: 'Кълве ли днес? Провери луната, времето и налягането!', url: 'https://lunar-fish.vercel.app' });
-              } else {
-                navigator.clipboard.writeText('https://lunar-fish.vercel.app');
-              }
-            }}
-            style={{ marginTop: '8px', width: '32px', height: '32px', borderRadius: '50%', border: '0.5px solid rgba(46,181,183,0.4)', background: 'rgba(46,181,183,0.06)', color: '#2eb5b7', fontSize: '14px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
-            title="Сподели РИБО"
-          >↗</button>
+          <div style={{ display: 'inline-flex', gap: '8px', marginTop: '8px' }}>
+            <button
+              onClick={() => {
+                if (navigator.share) {
+                  navigator.share({ title: 'РИБО риболовен гид', text: 'Кълве ли днес? Провери луната, времето и налягането!', url: 'https://lunar-fish.vercel.app' });
+                } else {
+                  navigator.clipboard.writeText('https://lunar-fish.vercel.app');
+                }
+              }}
+              style={{ width: '32px', height: '32px', borderRadius: '50%', border: '0.5px solid rgba(46,181,183,0.4)', background: 'rgba(46,181,183,0.06)', color: '#2eb5b7', fontSize: '14px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+              title="Сподели РИБО"
+            >↗</button>
+            <button
+              onClick={() => setShowAboutModal(true)}
+              style={{ width: '32px', height: '32px', borderRadius: '50%', border: '0.5px solid rgba(46,181,183,0.4)', background: 'rgba(46,181,183,0.06)', color: '#2eb5b7', fontSize: '14px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+              title="За РИБО"
+            >
+              <i className="ti ti-info-circle" style={{ fontSize: '16px' }} />
+            </button>
+          </div>
+          <AboutModal open={showAboutModal} onClose={() => setShowAboutModal(false)} />
           {weather && (
             <p className="text-label-xs" style={{ color: 'rgba(255,255,255,0.8)' }}>
               Данните са базирани на текущата ви локация • <span className="text-white">Open-Meteo API</span>
