@@ -78,9 +78,11 @@ export function useWeather() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [locationDenied, setLocationDenied] = useState(false);
-  const backgroundRefreshRef = useRef<AbortController | null>(null);
+  const isFetchingRef = useRef(false);
 
   useEffect(() => {
+    const refreshController = new AbortController();
+
     async function initLocation() {
       setError(null);
 
@@ -105,11 +107,10 @@ export function useWeather() {
                 .catch(() => {});
             }
 
-            // Schedule background refresh once (fire-and-forget)
-            if (!backgroundRefreshRef.current) {
-              backgroundRefreshRef.current = new AbortController();
-              silentBackgroundRefresh(backgroundRefreshRef.current.signal);
-            }
+            // Kick off one background refresh right away so a cache-hit mount
+            // still catches up to the latest conditions quickly; the recurring
+            // interval set up below keeps refreshing every cache.weather ms after that.
+            silentBackgroundRefresh(refreshController.signal);
             return;
           }
         } catch {
@@ -220,10 +221,14 @@ export function useWeather() {
       }
     }
 
-    // ✅ FIX #3: Background refresh runs ONCE per mount, not cyclically
+    // Refreshes weather data in the background without touching the loading
+    // state. Called once immediately on a cache-hit mount, then repeatedly by
+    // the recurring interval below for as long as the component stays mounted.
     async function silentBackgroundRefresh(signal: AbortSignal) {
-      // Exit early if already aborted (component unmounted)
-      if (signal.aborted) return;
+      // Exit early if already aborted (component unmounted), or if a
+      // previous refresh is still in flight — avoid overlapping fetches.
+      if (signal.aborted || isFetchingRef.current) return;
+      isFetchingRef.current = true;
 
       try {
         const position = await getLocation();
@@ -284,21 +289,30 @@ export function useWeather() {
         if (!signal.aborted) {
           console.warn('Background refresh error (silent):', err);
         }
+      } finally {
+        isFetchingRef.current = false;
       }
     }
 
     initLocation();
 
-    // ✅ Cleanup: Cancel background refresh if component unmounts
+    // Keep temperature/wind/humidity/weather code fresh for as long as the app
+    // stays mounted, on the same cadence as the weather cache TTL — mirrors the
+    // meteoAlarm interval below instead of refreshing only once per mount.
+    const refreshInterval = setInterval(() => {
+      silentBackgroundRefresh(refreshController.signal);
+    }, WEATHER_API_CONFIG.cache.weather);
+
+    // ✅ Cleanup: Cancel any in-flight refresh and stop the interval on unmount
     return () => {
-      backgroundRefreshRef.current?.abort();
+      refreshController.abort();
+      clearInterval(refreshInterval);
     };
   }, []);
 
-  // The one-shot background refresh above only catches a newly-issued storm warning
-  // if the tab gets reloaded. A tab left open (e.g. at the reservoir) would otherwise
-  // never see an alert that appears mid-session — poll just the small meteoAlarm feed
-  // on its own short TTL, independent of the full weather refresh.
+  // A tab left open (e.g. at the reservoir) would otherwise never see a storm
+  // warning that appears mid-session — poll just the small meteoAlarm feed on
+  // its own short TTL, independent of the full weather refresh above.
   useEffect(() => {
     const interval = setInterval(() => {
       getFreshMeteoAlarm()
