@@ -64,8 +64,8 @@ function getCachedMeteoAlarm(): MeteoAlarmData | null {
   return null;
 }
 
-async function getFreshMeteoAlarm(): Promise<MeteoAlarmData> {
-  const alarm = await fetchMeteoAlarmLevel();
+async function getFreshMeteoAlarm(latitude?: number, longitude?: number): Promise<MeteoAlarmData> {
+  const alarm = await fetchMeteoAlarmLevel(latitude, longitude);
   localStorage.setItem(WEATHER_API_CONFIG.cacheKeys.meteoAlarm, JSON.stringify({
     data: alarm,
     timestamp: Date.now(),
@@ -79,6 +79,7 @@ export function useWeather() {
   const [error, setError] = useState<string | null>(null);
   const [locationDenied, setLocationDenied] = useState(false);
   const isFetchingRef = useRef(false);
+  const locationRef = useRef<{ latitude: number; longitude: number } | null>(null);
 
   useEffect(() => {
     const refreshController = new AbortController();
@@ -102,7 +103,7 @@ export function useWeather() {
             // meteoAlarm has its own (shorter) TTL — if it's stale, refresh it right
             // away instead of waiting for the general weather cache to expire.
             if (!cachedAlarm) {
-              getFreshMeteoAlarm()
+              getFreshMeteoAlarm(data.latitude, data.longitude)
                 .then(alarm => setWeather(prev => (prev ? { ...prev, meteoAlarm: alarm } : prev)))
                 .catch(() => {});
             }
@@ -168,7 +169,7 @@ export function useWeather() {
         // Merge the data
         weatherData.altitude = altitude;
         weatherData.locationName = locationName;
-        weatherData.meteoAlarm = await getFreshMeteoAlarm();
+        weatherData.meteoAlarm = await getFreshMeteoAlarm(latitude, longitude);
 
         setWeather(weatherData);
         setLocationDenied(false);
@@ -210,7 +211,10 @@ export function useWeather() {
             fallbackAltitude,
             WEATHER_API_CONFIG.fallback.name
           );
-          weatherData.meteoAlarm = await getFreshMeteoAlarm();
+          weatherData.meteoAlarm = await getFreshMeteoAlarm(
+            WEATHER_API_CONFIG.fallback.latitude,
+            WEATHER_API_CONFIG.fallback.longitude
+          );
           setWeather(weatherData);
         } catch (fetchErr) {
           console.error('Failed to fetch fallback weather for Sofia:', fetchErr);
@@ -273,7 +277,7 @@ export function useWeather() {
 
         weatherData.altitude = altitude;
         weatherData.locationName = locationName;
-        weatherData.meteoAlarm = await getFreshMeteoAlarm();
+        weatherData.meteoAlarm = await getFreshMeteoAlarm(latitude, longitude);
 
         // Update state silently (no loading indicator change)
         setWeather(weatherData);
@@ -310,12 +314,20 @@ export function useWeather() {
     };
   }, []);
 
+  // Track the latest known coordinates so the meteoAlarm interval below (which
+  // has no location in scope of its own) can still filter alerts regionally.
+  useEffect(() => {
+    if (weather) {
+      locationRef.current = { latitude: weather.latitude, longitude: weather.longitude };
+    }
+  }, [weather]);
+
   // A tab left open (e.g. at the reservoir) would otherwise never see a storm
   // warning that appears mid-session — poll just the small meteoAlarm feed on
   // its own short TTL, independent of the full weather refresh above.
   useEffect(() => {
     const interval = setInterval(() => {
-      getFreshMeteoAlarm()
+      getFreshMeteoAlarm(locationRef.current?.latitude, locationRef.current?.longitude)
         .then(alarm => setWeather(prev => (prev ? { ...prev, meteoAlarm: alarm } : prev)))
         .catch(() => {});
     }, WEATHER_API_CONFIG.cache.meteoAlarm);

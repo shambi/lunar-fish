@@ -165,7 +165,146 @@ export async function reverseGeocode(lat: number, lon: number): Promise<string> 
   }
 }
 
-export async function fetchMeteoAlarmLevel(): Promise<MeteoAlarmData> {
+// --- Regional filtering for MeteoAlarm CAP entries -------------------------
+//
+// The Bulgaria feed was empty at the time this was written (verified via
+// /api/debug-meteoalarm — no active warnings), so we couldn't inspect a real
+// entry to confirm whether MeteoAlarm identifies Bulgarian areas by EMMA_ID
+// geocode, by <cap:polygon>, or both. CAP requires at least one area
+// sub-element (geocode, polygon, or circle), so we support both of the two
+// documented possibilities and fall through between them per entry.
+
+interface CapGeocode { valueName: string; value: string }
+
+function parseAttrs(attrString: string): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const m of attrString.matchAll(/([\w:-]+)\s*=\s*"([^"]*)"/g)) {
+    out[m[1].toLowerCase()] = m[2];
+  }
+  return out;
+}
+
+// Handles all three CAP geocode shapes seen in the wild:
+//   <geocode valueName="EMMA_ID" value="BG001"/>          (attribute-style)
+//   <geocode valueName="EMMA_ID">BG001</geocode>           (attribute + text)
+//   <geocode><valueName>EMMA_ID</valueName><value>BG001</value></geocode> (element-style)
+// with or without a "cap:" namespace prefix on any tag.
+function parseGeocodes(entryXml: string): CapGeocode[] {
+  const geocodes: CapGeocode[] = [];
+  const blockRe = /<(?:cap:)?geocode\b([^>]*?)(?:\/>|>([\s\S]*?)<\/(?:cap:)?geocode>)/gi;
+  for (const m of entryXml.matchAll(blockRe)) {
+    const attrs = parseAttrs(m[1] ?? '');
+    const inner = m[2] ?? '';
+
+    let valueName = attrs['valuename'];
+    let value = attrs['value'];
+
+    if (!valueName) {
+      valueName = inner.match(/<(?:cap:)?valueName>([\s\S]*?)<\/(?:cap:)?valueName>/i)?.[1]?.trim();
+    }
+    if (!value) {
+      value = inner.match(/<(?:cap:)?value>([\s\S]*?)<\/(?:cap:)?value>/i)?.[1]?.trim();
+    }
+    if (!value && valueName && inner.trim() && !inner.includes('<')) {
+      value = inner.trim();
+    }
+
+    if (valueName && value) geocodes.push({ valueName, value });
+  }
+  return geocodes;
+}
+
+// CAP polygon = whitespace-delimited "lat,lon" pairs, e.g. "45.0,10.0 45.0,11.0 44.0,10.0".
+function parsePolygon(entryXml: string): [number, number][] | null {
+  const match = entryXml.match(/<(?:cap:)?polygon>([\s\S]*?)<\/(?:cap:)?polygon>/i);
+  if (!match) return null;
+  const points: [number, number][] = [];
+  for (const pair of match[1].trim().split(/\s+/)) {
+    const [latStr, lonStr] = pair.split(',');
+    const lat = parseFloat(latStr);
+    const lon = parseFloat(lonStr);
+    if (Number.isFinite(lat) && Number.isFinite(lon)) points.push([lat, lon]);
+  }
+  return points.length >= 3 ? points : null;
+}
+
+// Standard ray-casting point-in-polygon test.
+function isPointInPolygon(lat: number, lon: number, polygon: [number, number][]): boolean {
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const [latI, lonI] = polygon[i];
+    const [latJ, lonJ] = polygon[j];
+    const intersects = (latI > lat) !== (latJ > lat)
+      && lon < ((lonJ - lonI) * (lat - latI)) / (latJ - latI) + lonI;
+    if (intersects) inside = !inside;
+  }
+  return inside;
+}
+
+// ⚠️ UNVERIFIED: candidate EMMA_ID codes for Bulgaria's 28 oblasts, derived from
+// ISO 3166-2:BG's alphabetical numbering (BG-01..BG-28) formatted as "BG0XX" —
+// this mirrors the plain sequential convention MeteoAlarm uses for some other
+// countries (e.g. Denmark's DK001-DK005), but has NOT been confirmed against a
+// real MeteoAlarm entry for Bulgaria. The official metadata endpoint that would
+// confirm it (api.meteoalarm.org/metadata/v1) requires member authentication
+// we don't have, and the live BG feed had no active warnings to inspect.
+// Re-check via /api/debug-meteoalarm next time a real alert fires, and correct
+// any codes below that don't match what's actually in the feed.
+const BG_OBLAST_EMMA_IDS: Record<string, string> = {
+  'благоевград': 'BG001',
+  'бургас': 'BG002',
+  'варна': 'BG003',
+  'велико търново': 'BG004',
+  'видин': 'BG005',
+  'враца': 'BG006',
+  'габрово': 'BG007',
+  'добрич': 'BG008',
+  'кърджали': 'BG009',
+  'кюстендил': 'BG010',
+  'ловеч': 'BG011',
+  'монтана': 'BG012',
+  'пазарджик': 'BG013',
+  'перник': 'BG014',
+  'плевен': 'BG015',
+  'пловдив': 'BG016',
+  'разград': 'BG017',
+  'русе': 'BG018',
+  'силистра': 'BG019',
+  'сливен': 'BG020',
+  'смолян': 'BG021',
+  'софия-град': 'BG022',
+  'столична': 'BG022',
+  'софийска': 'BG023', // "Софийска област" — Sofia Province, distinct from Sofia City above
+  'стара загора': 'BG024',
+  'търговище': 'BG025',
+  'хасково': 'BG026',
+  'шумен': 'BG027',
+  'ямбол': 'BG028',
+};
+
+// Reverse-geocodes to oblast level (zoom=8) and matches the returned name
+// against BG_OBLAST_EMMA_IDS. Only called lazily, and only when an entry
+// actually carries an EMMA_ID geocode — most of the time (polygon-only
+// entries, or an empty feed) this never fires.
+async function resolveUserEmmaId(latitude: number, longitude: number): Promise<string | null> {
+  try {
+    const res = await fetchWithTimeout(
+      `${WEATHER_API_CONFIG.apis.geocoding}?lat=${latitude}&lon=${longitude}&format=json&accept-language=bg&zoom=8`,
+      WEATHER_API_CONFIG.timeouts.geocoding
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    const raw = (data.address?.state || data.address?.county || data.address?.city || '').toLowerCase();
+    for (const [name, id] of Object.entries(BG_OBLAST_EMMA_IDS)) {
+      if (raw.includes(name)) return id;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchMeteoAlarmLevel(latitude?: number, longitude?: number): Promise<MeteoAlarmData> {
   const none: MeteoAlarmData = { level: 'none', event: '', expires: '', headline: '' };
   try {
     const res = await fetch('/api/meteoalarm');
@@ -176,7 +315,34 @@ export async function fetchMeteoAlarmLevel(): Promise<MeteoAlarmData> {
     let bestEvent = '', bestExpires = '', bestHeadline = '';
     // Split into <entry> blocks and process each
     const entries = [...xml.matchAll(/<entry[\s\S]*?<\/entry>/gi)].map(m => m[0]);
+
+    const hasLocation = Number.isFinite(latitude) && Number.isFinite(longitude);
+    let userEmmaId: string | null | undefined; // undefined = not resolved yet (lazy + memoized)
+    const getUserEmmaId = async () => {
+      if (userEmmaId === undefined) {
+        userEmmaId = hasLocation ? await resolveUserEmmaId(latitude!, longitude!) : null;
+      }
+      return userEmmaId;
+    };
+
     for (const entry of entries) {
+      if (hasLocation) {
+        const geocodes = parseGeocodes(entry);
+        const emmaGeocode = geocodes.find(g => g.valueName.toUpperCase() === 'EMMA_ID' && g.value);
+
+        if (emmaGeocode) {
+          // EMMA_ID present with a concrete value — match it against the user's region.
+          const userId = await getUserEmmaId();
+          if (!userId || emmaGeocode.value.toUpperCase() !== userId.toUpperCase()) continue;
+        } else {
+          // EMMA_ID missing/empty — fall through to point-in-polygon.
+          const polygon = parsePolygon(entry);
+          if (polygon && !isPointInPolygon(latitude!, longitude!, polygon)) continue;
+          // No polygon either: can't determine coverage — don't silently drop
+          // a potentially relevant alert just because we lack area data for it.
+        }
+      }
+
       const sevMatch = entry.match(/<cap:severity>([\s\S]*?)<\/cap:severity>/i);
       if (!sevMatch) continue;
       const s = sevMatch[1].trim().toLowerCase();
