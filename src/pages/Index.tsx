@@ -14,6 +14,7 @@ import { PerchIcon, CarpIcon, PikeIcon, BreamIcon, CatfishIcon } from '@/compone
 import { AdviceIcon } from '@/components/AdviceIcon';
 import { WindCompass } from '@/components/WindCompass';
 import { getMeteoAlertLabel } from '@/lib/meteo-alert';
+import { getAlarmColor, getAlarmColorRgba, hexAlpha } from '@/lib/alarm-colors';
 import { getActiveMeteorShower } from '@/lib/meteor-showers';
 const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
   const [now, setNow] = useState(() => new Date());
@@ -1169,13 +1170,13 @@ const Index = () => {
                     ...(alertLevel === 'none' ? {
                       border: '0.5px solid rgba(255,255,255,0.07)'
                     } : alertLevel === 'yellow' ? {
-                      border: '0.5px solid rgba(200,230,60,0.6)',
+                      border: `0.5px solid ${getAlarmColorRgba('yellow', 0.6)}`,
                       animation: 'pulse-alert-yellow 2.5s ease-in-out infinite'
                     } : alertLevel === 'orange' ? {
-                      border: '0.5px solid rgba(255,140,66,0.6)',
+                      border: `0.5px solid ${getAlarmColorRgba('orange', 0.6)}`,
                       animation: 'pulse-alert-orange 2.5s ease-in-out infinite'
                     } : {
-                      border: '0.5px solid rgba(226,69,69,0.6)',
+                      border: `0.5px solid ${getAlarmColorRgba('red', 0.6)}`,
                       animation: 'pulse-alert-red 2s ease-in-out infinite'
                     }),
                     background: 'rgba(255,255,255,0.03)',
@@ -1201,8 +1202,8 @@ const Index = () => {
                 </button>
                 {showAlertTooltip && weather?.meteoAlarm && alertLevel !== 'none' && (() => {
                   const eventBg = getMeteoAlertLabel(weather.meteoAlarm.event);
-                  const alarmColor = alertLevel === 'red' ? '#E24545' : alertLevel === 'orange' ? '#FF8C42' : '#C8E63C';
-                  const borderColor = alertLevel === 'red' ? 'rgba(226,69,69,0.4)' : alertLevel === 'orange' ? 'rgba(255,140,66,0.4)' : 'rgba(200,230,60,0.4)';
+                  const alarmColor = getAlarmColor(alertLevel);
+                  const borderColor = getAlarmColorRgba(alertLevel, 0.4);
                   const alarmLabel = alertLevel === 'red' ? 'Червен код за ' : alertLevel === 'orange' ? 'Оранжев код за ' : 'Жълт код за ';
                   const { expires } = weather.meteoAlarm;
                   let expiresStr = '';
@@ -1223,7 +1224,7 @@ const Index = () => {
                       background: '#0f1415', border: `1px solid ${borderColor}`,
                       borderRadius: '10px', padding: '10px 12px',
                     }}>
-                      <div className="text-critical" style={{ fontWeight: 600, color: alarmColor, background: `${alarmColor}1f`, border: `0.5px solid ${alarmColor}4d`, borderRadius: '20px', padding: '3px 8px', display: 'inline-block', marginBottom: '6px' }}>
+                      <div className="text-critical" style={{ fontWeight: 600, color: alarmColor, background: hexAlpha(alarmColor, 31 / 255), border: `0.5px solid ${hexAlpha(alarmColor, 77 / 255)}`, borderRadius: '20px', padding: '3px 8px', display: 'inline-block', marginBottom: '6px' }}>
                         {alarmLabel}{eventBg}
                       </div>
                       {expiresStr && <div className="text-critical" style={{ color: '#869393' }}>{expiresStr}</div>}

@@ -40,6 +40,16 @@
     --ocean: 205 65% 20%;
     --ocean-light: 200 50% 30%;
 
+    /* MeteoAlarm severity colors (RGB triplets) — single source for the
+       pulse-alert-* keyframes below. Kept in sync with ALARM_RGB in
+       src/lib/alarm-colors.ts (the JS-side source of truth for tooltip
+       text, badge/tooltip borders, and the hex-alpha background trick);
+       CSS keyframes can't import it, so both need updating together if a
+       severity color ever changes. */
+    --alarm-yellow: 200 230 60;
+    --alarm-orange: 255 140 66;
+    --alarm-red: 226 69 69;
+
     --sidebar-background: 220 40% 6%;
     --sidebar-foreground: 200 60% 92%;
     --sidebar-primary: 181 60% 45%;
@@ -290,16 +300,16 @@
 }
 
 @keyframes pulse-alert-yellow {
-  0%, 100% { border-color: rgba(200, 230, 60, 0.3); }
-  50%       { border-color: rgba(200, 230, 60, 0.85); }
+  0%, 100% { border-color: rgb(var(--alarm-yellow) / 0.3); }
+  50%       { border-color: rgb(var(--alarm-yellow) / 0.85); }
 }
 @keyframes pulse-alert-orange {
-  0%, 100% { border-color: rgba(255, 140, 66, 0.3); }
-  50%       { border-color: rgba(255, 140, 66, 0.9); }
+  0%, 100% { border-color: rgb(var(--alarm-orange) / 0.3); }
+  50%       { border-color: rgb(var(--alarm-orange) / 0.9); }
 }
 @keyframes pulse-alert-red {
-  0%, 100% { border-color: rgba(226, 69, 69, 0.25); }
-  50%       { border-color: rgba(226, 69, 69, 0.95); }
+  0%, 100% { border-color: rgb(var(--alarm-red) / 0.25); }
+  50%       { border-color: rgb(var(--alarm-red) / 0.95); }
 }
 
 @keyframes goldenPulse {
