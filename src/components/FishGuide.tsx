@@ -335,7 +335,7 @@ export function FishGuide({ moon, weather, terrain, onTerrainChange, solunarCont
                   })()}
 
                   {/* ПРЕПОРЪЧАНО ДНЕС — compact pill, same border/background/text color as the active technique buttons */}
-                  {selectedFish.score >= 61 && (
+                  {selectedFish.isRecommended && (
                     <div className="text-label-xs" style={{
                       display: 'inline-flex',
                       alignItems: 'center',
