@@ -302,22 +302,28 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
             );
           })}
           {goldenHourWindows.map((w, i) => {
-            const sd = (w.startMin / 1440) * 360, ed = (w.endMin / 1440) * 360;
+            const rawSd = (w.startMin / 1440) * 360, rawEd = (w.endMin / 1440) * 360;
             const isWindowActive = minInWindow(currentMin, w.startMin, w.endMin);
+            // Enforce a minimum angular span of 7° so very short windows stay visible,
+            // expanding symmetrically around the real window's center.
+            const span = rawEd - rawSd;
+            const center = (rawSd + rawEd) / 2;
+            const sd = span < 7 ? center - 3.5 : rawSd;
+            const ed = span < 7 ? center + 3.5 : rawEd;
             // Silver arc sits at r=82 — a clean concentric inset from citron (r=88),
             // clearly separated from minor teal (r=78) — creating two distinct parallel arcs.
             const d = arcPath(105, 105, 82, sd, ed);
             return isWindowActive ? (
               <g key={`gh${i}`}>
                 {/* Outer soft halo */}
-                <path d={d} fill="none" stroke="#ffffff" strokeWidth="12" strokeLinecap="round" opacity="0.35" style={{ filter: 'blur(4px)' }} />
+                <path d={d} fill="none" stroke="#ffffff" strokeWidth="12" strokeLinecap="round" opacity="0.35" style={{ filter: 'blur(5.5px)' }} />
                 {/* Crisp bright silver arc */}
-                <path d={d} fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" opacity="1" style={{ animation: 'goldenArcPulse 1.6s ease-in-out infinite', filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.95)) drop-shadow(0 0 10px rgba(220,235,255,0.6))' }} />
+                <path d={d} fill="none" stroke="#ffffff" strokeWidth="6.5" strokeLinecap="round" opacity="1" style={{ animation: 'goldenArcPulse 1.6s ease-in-out infinite', filter: 'drop-shadow(0 0 7px rgba(255,255,255,0.95)) drop-shadow(0 0 13px rgba(220,235,255,0.6))' }} />
               </g>
             ) : (
               <g key={`gh${i}`}>
-                <path d={d} fill="none" stroke="#ffffff" strokeWidth="7" strokeLinecap="round" opacity="0.2" style={{ filter: 'blur(2px)' }} />
-                <path d={d} fill="none" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" opacity="0.85" style={{ filter: 'drop-shadow(0 0 3px rgba(255,255,255,0.7))' }} />
+                <path d={d} fill="none" stroke="#ffffff" strokeWidth="7" strokeLinecap="round" opacity="0.2" style={{ filter: 'blur(3px)' }} />
+                <path d={d} fill="none" stroke="#ffffff" strokeWidth="4.5" strokeLinecap="round" opacity="0.85" style={{ filter: 'drop-shadow(0 0 4px rgba(255,255,255,0.7))' }} />
               </g>
             );
           })}
