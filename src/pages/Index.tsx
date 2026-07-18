@@ -591,12 +591,21 @@ const Index = () => {
     return { isInPeak: false, peakType: null as 'major' | 'minor' | null };
   }, [weather]);
 
+  // Golden Hour windows are often shorter than the 10-min weather refresh, so
+  // relying on [weather] alone could miss/delay the banner message — tick
+  // independently every 30s to re-evaluate isGoldenHour with the current time.
+  const [nowTick, setNowTick] = useState(() => Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setNowTick(Date.now()), 30000);
+    return () => clearInterval(t);
+  }, []);
+
   // Golden Hour: major peak overlapping sunrise/sunset ±30min — shared between
   // SolunarDial (dial visuals) and the РИБО ПРОГНОЗА banner (getScoreReason).
   const goldenHour = useMemo(() => {
     if (!weather) return { isActive: false, minutesRemaining: null };
     return isGoldenHour(new Date(), weather.sunrise, weather.sunset, weather.solunarPeaks || []);
-  }, [weather]);
+  }, [weather, nowTick]);
 
   const stripEmojis = (text: string) => {
     return text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
