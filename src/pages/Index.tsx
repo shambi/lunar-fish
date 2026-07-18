@@ -304,12 +304,12 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
           {goldenHourWindows.map((w, i) => {
             const rawSd = (w.startMin / 1440) * 360, rawEd = (w.endMin / 1440) * 360;
             const isWindowActive = minInWindow(currentMin, w.startMin, w.endMin);
-            // Enforce a minimum angular span of 7° so very short windows stay visible,
+            // Enforce a minimum angular span of 10° so very short windows stay visible,
             // expanding symmetrically around the real window's center.
             const span = rawEd - rawSd;
             const center = (rawSd + rawEd) / 2;
-            const sd = span < 7 ? center - 3.5 : rawSd;
-            const ed = span < 7 ? center + 3.5 : rawEd;
+            const sd = span < 10 ? center - 5 : rawSd;
+            const ed = span < 10 ? center + 5 : rawEd;
             // Silver arc sits at r=82 — a clean concentric inset from citron (r=88),
             // clearly separated from minor teal (r=78) — creating two distinct parallel arcs.
             const d = arcPath(105, 105, 82, sd, ed);
