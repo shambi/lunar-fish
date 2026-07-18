@@ -16,7 +16,7 @@ import { WindCompass } from '@/components/WindCompass';
 import { getMeteoAlertLabel } from '@/lib/meteo-alert';
 import { getAlarmColor, getAlarmColorRgba, hexAlpha } from '@/lib/alarm-colors';
 import { getActiveMeteorShower } from '@/lib/meteor-showers';
-const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
+const SolunarDial = ({ weather, moon, goldenHour }: { weather: any; moon: any; goldenHour: { isActive: boolean; minutesRemaining: number | null } }) => {
   const [now, setNow] = useState(() => new Date());
   const [openMoon, setOpenMoon] = useState(false);
   const [showSolunarInfo, setShowSolunarInfo] = useState(false);
@@ -69,7 +69,6 @@ const SolunarDial = ({ weather, moon }: { weather: any; moon: any }) => {
     }
   }
 
-  const goldenHour = isGoldenHour(now, weather.sunrise, weather.sunset, peaks);
   const goldenHourWindows = getGoldenHourWindows(weather.sunrise, weather.sunset, peaks);
 
   const verdict = goldenHour.isActive
@@ -592,6 +591,13 @@ const Index = () => {
     return { isInPeak: false, peakType: null as 'major' | 'minor' | null };
   }, [weather]);
 
+  // Golden Hour: major peak overlapping sunrise/sunset ±30min — shared between
+  // SolunarDial (dial visuals) and the РИБО ПРОГНОЗА banner (getScoreReason).
+  const goldenHour = useMemo(() => {
+    if (!weather) return { isActive: false, minutesRemaining: null };
+    return isGoldenHour(new Date(), weather.sunrise, weather.sunset, weather.solunarPeaks || []);
+  }, [weather]);
+
   const stripEmojis = (text: string) => {
     return text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim();
   };
@@ -783,6 +789,7 @@ const Index = () => {
           const getScoreReason = (): string => {
             if (fishingScore.isOverride) return stripEmojis(fishingScore.overrideReason || 'Опасни условия');
             if (windSpeed > 25) return 'Силен вятър намалява активността';
+            if (goldenHour.isActive) return 'Златен час — съвпадат голям пик и изгрев/залез — идеален момент';
             if (fishingScore.score >= 5) return 'Отличен ден — всички фактори са благоприятни';
             if (solunarContext.isInPeak) return 'Солунарен пик сега — оптимален момент';
             if (pressureTrend === 'falling') return 'Падащо налягане — рибата е пасивна';
@@ -1434,7 +1441,7 @@ const Index = () => {
 
         {/* Solunar Activity Section */}
         {weather && weather.solunarPeaks ? (
-          <SolunarDial weather={weather} moon={moon} />
+          <SolunarDial weather={weather} moon={moon} goldenHour={goldenHour} />
         ) : (
           <section style={{
             background: 'rgba(255,255,255,0.03)',
